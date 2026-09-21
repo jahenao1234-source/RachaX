@@ -3,180 +3,202 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Racha: combinaciones</title>
+<title>Racha · Maqueta aprobada de Hoy (v2)</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;color:#F1F3F5}
+:root{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-tint:#2A211F;--track:#23272D;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;color:var(--text);display:flex;justify-content:center;padding:32px 16px}
 button{font:inherit;cursor:pointer}
-.wrap{display:flex;flex-wrap:wrap;gap:48px;justify-content:center;padding:32px 16px}
-.col{display:flex;flex-direction:column;gap:12px;align-items:center}
-.col h2{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:22px}
-.phone{border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.6);outline:1px solid #22262C}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.phone{width:390px;background:var(--bg);border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;padding-bottom:96px}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid #1C1F24}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.pad{padding:0 20px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{margin:0;font-size:15px;font-weight:600}
+.meta{margin:1px 0 0;font-size:13px;color:var(--muted)}
+.check{width:32px;height:32px;border-radius:999px;border:2px solid var(--line-strong);background:transparent;flex-shrink:0}
+.check.done{border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.done .name{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.done .meta{color:var(--ambar);font-weight:600}
+.pts{font-size:13px;color:var(--muted)}
+.group{display:flex;flex-direction:column;gap:8px}
+.ghead{display:flex;align-items:center;gap:10px;padding:2px 2px 0}
+.gicon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.gname{font-size:17px;flex:1}
+.gcount{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.gbar{width:44px;height:5px;border-radius:9px;background:var(--track);overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:9px}
+.next{background:var(--lila-tint);outline:1.5px solid var(--lila);outline-offset:-1.5px}
+.chip-next{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:6px;background:var(--lila);color:var(--ink);font-size:11px;font-weight:700;vertical-align:2px}
+.btn2{height:32px;padding:0 10px;border-radius:10px;border:1px solid var(--lila);background:transparent;color:var(--lila);font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-shrink:0}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid #22262C;display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;gap:4px;width:64px;color:#8D96A0;text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.note{max-width:340px;margin-left:36px;color:#C5CBD3;font-size:14px;line-height:1.5}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+@media (max-width:820px){body{flex-direction:column;align-items:center}.note{margin:24px 0 0}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="col"><h2>Racha · Hoy (C + A con íconos)</h2><div class="phone">
+<!-- Maqueta aprobada de la pantalla Hoy (v2, 2026-09-21). Referencia visual exacta en modo oscuro a 390px. Datos de ejemplo. -->
+<div class="phone">
+  <div class="bar">
+    <div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div>
+    <span class="cond" style="font-size:20px">Racha</span>
+  </div>
 
-<div style="width: 390px; height: 844px; position: relative; overflow: hidden; box-sizing: border-box; background: #0F1113; color: #F1F3F5; font-family: 'Barlow', system-ui, sans-serif; display: flex; flex-direction: column;">
+  <div class="pad" style="margin-top:14px;display:flex;align-items:center;gap:10px">
+    <span class="cond" style="font-size:15px;color:var(--ink);background:var(--lila);padding:2px 8px;border-radius:6px">Nivel 4</span>
+    <div style="flex:1;height:8px;border-radius:99px;background:var(--track);overflow:hidden"><div style="width:68%;height:100%;background:var(--lila);border-radius:99px"></div></div>
+    <span style="font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums">680 / 1000</span>
+  </div>
 
-<header style="display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 0;">
-<div style="display: flex; align-items: center; gap: 9px;">
-<div style="width: 30px; height: 30px; border-radius: 9px; background: #F1F3F5; color: #0F1113; display: flex; align-items: center; justify-content: center;">
-<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"></path></svg>
-</div>
-<span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 23px;">Racha</span>
-</div>
-<button type="button" style="display: flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px; background: #181B1F; border: 1px solid #2A2F36; color: #D5DAE0; font-size: 13px; font-weight: 600;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E9BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
-2 comodines
-</button>
-</header>
+  <div class="pad" style="margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 21</h1>
+      <span style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:#D5DAE0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E9BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+        2 comodines
+      </span>
+    </div>
+    <p style="margin:6px 0 0;font-size:15px;color:var(--muted)">Misiones de hoy: 1 de 5</p>
+  </div>
 
-<div style="margin: 14px 20px 0; display: flex; align-items: center; gap: 10px;">
-<span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 15px; color: #0F1113; background: #8E9BFF; padding: 2px 8px; border-radius: 6px;">Nivel 4</span>
-<div role="progressbar" aria-label="Puntos para el nivel 5" aria-valuenow="680" aria-valuemin="0" aria-valuemax="1000" style="flex: 1 1 0; height: 8px; border-radius: 99px; background: #23272D; overflow: hidden;">
-<div style="width: 68%; height: 100%; border-radius: 99px; background: #8E9BFF;"></div>
-</div>
-<span style="font-size: 13px; color: #98A0AA; font-variant-numeric: tabular-nums;">680 / 1000</span>
+  <div class="pad" style="margin-top:14px">
+    <div style="display:flex;gap:6px">
+      <div style="flex:1;height:52px;border-radius:12px;background:var(--ambar);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:600">Ma</span><span class="cond" style="font-size:17px">15</span></div>
+      <div style="flex:1;height:52px;border-radius:12px;background:var(--ambar);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:600">Mi</span><span class="cond" style="font-size:17px">16</span></div>
+      <div style="flex:1;height:52px;border-radius:12px;background:var(--comodin-bg);border:1.5px solid var(--lila);color:var(--comodin-text);display:flex;flex-direction:column;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span class="cond" style="font-size:17px">17</span></div>
+      <div style="flex:1;height:52px;border-radius:12px;background:var(--ambar);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:600">Vi</span><span class="cond" style="font-size:17px">18</span></div>
+      <div style="flex:1;height:52px;border-radius:12px;background:var(--surface);border:1px solid var(--line);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:600">Sá</span><span class="cond" style="font-size:17px">19</span></div>
+      <div style="flex:1;height:52px;border-radius:12px;background:var(--ambar);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:600">Do</span><span class="cond" style="font-size:17px">20</span></div>
+      <div style="flex:1;height:52px;border-radius:12px;border:1.5px dashed var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;font-weight:600">Hoy</span><span class="cond" style="font-size:17px">21</span></div>
+    </div>
+    <p style="margin:8px 0 0;display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Un día sin cumplir no borra los demás.</span><span style="color:var(--text);font-weight:600">21/30 del mes</span></p>
+  </div>
+
+  <section class="pad" style="margin-top:14px" aria-label="Tu día">
+    <div style="padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <h2 class="cond" style="margin:0;font-size:22px">Tu día</h2>
+        <span class="cond" style="font-size:18px;color:var(--ambar)">+10 pts hoy</span>
+      </div>
+      <div style="display:flex;gap:4px" role="img" aria-label="1 de 5 hábitos cumplidos hoy">
+        <i style="flex:1;height:12px;border-radius:4px;background:var(--ambar)"></i>
+        <i style="flex:1;height:12px;border-radius:4px;background:var(--track)"></i>
+        <i style="flex:1;height:12px;border-radius:4px;background:var(--track)"></i>
+        <i style="flex:1;height:12px;border-radius:4px;background:var(--track)"></i>
+        <i style="flex:1;height:12px;border-radius:4px;background:var(--track)"></i>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <span style="font-size:13px;color:var(--muted)">1 de 5 · te quedan 4</span>
+        <a href="#siguiente" style="display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--lila);text-decoration:none">Siguiente: Leer 20 min
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pad" style="margin-top:18px;display:flex;justify-content:space-between;align-items:baseline">
+    <h2 class="cond" style="margin:0;font-size:22px">Misiones</h2>
+    <span style="font-size:13px;color:var(--muted)">+40 pts por ganar · <span style="color:var(--ambar);font-weight:600">Gestionar</span></span>
+  </div>
+
+  <div class="pad" style="margin-top:12px;display:flex;flex-direction:column;gap:16px">
+
+    <!-- MAÑANA -->
+    <section class="group">
+      <div class="ghead">
+        <div class="gicon" style="background:var(--ambar-tint);color:var(--ambar)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8M4.93 10.93l1.41 1.41M2 18h2M20 18h2M19.07 10.93l-1.41 1.41M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/></svg></div>
+        <span class="cond gname">Mañana</span>
+        <span class="gcount">1/1</span>
+        <div class="gbar"><i style="width:100%;background:var(--ambar)"></i></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98A0AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="row done">
+        <div class="tile" style="background:var(--ambar-tint);color:var(--ambar)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg></div>
+        <div style="flex:1;min-width:0"><p class="name">Meditar 10 min</p><p class="meta">+10 ganados</p></div>
+        <button class="check done" aria-label="Desmarcar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+      </div>
+    </section>
+
+    <!-- TARDE -->
+    <section class="group">
+      <div class="ghead">
+        <div class="gicon" style="background:var(--coral-tint);color:var(--coral)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div>
+        <span class="cond gname">Tarde</span>
+        <span class="gcount">0/1</span>
+        <div class="gbar"><i style="width:0%"></i></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98A0AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="row">
+        <div class="tile" style="background:var(--coral-tint);color:var(--coral)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg></div>
+        <div style="flex:1;min-width:0"><p class="name">Ejercicio</p><p class="meta">1 de 3 esta semana</p></div>
+        <span class="pts">+10</span>
+        <button class="check" aria-label="Marcar Ejercicio"></button>
+      </div>
+    </section>
+
+    <!-- NOCHE (momento actual) -->
+    <section class="group">
+      <div class="ghead">
+        <div class="gicon" style="background:var(--lila-tint);color:var(--lila)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+        <span class="cond gname">Noche <span style="font-family:Barlow;font-weight:600;font-size:12px;color:var(--lila);margin-left:4px">ahora</span></span>
+        <span class="gcount">0/2</span>
+        <div class="gbar"><i style="width:0%"></i></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98A0AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="row next" id="siguiente">
+        <div class="tile" style="background:var(--lila);color:var(--ink)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div style="flex:1;min-width:0"><p class="name">Leer 20 min<span class="chip-next">Sigue</span></p><p class="meta" style="color:#B9C0FF">después de cenar</p></div>
+        <button class="btn2" aria-label="Empezar 2 minutos"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>2 min</button>
+        <button class="check" style="border-color:var(--lila)" aria-label="Marcar Leer 20 min"></button>
+      </div>
+      <div class="row">
+        <div class="tile" style="background:var(--lila-tint);color:var(--lila)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+        <div style="flex:1;min-width:0"><p class="name">Menos pantalla</p><p class="meta">evitar</p></div>
+        <span class="pts">+10</span>
+        <button class="check" aria-label="Marcar Menos pantalla"></button>
+      </div>
+    </section>
+
+    <!-- TODO EL DÍA -->
+    <section class="group">
+      <div class="ghead">
+        <div class="gicon" style="background:var(--raised);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <span class="cond gname">Todo el día</span>
+        <span class="gcount">0/1</span>
+        <div class="gbar"><i style="width:0%"></i></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98A0AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="row">
+        <div class="tile" style="background:var(--raised);color:var(--text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></div>
+        <div style="flex:1;min-width:0"><p class="name">Beber agua</p>
+          <div style="margin-top:5px;display:flex;align-items:center;gap:3px"><i style="width:16px;height:6px;border-radius:2px;background:var(--text)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--text)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--text)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--text)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--text)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--track-empty)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--track-empty)"></i><i style="width:16px;height:6px;border-radius:2px;background:var(--track-empty)"></i><span style="margin-left:6px;font-size:12px;color:var(--muted)">5 de 8 vasos</span></div>
+        </div>
+        <button style="height:32px;padding:0 12px;border-radius:10px;border:1px solid #2F343B;background:var(--raised);color:var(--text);font-size:14px;font-weight:700">+1</button>
+      </div>
+    </section>
+
+    <div style="display:flex;align-items:center;gap:12px;margin-top:2px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB547" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>
+      <div style="flex:1"><p style="margin:0;display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">Insignia Constante</span><span style="color:var(--muted)">faltan 9 días</span></p>
+        <div style="margin-top:5px;height:6px;border-radius:99px;background:var(--track);overflow:hidden"><div style="width:70%;height:100%;border-radius:99px;background:var(--ambar)"></div></div></div>
+    </div>
+  </div>
+
+  <nav>
+    <a class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+    <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+    <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+    <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+  </nav>
 </div>
 
-<section style="padding: 14px 20px 0;">
-<h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: 0.005em;">Lunes 21</h1>
-<p style="margin: 6px 0 0; font-size: 15px; color: #98A0AA;">Misiones de hoy: 1 de 5</p>
-</section>
-
-<section aria-label="Últimos 7 días" style="margin: 14px 20px 0; display: flex; flex-direction: column; gap: 8px;">
-<div style="display: flex; gap: 6px;">
-<div style="flex: 1 1 0; height: 52px; border-radius: 12px; background: #FFB547; color: #0F1113; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-<span style="font-size: 12px; font-weight: 600;">Ma</span><span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">15</span>
-</div>
-<div style="flex: 1 1 0; height: 52px; border-radius: 12px; background: #FFB547; color: #0F1113; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-<span style="font-size: 12px; font-weight: 600;">Mi</span><span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">16</span>
-</div>
-<div style="flex: 1 1 0; height: 52px; box-sizing: border-box; border-radius: 12px; background: #1B1F2E; border: 1.5px solid #8E9BFF; color: #C9CFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">
-<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Comodín usado"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
-<span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">17</span>
-</div>
-<div style="flex: 1 1 0; height: 52px; border-radius: 12px; background: #FFB547; color: #0F1113; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-<span style="font-size: 12px; font-weight: 600;">Vi</span><span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">18</span>
-</div>
-<div style="flex: 1 1 0; height: 52px; box-sizing: border-box; border-radius: 12px; background: #181B1F; border: 1px solid #2A2F36; color: #98A0AA; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-<span style="font-size: 12px; font-weight: 600;">Sá</span><span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">19</span>
-</div>
-<div style="flex: 1 1 0; height: 52px; border-radius: 12px; background: #FFB547; color: #0F1113; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-<span style="font-size: 12px; font-weight: 600;">Do</span><span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">20</span>
-</div>
-<div style="flex: 1 1 0; height: 52px; box-sizing: border-box; border-radius: 12px; background: transparent; border: 1.5px dashed #F1F3F5; color: #F1F3F5; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-<span style="font-size: 12px; font-weight: 600;">Hoy</span><span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">21</span>
-</div>
-</div>
-<p style="margin: 0; display: flex; justify-content: space-between; font-size: 13px; color: #98A0AA;">
-<span>Un día sin cumplir no borra los demás.</span>
-<span style="color: #F1F3F5; font-weight: 600;">21/30 del mes</span>
-</p>
-</section>
-
-<section aria-label="Lo siguiente" style="margin: 14px 20px 0; padding: 14px; border-radius: 18px; background: #8E9BFF; color: #0F1113; display: flex; flex-direction: column; gap: 12px;">
-<div style="display: flex; align-items: center; gap: 12px;">
-<div style="width: 42px; height: 42px; border-radius: 12px; background: #0F1113; color: #8E9BFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"></path><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"></path></svg>
-</div>
-<div style="flex: 1 1 0; min-width: 0;">
-<h2 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.05;">Leer 20 min</h2>
-<p style="margin: 2px 0 0; font-size: 14px; font-weight: 500; color: #262B55;">Sigue ahora · noche · después de cenar</p>
-</div>
-<span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;">+10</span>
-</div>
-<div style="display: flex; gap: 8px;">
-<button type="button" style="flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border: none; border-radius: 12px; background: #0F1113; color: #F1F3F5; font-size: 15px; font-weight: 700;">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
-Marcar hecho
-</button>
-<button type="button" style="height: 44px; padding: 0 14px; border-radius: 12px; border: 1.5px solid rgba(15, 17, 19, 0.45); background: transparent; color: #0F1113; font-size: 14px; font-weight: 700;">Solo 2 min</button>
-</div>
-</section>
-
-<section aria-label="Misiones" style="margin: 16px 20px 0; display: flex; flex-direction: column; gap: 8px;">
-<div style="display: flex; justify-content: space-between; align-items: baseline;">
-<h2 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 20px;">Misiones</h2>
-<span style="font-size: 13px; color: #98A0AA;">+40 pts por ganar</span>
-</div>
-
-<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #181B1F;">
-<div title="Todo el día" style="width: 38px; height: 38px; border-radius: 11px; background: #22262C; color: #F1F3F5; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
-</div>
-<div style="flex: 1 1 0; min-width: 0;">
-<p style="margin: 0; font-size: 15px; font-weight: 600;">Beber agua</p>
-<div style="margin-top: 5px; display: flex; gap: 3px;" role="img" aria-label="5 de 8 vasos">
-<span style="width: 16px; height: 6px; border-radius: 2px; background: #F1F3F5;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #F1F3F5;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #F1F3F5;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #F1F3F5;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #F1F3F5;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #33383F;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #33383F;"></span><span style="width: 16px; height: 6px; border-radius: 2px; background: #33383F;"></span>
-</div>
-</div>
-<button type="button" aria-label="Sumar un vaso de agua" style="height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid #2F343B; background: #22262C; color: #F1F3F5; font-size: 14px; font-weight: 700;">+1</button>
-</div>
-
-<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #181B1F;">
-<div title="Tarde" style="width: 38px; height: 38px; border-radius: 11px; background: #2A211F; color: #FF7A59; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"></path></svg>
-</div>
-<div style="flex: 1 1 0; min-width: 0;">
-<p style="margin: 0; font-size: 15px; font-weight: 600;">Ejercicio</p>
-<p style="margin: 1px 0 0; font-size: 13px; color: #98A0AA;">Tarde · 1 de 3 esta semana</p>
-</div>
-<span style="font-size: 13px; color: #98A0AA;">+10</span>
-<button type="button" aria-label="Marcar Ejercicio" style="width: 32px; height: 32px; border-radius: 999px; border: 2px solid #3A4048; background: transparent;"></button>
-</div>
-
-<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #181B1F;">
-<div title="Noche" style="width: 38px; height: 38px; border-radius: 11px; background: #1F2233; color: #8E9BFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"></rect><path d="M11 18h2"></path></svg>
-</div>
-<div style="flex: 1 1 0; min-width: 0;">
-<p style="margin: 0; font-size: 15px; font-weight: 600;">Menos pantalla</p>
-<p style="margin: 1px 0 0; font-size: 13px; color: #98A0AA;">Noche · evitar</p>
-</div>
-<span style="font-size: 13px; color: #98A0AA;">+10</span>
-<button type="button" aria-label="Marcar Menos pantalla" style="width: 32px; height: 32px; border-radius: 999px; border: 2px solid #3A4048; background: transparent;"></button>
-</div>
-
-<p style="margin: 2px 2px 0; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #98A0AA;">
-<span style="width: 22px; height: 22px; border-radius: 7px; background: #2B2419; color: #FFB547; display: flex; align-items: center; justify-content: center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path></svg></span>
-Hecho: Meditar 10 min · +10 ganados
-</p>
-</section>
-
-<div style="margin: 12px 20px 0; display: flex; align-items: center; gap: 12px;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB547" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"></circle><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"></path></svg>
-<div style="flex: 1 1 0;">
-<p style="margin: 0; display: flex; justify-content: space-between; font-size: 13px;"><span style="font-weight: 600;">Insignia Constante</span><span style="color: #98A0AA;">faltan 9 días</span></p>
-<div style="margin-top: 5px; height: 6px; border-radius: 99px; background: #23272D; overflow: hidden;"><div style="width: 70%; height: 100%; border-radius: 99px; background: #FFB547;"></div></div>
-</div>
-</div>
-
-<nav aria-label="Navegación principal" style="position: absolute; left: 0; right: 0; bottom: 0; height: 82px; box-sizing: border-box; padding: 8px 12px 18px; background: #0F1113; border-top: 1px solid #22262C; display: flex; align-items: center; justify-content: space-around;">
-<a href="#" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 64px; color: #F1F3F5; text-decoration: none; font-size: 11px; font-weight: 700;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"></path></svg>
-Hoy
-</a>
-<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 64px; color: #8D96A0; text-decoration: none; font-size: 11px; font-weight: 600;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="M8 17v-5M13 17V8M18 17v-3"></path></svg>
-Progreso
-</a>
-<button type="button" aria-label="Crear hábito, rutina o tarea" style="width: 54px; height: 54px; border-radius: 999px; border: none; background: #FFB547; color: #0F1113; display: flex; align-items: center; justify-content: center;">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-</button>
-<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 64px; color: #8D96A0; text-decoration: none; font-size: 11px; font-weight: 600;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
-Calendario
-</a>
-<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 64px; color: #8D96A0; text-decoration: none; font-size: 11px; font-weight: 600;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
-Perfil
-</a>
-</nav>
-</div>
-</div></div>
-</div>
 </body>
 </html>

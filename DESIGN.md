@@ -40,7 +40,7 @@ typography:
     letterSpacing: "0.005em"
   headline:
     fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "24px"
+    fontSize: "22px"
     fontWeight: 700
     lineHeight: 1.05
   title:
@@ -133,11 +133,20 @@ components:
     backgroundColor: "{colors.surface-raised}"
     rounded: "{rounded.tile}"
     size: "38px"
-  next-card:
-    backgroundColor: "{colors.lila}"
-    textColor: "{colors.ink}"
+  today-card:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.text}"
     rounded: "{rounded.lg}"
     padding: "14px"
+  next-row:
+    backgroundColor: "{colors.lila-tint}"
+    textColor: "{colors.text}"
+    rounded: "{rounded.row}"
+    padding: "10px 12px"
+  group-icon:
+    backgroundColor: "{colors.surface-raised}"
+    rounded: "{rounded.sm}"
+    size: "26px"
   day-tile-done:
     backgroundColor: "{colors.ambar}"
     textColor: "{colors.ink}"
@@ -169,7 +178,7 @@ components:
 
 # Design System: Racha
 
-<!-- Diseño aprobado el 2026-09-21 a partir de la maqueta "C + A · con semana", guardada en design/maqueta-hoy.html (referencia visual exacta de la pantalla Hoy). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
+<!-- Diseño aprobado el 2026-09-21 a partir de la maqueta "Hoy v2" (grupos por momento y tarjeta Tu día), guardada en design/maqueta-hoy.html (referencia visual exacta de la pantalla Hoy). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
 
 ## Overview
 
@@ -185,8 +194,8 @@ Referencias rechazadas: el look anterior (fondo casi negro con un único violeta
 - Grafito oscuro con superficies en capas tonales, sin sombras decorativas.
 - Números y títulos en Barlow Condensed, estilo marcador.
 - Ámbar = logrado. Lila = nivel, comodines y noche. Coral = tarde.
-- Una sola tarjeta "Sigue ahora" por pantalla, en el color del momento del día.
-- Lo hecho se colapsa; lo pendiente se ve.
+- Los hábitos se agrupan por momento del día; el siguiente pendiente se destaca dentro de su grupo, nunca duplicado fuera de la lista.
+- Lo hecho se queda a la vista, tachado y en ámbar: ver lo cumplido es la recompensa.
 
 ## Colors
 
@@ -196,10 +205,10 @@ Grafito neutro con tres acentos que **significan algo**; ningún color es decora
 - **Ámbar Logro** (ambar): días cumplidos, hábitos completados, botón Crear, barra de insignias, acción principal. Es el color de "ya lo hiciste". Texto sobre ámbar siempre en ink.
 
 ### Secondary
-- **Lila Nivel** (lila): pastilla de nivel, barra de puntos, comodines, hábitos de la noche y la tarjeta "Sigue ahora" cuando el hábito es de noche. Texto secundario sobre lila en lila-ink.
+- **Lila Nivel** (lila): pastilla de nivel, barra de puntos, comodines, hábitos de la noche, el enlace "Siguiente" de la tarjeta Tu día y el resaltado de la fila siguiente. Texto secundario sobre lila en lila-ink.
 
 ### Tertiary
-- **Coral Tarde** (coral): identifica los hábitos de la tarde (íconos y tarjeta "Sigue ahora" de la tarde). No se usa para errores.
+- **Coral Tarde** (coral): identifica los hábitos de la tarde (íconos, encabezado del grupo Tarde y resaltado de la fila siguiente cuando es de la tarde). No se usa para errores.
 
 ### Neutral
 - **Grafito Noche** (bg): fondo de toda la app.
@@ -235,7 +244,7 @@ La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-li
 
 ### Hierarchy
 - **Display** (700, 44px, 1): la fecha del día ("Lunes 21"). Una por pantalla.
-- **Headline** (700, 24px, 1.05): título de la tarjeta "Sigue ahora".
+- **Headline** (700, 22px, 1.05): títulos de bloque de Hoy ("Tu día", "Misiones").
 - **Title** (700, 20px, 1.1): títulos de sección ("Misiones"), pastilla de nivel.
 - **Number** (700, 17px, cifras tabulares): números de días, puntos, contadores.
 - **Body** (500, 15px, 1.35) y **Body strong** (600): nombres de hábitos y botones.
@@ -251,7 +260,7 @@ La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-li
 
 Diseño móvil primero, ancho de referencia 390px, margen lateral de 20px (gutter). Entre bloques de la pantalla 14–16px; dentro de listas 8px entre filas. La barra de navegación inferior mide 82px y queda fija; el contenido nunca queda tapado por ella.
 
-Orden de la pantalla Hoy (de arriba a abajo): encabezado (logo + chip de comodines) → nivel y barra de puntos → fecha y "Misiones de hoy: X de Y" → últimos 7 días con constancia del mes → tarjeta "Sigue ahora" → Misiones pendientes → línea de hechos → progreso de la próxima insignia.
+Orden de la pantalla Hoy (de arriba a abajo, idéntico a design/maqueta-hoy.html): nivel y barra de puntos → fecha con el chip de comodines a la derecha y "Misiones de hoy: X de Y" → últimos 7 días con constancia del mes → tarjeta "Tu día" → título "Misiones" → grupos por momento del día en el orden guardado por el usuario (por defecto Mañana, Tarde, Noche, Todo el día), cada uno con sus hábitos pendientes y cumplidos → progreso de la próxima insignia → Rutinas y Tareas. Entre grupos 16px; entre filas de un grupo 8px. El logo vive solo en la barra superior global de la app, nunca repetido dentro de la pantalla.
 
 Escritorio (≥1024px, pendiente de diseñar): tres columnas; menú lateral a la izquierda, Hoy al centro y un panel fijo a la derecha con el calendario de constancia del mes, la tarea en curso y la próxima insignia. No estirar la columna móvil.
 
@@ -270,7 +279,8 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 
 ### Buttons
 - **Primary** (button-primary): ámbar con texto ink, 44px de alto. Para la acción principal fuera de tarjetas de color.
-- **Sobre acento** (button-on-accent): ink con texto tiza; se usa dentro de la tarjeta "Sigue ahora" ("Marcar hecho").
+- **Sobre acento** (button-on-accent): ink con texto tiza, para acciones dentro de superficies de acento.
+- **Arranque "2 min"**: botón de contorno de 32px de alto con borde y texto en el color del momento y un ícono de play relleno; solo aparece en la fila siguiente.
 - **Contorno sobre acento**: transparente con borde ink al 45% ("Solo 2 min").
 - **Secondary** (button-secondary): surface-raised con borde line, 32px; contadores como "+1".
 - **Crear** (button-create): círculo ámbar de 54px con un "+" ink, centrado en la barra inferior.
@@ -282,7 +292,9 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 
 ### Cards / Containers
 - **Fila de hábito** (habit-row): surface, esquinas 14px, padding 10px 12px. Contiene a la izquierda un **cuadrito de ícono** (icon-tile, 38px, fondo tinte del momento, ícono lucide en el color del momento), al centro nombre (body strong) y metadato (label, text-muted), y a la derecha puntos "+10" en text-muted y el check.
-- **Tarjeta "Sigue ahora"** (next-card): fondo = color del momento del hábito siguiente (lila noche, coral tarde, ámbar mañana), texto ink, esquinas 18px, padding 14px. Cuadrito de ícono en ink con el ícono en el color de la tarjeta, título en headline, subtítulo "Sigue ahora · momento · anclaje", puntos a la derecha, y dos botones: "Marcar hecho" (on-accent) y "Solo 2 min" (contorno).
+- **Tarjeta "Tu día"** (today-card): surface con borde line, esquinas 18px, padding 14px, 10px entre líneas. Línea 1: "Tu día" en headline a la izquierda y "+N pts hoy" en Barlow Condensed ámbar a la derecha. Línea 2: una barra de segmentos, uno por cada hábito programado hoy (flex, 12px de alto, 4px de separación, esquinas 4px), en el mismo orden que la lista; cumplido = ámbar, pendiente = track. Línea 3: "X de Y · te quedan Z" en label text-muted a la izquierda y el enlace "Siguiente: [hábito] ↓" en lila (label, 700) a la derecha, que desplaza suavemente la pantalla hasta la fila siguiente y la resalta un instante. Con todo cumplido, la línea 3 muestra un mensaje breve de día completo y la barra queda toda en ámbar.
+- **Grupo por momento**: encabezado con cuadrito de 26px (group-icon, fondo tinte del momento, ícono del momento en su color: amanecer para Mañana, sol para Tarde, luna para Noche, reloj para Todo el día), nombre en Barlow Condensed 17px, la palabra "ahora" en lila 12px junto al grupo del momento actual del día, contador "X/Y" en label, mini barra de 44×5px (relleno en el color del momento) y chevron para plegar. Plegar es por grupo y se recuerda. Un grupo sin hábitos hoy no se muestra.
+- **Fila siguiente** (next-row): el primer hábito pendiente del momento actual (si no hay, del siguiente momento; al final los de Todo el día) se resalta dentro de su grupo: fondo tinte del momento, contorno de 1.5px en el color del momento, cuadrito de ícono relleno con el color del momento e ícono en ink, etiqueta "Sigue" (11px, 700, fondo del color del momento, texto ink, esquinas 6px) junto al nombre, botón "2 min" y el check con borde del color del momento. Solo hay una fila siguiente en toda la pantalla.
 
 ### Inputs / Fields
 - **Style:** surface con borde line, esquinas 12px, texto body, placeholder text-muted.
@@ -303,8 +315,8 @@ Siete casillas de 52px: cumplido = ámbar con texto ink; no cumplido = surface c
 ### Nivel y puntos
 Pastilla "Nivel N" (level-pill) + barra de 8px (track con relleno lila) + "680 / 1000" en label con cifras tabulares.
 
-### Hechos colapsados
-Los hábitos completados salen de la lista y se resumen en una línea: cuadrito de 22px con destello ámbar + "Hecho: Meditar 10 min · +10 ganados" en label text-muted.
+### Hábito cumplido
+Un hábito completado NO desaparece ni cambia de posición: se queda en su lugar dentro de Misiones para que el usuario vea lo que ya logró. Estado cumplido: check ámbar relleno con ✓ en ink, nombre tachado en text-muted (tachado de 1.5px en text-muted), metadato reemplazado por "+10 ganados" en ámbar, y el cuadrito de ícono conserva su color de momento. Al marcar, el check se rellena con escala 0.9→1 en 180ms (sin rebote). Tocar el check otra vez lo desmarca.
 
 ### Barra de agua y metas numéricas
 Hábitos con meta diaria (ej. 8 vasos) muestran segmentos de 16×6px (llenos en text, vacíos en track-empty) y un botón secundario "+1".
@@ -313,8 +325,8 @@ Hábitos con meta diaria (ej. 8 vasos) muestran segmentos de 16×6px (llenos en 
 
 ### Do:
 - **Do** mostrar primero la constancia ("21/30 del mes") y después la racha ("3 seguidos").
-- **Do** mostrar una única tarjeta "Sigue ahora" en Hoy, con el color del momento del hábito.
-- **Do** colapsar lo hecho en una línea y dejar visibles solo los pendientes.
+- **Do** agrupar los hábitos por momento del día y destacar un único hábito siguiente dentro de su grupo, sin duplicarlo fuera de la lista.
+- **Do** dejar visibles los hábitos cumplidos, tachados y con "+10 ganados", en su misma posición.
 - **Do** usar siempre los tokens de este archivo (variables CSS / tema de Tailwind), nunca colores hex escritos a mano en los componentes.
 - **Do** usar íconos lucide de trazo 2px dentro de cuadritos de 38px.
 - **Do** escribir mensajes sin culpa: "retoma hoy", "un día gris no borra los demás".

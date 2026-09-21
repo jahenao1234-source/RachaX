@@ -358,4 +358,20 @@ export function aplanarArbolSubtareas(subtareas: Subtarea[], depth = 0): Subtare
   return resultado;
 }
 
+/**
+ * Puntos y Nivel
+ */
+
+export function calcularPuntosTotales(registros: Registro[]): number {
+  const completados = registros.filter((r) => r.completado).length;
+  return completados * 10;
+}
+
+export function calcularNivel(puntos: number): number {
+  return Math.floor(puntos / 1000) + 1;
+}
+
+export function calcularProgresoNivel(puntos: number): number {
+  return puntos % 1000;
+}
 
