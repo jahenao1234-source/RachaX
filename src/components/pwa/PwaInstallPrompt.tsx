@@ -55,17 +55,17 @@ export const PwaInstallPrompt: React.FC = () => {
   return (
     <div
       id="pwa-install-banner"
-      className="mb-4 p-3 rounded-[16px] bg-[#1A1C24] border border-[var(--accent-30)] flex lg:hidden items-center justify-between shadow-lg animate-fadeIn"
+      className="mb-4 p-3 rounded-[16px] bg-surface-raised border border-[var(--accent-30)] flex lg:hidden items-center justify-between shadow-lg animate-fadeIn"
     >
       <div className="flex items-center gap-2.5 min-w-0">
         <div className="w-8 h-8 rounded-full bg-[var(--accent-20)] text-[var(--accent)] flex items-center justify-center shrink-0">
           <Download size={16} />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-semibold font-heading text-[#F4F4F6] truncate">
+          <p className="text-xs font-semibold font-heading text-text truncate">
             Instalar Racha
           </p>
-          <p className="text-[10px] text-[#6B6F7B] truncate">
+          <p className="text-[10px] text-text-muted truncate">
             Acceso rápido y modo offline en tu dispositivo
           </p>
         </div>
@@ -75,14 +75,14 @@ export const PwaInstallPrompt: React.FC = () => {
         <button
           type="button"
           onClick={handleInstallClick}
-          className="px-2.5 py-1 rounded-full bg-[var(--accent)] text-white text-[11px] font-semibold hover:bg-[var(--accent-hover)] transition-colors"
+          className="px-2.5 py-1 rounded-full bg-[var(--accent)] text-text text-[11px] font-semibold hover:bg-[var(--accent-hover)] transition-colors"
         >
           Instalar
         </button>
         <button
           type="button"
           onClick={() => setShowPrompt(false)}
-          className="p-1 text-[#6B6F7B] hover:text-[#F4F4F6]"
+          className="p-1 text-text-muted hover:text-text"
           aria-label="Cerrar banner de instalación"
         >
           <X size={14} />

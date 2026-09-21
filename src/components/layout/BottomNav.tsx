@@ -20,18 +20,18 @@ export const BottomNav: React.FC = () => {
       aria-label="Navegación principal"
       className="fixed bottom-0 left-0 right-0 z-40 max-w-[430px] mx-auto px-4 pb-5 pt-2 lg:hidden"
     >
-      <div className="relative bg-[#14161D]/90 backdrop-blur-xl border border-[#1E2029] rounded-[22px] px-3 py-2 shadow-2xl shadow-black/80 flex items-center justify-between">
+      <div className="relative bg-surface/90 backdrop-blur-xl border border-line rounded-[22px] px-3 py-2 shadow-2xl shadow-black/80 flex items-center justify-between">
         {/* Item 1: Hoy */}
         <button
           id="nav-tab-hoy"
           type="button"
           onClick={() => navigateToTab('hoy')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
-            activeTab === 'hoy' ? 'text-[var(--accent)]' : 'text-[#5C6070] hover:text-[#9498A8]'
+            activeTab === 'hoy' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
           <div className={`relative p-1 rounded-xl transition-all duration-200 ${
-            activeTab === 'hoy' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-[#1A1C24]'
+            activeTab === 'hoy' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
           }`}>
             <CalendarCheck size={20} strokeWidth={activeTab === 'hoy' ? 2.3 : 1.9} />
             {activeTab === 'hoy' && (
@@ -49,11 +49,11 @@ export const BottomNav: React.FC = () => {
           type="button"
           onClick={() => navigateToTab('stats')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
-            activeTab === 'stats' ? 'text-[var(--accent)]' : 'text-[#5C6070] hover:text-[#9498A8]'
+            activeTab === 'stats' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
           <div className={`relative p-1 rounded-xl transition-all duration-200 ${
-            activeTab === 'stats' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-[#1A1C24]'
+            activeTab === 'stats' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
           }`}>
             <BarChart3 size={20} strokeWidth={activeTab === 'stats' ? 2.3 : 1.9} />
             {activeTab === 'stats' && (
@@ -72,7 +72,7 @@ export const BottomNav: React.FC = () => {
             type="button"
             onClick={openCreateMenu}
             aria-label="Crear nuevo hábito"
-            className="w-13 h-13 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-white flex items-center justify-center shadow-lg shadow-[var(--accent-40)] transition-all duration-200 border-4 border-[#0C0D12] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0C0D12]"
+            className="w-13 h-13 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] active:scale-95 text-text flex items-center justify-center shadow-lg shadow-[var(--accent-40)] transition-all duration-200 border-4 border-bg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-bg"
           >
             <Plus size={26} strokeWidth={2.6} className="transition-transform duration-200 group-hover:rotate-90" />
           </button>
@@ -84,11 +84,11 @@ export const BottomNav: React.FC = () => {
           type="button"
           onClick={() => navigateToTab('calendario')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
-            activeTab === 'calendario' ? 'text-[var(--accent)]' : 'text-[#5C6070] hover:text-[#9498A8]'
+            activeTab === 'calendario' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
           <div className={`relative p-1 rounded-xl transition-all duration-200 ${
-            activeTab === 'calendario' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-[#1A1C24]'
+            activeTab === 'calendario' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
           }`}>
             <Calendar size={20} strokeWidth={activeTab === 'calendario' ? 2.3 : 1.9} />
             {activeTab === 'calendario' && (
@@ -106,11 +106,11 @@ export const BottomNav: React.FC = () => {
           type="button"
           onClick={() => navigateToTab('perfil')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
-            activeTab === 'perfil' ? 'text-[var(--accent)]' : 'text-[#5C6070] hover:text-[#9498A8]'
+            activeTab === 'perfil' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
           <div className={`relative p-1 rounded-xl transition-all duration-200 ${
-            activeTab === 'perfil' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-[#1A1C24]'
+            activeTab === 'perfil' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
           }`}>
             <User size={20} strokeWidth={activeTab === 'perfil' ? 2.3 : 1.9} />
             {activeTab === 'perfil' && (

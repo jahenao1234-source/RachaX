@@ -59,23 +59,23 @@ export const BadgeUnlockToast: React.FC = () => {
       id="badge-unlock-toast"
       className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-[390px] px-4 animate-slideDown"
     >
-      <div className="rounded-[20px] bg-[#14161D]/95 border-2 border-[#F59E0B] p-4 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 text-left relative overflow-hidden">
+      <div className="rounded-[20px] bg-surface/95 border-2 border-ambar p-4 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 text-left relative overflow-hidden">
         {/* Glow */}
-        <div className="absolute -top-10 -left-10 w-28 h-28 bg-[#F59E0B]/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -left-10 w-28 h-28 bg-ambar/20 rounded-full blur-2xl pointer-events-none" />
 
         <div className="flex items-center gap-3 relative z-10">
-          <div className="w-11 h-11 rounded-xl bg-[#F59E0B]/20 border border-[#F59E0B]/40 text-[#F59E0B] flex items-center justify-center shrink-0 animate-bounce">
+          <div className="w-11 h-11 rounded-xl bg-ambar/20 border border-ambar/40 text-ambar flex items-center justify-center shrink-0 ">
             <Trophy size={22} />
           </div>
           <div>
-            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#F59E0B]">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-ambar">
               <Sparkles size={11} />
               <span>¡Nueva Insignia Desbloqueada!</span>
             </div>
-            <h4 className="text-sm font-bold font-heading text-[#F4F4F6]">
+            <h4 className="text-sm font-bold font-heading text-text">
               {newlyUnlocked.nombre}
             </h4>
-            <p className="text-[11px] text-[#9498A8] line-clamp-1">
+            <p className="text-[11px] text-text-muted line-clamp-1">
               {newlyUnlocked.descripcion}
             </p>
           </div>
@@ -85,7 +85,7 @@ export const BadgeUnlockToast: React.FC = () => {
           type="button"
           onClick={() => setNewlyUnlocked(null)}
           aria-label="Cerrar notificación de insignia"
-          className="w-7 h-7 rounded-full bg-[#1E2029] flex items-center justify-center text-[#6B6F7B] hover:text-[#F4F4F6] transition-colors relative z-10 shrink-0"
+          className="w-7 h-7 rounded-full bg-line flex items-center justify-center text-text-muted hover:text-text transition-colors relative z-10 shrink-0"
         >
           <X size={14} />
         </button>

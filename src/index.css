@@ -2,52 +2,102 @@
 
 @layer base {
   :root {
-    --bg-base: #0C0D12;
-    --surface-card: #14161D;
-    --surface-elevated: #1A1C24;
-    --border-subtle: #1E2029;
-    --text-primary: #F4F4F6;
-    --text-secondary: #6B6F7B;
-    --accent: #8B5CF6;
-    --accent-hover: #7C4DF0;
-    --accent-deep: #7C3AED;
-    --accent-10: rgba(139, 92, 246, 0.10);
-    --accent-15: rgba(139, 92, 246, 0.15);
-    --accent-20: rgba(139, 92, 246, 0.20);
-    --accent-25: rgba(139, 92, 246, 0.25);
-    --accent-30: rgba(139, 92, 246, 0.30);
-    --accent-40: rgba(139, 92, 246, 0.40);
-    --accent-50: rgba(139, 92, 246, 0.50);
-    --accent-55: rgba(139, 92, 246, 0.55);
-    --accent-60: rgba(139, 92, 246, 0.60);
-    --accent-70: rgba(139, 92, 246, 0.70);
-    --accent-80: rgba(139, 92, 246, 0.80);
+    --bg: #0F1113;
+    --surface: #181B1F;
+    --surface-raised: #22262C;
+    --line: #2A2F36;
+    --line-strong: #3A4048;
+    --text: #F1F3F5;
+    --text-muted: #98A0AA;
+    --ink: #0F1113;
+    --ambar: #FFB547;
+    --ambar-tint: #2B2419;
+    --lila: #8E9BFF;
+    --lila-tint: #1F2233;
+    --lila-ink: #262B55;
+    --comodin-bg: #1B1F2E;
+    --comodin-text: #C9CFFF;
+    --coral: #FF7A59;
+    --coral-tint: #2A211F;
+    --track: #23272D;
+    --track-empty: #33383F;
+    --danger: #F87171;
 
-    --accent-brand: var(--accent);
-    --status-success: #34D399;
-    --status-streak: #F59E0B;
-    --status-danger: #F87171;
+    /* Acento dinámico heredado del sistema anterior, por defecto ámbar */
+    --accent: var(--ambar);
+    --accent-hover: #D99636;
+    --accent-deep: #B37A26;
+    --accent-10: rgba(255, 181, 71, 0.10);
+    --accent-15: rgba(255, 181, 71, 0.15);
+    --accent-20: rgba(255, 181, 71, 0.20);
+    --accent-25: rgba(255, 181, 71, 0.25);
+    --accent-30: rgba(255, 181, 71, 0.30);
+    --accent-40: rgba(255, 181, 71, 0.40);
+    --accent-50: rgba(255, 181, 71, 0.50);
+    --accent-55: rgba(255, 181, 71, 0.55);
+    --accent-60: rgba(255, 181, 71, 0.60);
+    --accent-70: rgba(255, 181, 71, 0.70);
+    --accent-80: rgba(255, 181, 71, 0.80);
+  }
 
-    /* Habit Color Accents */
-    --habit-violet: #8B5CF6;
-    --habit-emerald: #34D399;
-    --habit-blue: #378ADD;
-    --habit-pink: #ED93B1;
-    --habit-amber: #F59E0B;
-    --habit-coral: #F97316;
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #F6F7F8;
+      --surface: #FFFFFF;
+      --surface-raised: #EEF0F2;
+      --line: #E1E4E8;
+      --line-strong: #C9CDD4; /* Ajuste para light mode, no provisto pero necesario para check marks o bordes marcados */
+      --text: #15181B;
+      --text-muted: #5D6570;
+      /* Versiones strong para texto/ícono sobre light mode */
+      --ambar-strong: #B26A00;
+      --lila-strong: #4F5BD5;
+      --coral-strong: #D9492A;
+    }
   }
 
   body {
-    background-color: var(--bg-base);
-    color: var(--text-primary);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', system-ui, -apple-system, sans-serif;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }
 
   h1, h2, h3, h4, .font-heading, .font-number {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
   }
+}
+
+@theme {
+  --font-sans: 'Barlow', system-ui, sans-serif;
+  --font-heading: 'Barlow Condensed', sans-serif;
+  --font-number: 'Barlow Condensed', sans-serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-ink: var(--ink);
+  --color-ambar: var(--ambar);
+  --color-ambar-tint: var(--ambar-tint);
+  --color-ambar-strong: var(--ambar-strong);
+  --color-lila: var(--lila);
+  --color-lila-tint: var(--lila-tint);
+  --color-lila-ink: var(--lila-ink);
+  --color-lila-strong: var(--lila-strong);
+  --color-comodin-bg: var(--comodin-bg);
+  --color-comodin-text: var(--comodin-text);
+  --color-coral: var(--coral);
+  --color-coral-tint: var(--coral-tint);
+  --color-coral-strong: var(--coral-strong);
+  --color-track: var(--track);
+  --color-track-empty: var(--track-empty);
+  --color-danger: var(--danger);
+  --color-accent: var(--accent);
 }
 
 /* Custom Scrollbar */
@@ -61,25 +111,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E2029;
+  background: var(--line);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2D313F;
-}
-
-/* Subtle Glow and Glass utility classes */
-.glow-accent {
-  box-shadow: 0 0 24px -4px var(--accent-40);
-}
-
-.glow-streak {
-  box-shadow: 0 0 20px -4px rgba(245, 158, 11, 0.3);
-}
-
-.glass-nav {
-  background: rgba(20, 22, 29, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--line-strong);
 }

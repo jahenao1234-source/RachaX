@@ -13,10 +13,31 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
-export function applyThemeVariables(themeKey: string) {
+export function applyThemeVariables(themeKey: string | null) {
   if (typeof document === 'undefined') return;
-  const theme = THEMES.find((t) => t.key === themeKey) || THEMES[0];
   const root = document.documentElement;
+  
+  if (!themeKey) {
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--accent-hover');
+    root.style.removeProperty('--accent-deep');
+    root.style.removeProperty('--accent-10');
+    root.style.removeProperty('--accent-15');
+    root.style.removeProperty('--accent-20');
+    root.style.removeProperty('--accent-25');
+    root.style.removeProperty('--accent-30');
+    root.style.removeProperty('--accent-40');
+    root.style.removeProperty('--accent-50');
+    root.style.removeProperty('--accent-55');
+    root.style.removeProperty('--accent-60');
+    root.style.removeProperty('--accent-70');
+    root.style.removeProperty('--accent-80');
+    return;
+  }
+
+  const theme = THEMES.find((t) => t.key === themeKey);
+  if (!theme) return;
+  
   const { r, g, b } = hexToRgb(theme.accent);
 
   root.style.setProperty('--accent', theme.accent);
@@ -36,8 +57,8 @@ export function applyThemeVariables(themeKey: string) {
 }
 
 interface ThemeContextType {
-  tema: string;
-  setTema: (temaKey: string) => void;
+  tema: string | null;
+  setTema: (temaKey: string | null) => void;
   temaActual: AccentTheme;
   THEMES: AccentTheme[];
 }
@@ -45,7 +66,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [tema, setTemaState] = useState<string>(() => {
+  const [tema, setTemaState] = useState<string | null>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_THEME_KEY);
       if (stored && THEMES.some((t) => t.key === stored)) {
@@ -54,14 +75,21 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch (e) {
       console.warn('Error cargando tema:', e);
     }
-    return 'violeta';
+    return null;
   });
 
-  const setTema = (nuevoTema: string) => {
-    const validTheme = THEMES.some((t) => t.key === nuevoTema) ? nuevoTema : 'violeta';
+  const setTema = (nuevoTema: string | null) => {
+    let validTheme = null;
+    if (nuevoTema && THEMES.some((t) => t.key === nuevoTema)) {
+      validTheme = nuevoTema;
+    }
     setTemaState(validTheme);
     try {
-      localStorage.setItem(STORAGE_THEME_KEY, validTheme);
+      if (validTheme) {
+        localStorage.setItem(STORAGE_THEME_KEY, validTheme);
+      } else {
+        localStorage.removeItem(STORAGE_THEME_KEY);
+      }
     } catch (e) {
       console.warn('Error guardando tema:', e);
     }
@@ -72,7 +100,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     applyThemeVariables(tema);
   }, [tema]);
 
-  const temaActual = THEMES.find((t) => t.key === tema) || THEMES[0];
+  const temaActual = tema ? (THEMES.find((t) => t.key === tema) || THEMES.find((t) => t.key === 'ambar') || THEMES[0]) : (THEMES.find((t) => t.key === 'ambar') || THEMES[0]);
 
   return (
     <ThemeContext.Provider value={{ tema, setTema, temaActual, THEMES }}>

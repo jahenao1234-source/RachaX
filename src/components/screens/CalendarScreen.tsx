@@ -182,10 +182,10 @@ export const CalendarScreen: React.FC = () => {
       {/* Header */}
       <header className="flex items-center justify-between pt-1">
         <div>
-          <p className="text-xs font-medium text-[#6B6F7B] tracking-wide uppercase font-sans">
+          <p className="text-xs font-medium text-text-muted tracking-wide uppercase font-sans">
             Historial de Constancia
           </p>
-          <h1 className="text-2xl font-bold font-heading text-[#F4F4F6] tracking-tight mt-0.5">
+          <h1 className="text-2xl font-bold font-heading text-text tracking-tight mt-0.5">
             Mapa de Calor
           </h1>
         </div>
@@ -219,8 +219,8 @@ export const CalendarScreen: React.FC = () => {
             onClick={() => setSelectedHabitId('todos')}
             className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-xs font-heading font-semibold border transition-all active:scale-95 ${
               selectedHabitId === 'todos'
-                ? 'bg-[var(--accent)] border-[var(--accent)] text-white shadow-lg shadow-[var(--accent-25)]'
-                : 'bg-[#14161D] border-[#1E2029] text-[#9498A8] hover:text-[#F4F4F6] hover:border-[#2D313F]'
+                ? 'bg-[var(--accent)] border-[var(--accent)] text-text shadow-lg shadow-[var(--accent-25)]'
+                : 'bg-surface border-line text-text-muted hover:text-text hover:border-line-strong'
             }`}
           >
             <Layers size={15} />
@@ -238,8 +238,8 @@ export const CalendarScreen: React.FC = () => {
                 onClick={() => setSelectedHabitId(habito.id)}
                 className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-xs font-heading font-semibold border transition-all active:scale-95 ${
                   isSelected
-                    ? 'text-white shadow-lg'
-                    : 'bg-[#14161D] border-[#1E2029] text-[#9498A8] hover:text-[#F4F4F6] hover:border-[#2D313F]'
+                    ? 'text-text shadow-lg'
+                    : 'bg-surface border-line text-text-muted hover:text-text hover:border-line-strong'
                 }`}
                 style={
                   isSelected
@@ -270,13 +270,13 @@ export const CalendarScreen: React.FC = () => {
       {/* 2. CALENDAR HEATMAP CARD */}
       <section
         id="calendar-heatmap-card"
-        className="rounded-[18px] bg-[#14161D] border border-[#1E2029] p-4.5 space-y-4 shadow-xl relative"
+        className="rounded-[18px] bg-surface border border-line p-4.5 space-y-4 shadow-xl relative"
       >
         {/* Month Selector Navigation */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CalendarIcon size={18} className="text-[var(--accent)]" />
-            <h2 className="font-bold font-heading text-base text-[#F4F4F6] capitalize">
+            <h2 className="font-bold font-heading text-base text-text capitalize">
               {monthNames[currentMonthIdx]} {currentYear}
             </h2>
           </div>
@@ -286,7 +286,7 @@ export const CalendarScreen: React.FC = () => {
               id="calendar-prev-month-btn"
               type="button"
               onClick={handlePrevMonth}
-              className="p-1.5 rounded-[10px] bg-[#1A1C24] text-[#6B6F7B] hover:text-[#F4F4F6] hover:bg-[#20232E] border border-[#1E2029] transition-all active:scale-95"
+              className="p-1.5 rounded-[10px] bg-surface-raised text-text-muted hover:text-text hover:bg-[#20232E] border border-line transition-all active:scale-95"
               aria-label="Mes anterior"
             >
               <ChevronLeft size={16} />
@@ -295,7 +295,7 @@ export const CalendarScreen: React.FC = () => {
               id="calendar-next-month-btn"
               type="button"
               onClick={handleNextMonth}
-              className="p-1.5 rounded-[10px] bg-[#1A1C24] text-[#6B6F7B] hover:text-[#F4F4F6] hover:bg-[#20232E] border border-[#1E2029] transition-all active:scale-95"
+              className="p-1.5 rounded-[10px] bg-surface-raised text-text-muted hover:text-text hover:bg-[#20232E] border border-line transition-all active:scale-95"
               aria-label="Mes siguiente"
             >
               <ChevronRight size={16} />
@@ -306,7 +306,7 @@ export const CalendarScreen: React.FC = () => {
         {/* Days of Week Header (L, M, X, J, V, S, D) */}
         <div className="grid grid-cols-7 gap-1.5 text-center">
           {weekDays.map((d) => (
-            <span key={d} className="text-[11px] font-semibold text-[#6B6F7B] py-1 uppercase font-mono">
+            <span key={d} className="text-[11px] font-semibold text-text-muted py-1 uppercase font-mono">
               {d}
             </span>
           ))}
@@ -322,9 +322,9 @@ export const CalendarScreen: React.FC = () => {
           {/* Actual days of month */}
           {monthDays.map(({ dayNumber, dateStr, isToday, isFuture }) => {
             // Determine styling based on selected view
-            let cellBg = 'bg-[#14161D]';
-            let cellBorder = 'border-[#1E2029]/60';
-            let cellTextColor = isFuture ? 'text-[#3E4250]' : 'text-[#9498A8]';
+            let cellBg = 'bg-surface';
+            let cellBorder = 'border-line/60';
+            let cellTextColor = isFuture ? 'text-line-strong' : 'text-text-muted';
             let cellCustomStyle: React.CSSProperties = {};
             let tooltip = `${dayNumber} de ${monthNames[currentMonthIdx]}`;
 
@@ -336,15 +336,15 @@ export const CalendarScreen: React.FC = () => {
 
                 if (!isScheduled) {
                   // Not scheduled on this weekday
-                  cellBg = 'bg-[#101217]/50';
-                  cellBorder = 'border-[#1A1C24]/40';
-                  cellTextColor = 'text-[#3B3F4E]';
+                  cellBg = 'bg-bg/50';
+                  cellBorder = 'border-surface-raised/40';
+                  cellTextColor = 'text-line-strong';
                   tooltip += ' (No programado)';
                 } else if (isCompleted) {
                   // Scheduled and completed -> Habit Color
                   cellBg = '';
                   cellBorder = '';
-                  cellTextColor = 'text-white font-bold';
+                  cellTextColor = 'text-text font-bold';
                   cellCustomStyle = {
                     backgroundColor: selectedHabit.color,
                     borderColor: selectedHabit.color,
@@ -353,18 +353,18 @@ export const CalendarScreen: React.FC = () => {
                   tooltip += ' (Completado)';
                 } else {
                   // Scheduled but missed
-                  cellBg = 'bg-[#F87171]/10';
-                  cellBorder = 'border-[#F87171]/25';
-                  cellTextColor = 'text-[#F87171]';
+                  cellBg = 'bg-surface';
+                  cellBorder = 'border-line';
+                  cellTextColor = 'text-text-muted';
                   tooltip += ' (No completado)';
                 }
               } else {
                 // "Todos" view: GitHub-style violet intensity by % of completed habits
                 const scheduledHabits = habitos.filter((h) => isHabitScheduledForDate(h, dateStr));
                 if (scheduledHabits.length === 0) {
-                  cellBg = 'bg-[#14161D]';
-                  cellBorder = 'border-[#1E2029]/60';
-                  cellTextColor = 'text-[#5C6070]';
+                  cellBg = 'bg-surface';
+                  cellBorder = 'border-line/60';
+                  cellTextColor = 'text-text-muted';
                   tooltip += ' (Sin hábitos programados)';
                 } else {
                   const completedCount = scheduledHabits.filter((h) => isHabitCompletedOnDate(h.id, dateStr, registros)).length;
@@ -372,9 +372,9 @@ export const CalendarScreen: React.FC = () => {
                   tooltip += ` (${completedCount}/${scheduledHabits.length} completados)`;
 
                   if (ratio === 0) {
-                    cellBg = 'bg-[#14161D]';
-                    cellBorder = 'border-[#1E2029]';
-                    cellTextColor = 'text-[#6B6F7B]';
+                    cellBg = 'bg-surface';
+                    cellBorder = 'border-line';
+                    cellTextColor = 'text-text-muted';
                   } else if (ratio < 0.35) {
                     cellBg = 'bg-[var(--accent-25)]';
                     cellBorder = 'border-[var(--accent-40)]';
@@ -382,16 +382,16 @@ export const CalendarScreen: React.FC = () => {
                   } else if (ratio < 0.7) {
                     cellBg = 'bg-[var(--accent-55)]';
                     cellBorder = 'border-[var(--accent-70)]';
-                    cellTextColor = 'text-white font-medium';
+                    cellTextColor = 'text-text font-medium';
                   } else if (ratio < 1) {
                     cellBg = 'bg-[var(--accent-80)]';
                     cellBorder = 'border-[var(--accent)]';
-                    cellTextColor = 'text-white font-bold';
+                    cellTextColor = 'text-text font-bold';
                   } else {
                     // 100% completed
                     cellBg = 'bg-[var(--accent)]';
                     cellBorder = 'border-[var(--accent)]';
-                    cellTextColor = 'text-white font-bold';
+                    cellTextColor = 'text-text font-bold';
                     cellCustomStyle = {
                       boxShadow: '0 0 12px -2px var(--accent-60)',
                     };
@@ -410,7 +410,7 @@ export const CalendarScreen: React.FC = () => {
                 title={tooltip}
                 style={cellCustomStyle}
                 className={`aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all text-xs font-mono border relative select-none ${cellBg} ${cellBorder} ${cellTextColor} ${
-                  isToday ? 'ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[#0C0D12] z-10' : ''
+                  isToday ? 'ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-bg z-10' : ''
                 } ${
                   !isFuture ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'cursor-not-allowed opacity-40'
                 }`}
@@ -428,7 +428,7 @@ export const CalendarScreen: React.FC = () => {
         </div>
 
         {/* Dynamic Legend */}
-        <div className="pt-3 border-t border-[#1E2029] flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#6B6F7B]">
+        <div className="pt-3 border-t border-line flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-muted">
           {selectedHabit ? (
             /* Single Habit Legend */
             <div className="flex items-center gap-3">
@@ -437,14 +437,14 @@ export const CalendarScreen: React.FC = () => {
                   className="w-2.5 h-2.5 rounded-md"
                   style={{ backgroundColor: selectedHabit.color }}
                 />
-                <span className="text-[#F4F4F6]">Completado</span>
+                <span className="text-text">Completado</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-md bg-[#F87171]/20 border border-[#F87171]/50" />
+                <span className="w-2.5 h-2.5 rounded-md bg-surface border border-line" />
                 <span>No completado</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-md bg-[#101217] border border-[#1A1C24]" />
+                <span className="w-2.5 h-2.5 rounded-md bg-bg border border-surface-raised" />
                 <span>No programado</span>
               </div>
             </div>
@@ -452,7 +452,7 @@ export const CalendarScreen: React.FC = () => {
             /* "Todos" Intensity Legend */
             <div className="flex items-center gap-1.5">
               <span>Menos</span>
-              <span className="w-2.5 h-2.5 rounded-sm bg-[#14161D] border border-[#1E2029]" />
+              <span className="w-2.5 h-2.5 rounded-sm bg-surface border border-line" />
               <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent-25)]" />
               <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent-55)]" />
               <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent-80)]" />
@@ -471,7 +471,7 @@ export const CalendarScreen: React.FC = () => {
       {/* 3. MONTH SUMMARY METRICS */}
       <section className="space-y-2.5">
         <div className="flex items-center justify-between px-1">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-[#6B6F7B]">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             Resumen de {monthNames[currentMonthIdx]}
           </h3>
           <span className="text-[11px] text-[var(--accent)] font-medium">
@@ -481,40 +481,40 @@ export const CalendarScreen: React.FC = () => {
 
         <div className="grid grid-cols-3 gap-2.5">
           {/* Metric 1: Días Completados */}
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-3.5 space-y-1.5">
-            <div className="flex items-center justify-between text-[#34D399]">
-              <span className="text-[11px] text-[#6B6F7B] font-medium">Días listos</span>
+          <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1.5">
+            <div className="flex items-center justify-between text-ambar">
+              <span className="text-[11px] text-text-muted font-medium">Días listos</span>
               <Check size={14} />
             </div>
-            <p className="text-xl font-bold font-heading text-[#F4F4F6]">
+            <p className="text-xl font-bold font-heading text-text">
               {monthMetrics.completedDaysCount}
-              <span className="text-xs font-normal text-[#6B6F7B]">/{monthMetrics.scheduledDaysCount}</span>
+              <span className="text-xs font-normal text-text-muted">/{monthMetrics.scheduledDaysCount}</span>
             </p>
-            <p className="text-[10px] text-[#6B6F7B]">Días cumplidos</p>
+            <p className="text-[10px] text-text-muted">Días cumplidos</p>
           </div>
 
           {/* Metric 2: Tasa del Mes */}
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-3.5 space-y-1.5">
+          <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1.5">
             <div className="flex items-center justify-between text-[var(--accent)]">
-              <span className="text-[11px] text-[#6B6F7B] font-medium">Tasa del mes</span>
+              <span className="text-[11px] text-text-muted font-medium">Tasa del mes</span>
               <Percent size={14} />
             </div>
-            <p className="text-xl font-bold font-heading text-[#F4F4F6]">
+            <p className="text-xl font-bold font-heading text-text">
               {monthMetrics.completionRate}%
             </p>
-            <p className="text-[10px] text-[#6B6F7B]">Efectividad</p>
+            <p className="text-[10px] text-text-muted">Efectividad</p>
           </div>
 
           {/* Metric 3: Mejor Racha del Mes */}
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-3.5 space-y-1.5">
-            <div className="flex items-center justify-between text-[#F59E0B]">
-              <span className="text-[11px] text-[#6B6F7B] font-medium">Racha récord</span>
+          <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1.5">
+            <div className="flex items-center justify-between text-ambar">
+              <span className="text-[11px] text-text-muted font-medium">Racha récord</span>
               <Flame size={14} />
             </div>
-            <p className="text-xl font-bold font-heading text-[#F4F4F6]">
-              {monthMetrics.maxStreakInMonth} <span className="text-xs font-normal text-[#6B6F7B]">d</span>
+            <p className="text-xl font-bold font-heading text-text">
+              {monthMetrics.maxStreakInMonth} <span className="text-xs font-normal text-text-muted">d</span>
             </p>
-            <p className="text-[10px] text-[#6B6F7B]">Racha del mes</p>
+            <p className="text-[10px] text-text-muted">Racha del mes</p>
           </div>
         </div>
       </section>
@@ -527,16 +527,16 @@ export const CalendarScreen: React.FC = () => {
           onClick={() => setSelectedDateForModal(null)}
         >
           <div
-            className="w-full max-w-[430px] bg-[#14161D] border-t sm:border border-[#1E2029] rounded-t-[24px] sm:rounded-[24px] p-5 space-y-4 shadow-2xl animate-slideUp max-h-[85vh] overflow-y-auto"
+            className="w-full max-w-[430px] bg-surface border-t sm:border border-line rounded-t-[24px] sm:rounded-[24px] p-5 space-y-4 shadow-2xl animate-slideUp max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E2029]">
+            <div className="flex items-center justify-between pb-3 border-b border-line">
               <div>
                 <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wide">
                   Registro Retroactivo
                 </span>
-                <h3 className="text-base font-bold font-heading text-[#F4F4F6]">
+                <h3 className="text-base font-bold font-heading text-text">
                   {formattedSelectedDate}
                 </h3>
               </div>
@@ -544,7 +544,7 @@ export const CalendarScreen: React.FC = () => {
                 type="button"
                 onClick={() => setSelectedDateForModal(null)}
                 aria-label="Cerrar modal"
-                className="w-8 h-8 rounded-full bg-[#1A1C24] hover:bg-[#222530] text-[#9498A8] hover:text-white flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-surface-raised hover:bg-surface-raised text-text-muted hover:text-text flex items-center justify-center transition-colors"
               >
                 <X size={16} />
               </button>
@@ -554,7 +554,7 @@ export const CalendarScreen: React.FC = () => {
             <div className="space-y-2.5">
               {habitos.length === 0 ? (
                 <div className="text-center py-6 space-y-2">
-                  <p className="text-xs text-[#6B6F7B]">No tienes hábitos creados aún.</p>
+                  <p className="text-xs text-text-muted">No tienes hábitos creados aún.</p>
                 </div>
               ) : (
                 habitsForSelectedDate.map((h) => {
@@ -563,8 +563,8 @@ export const CalendarScreen: React.FC = () => {
                       key={h.id}
                       className={`p-3 rounded-[14px] border flex items-center justify-between transition-all ${
                         h.isCompleted
-                          ? 'bg-[#1A1C24] border-[#2D313F]'
-                          : 'bg-[#0C0D12]/70 border-[#1E2029]'
+                          ? 'bg-surface-raised border-line-strong'
+                          : 'bg-bg/70 border-line'
                       } ${!h.isScheduled ? 'opacity-70' : ''}`}
                     >
                       {/* Left: Icon & Name */}
@@ -583,17 +583,17 @@ export const CalendarScreen: React.FC = () => {
                         <div className="min-w-0 flex-1">
                           <p
                             className={`text-xs font-semibold font-heading truncate ${
-                              h.isCompleted ? 'text-[#F4F4F6]' : 'text-[#9498A8]'
+                              h.isCompleted ? 'text-text' : 'text-text-muted'
                             }`}
                           >
                             {h.nombre}
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] text-[#5C6070]">
+                            <span className="text-[10px] text-text-muted">
                               {h.isScheduled ? 'Programado' : 'No programado'}
                             </span>
                             {h.metaDiaria && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#14161D] text-[#6B6F7B]">
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-surface text-text-muted">
                                 Meta: {h.metaDiaria}
                               </span>
                             )}
@@ -609,7 +609,7 @@ export const CalendarScreen: React.FC = () => {
                             onClick={() => setValor(h.id, selectedDateForModal, valorDe(h.id, selectedDateForModal) - 1)}
                             disabled={valorDe(h.id, selectedDateForModal) <= 0}
                             aria-label={`Quitar uno a ${h.nombre}`}
-                            className="w-8 h-8 rounded-full border-2 border-[#2D313F] text-[#9498A8] hover:text-[#F4F4F6] hover:border-[#6B6F7B] flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 disabled:pointer-events-none"
+                            className="w-8 h-8 rounded-full border-2 border-line-strong text-text-muted hover:text-text hover:border-[#6B6F7B] flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 disabled:pointer-events-none"
                           >
                             <Minus size={14} strokeWidth={2.5} />
                           </button>
@@ -617,7 +617,7 @@ export const CalendarScreen: React.FC = () => {
                             className="min-w-[46px] h-8 px-1.5 rounded-full flex items-center justify-center gap-1 text-[11px] font-bold font-heading border-2"
                             style={h.isCompleted
                               ? { backgroundColor: h.color, borderColor: h.color, color: '#FFFFFF', boxShadow: `0 0 12px -2px ${h.color}60` }
-                              : { borderColor: '#2D313F', color: '#F4F4F6', backgroundColor: 'transparent' }}
+                              : { borderColor: 'var(--line-strong)', color: 'var(--text)', backgroundColor: 'transparent' }}
                           >
                             {h.isCompleted && <Check size={12} strokeWidth={3} />}
                             <span>{valorDe(h.id, selectedDateForModal)}/{h.metaDiaria}</span>
@@ -626,7 +626,7 @@ export const CalendarScreen: React.FC = () => {
                             type="button"
                             onClick={() => setValor(h.id, selectedDateForModal, valorDe(h.id, selectedDateForModal) + 1)}
                             aria-label={`Sumar uno a ${h.nombre}`}
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all active:scale-90"
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-text transition-all active:scale-90"
                             style={{ backgroundColor: h.color, boxShadow: `0 0 12px -2px ${h.color}60` }}
                           >
                             <Plus size={14} strokeWidth={2.5} />
@@ -640,7 +640,7 @@ export const CalendarScreen: React.FC = () => {
                           className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 shrink-0 active:scale-90 focus:outline-none ${
                             h.isCompleted
                               ? 'shadow-md scale-100'
-                              : 'border-2 border-[#2D313F] hover:border-[#6B6F7B] bg-transparent'
+                              : 'border-2 border-line-strong hover:border-[#6B6F7B] bg-transparent'
                           }`}
                           style={{
                             backgroundColor: h.isCompleted ? h.color : 'transparent',
@@ -649,7 +649,7 @@ export const CalendarScreen: React.FC = () => {
                           }}
                         >
                           {h.isCompleted && (
-                            <Check size={16} strokeWidth={3} className="text-white drop-shadow" />
+                            <Check size={16} strokeWidth={3} className="text-text drop-shadow" />
                           )}
                         </button>
                       )}
@@ -667,16 +667,16 @@ export const CalendarScreen: React.FC = () => {
               const diaCompleto = programados.length > 0 && programados.every((h) => h.isCompleted);
               if (!isPast || (diaCompleto && !isFrozen)) return null;
               return (
-                <div className="p-3 rounded-[14px] bg-[#0C0D12]/70 border border-[#1E2029] flex items-center justify-between gap-3">
+                <div className="p-3 rounded-[14px] bg-bg/70 border border-line flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-8 h-8 rounded-lg bg-[#378ADD]/15 text-[#7DD3FC] flex items-center justify-center shrink-0">
                       <Snowflake size={16} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold text-[#F4F4F6]">
+                      <p className="text-xs font-semibold text-text">
                         {isFrozen ? 'Día protegido' : 'Proteger este día'}
                       </p>
-                      <p className="text-[10px] text-[#6B6F7B]">
+                      <p className="text-[10px] text-text-muted">
                         {isFrozen ? 'No rompe tus rachas' : `Comodines disponibles: ${comodines}`}
                       </p>
                     </div>
@@ -685,7 +685,7 @@ export const CalendarScreen: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => descongelarDia(selectedDateForModal)}
-                      className="px-3 py-2 rounded-[10px] text-xs font-semibold bg-[#1A1C24] text-[#9498A8] hover:text-[#F4F4F6] border border-[#1E2029] transition-colors shrink-0"
+                      className="px-3 py-2 rounded-[10px] text-xs font-semibold bg-surface-raised text-text-muted hover:text-text border border-line transition-colors shrink-0"
                     >
                       Quitar
                     </button>
@@ -694,7 +694,7 @@ export const CalendarScreen: React.FC = () => {
                       type="button"
                       onClick={() => congelarDia(selectedDateForModal)}
                       disabled={comodines <= 0}
-                      className="px-3 py-2 rounded-[10px] text-xs font-semibold bg-[#378ADD] text-white shadow-md shadow-[#378ADD]/30 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none shrink-0"
+                      className="px-3 py-2 rounded-[10px] text-xs font-semibold bg-[#378ADD] text-text shadow-md shadow-[#378ADD]/30 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none shrink-0"
                     >
                       Usar comodín
                     </button>
@@ -704,7 +704,7 @@ export const CalendarScreen: React.FC = () => {
             })()}
 
             {/* Bottom Hint */}
-            <p className="text-[11px] text-center text-[#5C6070] pt-1">
+            <p className="text-[11px] text-center text-text-muted pt-1">
               Tus cambios se guardan y recalculan las rachas automáticamente.
             </p>
           </div>

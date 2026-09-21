@@ -51,12 +51,12 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
   return (
     <div
       id="badge-detail-overlay"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#08080C]/85 backdrop-blur-md p-4 animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-bg/85 backdrop-blur-md p-4 animate-fadeIn"
       onClick={onClose}
     >
       <div
         id="badge-detail-card"
-        className="w-full max-w-[360px] bg-[#0C0D12] border border-[#1E2029] rounded-[28px] p-6 shadow-2xl relative overflow-hidden text-center space-y-5 animate-scaleUp"
+        className="w-full max-w-[360px] bg-bg border border-line rounded-[28px] p-6 shadow-2xl relative overflow-hidden text-center space-y-5 animate-scaleUp"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow behind badge */}
@@ -70,7 +70,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
           type="button"
           onClick={onClose}
           aria-label="Cerrar detalle de insignia"
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#14161D] border border-[#1E2029] flex items-center justify-center text-[#6B6F7B] hover:text-[#F4F4F6] transition-colors z-10"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-surface border border-line flex items-center justify-center text-text-muted hover:text-text transition-colors z-10"
         >
           <X size={16} />
         </button>
@@ -81,12 +81,12 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
             className={`w-20 h-20 rounded-2xl flex items-center justify-center transition-all shadow-xl ${
               badge.desbloqueada
                 ? 'shadow-lg border-2'
-                : 'bg-[#14161D] border border-[#1E2029] text-[#6B6F7B]'
+                : 'bg-surface border border-line text-text-muted'
             }`}
             style={{
               borderColor: badge.desbloqueada ? badge.color : undefined,
               backgroundColor: badge.desbloqueada ? `${badge.color}20` : undefined,
-              color: badge.desbloqueada ? badge.color : '#6B6F7B',
+              color: badge.desbloqueada ? badge.color : 'var(--text-muted)',
               boxShadow: badge.desbloqueada ? `0 10px 25px -5px ${badge.color}40` : undefined,
             }}
           >
@@ -95,12 +95,12 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
 
           <div className="mt-3">
             {badge.desbloqueada ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/30">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-ambar/15 text-ambar border border-ambar/30">
                 <CheckCircle2 size={12} />
                 ¡Desbloqueada!
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-[#14161D] text-[#6B6F7B] border border-[#1E2029]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-surface text-text-muted border border-line">
                 <Lock size={12} />
                 Bloqueada
               </span>
@@ -110,28 +110,28 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
 
         {/* Badge Text */}
         <div className="space-y-1.5 relative z-10">
-          <h3 className="text-xl font-bold font-heading text-[#F4F4F6]">
+          <h3 className="text-xl font-bold font-heading text-text">
             {badge.nombre}
           </h3>
-          <p className="text-xs text-[#9498A8] leading-relaxed">
+          <p className="text-xs text-text-muted leading-relaxed">
             {badge.descripcion}
           </p>
         </div>
 
         {/* Progress Tracker Card */}
-        <div className="p-3.5 rounded-[16px] bg-[#14161D] border border-[#1E2029] space-y-2 text-left relative z-10">
+        <div className="p-3.5 rounded-[16px] bg-surface border border-line space-y-2 text-left relative z-10">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#6B6F7B] flex items-center gap-1.5">
+            <span className="text-text-muted flex items-center gap-1.5">
               <Target size={13} className="text-[var(--accent)]" />
               Requisito: {badge.requisito}
             </span>
-            <span className="font-mono font-bold text-[#F4F4F6]">
+            <span className="font-mono font-bold text-text">
               {badge.progresoActual} / {badge.meta}
             </span>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full h-2 rounded-full bg-[#1A1C24] overflow-hidden">
+          <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
@@ -142,7 +142,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
           </div>
 
           <div className="text-right">
-            <span className="text-[10px] font-mono text-[#6B6F7B]">
+            <span className="text-[10px] font-mono text-text-muted">
               {percentage}% completado
             </span>
           </div>
@@ -152,7 +152,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, onClo
         <button
           type="button"
           onClick={onClose}
-          className="w-full py-3 rounded-[14px] bg-[#1A1C24] hover:bg-[#222530] text-[#F4F4F6] font-heading font-semibold text-xs border border-[#1E2029] transition-colors"
+          className="w-full py-3 rounded-[14px] bg-surface-raised hover:bg-surface-raised text-text font-heading font-semibold text-xs border border-line transition-colors"
         >
           Entendido
         </button>

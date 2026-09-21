@@ -238,7 +238,7 @@ export const StatsScreen: React.FC = () => {
       activeCategories.push({
         key: 'sin_categoria',
         label: 'Sin categoría',
-        color: '#6B6F7B',
+        color: 'var(--text-muted)',
         icono: 'Tag',
         habitCount: uncategorizedHabits.length,
         scheduledInPeriod: uncatScheduled,
@@ -311,32 +311,32 @@ export const StatsScreen: React.FC = () => {
       {/* Header */}
       <header className="flex items-center justify-between pt-1">
         <div>
-          <p className="text-xs font-medium text-[#6B6F7B] tracking-wide uppercase font-sans">
+          <p className="text-xs font-medium text-text-muted tracking-wide uppercase font-sans">
             Análisis de Rendimiento
           </p>
-          <h1 className="text-2xl font-bold font-heading text-[#F4F4F6] tracking-tight mt-0.5">
+          <h1 className="text-2xl font-bold font-heading text-text tracking-tight mt-0.5">
             Estadísticas
           </h1>
         </div>
 
         {/* Global Overall Streak Indicator */}
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#F59E0B] text-xs font-heading font-semibold">
-          <Flame size={14} className="fill-[#F59E0B]" />
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-ambar/10 border border-ambar/30 text-ambar text-xs font-heading font-semibold">
+          <Flame size={14} className="fill-ambar" />
           <span>{rachaGlobal()} d racha</span>
         </div>
       </header>
 
       {/* 1. PERIOD SELECTOR CHIPS */}
       <section id="stats-period-selector" className="space-y-1.5">
-        <div className="grid grid-cols-3 gap-2 bg-[#14161D] p-1 rounded-[16px] border border-[#1E2029]">
+        <div className="grid grid-cols-3 gap-2 bg-surface p-1 rounded-[16px] border border-line">
           <button
             id="period-chip-7d"
             type="button"
             onClick={() => setSelectedRange('7d')}
             className={`py-2 px-3 rounded-[12px] text-xs font-heading font-semibold transition-all ${
               selectedRange === '7d'
-                ? 'bg-[var(--accent)] text-white shadow-md shadow-[var(--accent-30)]'
-                : 'text-[#6B6F7B] hover:text-[#F4F4F6]'
+                ? 'bg-[var(--accent)] text-text shadow-md shadow-[var(--accent-30)]'
+                : 'text-text-muted hover:text-text'
             }`}
           >
             Últimos 7 días
@@ -347,8 +347,8 @@ export const StatsScreen: React.FC = () => {
             onClick={() => setSelectedRange('30d')}
             className={`py-2 px-3 rounded-[12px] text-xs font-heading font-semibold transition-all ${
               selectedRange === '30d'
-                ? 'bg-[var(--accent)] text-white shadow-md shadow-[var(--accent-30)]'
-                : 'text-[#6B6F7B] hover:text-[#F4F4F6]'
+                ? 'bg-[var(--accent)] text-text shadow-md shadow-[var(--accent-30)]'
+                : 'text-text-muted hover:text-text'
             }`}
           >
             30 días
@@ -359,8 +359,8 @@ export const StatsScreen: React.FC = () => {
             onClick={() => setSelectedRange('all')}
             className={`py-2 px-3 rounded-[12px] text-xs font-heading font-semibold transition-all ${
               selectedRange === 'all'
-                ? 'bg-[var(--accent)] text-white shadow-md shadow-[var(--accent-30)]'
-                : 'text-[#6B6F7B] hover:text-[#F4F4F6]'
+                ? 'bg-[var(--accent)] text-text shadow-md shadow-[var(--accent-30)]'
+                : 'text-text-muted hover:text-text'
             }`}
           >
             Todo
@@ -371,90 +371,90 @@ export const StatsScreen: React.FC = () => {
       {/* 2. SUMMARY METRIC CARDS (LIGADAS AL RANGO) */}
       <section id="stats-summary-cards" className="grid grid-cols-2 gap-3">
         {/* Card 1: Tasa promedio del periodo */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-4 space-y-2 relative overflow-hidden shadow-lg">
+        <div className="rounded-[16px] bg-surface border border-line p-4 space-y-2 relative overflow-hidden shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#6B6F7B]">Tasa Promedio</span>
-            <div className="p-1.5 rounded-lg bg-[#34D399]/10 text-[#34D399]">
+            <span className="text-xs text-text-muted">Tasa Promedio</span>
+            <div className="p-1.5 rounded-lg bg-ambar/10 text-ambar">
               <TrendingUp size={16} />
             </div>
           </div>
-          <p className="text-2xl font-bold font-heading text-[#F4F4F6]">
+          <p className="text-2xl font-bold font-heading text-text">
             {periodSummary.avgRate}%
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Efectividad del periodo</p>
+          <p className="text-[10px] text-text-muted">Efectividad del periodo</p>
         </div>
 
         {/* Card 2: Mejor racha histórica */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-4 space-y-2 relative overflow-hidden shadow-lg">
+        <div className="rounded-[16px] bg-surface border border-line p-4 space-y-2 relative overflow-hidden shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#6B6F7B]">Mejor Racha</span>
-            <div className="p-1.5 rounded-lg bg-[#F59E0B]/10 text-[#F59E0B]">
+            <span className="text-xs text-text-muted">Mejor Racha</span>
+            <div className="p-1.5 rounded-lg bg-ambar/10 text-ambar">
               <Flame size={16} />
             </div>
           </div>
-          <p className="text-2xl font-bold font-heading text-[#F4F4F6]">
+          <p className="text-2xl font-bold font-heading text-text">
             {periodSummary.maxAllTimeStreak} {periodSummary.maxAllTimeStreak === 1 ? 'día' : 'días'}
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Récord individual global</p>
+          <p className="text-[10px] text-text-muted">Récord individual global</p>
         </div>
 
         {/* Card 3: Total check-ins del periodo */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-4 space-y-2 relative overflow-hidden shadow-lg">
+        <div className="rounded-[16px] bg-surface border border-line p-4 space-y-2 relative overflow-hidden shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#6B6F7B]">Check-ins</span>
+            <span className="text-xs text-text-muted">Check-ins</span>
             <div className="p-1.5 rounded-lg bg-[var(--accent-10)] text-[var(--accent)]">
               <Target size={16} />
             </div>
           </div>
-          <p className="text-2xl font-bold font-heading text-[#F4F4F6]">
+          <p className="text-2xl font-bold font-heading text-text">
             {periodSummary.totalCompleted}
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Completados en el rango</p>
+          <p className="text-[10px] text-text-muted">Completados en el rango</p>
         </div>
 
         {/* Card 4: Hábito más constante */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-4 space-y-2 relative overflow-hidden shadow-lg">
+        <div className="rounded-[16px] bg-surface border border-line p-4 space-y-2 relative overflow-hidden shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#6B6F7B]">Más Constante</span>
+            <span className="text-xs text-text-muted">Más Constante</span>
             <div className="p-1.5 rounded-lg bg-[#378ADD]/10 text-[#378ADD]">
               <Award size={16} />
             </div>
           </div>
-          <p className="text-base font-bold font-heading text-[#F4F4F6] truncate mt-1">
+          <p className="text-base font-bold font-heading text-text truncate mt-1">
             {periodSummary.bestHabit}
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Mayor tasa de éxito</p>
+          <p className="text-[10px] text-text-muted">Mayor tasa de éxito</p>
         </div>
       </section>
 
       {/* 3. GRÁFICO DE ACTIVIDAD REAL (BARRAS) */}
       <section
         id="stats-activity-chart-card"
-        className="rounded-[18px] bg-[#14161D] border border-[#1E2029] p-5 space-y-4 shadow-xl"
+        className="rounded-[18px] bg-surface border border-line p-5 space-y-4 shadow-xl"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BarChart3 size={18} className="text-[var(--accent)]" />
-            <h2 className="text-sm font-bold font-heading text-[#F4F4F6]">
+            <h2 className="text-sm font-bold font-heading text-text">
               Actividad Diaria
             </h2>
           </div>
-          <span className="text-[11px] text-[#6B6F7B]">
+          <span className="text-[11px] text-text-muted">
             {selectedRange === '7d' ? '7 días' : selectedRange === '30d' ? '30 días' : 'Histórico'}
           </span>
         </div>
 
         {/* Active hover info pill */}
-        <div className="h-6 flex items-center justify-between px-2 bg-[#1A1C24]/60 rounded-lg border border-[#1E2029]">
+        <div className="h-6 flex items-center justify-between px-2 bg-surface-raised/60 rounded-lg border border-line">
           {hoveredDay ? (
             <div className="flex items-center justify-between w-full text-xs animate-fadeIn">
-              <span className="text-[#9498A8] font-medium">{hoveredDay.fullDateLabel}</span>
+              <span className="text-text-muted font-medium">{hoveredDay.fullDateLabel}</span>
               <span className="font-heading font-bold text-[var(--accent)]">
                 {hoveredDay.completedCount} de {hoveredDay.scheduledCount} completados ({hoveredDay.completionRate}%)
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 text-[11px] text-[#5C6070]">
+            <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
               <Info size={12} />
               <span>Toca o pasa el cursor sobre una barra para ver detalles</span>
             </div>
@@ -464,11 +464,11 @@ export const StatsScreen: React.FC = () => {
         {/* Real Bar Columns */}
         {habitos.length === 0 ? (
           <div className="h-36 flex flex-col items-center justify-center text-center p-4">
-            <p className="text-xs text-[#6B6F7B]">Crea hábitos para visualizar tu actividad.</p>
+            <p className="text-xs text-text-muted">Crea hábitos para visualizar tu actividad.</p>
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="h-36 flex items-end justify-between gap-1 pt-4 px-1 border-b border-[#1E2029]">
+            <div className="h-36 flex items-end justify-between gap-1 pt-4 px-1 border-b border-line">
               {dailyMetrics.map((day) => {
                 const heightPercent = maxCompletedInPeriod > 0
                   ? Math.max(8, Math.round((day.completedCount / maxCompletedInPeriod) * 100))
@@ -484,7 +484,7 @@ export const StatsScreen: React.FC = () => {
                     className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer"
                   >
                     {/* Hover tooltip value */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity text-[9px] font-mono text-white mb-0.5">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity text-[9px] font-mono text-text mb-0.5">
                       {day.completedCount}
                     </div>
 
@@ -494,7 +494,7 @@ export const StatsScreen: React.FC = () => {
                         day.isToday
                           ? 'bg-[var(--accent)] shadow-md shadow-[var(--accent-40)] ring-1 ring-[var(--accent)]'
                           : isZero
-                          ? 'bg-[#1E2029]/80 group-hover:bg-[var(--accent-30)]'
+                          ? 'bg-line/80 group-hover:bg-[var(--accent-30)]'
                           : 'bg-[var(--accent-60)] group-hover:bg-[var(--accent)]'
                       }`}
                       style={{ height: `${isZero ? 6 : heightPercent}%` }}
@@ -505,7 +505,7 @@ export const StatsScreen: React.FC = () => {
             </div>
 
             {/* X-Axis Labels */}
-            <div className="flex justify-between items-center px-1 text-[10px] text-[#6B6F7B] font-mono">
+            <div className="flex justify-between items-center px-1 text-[10px] text-text-muted font-mono">
               {selectedRange === '7d' ? (
                 dailyMetrics.map((d) => (
                   <span
@@ -536,23 +536,23 @@ export const StatsScreen: React.FC = () => {
       {/* 4. TASA DE CONSTANCIA (% CUMPLIMIENTO DIARIO EN ÁREA ESMERALDA) */}
       <section
         id="stats-consistency-rate-card"
-        className="rounded-[18px] bg-[#14161D] border border-[#1E2029] p-5 space-y-4 shadow-xl relative overflow-hidden"
+        className="rounded-[18px] bg-surface border border-line p-5 space-y-4 shadow-xl relative overflow-hidden"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <TrendingUp size={18} className="text-[#34D399]" />
-            <h2 className="text-sm font-bold font-heading text-[#F4F4F6]">
+            <TrendingUp size={18} className="text-ambar" />
+            <h2 className="text-sm font-bold font-heading text-text">
               Tasa de Constancia
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-[#34D399] font-semibold">
+          <span className="text-[11px] font-mono text-ambar font-semibold">
             {periodSummary.avgRate}% prom.
           </span>
         </div>
 
         {habitos.length === 0 ? (
           <div className="h-32 flex flex-col items-center justify-center text-center p-4">
-            <p className="text-xs text-[#6B6F7B]">Sin registros para calcular constancia.</p>
+            <p className="text-xs text-text-muted">Sin registros para calcular constancia.</p>
           </div>
         ) : (
           <div className="relative pt-2">
@@ -561,15 +561,15 @@ export const StatsScreen: React.FC = () => {
               <svg viewBox="0 0 360 110" className="w-full h-full overflow-visible">
                 <defs>
                   <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#34D399" stopOpacity="0.35" />
-                    <stop offset="100%" stopColor="#34D399" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="var(--ambar)" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="var(--ambar)" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
 
                 {/* Horizontal reference grid lines (0%, 50%, 100%) */}
-                <line x1="0" y1="12" x2="360" y2="12" stroke="#1E2029" strokeDasharray="3,3" />
-                <line x1="0" y1="61" x2="360" y2="61" stroke="#1E2029" strokeDasharray="3,3" />
-                <line x1="0" y1="98" x2="360" y2="98" stroke="#1E2029" />
+                <line x1="0" y1="12" x2="360" y2="12" stroke="var(--line)" strokeDasharray="3,3" />
+                <line x1="0" y1="61" x2="360" y2="61" stroke="var(--line)" strokeDasharray="3,3" />
+                <line x1="0" y1="98" x2="360" y2="98" stroke="var(--line)" />
 
                 {/* Area under curve */}
                 {areaSvgPoints.areaPath && (
@@ -581,7 +581,7 @@ export const StatsScreen: React.FC = () => {
                   <path
                     d={areaSvgPoints.path}
                     fill="none"
-                    stroke="#34D399"
+                    stroke="var(--ambar)"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -595,8 +595,8 @@ export const StatsScreen: React.FC = () => {
                     cx={p.x}
                     cy={p.y}
                     r={p.isToday ? 4.5 : 2.5}
-                    fill={p.isToday ? '#34D399' : '#14161D'}
-                    stroke="#34D399"
+                    fill={p.isToday ? 'var(--ambar)' : 'var(--surface)'}
+                    stroke="var(--ambar)"
                     strokeWidth={p.isToday ? 2 : 1.5}
                     className="transition-all hover:r-5 cursor-pointer"
                     onMouseEnter={() => setHoveredDay(p)}
@@ -607,7 +607,7 @@ export const StatsScreen: React.FC = () => {
             </div>
 
             {/* Y-Axis guide tags */}
-            <div className="flex justify-between text-[9px] text-[#5C6070] font-mono pt-1">
+            <div className="flex justify-between text-[9px] text-text-muted font-mono pt-1">
               <span>0%</span>
               <span>50%</span>
               <span>100% éxito</span>
@@ -621,17 +621,17 @@ export const StatsScreen: React.FC = () => {
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <Tag size={16} className="text-[var(--accent)]" />
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-[#6B6F7B]">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
               Por Categoría
             </h2>
           </div>
-          <span className="text-[11px] text-[#6B6F7B]">
+          <span className="text-[11px] text-text-muted">
             {selectedRange === '7d' ? 'Últimos 7 días' : selectedRange === '30d' ? '30 días' : 'Todo el historial'}
           </span>
         </div>
 
         {categoryBreakdowns.length === 0 ? (
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-6 text-center text-xs text-[#6B6F7B]">
+          <div className="rounded-[16px] bg-surface border border-line p-6 text-center text-xs text-text-muted">
             No hay hábitos registrados para categorizar.
           </div>
         ) : (
@@ -640,7 +640,7 @@ export const StatsScreen: React.FC = () => {
               <div
                 key={cat.key}
                 id={`stat-category-row-${cat.key}`}
-                className="rounded-[16px] bg-[#14161D] border border-[#1E2029] hover:border-[#2D313F] p-3.5 space-y-2.5 transition-all shadow-md"
+                className="rounded-[16px] bg-surface border border-line hover:border-line-strong p-3.5 space-y-2.5 transition-all shadow-md"
               >
                 {/* Top Row: Icon + Name + Habits Count + % */}
                 <div className="flex items-center justify-between">
@@ -657,10 +657,10 @@ export const StatsScreen: React.FC = () => {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-semibold font-heading text-[#F4F4F6] truncate">
+                      <h3 className="text-sm font-semibold font-heading text-text truncate">
                         {cat.label}
                       </h3>
-                      <p className="text-[11px] text-[#6B6F7B] mt-0.5">
+                      <p className="text-[11px] text-text-muted mt-0.5">
                         {cat.habitCount} {cat.habitCount === 1 ? 'hábito' : 'hábitos'}
                       </p>
                     </div>
@@ -668,17 +668,17 @@ export const StatsScreen: React.FC = () => {
 
                   {/* Rate Percentage Badge */}
                   <div className="text-right shrink-0">
-                    <span className="text-base font-bold font-heading text-[#F4F4F6]">
+                    <span className="text-base font-bold font-heading text-text">
                       {cat.rateInPeriod}%
                     </span>
-                    <p className="text-[10px] text-[#6B6F7B]">
+                    <p className="text-[10px] text-text-muted">
                       {cat.completedInPeriod}/{cat.scheduledInPeriod} check-ins
                     </p>
                   </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full bg-[#1A1C24] h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-surface-raised h-2 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -699,15 +699,15 @@ export const StatsScreen: React.FC = () => {
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <Layers size={16} className="text-[var(--accent)]" />
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-[#6B6F7B]">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
               Desglose por Hábito ({habitos.length})
             </h2>
           </div>
-          <span className="text-[11px] text-[#6B6F7B]">Ordenado por tasa</span>
+          <span className="text-[11px] text-text-muted">Ordenado por tasa</span>
         </div>
 
         {habitBreakdowns.length === 0 ? (
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-6 text-center text-xs text-[#6B6F7B]">
+          <div className="rounded-[16px] bg-surface border border-line p-6 text-center text-xs text-text-muted">
             No tienes hábitos registrados aún.
           </div>
         ) : (
@@ -717,7 +717,7 @@ export const StatsScreen: React.FC = () => {
                 <article
                   key={habito.id}
                   id={`stat-habit-row-${habito.id}`}
-                  className="rounded-[16px] bg-[#14161D] border border-[#1E2029] hover:border-[#2D313F] p-3.5 space-y-2.5 transition-all shadow-md"
+                  className="rounded-[16px] bg-surface border border-line hover:border-line-strong p-3.5 space-y-2.5 transition-all shadow-md"
                 >
                   {/* Top Row: Icon + Name + Streaks */}
                   <div className="flex items-center justify-between">
@@ -734,19 +734,19 @@ export const StatsScreen: React.FC = () => {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-semibold font-heading text-[#F4F4F6] truncate">
+                        <h3 className="text-sm font-semibold font-heading text-text truncate">
                           {habito.nombre}
                         </h3>
                         <div className="flex items-center gap-2.5 mt-0.5 text-[11px]">
                           {/* Current Streak */}
-                          <span className="flex items-center gap-1 text-[#F59E0B] font-medium font-heading">
-                            <Flame size={12} className="fill-[#F59E0B]" />
+                          <span className="flex items-center gap-1 text-ambar font-medium font-heading">
+                            <Flame size={12} className="fill-ambar" />
                             {streak} {streak === 1 ? 'día' : 'días'}
                           </span>
-                          <span className="text-[#3E4250]">•</span>
+                          <span className="text-line-strong">•</span>
                           {/* Best Streak */}
-                          <span className="text-[#6B6F7B]">
-                            Récord: <strong className="text-[#9498A8]">{bestStreak}d</strong>
+                          <span className="text-text-muted">
+                            Récord: <strong className="text-text-muted">{bestStreak}d</strong>
                           </span>
                         </div>
                       </div>
@@ -754,17 +754,17 @@ export const StatsScreen: React.FC = () => {
 
                     {/* Rate Percentage Badge */}
                     <div className="text-right shrink-0">
-                      <span className="text-base font-bold font-heading text-[#F4F4F6]">
+                      <span className="text-base font-bold font-heading text-text">
                         {rateInPeriod}%
                       </span>
-                      <p className="text-[10px] text-[#6B6F7B]">
+                      <p className="text-[10px] text-text-muted">
                         {completedInPeriod}/{scheduledInPeriod} días
                       </p>
                     </div>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-[#1A1C24] h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-surface-raised h-2 rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{

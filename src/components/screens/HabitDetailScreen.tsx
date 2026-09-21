@@ -62,11 +62,11 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
   if (!habit) {
     return (
       <div className="p-6 text-center space-y-4 animate-fadeIn">
-        <p className="text-sm text-[#6B6F7B]">Hábito no encontrado o eliminado.</p>
+        <p className="text-sm text-text-muted">Hábito no encontrado o eliminado.</p>
         <button
           type="button"
           onClick={onBack}
-          className="px-4 py-2 bg-[var(--accent)] text-white text-xs font-semibold rounded-xl"
+          className="px-4 py-2 bg-[var(--accent)] text-text text-xs font-semibold rounded-xl"
         >
           Volver
         </button>
@@ -154,13 +154,13 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
           type="button"
           onClick={onBack}
           aria-label="Volver a la pantalla anterior"
-          className="flex items-center gap-2 px-3 py-1.5 rounded-[12px] bg-[#14161D] hover:bg-[#1A1C24] border border-[#1E2029] text-xs font-semibold text-[#9498A8] hover:text-[#F4F4F6] transition-all active:scale-95"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-[12px] bg-surface hover:bg-surface-raised border border-line text-xs font-semibold text-text-muted hover:text-text transition-all active:scale-95"
         >
           <ArrowLeft size={16} />
           <span>Volver</span>
         </button>
 
-        <span className="text-[11px] font-mono uppercase tracking-wider text-[#6B6F7B]">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-text-muted">
           Detalle del Hábito
         </span>
       </header>
@@ -168,7 +168,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
       {/* 1. HABIT HEADER HERO CARD */}
       <section
         id="habit-detail-hero"
-        className="rounded-[20px] bg-[#14161D] border border-[#1E2029] p-5 space-y-4 shadow-xl relative overflow-hidden"
+        className="rounded-[20px] bg-surface border border-line p-5 space-y-4 shadow-xl relative overflow-hidden"
       >
         {/* Ambient Top Right Glow */}
         <div
@@ -192,13 +192,13 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
             </div>
 
             <div className="min-w-0 flex-1 space-y-1">
-              <h1 className="text-xl font-bold font-heading text-[#F4F4F6] tracking-tight truncate">
+              <h1 className="text-xl font-bold font-heading text-text tracking-tight truncate">
                 {habit.nombre}
               </h1>
 
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 {/* Frequency Pill */}
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#1A1C24] text-[#9498A8] border border-[#1E2029]">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-surface-raised text-text-muted border border-line">
                   <Calendar size={11} className="text-[var(--accent)]" />
                   {habit.frecuencia === 'diario'
                     ? 'Todos los días'
@@ -211,33 +211,33 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
 
                 {/* Negative Habit Pill */}
                 {isNegativo && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#5C6070]/20 text-[#9498A8] border border-[#5C6070]/30">
-                    <ShieldCheck size={11} className="text-[#9498A8]" />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-text-muted/20 text-text-muted border border-text-muted/30">
+                    <ShieldCheck size={11} className="text-text-muted" />
                     Quiero evitar
                   </span>
                 )}
 
                 {/* Target if present */}
                 {habit.metaDiaria && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#1A1C24] text-[#9498A8] border border-[#1E2029]">
-                    <Target size={11} className="text-[#34D399]" />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-surface-raised text-text-muted border border-line">
+                    <Target size={11} className="text-ambar" />
                     Meta: {habit.metaDiaria}
                   </span>
                 )}
 
                 {/* Reminder if present */}
                 {habit.recordatorio && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#1A1C24] text-[#9498A8] border border-[#1E2029]">
-                    <Clock size={11} className="text-[#F59E0B]" />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-surface-raised text-text-muted border border-line">
+                    <Clock size={11} className="text-ambar" />
                     {habit.recordatorio}
                   </span>
                 )}
               </div>
 
               {habit.anclaje && (
-                <div className="flex items-center gap-1.5 text-xs text-[#9498A8] pt-1.5">
+                <div className="flex items-center gap-1.5 text-xs text-text-muted pt-1.5">
                   <Link2 size={13} className="text-[var(--accent)] shrink-0" />
-                  <span>Después de <strong className="text-[#F4F4F6] font-medium">{habit.anclaje}</strong></span>
+                  <span>Después de <strong className="text-text font-medium">{habit.anclaje}</strong></span>
                 </div>
               )}
             </div>
@@ -246,25 +246,25 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
 
         {/* Streaks Banner */}
         <div className="grid grid-cols-2 gap-2.5 pt-1 relative z-10">
-          <div className="rounded-[14px] bg-[#1A1C24]/80 border border-[#1E2029] p-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#F59E0B]/15 text-[#F59E0B] flex items-center justify-center shrink-0">
-              <Flame size={18} className="fill-[#F59E0B]" />
+          <div className="rounded-[14px] bg-surface-raised/80 border border-line p-3 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-ambar/15 text-ambar flex items-center justify-center shrink-0">
+              <Flame size={18} className="fill-ambar" />
             </div>
             <div>
-              <p className="text-[10px] text-[#6B6F7B]">Racha Actual</p>
-              <p className="text-base font-bold font-heading text-[#F4F4F6]">
+              <p className="text-[10px] text-text-muted">Racha Actual</p>
+              <p className="text-base font-bold font-heading text-text">
                 {currentStreak} {currentStreak === 1 ? 'día' : 'días'}{isNegativo ? ' sin recaer' : ''}
               </p>
             </div>
           </div>
 
-          <div className="rounded-[14px] bg-[#1A1C24]/80 border border-[#1E2029] p-3 flex items-center gap-3">
+          <div className="rounded-[14px] bg-surface-raised/80 border border-line p-3 flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
               <Award size={18} />
             </div>
             <div>
-              <p className="text-[10px] text-[#6B6F7B]">Mejor Racha</p>
-              <p className="text-base font-bold font-heading text-[#F4F4F6]">
+              <p className="text-[10px] text-text-muted">Mejor Racha</p>
+              <p className="text-base font-bold font-heading text-text">
                 {recordStreak} {recordStreak === 1 ? 'día' : 'días'}{isNegativo ? ' sin recaer' : ''}
               </p>
             </div>
@@ -275,24 +275,24 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
       {/* 2. MINI CALENDAR HEATMAP (ÚLTIMOS 30 DÍAS) */}
       <section
         id="habit-detail-heatmap"
-        className="rounded-[18px] bg-[#14161D] border border-[#1E2029] p-4.5 space-y-3.5 shadow-xl"
+        className="rounded-[18px] bg-surface border border-line p-4.5 space-y-3.5 shadow-xl"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar size={16} style={{ color: habit.color }} />
-            <h2 className="text-sm font-bold font-heading text-[#F4F4F6]">
+            <h2 className="text-sm font-bold font-heading text-text">
               Mapa de Calor (Últimos 30 días)
             </h2>
           </div>
-          <span className="text-[11px] font-mono text-[#6B6F7B]">
+          <span className="text-[11px] font-mono text-text-muted">
             {habitMetrics.completedIn30Days}/{habitMetrics.scheduledIn30Days} días
           </span>
         </div>
 
         {/* Selected date tooltip banner */}
         {selectedHeatmapDate && (
-          <div className="px-3 py-1.5 rounded-lg bg-[#1A1C24] border border-[#1E2029] flex items-center justify-between text-xs animate-fadeIn">
-            <span className="text-[#9498A8]">
+          <div className="px-3 py-1.5 rounded-lg bg-surface-raised border border-line flex items-center justify-between text-xs animate-fadeIn">
+            <span className="text-text-muted">
               {last30Days.find((d) => d.dateStr === selectedHeatmapDate)?.formattedLabel}
             </span>
             <div className="flex items-center gap-2">
@@ -328,25 +328,25 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
         {/* Heatmap Grid (6 cols x 5 rows = 30 days) */}
         <div className="grid grid-cols-6 gap-2">
           {last30Days.map((day) => {
-            let cellBg = 'bg-[#101217]/60';
-            let cellBorder = 'border-[#1E2029]/50';
-            let cellTextColor = 'text-[#3E4250]';
+            let cellBg = 'bg-bg/60';
+            let cellBorder = 'border-line/50';
+            let cellTextColor = 'text-line-strong';
             let customStyle: React.CSSProperties = {};
 
             if (day.isScheduled) {
               if (day.isCompleted) {
                 cellBg = '';
                 cellBorder = '';
-                cellTextColor = 'text-white font-bold';
+                cellTextColor = 'text-text font-bold';
                 customStyle = {
                   backgroundColor: habit.color,
                   borderColor: habit.color,
                   boxShadow: `0 0 10px -2px ${habit.color}60`,
                 };
               } else {
-                cellBg = 'bg-[#F87171]/10';
-                cellBorder = 'border-[#F87171]/30';
-                cellTextColor = 'text-[#F87171]';
+                cellBg = 'bg-surface';
+                cellBorder = 'border-line';
+                cellTextColor = 'text-text-muted';
               }
             }
 
@@ -357,7 +357,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
                 onClick={() => setSelectedHeatmapDate(day.dateStr)}
                 style={customStyle}
                 className={`aspect-square rounded-[12px] flex flex-col items-center justify-center p-1 border text-xs font-mono transition-all hover:scale-105 active:scale-95 ${cellBg} ${cellBorder} ${cellTextColor} ${
-                  day.isToday ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0C0D12]' : ''
+                  day.isToday ? 'ring-2 ring-text ring-offset-2 ring-offset-bg' : ''
                 }`}
                 title={day.formattedLabel}
               >
@@ -369,18 +369,18 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
         </div>
 
         {/* Mini Legend */}
-        <div className="pt-2 border-t border-[#1E2029] flex items-center justify-between text-[11px] text-[#6B6F7B]">
+        <div className="pt-2 border-t border-line flex items-center justify-between text-[11px] text-text-muted">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: habit.color }} />
-              <span className="text-[#F4F4F6]">{isNegativo ? 'Resististe' : 'Listo'}</span>
+              <span className="text-text">{isNegativo ? 'Resististe' : 'Listo'}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-sm bg-[#F87171]/20 border border-[#F87171]/50" />
+              <span className="w-2.5 h-2.5 rounded-sm bg-surface border border-line" />
               <span>{isNegativo ? 'Recaída' : 'Pendiente'}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-sm bg-[#101217] border border-[#1E2029]" />
+              <span className="w-2.5 h-2.5 rounded-sm bg-bg border border-line" />
               <span>Libre</span>
             </div>
           </div>
@@ -392,36 +392,36 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
       {/* 3. METRICS CARDS */}
       <section id="habit-detail-metrics" className="grid grid-cols-3 gap-2.5">
         {/* Metric 1: Tasa 30 días */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-3.5 space-y-1 text-center shadow-lg">
-          <div className="w-8 h-8 rounded-full bg-[#34D399]/10 text-[#34D399] flex items-center justify-center mx-auto mb-1">
+        <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1 text-center shadow-lg">
+          <div className="w-8 h-8 rounded-full bg-ambar/10 text-ambar flex items-center justify-center mx-auto mb-1">
             <TrendingUp size={16} />
           </div>
-          <p className="text-lg font-bold font-heading text-[#F4F4F6]">
+          <p className="text-lg font-bold font-heading text-text">
             {habitMetrics.rate30Days}%
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Tasa de éxito</p>
+          <p className="text-[10px] text-text-muted">Tasa de éxito</p>
         </div>
 
         {/* Metric 2: Total Check-ins */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-3.5 space-y-1 text-center shadow-lg">
+        <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1 text-center shadow-lg">
           <div className="w-8 h-8 rounded-full bg-[var(--accent-10)] text-[var(--accent)] flex items-center justify-center mx-auto mb-1">
             <CheckCircle2 size={16} />
           </div>
-          <p className="text-lg font-bold font-heading text-[#F4F4F6]">
+          <p className="text-lg font-bold font-heading text-text">
             {habitMetrics.totalCheckins}
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Total check-ins</p>
+          <p className="text-[10px] text-text-muted">Total check-ins</p>
         </div>
 
         {/* Metric 3: Racha Récord */}
-        <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] p-3.5 space-y-1 text-center shadow-lg">
-          <div className="w-8 h-8 rounded-full bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center mx-auto mb-1">
-            <Flame size={16} className="fill-[#F59E0B]" />
+        <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1 text-center shadow-lg">
+          <div className="w-8 h-8 rounded-full bg-ambar/10 text-ambar flex items-center justify-center mx-auto mb-1">
+            <Flame size={16} className="fill-ambar" />
           </div>
-          <p className="text-lg font-bold font-heading text-[#F4F4F6]">
-            {recordStreak} <span className="text-xs font-normal text-[#6B6F7B]">d</span>
+          <p className="text-lg font-bold font-heading text-text">
+            {recordStreak} <span className="text-xs font-normal text-text-muted">d</span>
           </p>
-          <p className="text-[10px] text-[#6B6F7B]">Racha récord</p>
+          <p className="text-[10px] text-text-muted">Racha récord</p>
         </div>
       </section>
 
@@ -432,7 +432,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
           id="habit-detail-edit-btn"
           type="button"
           onClick={() => openEditHabit(habit)}
-          className="w-full py-3.5 px-4 rounded-[14px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-xs font-bold font-heading shadow-lg shadow-[var(--accent-30)] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+          className="w-full py-3.5 px-4 rounded-[14px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-text text-xs font-bold font-heading shadow-lg shadow-[var(--accent-30)] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
         >
           <Edit3 size={16} />
           <span>Editar Hábito</span>
@@ -443,7 +443,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
           id="habit-detail-delete-btn"
           type="button"
           onClick={() => setShowDeleteModal(true)}
-          className="w-full py-3.5 px-4 rounded-[14px] bg-[#14161D] hover:bg-[#F87171]/10 border border-[#F87171]/30 hover:border-[#F87171] text-[#F87171] text-xs font-bold font-heading shadow-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+          className="w-full py-3.5 px-4 rounded-[14px] bg-surface hover:bg-danger/10 border border-danger/30 hover:border-danger text-danger text-xs font-bold font-heading shadow-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
         >
           <Trash2 size={16} />
           <span>Eliminar</span>
@@ -461,7 +461,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
             setActiveTab('hoy');
           }
         }}
-        className="w-full py-3 px-4 rounded-[14px] bg-[#14161D] hover:bg-[#1A1C24] border border-[#1E2029] text-[#9498A8] hover:text-[#F4F4F6] text-xs font-semibold font-heading flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+        className="w-full py-3 px-4 rounded-[14px] bg-surface hover:bg-surface-raised border border-line text-text-muted hover:text-text text-xs font-semibold font-heading flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
       >
         {habit.archivado ? <ArchiveRestore size={15} /> : <Archive size={15} />}
         <span>{habit.archivado ? 'Restaurar hábito' : 'Archivar hábito'}</span>
@@ -476,27 +476,27 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
             onClick={() => setShowDeleteModal(false)}
           >
             <div
-              className="w-full max-w-[400px] bg-[#14161D] border-t sm:border border-[#1E2029] rounded-t-[24px] sm:rounded-[24px] p-5 space-y-4 shadow-2xl animate-slideUp text-left"
+              className="w-full max-w-[400px] bg-surface border-t sm:border border-line rounded-t-[24px] sm:rounded-[24px] p-5 space-y-4 shadow-2xl animate-slideUp text-left"
               style={{ paddingBottom: 'max(1.75rem, env(safe-area-inset-bottom, 1.75rem))' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Icon + Title */}
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-[#F87171]/15 text-[#F87171] border border-[#F87171]/30 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-danger/15 text-danger border border-danger/30 flex items-center justify-center shrink-0">
                   <AlertTriangle size={24} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold font-heading text-[#F4F4F6]">
+                  <h3 className="text-base font-bold font-heading text-text">
                     ¿Eliminar &quot;{habit.nombre}&quot;?
                   </h3>
-                  <p className="text-xs text-[#6B6F7B] mt-0.5">
+                  <p className="text-xs text-text-muted mt-0.5">
                     Confirmación requerida
                   </p>
                 </div>
               </div>
 
               {/* Warning Body */}
-              <p className="text-xs text-[#9498A8] leading-relaxed bg-[#0C0D12]/70 p-3.5 rounded-[12px] border border-[#1E2029]">
+              <p className="text-xs text-text-muted leading-relaxed bg-bg/70 p-3.5 rounded-[12px] border border-line">
                 Se borrará su historial de check-ins y registros de racha permanentemente. Esta acción no se puede deshacer.
               </p>
 
@@ -505,7 +505,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
                 <button
                   type="button"
                   onClick={() => setShowDeleteModal(false)}
-                  className="py-3 px-4 rounded-[12px] bg-[#1A1C24] hover:bg-[#20232E] text-[#9498A8] hover:text-[#F4F4F6] text-xs font-semibold font-heading transition-all"
+                  className="py-3 px-4 rounded-[12px] bg-surface-raised hover:bg-[#20232E] text-text-muted hover:text-text text-xs font-semibold font-heading transition-all"
                 >
                   Cancelar
                 </button>
@@ -514,7 +514,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
                   id="delete-habit-confirm-btn"
                   type="button"
                   onClick={handleDeleteHabit}
-                  className="py-3 px-4 rounded-[12px] bg-[#EF4444] hover:bg-[#DC2626] text-white text-xs font-bold font-heading shadow-lg shadow-[#EF4444]/30 transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  className="py-3 px-4 rounded-[12px] bg-[#EF4444] hover:bg-[#DC2626] text-text text-xs font-bold font-heading shadow-lg shadow-[#EF4444]/30 transition-all active:scale-95 flex items-center justify-center gap-1.5"
                 >
                   <Trash2 size={15} />
                   <span>Eliminar</span>

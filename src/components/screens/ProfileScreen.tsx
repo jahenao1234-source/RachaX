@@ -147,7 +147,7 @@ export const ProfileScreen: React.FC = () => {
 
   const renderBadgeIcon = (iconName: string, unlocked: boolean, color: string) => {
     const size = 20;
-    const iconClass = unlocked ? '' : 'text-[#6B6F7B]';
+    const iconClass = unlocked ? '' : 'text-text-muted';
 
     switch (iconName) {
       case 'Sparkles':
@@ -188,8 +188,8 @@ export const ProfileScreen: React.FC = () => {
           <div
             className={`p-3.5 rounded-[16px] border flex items-center justify-between gap-3 shadow-2xl backdrop-blur-md ${
               notification.type === 'success'
-                ? 'bg-[#14161D]/95 border-[#34D399]/50 text-[#34D399]'
-                : 'bg-[#14161D]/95 border-[#F87171]/50 text-[#F87171]'
+                ? 'bg-surface/95 border-ambar/50 text-ambar'
+                : 'bg-surface/95 border-danger/50 text-danger'
             }`}
           >
             <div className="flex items-center gap-2.5 text-xs font-medium">
@@ -198,12 +198,12 @@ export const ProfileScreen: React.FC = () => {
               ) : (
                 <AlertTriangle size={16} className="shrink-0" />
               )}
-              <span className="text-[#F4F4F6]">{notification.message}</span>
+              <span className="text-text">{notification.message}</span>
             </div>
             <button
               type="button"
               onClick={() => setNotification(null)}
-              className="text-[#6B6F7B] hover:text-[#F4F4F6]"
+              className="text-text-muted hover:text-text"
             >
               <X size={14} />
             </button>
@@ -213,10 +213,10 @@ export const ProfileScreen: React.FC = () => {
 
       {/* Header */}
       <header className="pt-2">
-        <p className="text-xs font-medium text-[#6B6F7B] tracking-wide uppercase">
+        <p className="text-xs font-medium text-text-muted tracking-wide uppercase">
           Configuración y Logros
         </p>
-        <h1 className="text-2xl font-bold font-heading text-[#F4F4F6] tracking-tight mt-0.5">
+        <h1 className="text-2xl font-bold font-heading text-text tracking-tight mt-0.5">
           Perfil
         </h1>
       </header>
@@ -225,7 +225,7 @@ export const ProfileScreen: React.FC = () => {
         {/* === ZONA 1: IDENTIDAD (hero) === */}
         <section
           id="profile-user-card"
-          className="rounded-[20px] bg-[#14161D] border border-[#1E2029] p-5 space-y-4 relative overflow-hidden shadow-xl"
+          className="rounded-[20px] bg-surface border border-line p-5 space-y-4 relative overflow-hidden shadow-xl"
         >
           {/* Avatar + Name + Level Pill */}
           <div className="flex items-center gap-4">
@@ -234,14 +234,14 @@ export const ProfileScreen: React.FC = () => {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold font-heading text-[#F4F4F6] truncate">
+                <h2 className="text-base font-bold font-heading text-text truncate">
                   Atleta de Hábitos
                 </h2>
                 <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[var(--accent-20)] text-[var(--accent)] border border-[var(--accent-40)] shadow-sm">
                   Nv. {currentLevel}
                 </span>
               </div>
-              <p className="text-xs text-[#6B6F7B] truncate mt-0.5">
+              <p className="text-xs text-text-muted truncate mt-0.5">
                 Construyendo consistencia día a día
               </p>
             </div>
@@ -249,36 +249,36 @@ export const ProfileScreen: React.FC = () => {
 
           {/* 3 Clean Metric Tiles */}
           <div className="grid grid-cols-3 gap-2.5 pt-1">
-            <div className="bg-[#1A1C24]/80 border border-[#1E2029] rounded-[14px] p-2.5 text-center">
-              <p className="text-[11px] text-[#6B6F7B] font-medium">Nivel</p>
+            <div className="bg-surface-raised/80 border border-line rounded-[14px] p-2.5 text-center">
+              <p className="text-[11px] text-text-muted font-medium">Nivel</p>
               <p className="text-base font-bold font-heading text-[var(--accent)] mt-0.5">
                 {currentLevel}
               </p>
             </div>
-            <div className="bg-[#1A1C24]/80 border border-[#1E2029] rounded-[14px] p-2.5 text-center">
-              <p className="text-[11px] text-[#6B6F7B] font-medium">Check-ins</p>
-              <p className="text-base font-bold font-heading text-[#F4F4F6] mt-0.5">
+            <div className="bg-surface-raised/80 border border-line rounded-[14px] p-2.5 text-center">
+              <p className="text-[11px] text-text-muted font-medium">Check-ins</p>
+              <p className="text-base font-bold font-heading text-text mt-0.5">
                 {totalCompletados}
               </p>
             </div>
-            <div className="bg-[#1A1C24]/80 border border-[#1E2029] rounded-[14px] p-2.5 text-center">
-              <p className="text-[11px] text-[#6B6F7B] font-medium">Racha</p>
-              <p className="text-base font-bold font-heading text-[#F59E0B] mt-0.5 flex items-center justify-center gap-1">
+            <div className="bg-surface-raised/80 border border-line rounded-[14px] p-2.5 text-center">
+              <p className="text-[11px] text-text-muted font-medium">Racha</p>
+              <p className="text-base font-bold font-heading text-ambar mt-0.5 flex items-center justify-center gap-1">
                 <span>{globalStreak}d</span>
-                <Flame size={14} className="fill-[#F59E0B]" />
+                <Flame size={14} className="fill-ambar" />
               </p>
             </div>
           </div>
 
           {/* Level XP Progress Bar */}
-          <div className="pt-2 border-t border-[#1E2029] space-y-1.5">
+          <div className="pt-2 border-t border-line space-y-1.5">
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-[#6B6F7B]">Progreso de Nivel</span>
-              <span className="text-[#F4F4F6] font-medium">
+              <span className="text-text-muted">Progreso de Nivel</span>
+              <span className="text-text font-medium">
                 {checkinsInCurrentLevel} / {CHECKINS_PER_LEVEL} check-ins para Nv. {currentLevel + 1}
               </span>
             </div>
-            <div className="w-full h-2 rounded-full bg-[#1A1C24] overflow-hidden">
+            <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-deep)] transition-all duration-500"
                 style={{ width: `${levelProgressPercent}%` }}
@@ -290,7 +290,7 @@ export const ProfileScreen: React.FC = () => {
         {/* === ZONA 2: LOGROS === */}
         <section className="space-y-3">
           <div className="flex items-center justify-between px-0.5">
-            <h3 className="text-sm font-semibold font-heading text-[#F4F4F6]">
+            <h3 className="text-sm font-semibold font-heading text-text">
               Logros
             </h3>
             <span className="text-xs text-[var(--accent)] bg-[var(--accent-15)] px-2.5 py-0.5 rounded-full border border-[var(--accent-30)] font-medium">
@@ -306,8 +306,8 @@ export const ProfileScreen: React.FC = () => {
                 onClick={() => setSelectedBadge(badge)}
                 className={`rounded-[18px] p-3 text-center space-y-2 transition-all text-left relative overflow-hidden group cursor-pointer active:scale-95 ${
                   badge.desbloqueada
-                    ? 'bg-[#14161D] border hover:border-opacity-80 shadow-md'
-                    : 'bg-[#12131A]/60 border border-[#1E2029]/70 opacity-60 hover:opacity-80'
+                    ? 'bg-surface border hover:border-opacity-80 shadow-md'
+                    : 'bg-[#12131A]/60 border border-line/70 opacity-60 hover:opacity-80'
                 }`}
                 style={{
                   borderColor: badge.desbloqueada ? `${badge.color}60` : undefined,
@@ -319,40 +319,40 @@ export const ProfileScreen: React.FC = () => {
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
                     style={{
-                      backgroundColor: badge.desbloqueada ? `${badge.color}20` : '#1A1C24',
-                      color: badge.desbloqueada ? badge.color : '#6B6F7B',
+                      backgroundColor: badge.desbloqueada ? `${badge.color}20` : 'var(--surface-raised)',
+                      color: badge.desbloqueada ? badge.color : 'var(--text-muted)',
                     }}
                   >
                     {renderBadgeIcon(badge.icono, badge.desbloqueada, badge.color)}
                   </div>
 
                   {badge.desbloqueada ? (
-                    <CheckCircle2 size={14} className="text-[#34D399]" />
+                    <CheckCircle2 size={14} className="text-ambar" />
                   ) : (
-                    <Lock size={12} className="text-[#6B6F7B]" />
+                    <Lock size={12} className="text-text-muted" />
                   )}
                 </div>
 
                 <div>
                   <p
                     className={`text-xs font-bold font-heading truncate ${
-                      badge.desbloqueada ? 'text-[#F4F4F6]' : 'text-[#6B6F7B]'
+                      badge.desbloqueada ? 'text-text' : 'text-text-muted'
                     }`}
                   >
                     {badge.nombre}
                   </p>
-                  <p className="text-[10px] text-[#6B6F7B] truncate mt-0.5">
+                  <p className="text-[10px] text-text-muted truncate mt-0.5">
                     {badge.requisito}
                   </p>
                 </div>
 
                 {/* Progress mini indicator */}
-                <div className="w-full h-1 rounded-full bg-[#1A1C24] overflow-hidden">
+                <div className="w-full h-1 rounded-full bg-surface-raised overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${Math.min(100, Math.round((badge.progresoActual / badge.meta) * 100))}%`,
-                      backgroundColor: badge.desbloqueada ? badge.color : '#6B6F7B',
+                      backgroundColor: badge.desbloqueada ? badge.color : 'var(--text-muted)',
                     }}
                   />
                 </div>
@@ -363,11 +363,11 @@ export const ProfileScreen: React.FC = () => {
 
         {/* === ZONA 3: AJUSTES === */}
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold font-heading text-[#F4F4F6] px-0.5">
+          <h3 className="text-sm font-semibold font-heading text-text px-0.5">
             Ajustes
           </h3>
 
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] divide-y divide-[#1E2029] overflow-hidden shadow-lg shadow-black/20">
+          <div className="rounded-[16px] bg-surface border border-line divide-y divide-[var(--line)] overflow-hidden shadow-lg shadow-black/20">
             {/* Color de Acento / Selector de Temas */}
             <div className="p-4 space-y-3">
               <div className="flex items-center justify-between">
@@ -376,8 +376,8 @@ export const ProfileScreen: React.FC = () => {
                     <Palette size={16} />
                   </div>
                   <div>
-                    <span className="text-xs font-medium text-[#F4F4F6] block">Color de acento</span>
-                    <span className="text-[10px] text-[#6B6F7B]">Personaliza el tono principal de la interfaz</span>
+                    <span className="text-xs font-medium text-text block">Color de acento</span>
+                    <span className="text-[10px] text-text-muted">Personaliza el tono principal de la interfaz</span>
                   </div>
                 </div>
                 <span className="text-xs font-semibold font-heading text-[var(--accent)] bg-[var(--accent-15)] px-2.5 py-0.5 rounded-full border border-[var(--accent-30)] capitalize">
@@ -398,14 +398,14 @@ export const ProfileScreen: React.FC = () => {
                       aria-label={`Seleccionar tema ${t.label}`}
                       className={`flex flex-col items-center gap-1.5 p-1.5 rounded-xl transition-all ${
                         isSelected
-                          ? 'bg-[#1A1C24] border border-[var(--accent-30)] shadow-sm'
-                          : 'hover:bg-[#1A1C24]/60 border border-transparent opacity-75 hover:opacity-100'
+                          ? 'bg-surface-raised border border-[var(--accent-30)] shadow-sm'
+                          : 'hover:bg-surface-raised/60 border border-transparent opacity-75 hover:opacity-100'
                       }`}
                     >
                       <div
                         className={`w-7 h-7 rounded-full transition-all flex items-center justify-center ${
                           isSelected
-                            ? 'ring-2 ring-white ring-offset-2 ring-offset-[#14161D] scale-105'
+                            ? 'ring-2 ring-white ring-offset-2 ring-offset-surface scale-105'
                             : 'border border-white/20'
                         }`}
                         style={{
@@ -414,12 +414,12 @@ export const ProfileScreen: React.FC = () => {
                         }}
                       >
                         {isSelected && (
-                          <CheckCircle2 size={15} className="text-white drop-shadow" strokeWidth={2.5} />
+                          <CheckCircle2 size={15} className="text-text drop-shadow" strokeWidth={2.5} />
                         )}
                       </div>
                       <span
                         className={`text-[10px] font-medium transition-colors truncate max-w-full ${
-                          isSelected ? 'text-[#F4F4F6] font-bold' : 'text-[#6B6F7B]'
+                          isSelected ? 'text-text font-bold' : 'text-text-muted'
                         }`}
                       >
                         {t.label}
@@ -433,68 +433,68 @@ export const ProfileScreen: React.FC = () => {
             <button
               type="button"
               onClick={openManageHabits}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-[#1A1C24] transition-colors group"
+              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
                   <Layers size={16} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-[#F4F4F6] block">Gestionar Hábitos</span>
-                  <span className="text-[10px] text-[#6B6F7B]">Editar, revisar o eliminar catálogo</span>
+                  <span className="text-xs font-medium text-text block">Gestionar Hábitos</span>
+                  <span className="text-[10px] text-text-muted">Editar, revisar o eliminar catálogo</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-[var(--accent)] font-medium">{habitos.length} hábitos</span>
-                <ChevronRight size={16} className="text-[#6B6F7B] group-hover:text-[#F4F4F6] transition-colors" />
+                <ChevronRight size={16} className="text-text-muted group-hover:text-text transition-colors" />
               </div>
             </button>
 
             <button
               type="button"
               onClick={openOnboarding}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-[#1A1C24] transition-colors group"
+              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
                   <HelpCircle size={16} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-[#F4F4F6] block">Ver introducción de nuevo</span>
-                  <span className="text-[10px] text-[#6B6F7B]">Repasar la guía de bienvenida</span>
+                  <span className="text-xs font-medium text-text block">Ver introducción de nuevo</span>
+                  <span className="text-[10px] text-text-muted">Repasar la guía de bienvenida</span>
                 </div>
               </div>
-              <ChevronRight size={16} className="text-[#6B6F7B] group-hover:text-[#F4F4F6] transition-colors" />
+              <ChevronRight size={16} className="text-text-muted group-hover:text-text transition-colors" />
             </button>
           </div>
         </section>
 
         {/* === ZONA 4: DATOS Y RESPALDO === */}
         <section className="space-y-3">
-          <h3 className="text-sm font-semibold font-heading text-[#F4F4F6] px-0.5">
+          <h3 className="text-sm font-semibold font-heading text-text px-0.5">
             Datos y respaldo
           </h3>
 
-          <div className="rounded-[16px] bg-[#14161D] border border-[#1E2029] divide-y divide-[#1E2029] overflow-hidden shadow-lg shadow-black/20">
+          <div className="rounded-[16px] bg-surface border border-line divide-y divide-[var(--line)] overflow-hidden shadow-lg shadow-black/20">
             {/* Exportar datos */}
             <button
               id="profile-export-backup-btn"
               type="button"
               onClick={exportarDatos}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-[#1A1C24] transition-colors group"
+              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[#34D399]/15 text-[#34D399] flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-ambar/15 text-ambar flex items-center justify-center shrink-0">
                   <Download size={16} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-[#F4F4F6] block">Exportar datos</span>
-                  <span className="text-[10px] text-[#6B6F7B]">
+                  <span className="text-xs font-medium text-text block">Exportar datos</span>
+                  <span className="text-[10px] text-text-muted">
                     Descarga un archivo .json con tus hábitos y registros
                   </span>
                 </div>
               </div>
-              <span className="text-xs font-medium text-[#34D399] bg-[#34D399]/10 px-2.5 py-1 rounded-lg border border-[#34D399]/30 group-hover:bg-[#34D399]/20 transition-colors">
+              <span className="text-xs font-medium text-ambar bg-ambar/10 px-2.5 py-1 rounded-lg border border-ambar/30 group-hover:bg-ambar/20 transition-colors">
                 Descargar .json
               </span>
             </button>
@@ -504,15 +504,15 @@ export const ProfileScreen: React.FC = () => {
               id="profile-import-backup-btn"
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-[#1A1C24] transition-colors group"
+              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
                   <Upload size={16} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-[#F4F4F6] block">Importar datos</span>
-                  <span className="text-[10px] text-[#6B6F7B]">
+                  <span className="text-xs font-medium text-text block">Importar datos</span>
+                  <span className="text-[10px] text-text-muted">
                     Restaura tu información desde un archivo .json de respaldo
                   </span>
                 </div>
@@ -525,26 +525,26 @@ export const ProfileScreen: React.FC = () => {
             {/* Estado de persistencia local */}
             <div className="p-3.5 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[#1A1C24] text-[#6B6F7B] flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
                   <Shield size={16} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-[#F4F4F6] block">Persistencia Local</span>
-                  <span className="text-[10px] text-[#6B6F7B]">Almacenamiento seguro en navegador</span>
+                  <span className="text-xs font-medium text-text block">Persistencia Local</span>
+                  <span className="text-[10px] text-text-muted">Almacenamiento seguro en navegador</span>
                 </div>
               </div>
-              <span className="text-xs text-[#34D399] font-medium">Activa</span>
+              <span className="text-xs text-ambar font-medium">Activa</span>
             </div>
           </div>
         </section>
 
         {/* === ZONA 5: ZONA DE PELIGRO === */}
         <section className="space-y-3 pt-1">
-          <h3 className="text-sm font-semibold font-heading text-[#F87171] px-0.5">
+          <h3 className="text-sm font-semibold font-heading text-danger px-0.5">
             Zona de peligro
           </h3>
 
-          <div className="rounded-[16px] bg-[#14161D] border border-[#F87171]/25 overflow-hidden shadow-lg shadow-black/20">
+          <div className="rounded-[16px] bg-surface border border-danger/25 overflow-hidden shadow-lg shadow-black/20">
             <button
               id="profile-reset-data-btn"
               type="button"
@@ -554,18 +554,18 @@ export const ProfileScreen: React.FC = () => {
                   showNotification('success', 'Almacenamiento local reiniciado.');
                 }
               }}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-[#F87171]/10 transition-colors group"
+              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-danger/10 transition-colors group"
             >
-              <div className="flex items-center gap-3 text-[#F87171]">
-                <div className="w-8 h-8 rounded-xl bg-[#F87171]/15 text-[#F87171] flex items-center justify-center shrink-0">
+              <div className="flex items-center gap-3 text-danger">
+                <div className="w-8 h-8 rounded-xl bg-danger/15 text-danger flex items-center justify-center shrink-0">
                   <RefreshCw size={16} />
                 </div>
                 <div>
-                  <span className="text-xs font-medium text-[#F4F4F6] block">Reiniciar Almacenamiento</span>
-                  <span className="text-[10px] text-[#6B6F7B]">Limpiar todos los datos locales</span>
+                  <span className="text-xs font-medium text-text block">Reiniciar Almacenamiento</span>
+                  <span className="text-[10px] text-text-muted">Limpiar todos los datos locales</span>
                 </div>
               </div>
-              <span className="text-xs font-medium text-[#F87171] bg-[#F87171]/10 px-2.5 py-1 rounded-lg border border-[#F87171]/30 group-hover:bg-[#F87171]/20 transition-colors">
+              <span className="text-xs font-medium text-danger bg-danger/10 px-2.5 py-1 rounded-lg border border-danger/30 group-hover:bg-danger/20 transition-colors">
                 Reiniciar
               </span>
             </button>
@@ -583,48 +583,48 @@ export const ProfileScreen: React.FC = () => {
       {importPendingData && (
         <div
           id="import-confirmation-overlay"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#08080C]/85 backdrop-blur-md p-4 animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-bg/85 backdrop-blur-md p-4 animate-fadeIn"
           onClick={() => setImportPendingData(null)}
         >
           <div
             id="import-confirmation-card"
-            className="w-full max-w-[360px] bg-[#0C0D12] border border-[#1E2029] rounded-[28px] p-6 shadow-2xl relative text-center space-y-4 animate-scaleUp"
+            className="w-full max-w-[360px] bg-bg border border-line rounded-[28px] p-6 shadow-2xl relative text-center space-y-4 animate-scaleUp"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-14 h-14 rounded-2xl bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#F59E0B] flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-ambar/15 border border-ambar/30 text-ambar flex items-center justify-center mx-auto">
               <AlertTriangle size={28} />
             </div>
 
             <div className="space-y-1.5">
-              <h3 className="text-lg font-bold font-heading text-[#F4F4F6]">
+              <h3 className="text-lg font-bold font-heading text-text">
                 ¿Restaurar copia de seguridad?
               </h3>
-              <p className="text-xs text-[#9498A8] leading-relaxed">
+              <p className="text-xs text-text-muted leading-relaxed">
                 Esto reemplazará tus datos actuales con la copia seleccionada:
               </p>
             </div>
 
-            <div className="p-3.5 rounded-[14px] bg-[#14161D] border border-[#1E2029] text-left space-y-1.5 text-xs font-mono">
-              <div className="flex justify-between text-[#6B6F7B]">
+            <div className="p-3.5 rounded-[14px] bg-surface border border-line text-left space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between text-text-muted">
                 <span>Archivo:</span>
-                <span className="text-[#F4F4F6] truncate max-w-[170px]">
+                <span className="text-text truncate max-w-[170px]">
                   {importPendingData.fileName}
                 </span>
               </div>
-              <div className="flex justify-between text-[#6B6F7B]">
+              <div className="flex justify-between text-text-muted">
                 <span>Hábitos a cargar:</span>
                 <span className="text-[var(--accent)] font-bold">
                   {importPendingData.data.habitos?.length || 0}
                 </span>
               </div>
-              <div className="flex justify-between text-[#6B6F7B]">
+              <div className="flex justify-between text-text-muted">
                 <span>Registros a cargar:</span>
-                <span className="text-[#34D399] font-bold">
+                <span className="text-ambar font-bold">
                   {importPendingData.data.registros?.length || 0}
                 </span>
               </div>
               {Array.isArray(importPendingData.data.rutinas) && importPendingData.data.rutinas.length > 0 && (
-                <div className="flex justify-between text-[#6B6F7B]">
+                <div className="flex justify-between text-text-muted">
                   <span>Rutinas a cargar:</span>
                   <span className="text-[#60A5FA] font-bold">
                     {importPendingData.data.rutinas.length}
@@ -632,9 +632,9 @@ export const ProfileScreen: React.FC = () => {
                 </div>
               )}
               {Array.isArray(importPendingData.data.tareas) && importPendingData.data.tareas.length > 0 && (
-                <div className="flex justify-between text-[#6B6F7B]">
+                <div className="flex justify-between text-text-muted">
                   <span>Tareas a cargar:</span>
-                  <span className="text-[#F59E0B] font-bold">
+                  <span className="text-ambar font-bold">
                     {importPendingData.data.tareas.length}
                   </span>
                 </div>
@@ -645,14 +645,14 @@ export const ProfileScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setImportPendingData(null)}
-                className="py-2.5 px-4 rounded-[12px] bg-[#1A1C24] hover:bg-[#222530] text-[#6B6F7B] hover:text-[#F4F4F6] text-xs font-semibold font-heading transition-colors"
+                className="py-2.5 px-4 rounded-[12px] bg-surface-raised hover:bg-surface-raised text-text-muted hover:text-text text-xs font-semibold font-heading transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={confirmImport}
-                className="py-2.5 px-4 rounded-[12px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-xs font-semibold font-heading shadow-lg shadow-[var(--accent-30)] transition-all active:scale-95"
+                className="py-2.5 px-4 rounded-[12px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-text text-xs font-semibold font-heading shadow-lg shadow-[var(--accent-30)] transition-all active:scale-95"
               >
                 Confirmar
               </button>

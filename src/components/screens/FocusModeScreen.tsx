@@ -70,22 +70,22 @@ export const FocusModeScreen: React.FC = () => {
   const saltar = () => setIndex((i) => i + 1);
 
   return (
-    <div className="fixed inset-0 z-[60] bg-[#08080C] flex flex-col animate-fadeIn">
+    <div className="fixed inset-0 z-[60] bg-bg flex flex-col animate-fadeIn">
       <div className="px-5 pt-6 pb-3 flex items-center justify-between">
         <div className="flex items-center gap-2 text-[var(--accent)] min-w-0">
           <Zap size={18} className="shrink-0" />
           <span className="text-sm font-bold font-heading truncate">{tituloBarra}</span>
         </div>
-        <button onClick={closeFocusMode} aria-label="Cerrar" className="w-9 h-9 rounded-full bg-[#14161D] border border-[#1E2029] text-[#9498A8] hover:text-white flex items-center justify-center shrink-0"><X size={18} /></button>
+        <button onClick={closeFocusMode} aria-label="Cerrar" className="w-9 h-9 rounded-full bg-surface border border-line text-text-muted hover:text-text flex items-center justify-center shrink-0"><X size={18} /></button>
       </div>
 
       {total > 0 && (
         <div className="px-5">
-          <div className="flex items-center justify-between text-[11px] text-[#6B6F7B] mb-1.5">
+          <div className="flex items-center justify-between text-[11px] text-text-muted mb-1.5">
             <span>{terminado ? total : index + 1} de {total}</span>
             <span>{completadosCount} completados</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-[#1A1C24] overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface-raised overflow-hidden">
             <div className="h-full rounded-full bg-[var(--accent)] transition-all duration-300" style={{ width: `${((terminado ? total : index) / total) * 100}%` }} />
           </div>
         </div>
@@ -95,17 +95,17 @@ export const FocusModeScreen: React.FC = () => {
         {total === 0 ? (
           <div className="space-y-3">
             <div className="w-16 h-16 rounded-3xl bg-[var(--accent-10)] text-[var(--accent)] flex items-center justify-center mx-auto"><Zap size={30} /></div>
-            <p className="text-sm text-[#9498A8]">Nada que enfocar aquí.</p>
-            <button onClick={closeFocusMode} className="px-5 py-2.5 rounded-xl bg-[var(--accent)] text-white text-xs font-semibold">Volver</button>
+            <p className="text-sm text-text-muted">Nada que enfocar aquí.</p>
+            <button onClick={closeFocusMode} className="px-5 py-2.5 rounded-xl bg-[var(--accent)] text-text text-xs font-semibold">Volver</button>
           </div>
         ) : terminado ? (
           <div className="space-y-4 animate-fadeIn">
-            <div className="w-20 h-20 rounded-full bg-[#34D399]/15 text-[#34D399] border-2 border-[#34D399]/40 flex items-center justify-center mx-auto"><Trophy size={40} /></div>
+            <div className="w-20 h-20 rounded-full bg-ambar/15 text-ambar border-2 border-ambar/40 flex items-center justify-center mx-auto"><Trophy size={40} /></div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-bold font-heading text-[#F4F4F6]">¡Sesión completada!</h2>
-              <p className="text-sm text-[#9498A8]">Completaste {completadosCount} de {total}.</p>
+              <h2 className="text-2xl font-bold font-heading text-text">¡Sesión completada!</h2>
+              <p className="text-sm text-text-muted">Completaste {completadosCount} de {total}.</p>
             </div>
-            <button onClick={closeFocusMode} className="px-6 py-3 rounded-[14px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm font-bold font-heading shadow-lg shadow-[var(--accent-30)] transition-all active:scale-95">Terminar</button>
+            <button onClick={closeFocusMode} className="px-6 py-3 rounded-[14px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-text text-sm font-bold font-heading shadow-lg shadow-[var(--accent-30)] transition-all active:scale-95">Terminar</button>
           </div>
         ) : paso ? (
           <div className="w-full max-w-[340px] space-y-6 animate-fadeIn" key={paso.key}>
@@ -116,13 +116,13 @@ export const FocusModeScreen: React.FC = () => {
                   <HabitIcon name={paso.habito.icono} size={44} />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold font-heading text-[#F4F4F6] leading-tight">{paso.habito.nombre}</h2>
+                  <h2 className="text-2xl font-bold font-heading text-text leading-tight">{paso.habito.nombre}</h2>
                   <div className="flex items-center justify-center gap-3 text-xs">
-                    <span className="flex items-center gap-1 text-[#F59E0B] font-medium"><Flame size={14} className="fill-[#F59E0B]" />{rachaActual(paso.habito.id)} días</span>
-                    {paso.habito.metaDiaria && <span className="text-[#6B6F7B]">Meta: {paso.habito.metaDiaria}</span>}
+                    <span className="flex items-center gap-1 text-ambar font-medium"><Flame size={14} className="fill-ambar" />{rachaActual(paso.habito.id)} días</span>
+                    {paso.habito.metaDiaria && <span className="text-text-muted">Meta: {paso.habito.metaDiaria}</span>}
                   </div>
                   {paso.habito.anclaje && (
-                    <p className="text-xs text-[#6B6F7B] flex items-center justify-center gap-1"><Link2 size={12} className="text-[var(--accent)]" /> Después de {paso.habito.anclaje}</p>
+                    <p className="text-xs text-text-muted flex items-center justify-center gap-1"><Link2 size={12} className="text-[var(--accent)]" /> Después de {paso.habito.anclaje}</p>
                   )}
                 </div>
               </>
@@ -136,30 +136,30 @@ export const FocusModeScreen: React.FC = () => {
                     <div className="flex items-center justify-center gap-2 text-[11px] font-semibold tracking-wide text-[var(--accent)]">
                       <span className="uppercase">{tareaActual.nombre}</span>
                       {paso.depth > 0 && (
-                        <span className="px-1.5 py-0.5 rounded bg-[#1A1C24] text-[#9498A8] text-[10px] font-mono">
+                        <span className="px-1.5 py-0.5 rounded bg-surface-raised text-text-muted text-[10px] font-mono">
                           Nivel {paso.depth + 1}
                         </span>
                       )}
                     </div>
                   )}
-                  <h2 className="text-xl font-bold font-heading text-[#F4F4F6] leading-snug">{paso.texto}</h2>
+                  <h2 className="text-xl font-bold font-heading text-text leading-snug">{paso.texto}</h2>
                 </div>
               </>
             )}
 
             {hecho ? (
               <div className="space-y-3">
-                <div className="flex items-center justify-center gap-2 text-[#34D399] text-sm font-semibold"><Check size={18} strokeWidth={3} /> {paso.kind === 'sub' ? 'Hecha' : 'Ya completado'}</div>
-                <button onClick={saltar} className="w-full py-3.5 rounded-[16px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm font-bold font-heading transition-all active:scale-[0.98]">Siguiente</button>
+                <div className="flex items-center justify-center gap-2 text-ambar text-sm font-semibold"><Check size={18} strokeWidth={3} /> {paso.kind === 'sub' ? 'Hecha' : 'Ya completado'}</div>
+                <button onClick={saltar} className="w-full py-3.5 rounded-[16px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-text text-sm font-bold font-heading transition-all active:scale-[0.98]">Siguiente</button>
               </div>
             ) : (
               <div className="space-y-2.5">
                 <button onClick={marcarHecho}
-                  className="w-full py-4 rounded-[16px] text-white text-sm font-bold font-heading shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-[16px] text-text text-sm font-bold font-heading shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                   style={paso.kind === 'habito' ? { backgroundColor: paso.habito.color, boxShadow: `0 8px 24px -6px ${paso.habito.color}70` } : { backgroundColor: 'var(--accent)' }}>
                   <Check size={20} strokeWidth={3} /> Hecho
                 </button>
-                <button onClick={saltar} className="w-full py-3 rounded-[16px] bg-[#14161D] border border-[#1E2029] text-[#9498A8] hover:text-[#F4F4F6] text-sm font-semibold font-heading flex items-center justify-center gap-2 transition-all">
+                <button onClick={saltar} className="w-full py-3 rounded-[16px] bg-surface border border-line text-text-muted hover:text-text text-sm font-semibold font-heading flex items-center justify-center gap-2 transition-all">
                   Saltar <ArrowRight size={16} />
                 </button>
               </div>
