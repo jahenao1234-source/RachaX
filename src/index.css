@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-base: #0C0D12;
+    --surface-card: #14161D;
+    --surface-elevated: #1A1C24;
+    --border-subtle: #1E2029;
+    --text-primary: #F4F4F6;
+    --text-secondary: #6B6F7B;
+    --accent: #8B5CF6;
+    --accent-hover: #7C4DF0;
+    --accent-deep: #7C3AED;
+    --accent-10: rgba(139, 92, 246, 0.10);
+    --accent-15: rgba(139, 92, 246, 0.15);
+    --accent-20: rgba(139, 92, 246, 0.20);
+    --accent-25: rgba(139, 92, 246, 0.25);
+    --accent-30: rgba(139, 92, 246, 0.30);
+    --accent-40: rgba(139, 92, 246, 0.40);
+    --accent-50: rgba(139, 92, 246, 0.50);
+    --accent-55: rgba(139, 92, 246, 0.55);
+    --accent-60: rgba(139, 92, 246, 0.60);
+    --accent-70: rgba(139, 92, 246, 0.70);
+    --accent-80: rgba(139, 92, 246, 0.80);
+
+    --accent-brand: var(--accent);
+    --status-success: #34D399;
+    --status-streak: #F59E0B;
+    --status-danger: #F87171;
+
+    /* Habit Color Accents */
+    --habit-violet: #8B5CF6;
+    --habit-emerald: #34D399;
+    --habit-blue: #378ADD;
+    --habit-pink: #ED93B1;
+    --habit-amber: #F59E0B;
+    --habit-coral: #F97316;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  h1, h2, h3, h4, .font-heading, .font-number {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E2029;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2D313F;
+}
+
+/* Subtle Glow and Glass utility classes */
+.glow-accent {
+  box-shadow: 0 0 24px -4px var(--accent-40);
+}
+
+.glow-streak {
+  box-shadow: 0 0 20px -4px rgba(245, 158, 11, 0.3);
+}
+
+.glass-nav {
+  background: rgba(20, 22, 29, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
