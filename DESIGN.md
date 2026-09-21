@@ -31,6 +31,13 @@ colors:
   lila-strong-light: "#4F5BD5"
   coral-strong-light: "#D9492A"
   ambar-strong-light: "#B26A00"
+  ambar-tint-light: "#FFF1DB"
+  lila-tint-light: "#ECEEFF"
+  coral-tint-light: "#FFE9E2"
+  track-light: "#E3E6EA"
+  track-empty-light: "#D5D9DE"
+  comodin-bg-light: "#EEF0FF"
+  comodin-text-light: "#3F4BC0"
 typography:
   display:
     fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
@@ -229,6 +236,8 @@ Grafito neutro con tres acentos que **significan algo**; ningún color es decora
 
 ### Modo claro
 La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-light`: fondo bg-light, superficies surface-light / surface-raised-light, texto text-light / text-muted-light. Los rellenos ámbar, lila y coral se mantienen (texto ink encima); cuando el acento se usa como **texto o ícono sobre fondo claro** se usa su variante `-strong-light` para cumplir contraste. Los valores claros son propuesta inicial: validarlos en pantalla al implementar.
+
+**Todo token tiene su pareja clara.** En modo claro, cada tinte y pista cambia a su versión `-light`: ambar-tint → ambar-tint-light, lila-tint → lila-tint-light, coral-tint → coral-tint-light, track → track-light, track-empty → track-empty-light, comodin-bg → comodin-bg-light, comodin-text → comodin-text-light, y surface-raised → surface-raised-light. Ningún fondo oscuro del modo oscuro puede quedar visible en modo claro. Sobre un tinte claro, el texto va en text-light y los íconos en la variante `-strong-light` de su acento.
 
 ### Named Rules
 **The Grey Day Rule.** Un día o hábito no cumplido se pinta en surface con texto text-muted. Nunca rojo, nunca tachado, nunca un ícono de error. El rojo existe solo para borrar cosas.

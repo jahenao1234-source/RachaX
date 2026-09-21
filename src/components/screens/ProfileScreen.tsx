@@ -177,7 +177,8 @@ export const ProfileScreen: React.FC = () => {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".json,application/json"
+        // Sin filtro de tipo: en Android los .json descargados suelen llegar como tipo genérico
+        // y el selector los bloquea. El contenido se valida al leerlo.
         className="hidden"
         onChange={handleFileChange}
       />

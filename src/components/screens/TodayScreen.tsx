@@ -1,12 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { Flame, Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Minus, CalendarRange, Link2, Zap, Pencil, ListChecks, Play } from 'lucide-react';
+import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
-import { Habito, MOMENTOS, Subtarea } from '../../types';
+import { Habito, Subtarea } from '../../types';
 import { 
   getTodayString, 
-  contarCompletadosSemana, 
-  calcularRachaSemanal, 
   contarHojasSubtareas, 
   subtractDays, 
   isHabitCompletedOnDate, 
@@ -15,8 +13,6 @@ import {
   calcularProgresoNivel 
 } from '../../utils/habitUtils';
 import { calcularInsignias } from '../../utils/badgeUtils';
-
-const STORAGE_SECCIONES_KEY = 'racha_secciones_momento';
 
 const SubtareaTreeNode: React.FC<{
   sub: Subtarea;
@@ -80,11 +76,8 @@ export const TodayScreen: React.FC = () => {
     setValor,
     valorDe,
     esHabitoCompletado,
-    rachaActual,
     rachaGlobal,
-    progresoDelDia,
     completadosHoy,
-    openCreateModal,
     openHabitDetail,
     openManageHabits,
     openFocusMode,
@@ -108,6 +101,22 @@ export const TodayScreen: React.FC = () => {
   const currentMomento = currentHour < 12 ? 'manana' : currentHour < 19 ? 'tarde' : 'noche';
 
   const [expandedTarea, setExpandedTarea] = useState<string | null>(null);
+  const [plegados, setPlegados] = useState<Record<string, boolean>>(() => {
+    try {
+      const stored = localStorage.getItem('racha_secciones_plegadas');
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const togglePlegado = (momento: string) => {
+    setPlegados(prev => {
+      const next = { ...prev, [momento]: !prev[momento] };
+      try { localStorage.setItem('racha_secciones_plegadas', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
 
   const formattedDate = new Intl.DateTimeFormat('es-ES', {
     weekday: 'long',
@@ -179,50 +188,70 @@ export const TodayScreen: React.FC = () => {
     return cumplidos;
   }, [hoy, registros, habitosActivos, diasCongelados]);
 
-  // Hábitos Pendientes y Completados
   const habitosPendientes = habitosDeHoy.filter(h => !esHabitoCompletado(h.id));
-  const habitosCompletadosHoy = habitosDeHoy.filter(h => esHabitoCompletado(h.id));
 
-  // Seleccionar "Sigue ahora"
-  let sigueAhora: Habito | null = null;
-  if (habitosPendientes.length > 0) {
-    // Prioridad: Momento actual, luego los siguientes, luego flexible
-    const currentMomentHabits = habitosPendientes.filter(h => h.momento === currentMomento);
-    const otherMomentHabits = habitosPendientes.filter(h => h.momento !== currentMomento && h.momento !== 'flexible');
-    const flexibleHabits = habitosPendientes.filter(h => h.momento === 'flexible' || !h.momento);
+  // Determinar la fila siguiente
+  const siguienteFila = useMemo(() => {
+    if (habitosPendientes.length === 0) return null;
+    const momentOrder = ordenMomentos.filter(m => m !== 'flexible');
+    const currentIndex = momentOrder.indexOf(currentMomento as any);
     
-    // Sort all internally by their orden
-    currentMomentHabits.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
-    otherMomentHabits.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
-    flexibleHabits.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
-
-    if (currentMomentHabits.length > 0) {
-      sigueAhora = currentMomentHabits[0];
-    } else if (otherMomentHabits.length > 0) {
-      sigueAhora = otherMomentHabits[0];
+    const checkOrder = [];
+    if (currentIndex !== -1) {
+      for (let i = currentIndex; i < momentOrder.length; i++) checkOrder.push(momentOrder[i]);
+      for (let i = 0; i < currentIndex; i++) checkOrder.push(momentOrder[i]);
     } else {
-      sigueAhora = flexibleHabits[0];
+      checkOrder.push(...momentOrder);
     }
-  }
+    checkOrder.push('flexible');
 
-  // Misiones: El resto (pendientes y completados)
-  const misiones = habitosDeHoy.filter(h => h.id !== sigueAhora?.id).sort((a,b) => {
-    // Por momento: mañana -> tarde -> noche -> flexible
-    const order = { manana: 1, tarde: 2, noche: 3, flexible: 4 };
-    const aMom = a.momento || 'flexible';
-    const bMom = b.momento || 'flexible';
-    if (order[aMom as keyof typeof order] !== order[bMom as keyof typeof order]) {
-      return (order[aMom as keyof typeof order] || 4) - (order[bMom as keyof typeof order] || 4);
+    for (const mom of checkOrder) {
+      const pendingInMom = habitosPendientes.filter(h => (h.momento || 'flexible') === mom);
+      if (pendingInMom.length > 0) {
+        pendingInMom.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+        return pendingInMom[0];
+      }
     }
-    return (a.orden ?? 0) - (b.orden ?? 0);
-  });
+    return null;
+  }, [habitosPendientes, ordenMomentos, currentMomento]);
+
+  const habitosOrdenados = useMemo(() => {
+    const list: Habito[] = [];
+    const checkOrder = [...ordenMomentos.filter(m => m !== 'flexible'), 'flexible'];
+    for (const mom of checkOrder) {
+      const inMom = habitosDeHoy.filter(h => (h.momento || 'flexible') === mom);
+      inMom.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
+      list.push(...inMom);
+    }
+    return list;
+  }, [habitosDeHoy, ordenMomentos]);
 
   const getMomentoColorInfo = (momento?: string) => {
     switch (momento) {
-      case 'manana': return { bg: 'bg-ambar', text: 'text-ink', iconTint: 'bg-ambar-tint text-ambar', iconBg: 'bg-ambar-tint', iconColor: 'text-ambar' };
-      case 'tarde': return { bg: 'bg-coral', text: 'text-ink', iconTint: 'bg-coral-tint text-coral', iconBg: 'bg-coral-tint', iconColor: 'text-coral' };
-      case 'noche': return { bg: 'bg-lila', text: 'text-ink', iconTint: 'bg-lila-tint text-lila', iconBg: 'bg-lila-tint', iconColor: 'text-lila' };
-      default: return { bg: 'bg-surface-raised', text: 'text-text', iconTint: 'bg-surface-raised text-text', iconBg: 'bg-surface-raised', iconColor: 'text-text' };
+      case 'manana': return { bg: 'bg-ambar', text: 'text-ink', iconTint: 'bg-ambar-tint text-ambar', iconBg: 'bg-ambar-tint', iconColor: 'text-ambar', varColor: 'var(--ambar)' };
+      case 'tarde': return { bg: 'bg-coral', text: 'text-ink', iconTint: 'bg-coral-tint text-coral', iconBg: 'bg-coral-tint', iconColor: 'text-coral', varColor: 'var(--coral)' };
+      case 'noche': return { bg: 'bg-lila', text: 'text-ink', iconTint: 'bg-lila-tint text-lila', iconBg: 'bg-lila-tint', iconColor: 'text-lila', varColor: 'var(--lila)' };
+      default: return { bg: 'bg-surface-raised', text: 'text-text', iconTint: 'bg-surface-raised text-text', iconBg: 'bg-surface-raised', iconColor: 'text-text', varColor: 'var(--text)' };
+    }
+  };
+
+  const getMomentoIcon = (momento: string) => {
+    switch (momento) {
+      case 'manana': return <path d="M12 2v8M4.93 10.93l1.41 1.41M2 18h2M20 18h2M19.07 10.93l-1.41 1.41M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/>;
+      case 'tarde': return <><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></>;
+      case 'noche': return <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>;
+      case 'flexible': return <><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>;
+      default: return <><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>;
+    }
+  };
+
+  const getMomentoTitle = (momento: string) => {
+    switch (momento) {
+      case 'manana': return 'Mañana';
+      case 'tarde': return 'Tarde';
+      case 'noche': return 'Noche';
+      case 'flexible': return 'Todo el día';
+      default: return 'Todo el día';
     }
   };
 
@@ -288,100 +317,163 @@ export const TodayScreen: React.FC = () => {
         </p>
       </section>
 
-      {/* 5. Tarjeta Sigue ahora */}
-      {sigueAhora ? (
-        <section aria-label="Lo siguiente" className={`mt-3.5 mx-5 p-3.5 rounded-[18px] ${getMomentoColorInfo(sigueAhora.momento).bg} ${getMomentoColorInfo(sigueAhora.momento).text} flex flex-col gap-3`}>
-          <div className="flex items-center gap-3">
-            <div className={`w-[42px] h-[42px] rounded-[12px] bg-ink ${sigueAhora.momento === 'tarde' ? 'text-coral' : sigueAhora.momento === 'manana' ? 'text-ambar' : sigueAhora.momento === 'noche' ? 'text-lila' : 'text-text'} flex items-center justify-center shrink-0`}>
-              <HabitIcon name={sigueAhora.icono} size={21} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="m-0 font-heading font-bold text-[24px] leading-tight truncate">{sigueAhora.nombre}</h2>
-              <p className="mt-0.5 text-[14px] font-medium opacity-80 truncate">
-                Sigue ahora · {sigueAhora.momento === 'flexible' ? 'todo el día' : sigueAhora.momento || 'todo el día'}{sigueAhora.anclaje ? ` · después de ${sigueAhora.anclaje}` : ''}
-              </p>
-            </div>
-            <span className="font-heading font-bold text-[17px] font-number">+10</span>
-          </div>
-          <div className="flex gap-2">
-            {sigueAhora.metaDiaria ? (
-               <button type="button" onClick={() => setValor(sigueAhora!.id, hoy, valorDe(sigueAhora!.id) + 1)} className="flex-1 flex items-center justify-center gap-2 h-[44px] border-none rounded-[12px] bg-ink text-text text-[15px] font-bold">
-                 <Plus size={18} strokeWidth={2.5} /> Sumar +1
-               </button>
-            ) : (
-              <button type="button" onClick={() => toggleCompletado(sigueAhora!.id)} className="flex-1 flex items-center justify-center gap-2 h-[44px] border-none rounded-[12px] bg-ink text-text text-[15px] font-bold">
-                <Check size={18} strokeWidth={2.5} /> Marcar hecho
-              </button>
-            )}
-            <button type="button" onClick={() => openFocusMode({ tipo: 'dia' })} className="h-[44px] px-3.5 rounded-[12px] border-[1.5px] border-ink/45 bg-transparent text-ink text-[14px] font-bold">
-              Solo 2 min
-            </button>
-          </div>
-        </section>
-      ) : habitosDeHoy.length > 0 && habitosPendientes.length === 0 ? (
-        <section className="mt-3.5 mx-5 p-3.5 rounded-[18px] bg-surface-raised border border-line text-center space-y-2">
-           <Trophy size={28} className="mx-auto text-ambar" />
-           <h3 className="font-heading font-bold text-lg text-text">¡Día completado!</h3>
-           <p className="text-[13px] text-text-muted">No quedan misiones pendientes para hoy.</p>
-        </section>
-      ) : null}
-
-      {/* 6. Misiones */}
-      {misiones.length > 0 && (
-        <section aria-label="Misiones" className="mt-4 mx-5 flex flex-col gap-2">
+      {/* 5. Tarjeta "Tu día" */}
+      <section aria-label="Tu día" className="mt-3.5 mx-5">
+        <div className="p-3.5 rounded-[18px] bg-surface border border-line flex flex-col gap-2.5">
           <div className="flex justify-between items-baseline">
-            <h2 className="m-0 font-heading font-bold text-[20px]">Misiones</h2>
-            <div className="flex items-center gap-3">
-              <span className="text-[13px] text-text-muted">+{misiones.filter(h => !esHabitoCompletado(h.id)).length * 10} pts por ganar</span>
-              <button onClick={openManageHabits} className="text-[13px] font-medium text-[var(--accent)] hover:underline">Gestionar</button>
-            </div>
+            <h2 className="m-0 font-heading font-bold text-[22px]">Tu día</h2>
+            <span className="font-heading font-bold text-[18px] text-ambar">+{completedCount * 10} pts hoy</span>
           </div>
+          <div className="flex gap-1" role="img" aria-label={`${completedCount} de ${totalToday} hábitos cumplidos hoy`}>
+            {habitosOrdenados.map(h => (
+               <i key={h.id} className={`flex-1 h-3 rounded-[4px] ${esHabitoCompletado(h.id) ? 'bg-ambar' : 'bg-track'}`}></i>
+            ))}
+          </div>
+          <div className="flex justify-between items-center gap-2.5 mt-0.5">
+            <span className="text-[13px] font-medium text-text-muted">{completedCount} de {totalToday} · te quedan {totalToday - completedCount}</span>
+            {siguienteFila ? (
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById(`habito-${siguienteFila.id}`);
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.remove('animate-pulse-fast');
+                    void el.offsetWidth;
+                    el.classList.add('animate-pulse-fast');
+                  }
+                }}
+                className="flex items-center gap-1 text-[13px] font-bold text-lila hover:underline"
+              >
+                Siguiente: {siguienteFila.nombre}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+              </button>
+            ) : totalToday > 0 ? (
+              <span className="text-[13px] font-bold text-ambar">¡Día completo!</span>
+            ) : null}
+          </div>
+        </div>
+      </section>
 
-          {misiones.map(habito => {
-            const minfo = getMomentoColorInfo(habito.momento);
-            const isNegativo = habito.tipo === 'negativo';
-            const isHecho = esHabitoCompletado(habito.id);
-            return (
-              <div key={habito.id} onClick={() => openHabitDetail(habito.id)} className="flex items-center gap-3 p-2.5 rounded-[14px] bg-surface cursor-pointer active:scale-[0.99] transition-transform">
-                <div title={habito.momento || 'Todo el día'} className={`w-[38px] h-[38px] rounded-[11px] ${minfo.iconBg} ${minfo.iconColor} flex items-center justify-center shrink-0`}>
-                   <HabitIcon name={habito.icono} size={19} />
+      {/* 6. Misiones Agrupadas */}
+      <div className="mt-4.5 mx-5 flex justify-between items-baseline mb-3">
+        <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
+        <span className="text-[13px] text-text-muted">
+          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar hover:underline">Gestionar</button>
+        </span>
+      </div>
+
+      <div className="mx-5 flex flex-col gap-4">
+        {[...ordenMomentos.filter(m => m !== 'flexible'), 'flexible'].map(mom => {
+          const inMom = habitosOrdenados.filter(h => (h.momento || 'flexible') === mom);
+          if (inMom.length === 0) return null;
+          
+          const hechos = inMom.filter(h => esHabitoCompletado(h.id)).length;
+          const total = inMom.length;
+          const isPlegado = plegados[mom];
+          const minfo = getMomentoColorInfo(mom);
+          
+          return (
+            <section key={mom} className="flex flex-col gap-2">
+              <div 
+                className="flex items-center gap-2.5 px-0.5 cursor-pointer select-none" 
+                onClick={() => togglePlegado(mom)}
+              >
+                <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center shrink-0 ${minfo.iconBg} ${minfo.iconColor}`}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {getMomentoIcon(mom)}
+                  </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[#5C6070] decoration-[1.5px]' : 'text-text'}`}>{habito.nombre}</p>
-                  
-                  {isHecho ? (
-                    <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar truncate">
-                      +10 ganados
-                    </p>
-                  ) : (
-                    <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
-                      {(habito.momento === 'flexible' ? 'Todo el día' : habito.momento ? habito.momento.charAt(0).toUpperCase() + habito.momento.slice(1) : 'Todo el día')}
-                      {isNegativo ? ' · evitar' : habito.frecuencia === 'semanal' ? ` · 1 de ${habito.vecesPorSemana} esta semana` : ''}
-                      {habito.metaDiaria && ` · ${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`}
-                    </p>
-                  )}
-                  
-                  {habito.metaDiaria && !isHecho && (
-                    <div className="mt-1.5 flex gap-[3px]" role="img" aria-label={`${valorDe(habito.id)} de ${habito.metaDiaria}`}>
-                       {Array.from({length: habito.metaDiaria}).map((_, i) => (
-                          <span key={i} className={`w-4 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'bg-track-empty'}`}></span>
-                       ))}
-                    </div>
+                <div className="flex-1 flex items-center">
+                  <span className="font-heading font-bold text-[17px]">{getMomentoTitle(mom)}</span>
+                  {currentMomento === mom && (
+                    <span className="font-body font-semibold text-[12px] text-lila ml-1">ahora</span>
                   )}
                 </div>
-                {!habito.metaDiaria && !isHecho && <span className="text-[13px] text-text-muted font-number">+10</span>}
-                {habito.metaDiaria && !isHecho ? (
-                   <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="h-[32px] px-3 rounded-[10px] border border-line-strong bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform">+1</button>
-                ) : (
-                   <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 ${isHecho ? 'bg-ambar border-none' : 'bg-transparent border-2 border-line-strong'}`}>
-                      {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
-                   </button>
-                )}
+                <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>
+                <div className="w-[44px] h-[5px] rounded-[9px] bg-track overflow-hidden shrink-0">
+                  <div className={`h-full rounded-[9px] ${minfo.bg}`} style={{ width: `${(hechos/total)*100}%` }}></div>
+                </div>
+                <ChevronDown size={16} className={`text-text-muted transition-transform ${isPlegado ? 'rotate-180' : ''}`} />
               </div>
-            );
-          })}
-        </section>
-      )}
+
+              {!isPlegado && (
+                <div className="flex flex-col gap-2">
+                  {inMom.map(habito => {
+                    const hInfo = getMomentoColorInfo(habito.momento);
+                    const isNegativo = habito.tipo === 'negativo';
+                    const isHecho = esHabitoCompletado(habito.id);
+                    const isNext = siguienteFila?.id === habito.id;
+
+                    let rowClass = "flex items-center gap-3 p-2.5 rounded-[14px] bg-surface cursor-pointer active:scale-[0.99] transition-transform";
+                    if (isNext) {
+                      rowClass = `flex items-center gap-3 p-2.5 rounded-[14px] ${hInfo.iconBg} outline outline-[1.5px] outline-offset-[-1.5px] cursor-pointer active:scale-[0.99] transition-transform`;
+                    }
+
+                    return (
+                      <div key={habito.id} id={`habito-${habito.id}`} onClick={() => openHabitDetail(habito.id)} className={rowClass} style={isNext ? { outlineColor: hInfo.varColor } : undefined}>
+                        <div title={habito.momento || 'Todo el día'} className={`w-[38px] h-[38px] rounded-[11px] ${isNext ? hInfo.bg + ' text-ink' : hInfo.iconBg + ' ' + hInfo.iconColor} flex items-center justify-center shrink-0`}>
+                           <HabitIcon name={habito.icono} size={19} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[#5C6070] decoration-[1.5px]' : 'text-text'}`}>
+                            {habito.nombre}
+                            {isNext && (
+                              <span className={`inline-block ml-1.5 px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold align-[2px]`}>
+                                Sigue
+                              </span>
+                            )}
+                          </p>
+                          
+                          {isHecho ? (
+                            <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar truncate">
+                              +10 ganados
+                            </p>
+                          ) : isNext && habito.anclaje ? (
+                            <p className="m-0 mt-[1px] text-[13px] text-lila truncate opacity-80">
+                              después de {habito.anclaje}
+                            </p>
+                          ) : (
+                            <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
+                              {isNegativo ? 'evitar' : habito.frecuencia === 'semanal' ? `1 de ${habito.vecesPorSemana} esta semana` : ''}
+                              {habito.metaDiaria && `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`}
+                            </p>
+                          )}
+                          
+                          {habito.metaDiaria && !isHecho && !isNext && (
+                            <div className="mt-1.5 flex gap-[3px]" role="img" aria-label={`${valorDe(habito.id)} de ${habito.metaDiaria}`}>
+                               {Array.from({length: habito.metaDiaria}).map((_, i) => (
+                                  <span key={i} className={`w-4 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'bg-track-empty'}`}></span>
+                               ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
+                        
+                        {isNext && (
+                           <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[32px] px-2.5 rounded-[10px] border bg-transparent ${hInfo.iconColor} text-[13px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform`} style={{ borderColor: hInfo.varColor }}>
+                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> 2 min
+                           </button>
+                        )}
+
+                        {habito.metaDiaria && !isHecho ? (
+                           <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="h-[32px] px-3 rounded-[10px] border border-line-strong bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
+                        ) : (
+                           <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'bg-ambar border-none' : `bg-transparent border-2 ${isNext ? '' : 'border-line-strong'}`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
+                              {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
+                           </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          );
+        })}
+      </div>
 
       {/* 8. Progreso insignia */}
       {proximaInsignia && (
