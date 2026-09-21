@@ -71,11 +71,27 @@ typography:
     fontSize: "15px"
     fontWeight: 600
     lineHeight: 1.35
+  score:
+    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
+    fontSize: "18px"
+    fontWeight: 700
+    lineHeight: 1
+    fontFeature: "tnum"
+  button:
+    fontFamily: "Barlow, system-ui, sans-serif"
+    fontSize: "14px"
+    fontWeight: 700
+    lineHeight: 1.2
   label:
     fontFamily: "Barlow, system-ui, sans-serif"
     fontSize: "13px"
     fontWeight: 500
     lineHeight: 1.3
+  caption:
+    fontFamily: "Barlow, system-ui, sans-serif"
+    fontSize: "12px"
+    fontWeight: 600
+    lineHeight: 1.2
   micro:
     fontFamily: "Barlow, system-ui, sans-serif"
     fontSize: "11px"
@@ -257,8 +273,11 @@ La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-li
 - **Title** (700, 20px, 1.1): títulos de sección ("Misiones"), pastilla de nivel.
 - **Number** (700, 17px, cifras tabulares): números de días, puntos, contadores.
 - **Body** (500, 15px, 1.35) y **Body strong** (600): nombres de hábitos y botones.
+- **Score** (700, 18px, Barlow Condensed, cifras tabulares): puntos destacados ("+10 pts hoy").
+- **Button** (700, 14px): texto de botones compactos ("2 min", "+1").
 - **Label** (500, 13px): metadatos ("Tarde · 1 de 3 esta semana"), ayudas.
-- **Micro** (600, 11px): etiquetas de la barra de navegación. No usar para nada más.
+- **Caption** (600, 12px): letras de los días, la palabra "ahora" y textos cortos auxiliares.
+- **Micro** (600, 11px): etiquetas de la barra de navegación y la etiqueta "Sigue". Nada más pequeño que 11px.
 
 ### Named Rules
 **The Scoreboard Rule.** Toda cifra que el usuario deba leer de un vistazo (días, puntos, 21/30) va en Barlow Condensed con cifras tabulares.

@@ -10,7 +10,8 @@ import {
   isHabitCompletedOnDate, 
   calcularPuntosTotales, 
   calcularNivel, 
-  calcularProgresoNivel 
+  calcularProgresoNivel,
+  contarCompletadosSemana
 } from '../../utils/habitUtils';
 import { calcularInsignias } from '../../utils/badgeUtils';
 
@@ -35,7 +36,7 @@ const SubtareaTreeNode: React.FC<{
       >
         <div
           className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 border-2 transition-all ${
-            sub.hecha ? 'border-transparent' : 'border-line-strong group-hover:border-[#4B5162]'
+            sub.hecha ? 'border-transparent' : 'border-line-strong group-hover:border-text-muted'
           }`}
           style={sub.hecha ? { backgroundColor: color } : undefined}
         >
@@ -45,7 +46,7 @@ const SubtareaTreeNode: React.FC<{
           {sub.texto}
         </span>
         {tieneHijos && stats && (
-          <span className="text-[10px] font-mono text-text-muted shrink-0">
+          <span className="text-[11px] font-semibold tabular-nums text-text-muted shrink-0">
             ({stats.hechas}/{stats.total})
           </span>
         )}
@@ -118,13 +119,8 @@ export const TodayScreen: React.FC = () => {
     });
   };
 
-  const formattedDate = new Intl.DateTimeFormat('es-ES', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).format(new Date());
-
-  const displayDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).split(' ')[0] + ' ' + new Date().getDate();
+  const formattedDate = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date());
+  const displayDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1) + ' ' + new Date().getDate();
   const completedCount = completadosHoy();
   const totalToday = habitosDeHoy.length;
 
@@ -193,7 +189,7 @@ export const TodayScreen: React.FC = () => {
   // Determinar la fila siguiente
   const siguienteFila = useMemo(() => {
     if (habitosPendientes.length === 0) return null;
-    const momentOrder = ordenMomentos.filter(m => m !== 'flexible');
+    const momentOrder = ordenMomentos;
     const currentIndex = momentOrder.indexOf(currentMomento as any);
     
     const checkOrder = [];
@@ -203,9 +199,11 @@ export const TodayScreen: React.FC = () => {
     } else {
       checkOrder.push(...momentOrder);
     }
-    checkOrder.push('flexible');
 
-    for (const mom of checkOrder) {
+    const orderWithoutFlexible = checkOrder.filter(m => m !== 'flexible');
+    orderWithoutFlexible.push('flexible');
+
+    for (const mom of orderWithoutFlexible) {
       const pendingInMom = habitosPendientes.filter(h => (h.momento || 'flexible') === mom);
       if (pendingInMom.length > 0) {
         pendingInMom.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
@@ -217,8 +215,7 @@ export const TodayScreen: React.FC = () => {
 
   const habitosOrdenados = useMemo(() => {
     const list: Habito[] = [];
-    const checkOrder = [...ordenMomentos.filter(m => m !== 'flexible'), 'flexible'];
-    for (const mom of checkOrder) {
+    for (const mom of ordenMomentos) {
       const inMom = habitosDeHoy.filter(h => (h.momento || 'flexible') === mom);
       inMom.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
       list.push(...inMom);
@@ -228,9 +225,9 @@ export const TodayScreen: React.FC = () => {
 
   const getMomentoColorInfo = (momento?: string) => {
     switch (momento) {
-      case 'manana': return { bg: 'bg-ambar', text: 'text-ink', iconTint: 'bg-ambar-tint text-ambar', iconBg: 'bg-ambar-tint', iconColor: 'text-ambar', varColor: 'var(--ambar)' };
-      case 'tarde': return { bg: 'bg-coral', text: 'text-ink', iconTint: 'bg-coral-tint text-coral', iconBg: 'bg-coral-tint', iconColor: 'text-coral', varColor: 'var(--coral)' };
-      case 'noche': return { bg: 'bg-lila', text: 'text-ink', iconTint: 'bg-lila-tint text-lila', iconBg: 'bg-lila-tint', iconColor: 'text-lila', varColor: 'var(--lila)' };
+      case 'manana': return { bg: 'bg-ambar', text: 'text-ink', iconTint: 'bg-ambar-tint text-ambar-text', iconBg: 'bg-ambar-tint', iconColor: 'text-ambar-text', varColor: 'var(--ambar-text)' };
+      case 'tarde': return { bg: 'bg-coral', text: 'text-ink', iconTint: 'bg-coral-tint text-coral-text', iconBg: 'bg-coral-tint', iconColor: 'text-coral-text', varColor: 'var(--coral-text)' };
+      case 'noche': return { bg: 'bg-lila', text: 'text-ink', iconTint: 'bg-lila-tint text-lila-text', iconBg: 'bg-lila-tint', iconColor: 'text-lila-text', varColor: 'var(--lila-text)' };
       default: return { bg: 'bg-surface-raised', text: 'text-text', iconTint: 'bg-surface-raised text-text', iconBg: 'bg-surface-raised', iconColor: 'text-text', varColor: 'var(--text)' };
     }
   };
@@ -262,7 +259,7 @@ export const TodayScreen: React.FC = () => {
   return (
     <div id="screen-today" className="pb-28 animate-fadeIn text-text font-body pt-2">
       {/* 2. Nivel y puntos */}
-      <div className="mt-3.5 mx-5 flex items-center gap-2.5">
+      <div className="mt-3.5 flex items-center gap-2.5">
         <span className="font-heading font-bold text-[15px] text-ink bg-lila px-2 py-0.5 rounded-[6px]">Nivel {nivelActual}</span>
         <div className="flex-1 h-2 rounded-full bg-track overflow-hidden">
           <div className="h-full rounded-full bg-lila" style={{ width: `${progresoNivelPercent}%` }}></div>
@@ -271,7 +268,7 @@ export const TodayScreen: React.FC = () => {
       </div>
 
       {/* 3. Fecha en display y comodines */}
-      <section className="pt-3.5 px-5 flex items-start justify-between">
+      <section className="pt-3.5 flex items-start justify-between">
         <div>
           <h1 className="m-0 font-heading font-bold text-[44px] leading-none tracking-tight">{displayDate}</h1>
           <p className="mt-1.5 text-[15px] text-text-muted">Misiones de hoy: {completedCount} de {totalToday}</p>
@@ -283,7 +280,7 @@ export const TodayScreen: React.FC = () => {
       </section>
 
       {/* 4. Últimos 7 días */}
-      <section aria-label="Últimos 7 días" className="mt-3.5 mx-5 flex flex-col gap-2">
+      <section aria-label="Últimos 7 días" className="mt-3.5 flex flex-col gap-2">
         <div className="flex gap-1.5">
           {ultimos7Dias.map((d, i) => {
             let cls = "";
@@ -318,11 +315,11 @@ export const TodayScreen: React.FC = () => {
       </section>
 
       {/* 5. Tarjeta "Tu día" */}
-      <section aria-label="Tu día" className="mt-3.5 mx-5">
+      <section aria-label="Tu día" className="mt-3.5">
         <div className="p-3.5 rounded-[18px] bg-surface border border-line flex flex-col gap-2.5">
           <div className="flex justify-between items-baseline">
             <h2 className="m-0 font-heading font-bold text-[22px]">Tu día</h2>
-            <span className="font-heading font-bold text-[18px] text-ambar">+{completedCount * 10} pts hoy</span>
+            <span className="font-heading font-bold text-[18px] text-ambar-text">+{completedCount * 10} pts hoy</span>
           </div>
           <div className="flex gap-1" role="img" aria-label={`${completedCount} de ${totalToday} hábitos cumplidos hoy`}>
             {habitosOrdenados.map(h => (
@@ -344,28 +341,28 @@ export const TodayScreen: React.FC = () => {
                     el.classList.add('animate-pulse-fast');
                   }
                 }}
-                className="flex items-center gap-1 text-[13px] font-bold text-lila hover:underline"
+                className="flex items-center gap-1 text-[13px] font-bold text-lila-text hover:underline"
               >
                 Siguiente: {siguienteFila.nombre}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
               </button>
             ) : totalToday > 0 ? (
-              <span className="text-[13px] font-bold text-ambar">¡Día completo!</span>
+              <span className="text-[13px] font-bold text-ambar-text">¡Día completo!</span>
             ) : null}
           </div>
         </div>
       </section>
 
       {/* 6. Misiones Agrupadas */}
-      <div className="mt-4.5 mx-5 flex justify-between items-baseline mb-3">
+      <div className="mt-4.5 flex justify-between items-baseline mb-3">
         <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
         <span className="text-[13px] text-text-muted">
-          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar hover:underline">Gestionar</button>
+          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar-text hover:underline">Gestionar</button>
         </span>
       </div>
 
-      <div className="mx-5 flex flex-col gap-4">
-        {[...ordenMomentos.filter(m => m !== 'flexible'), 'flexible'].map(mom => {
+      <div className="flex flex-col gap-4">
+        {ordenMomentos.map(mom => {
           const inMom = habitosOrdenados.filter(h => (h.momento || 'flexible') === mom);
           if (inMom.length === 0) return null;
           
@@ -417,26 +414,34 @@ export const TodayScreen: React.FC = () => {
                            <HabitIcon name={habito.icono} size={19} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[#5C6070] decoration-[1.5px]' : 'text-text'}`}>
+                          <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
                             {habito.nombre}
-                            {isNext && (
-                              <span className={`inline-block ml-1.5 px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold align-[2px]`}>
-                                Sigue
-                              </span>
-                            )}
                           </p>
                           
                           {isHecho ? (
-                            <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar truncate">
+                            <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">
                               +10 ganados
                             </p>
-                          ) : isNext && habito.anclaje ? (
-                            <p className="m-0 mt-[1px] text-[13px] text-lila truncate opacity-80">
-                              después de {habito.anclaje}
-                            </p>
+                          ) : isNext ? (
+                            <div className="m-0 mt-[1px] text-[13px] text-lila-text opacity-80 flex items-center gap-1.5 truncate">
+                              <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold shrink-0`}>
+                                Sigue
+                              </span>
+                              <span className="truncate">
+                                {habito.anclaje 
+                                  ? `después de ${habito.anclaje}` 
+                                  : isNegativo 
+                                    ? 'evitar' 
+                                    : habito.frecuencia === 'semanal' 
+                                      ? `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana` 
+                                      : habito.metaDiaria 
+                                        ? `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`
+                                        : ''}
+                              </span>
+                            </div>
                           ) : (
                             <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
-                              {isNegativo ? 'evitar' : habito.frecuencia === 'semanal' ? `1 de ${habito.vecesPorSemana} esta semana` : ''}
+                              {isNegativo ? 'evitar' : habito.frecuencia === 'semanal' ? `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana` : ''}
                               {habito.metaDiaria && `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`}
                             </p>
                           )}
@@ -477,8 +482,8 @@ export const TodayScreen: React.FC = () => {
 
       {/* 8. Progreso insignia */}
       {proximaInsignia && (
-        <div className="mt-4 mx-5 flex items-center gap-3">
-          <Trophy size={22} className="text-ambar" strokeWidth={2} />
+        <div className="mt-4 flex items-center gap-3">
+          <Trophy size={22} className="text-ambar-text" strokeWidth={2} />
           <div className="flex-1">
             <p className="m-0 flex justify-between text-[13px]"><span className="font-semibold text-text">Insignia {proximaInsignia.nombre}</span><span className="text-text-muted">faltan {proximaInsignia.meta - proximaInsignia.progresoActual}</span></p>
             <div className="mt-1.5 h-1.5 rounded-full bg-track overflow-hidden">
@@ -492,13 +497,13 @@ export const TodayScreen: React.FC = () => {
       {(rutinas.length > 0 || tareas.length > 0) && (
         <div className="mt-6 space-y-4">
           {rutinas.length > 0 && (
-            <section className="space-y-2 mx-5">
+            <section className="space-y-2">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
-                  <Zap size={15} className="text-[var(--accent)]" />
+                  <Zap size={15} className="text-accent-text" />
                   <h2 className="text-[20px] font-bold font-heading text-text">Rutinas</h2>
                 </div>
-                <button type="button" onClick={() => openRutinaEditor(null)} className="text-[13px] font-semibold text-[var(--accent)] hover:underline">
+                <button type="button" onClick={() => openRutinaEditor(null)} className="text-[13px] font-semibold text-accent-text hover:underline">
                   + Nueva
                 </button>
               </div>
@@ -524,13 +529,13 @@ export const TodayScreen: React.FC = () => {
           )}
 
           {tareas.length > 0 && (
-            <section className="space-y-2 mx-5">
+            <section className="space-y-2">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
-                  <ListChecks size={15} className="text-[var(--accent)]" />
+                  <ListChecks size={15} className="text-accent-text" />
                   <h2 className="text-[20px] font-bold font-heading text-text">Tareas</h2>
                 </div>
-                <button type="button" onClick={() => openTareaEditor(null)} className="text-[13px] font-semibold text-[var(--accent)] hover:underline">+ Nueva</button>
+                <button type="button" onClick={() => openTareaEditor(null)} className="text-[13px] font-semibold text-accent-text hover:underline">+ Nueva</button>
               </div>
               <div className="space-y-2.5">
                 {tareas.map((tarea) => {
@@ -545,10 +550,10 @@ export const TodayScreen: React.FC = () => {
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <h4 className={`text-[15px] font-semibold font-heading truncate ${tarea.completada ? 'text-text-muted line-through decoration-[#5C6070]' : 'text-text'}`}>{tarea.nombre}</h4>
+                              <h4 className={`text-[15px] font-semibold font-heading truncate ${tarea.completada ? 'text-text-muted line-through decoration-text-muted' : 'text-text'}`}>{tarea.nombre}</h4>
                             </div>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[13px] font-medium text-[var(--accent)]">{hechas}/{total}</span>
+                              <span className="text-[13px] font-medium text-accent-text">{hechas}/{total}</span>
                               <ChevronDown size={14} className={`text-text-muted transition-transform ${abierta ? 'rotate-180' : ''}`} />
                             </div>
                           </div>

@@ -23,8 +23,13 @@
     --track-empty: #33383F;
     --danger: #F87171;
 
+    --ambar-text: var(--ambar);
+    --lila-text: var(--lila);
+    --coral-text: var(--coral);
+
     /* Acento dinámico heredado del sistema anterior, por defecto ámbar */
     --accent: var(--ambar);
+    --accent-text: var(--ambar-text);
     --accent-hover: #D99636;
     --accent-deep: #B37A26;
     --accent-10: rgba(255, 181, 71, 0.10);
@@ -53,6 +58,18 @@
       --ambar-strong: #B26A00;
       --lila-strong: #4F5BD5;
       --coral-strong: #D9492A;
+
+      --ambar-tint: #FFF1DB;
+      --lila-tint: #ECEEFF;
+      --coral-tint: #FFE9E2;
+      --track: #E3E6EA;
+      --track-empty: #D5D9DE;
+      --comodin-bg: #EEF0FF;
+      --comodin-text: #3F4BC0;
+
+      --ambar-text: var(--ambar-strong);
+      --lila-text: var(--lila-strong);
+      --coral-text: var(--coral-strong);
     }
   }
 
@@ -98,6 +115,11 @@
   --color-track-empty: var(--track-empty);
   --color-danger: var(--danger);
   --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  
+  --color-ambar-text: var(--ambar-text);
+  --color-lila-text: var(--lila-text);
+  --color-coral-text: var(--coral-text);
 }
 
 /* Custom Scrollbar */
