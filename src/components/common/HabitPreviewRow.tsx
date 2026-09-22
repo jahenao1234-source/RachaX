@@ -5,6 +5,7 @@ import { HabitIcon } from './HabitIcon';
 interface HabitPreviewRowProps {
   habito: Pick<Habito, 'nombre' | 'icono' | 'tipo' | 'anclaje' | 'metaDiaria' | 'reto' | 'frecuencia' | 'vecesPorSemana'> & { momento?: MomentoDia };
   retoProgreso?: number;
+  cumplido?: boolean;
 }
 
 export const getMomentoColorTokens = (momento?: string) => {
@@ -16,7 +17,7 @@ export const getMomentoColorTokens = (momento?: string) => {
   }
 };
 
-export const HabitPreviewRow: React.FC<HabitPreviewRowProps> = ({ habito, retoProgreso = 0 }) => {
+export const HabitPreviewRow: React.FC<HabitPreviewRowProps> = ({ habito, retoProgreso = 0, cumplido = false }) => {
   const isReto = !!habito.reto;
   const tokens = getMomentoColorTokens(habito.momento);
   
@@ -50,22 +51,30 @@ export const HabitPreviewRow: React.FC<HabitPreviewRowProps> = ({ habito, retoPr
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className={`text-[14px] font-semibold leading-tight truncate ${habito.nombre ? 'text-text' : 'text-text-muted'}`}>
+          <p className={`text-[14px] font-semibold leading-tight truncate ${cumplido ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : habito.nombre ? 'text-text' : 'text-text-muted'}`}>
             {habito.nombre || 'Tu hábito'}
           </p>
-          {anchorText && (
+          {cumplido ? (
+            <p className="text-[12px] font-bold text-ambar-text mt-0.5 truncate">
+              +10 ganados
+            </p>
+          ) : anchorText ? (
             <p className="text-[12px] text-text-muted mt-0.5 truncate">
               {anchorText}
             </p>
-          )}
+          ) : null}
         </div>
 
         {/* Right element (+10 / +1 and circle) */}
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[13px] font-semibold text-text-muted font-mono">
-            {habito.metaDiaria ? '+1' : '+10'}
-          </span>
-          <div className="w-8 h-8 rounded-full border-2 border-line-strong flex-shrink-0" aria-hidden="true" />
+          {!cumplido && (
+            <span className="text-[13px] font-semibold text-text-muted font-mono">
+              {habito.metaDiaria ? '+1' : '+10'}
+            </span>
+          )}
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${cumplido ? 'bg-ambar border-none' : 'border-2 border-line-strong'}`} aria-hidden="true">
+            {cumplido && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+          </div>
         </div>
       </div>
 
@@ -74,7 +83,7 @@ export const HabitPreviewRow: React.FC<HabitPreviewRowProps> = ({ habito, retoPr
         <div className="flex items-center gap-2.5 mt-2" role="progressbar" aria-valuenow={retoProgreso} aria-valuemax={habito.reto!.meta} aria-label="Reto">
           <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
             <div 
-              className="h-full rounded-full bg-ambar transition-all duration-500" 
+              className="h-full rounded-full bg-ambar-text transition-all duration-500" 
               style={{ width: `${pct}%` }} 
             />
           </div>

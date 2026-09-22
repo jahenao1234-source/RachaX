@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
+import { getTodayString, contarProgresoReto } from '../../utils/habitUtils';
 import { BottomNav } from './BottomNav';
 import { SideNav } from './SideNav';
 import { TodayScreen } from '../screens/TodayScreen';
@@ -14,6 +15,7 @@ import { RutinaEditorModal } from '../screens/RutinaEditorModal';
 import { TareaEditorModal } from '../screens/TareaEditorModal';
 import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
+import { RetoCumplidoSheet } from '../screens/RetoCumplidoSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { BadgeUnlockToast } from '../badges/BadgeUnlockToast';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
@@ -28,8 +30,30 @@ export const AppShell: React.FC = () => {
     habitos,
     habitoRecienCreadoId,
     setHabitoRecienCreadoId,
+    habitosActivos,
+    registros,
+    editarHabito,
     closeCreateModal,
   } = useHabitStore();
+
+  const [retoCumplidoHabitId, setRetoCumplidoHabitId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (retoCumplidoHabitId) return;
+
+    for (const habito of habitosActivos) {
+      if (habito.reto && !habito.reto.cumplidoEn) {
+        const progreso = contarProgresoReto(habito, registros);
+        if (progreso >= habito.reto.meta) {
+          setRetoCumplidoHabitId(habito.id);
+          editarHabito(habito.id, { reto: { ...habito.reto, cumplidoEn: getTodayString() } });
+          break;
+        }
+      }
+    }
+  }, [habitosActivos, registros, retoCumplidoHabitId, editarHabito]);
+
+  const retoHabito = retoCumplidoHabitId ? habitosActivos.find((h) => h.id === retoCumplidoHabitId) || null : null;
 
   const renderActiveScreen = () => {
     // If a habit detail is active, prioritize showing the Habit Detail view
@@ -129,6 +153,23 @@ export const AppShell: React.FC = () => {
           onCreateAnother={() => {
             setHabitoRecienCreadoId(null);
             // stays in 'crear' mode, so the create screen remains open
+          }}
+        />
+
+        {/* Reto Cumplido Sheet */}
+        <RetoCumplidoSheet 
+          habito={retoHabito}
+          onSiguienteNivel={(siguienteMeta) => {
+            if (retoHabito && retoHabito.reto) {
+              editarHabito(retoHabito.id, { reto: { meta: siguienteMeta, inicio: retoHabito.reto.inicio } });
+            }
+            setRetoCumplidoHabitId(null);
+          }}
+          onQuitarReto={() => {
+            if (retoHabito) {
+              editarHabito(retoHabito.id, { reto: undefined });
+            }
+            setRetoCumplidoHabitId(null);
           }}
         />
       </main>

@@ -11,6 +11,10 @@ import {
   calcularPuntosTotales, 
   calcularNivel, 
   calcularProgresoNivel,
+  esTareaCompletada,
+  toggleSubtareaEnArbol,
+  limpiarArbolSubtareas,
+  contarProgresoReto,
   contarCompletadosSemana
 } from '../../utils/habitUtils';
 import { calcularInsignias } from '../../utils/badgeUtils';
@@ -403,72 +407,87 @@ export const TodayScreen: React.FC = () => {
                     const isHecho = esHabitoCompletado(habito.id);
                     const isNext = siguienteFila?.id === habito.id;
 
-                    let rowClass = "flex items-center gap-3 p-2.5 rounded-[14px] bg-surface cursor-pointer active:scale-[0.99] transition-transform";
+                    let rowClass = "flex flex-col gap-2 p-2.5 rounded-[14px] bg-surface cursor-pointer active:scale-[0.99] transition-transform";
                     if (isNext) {
-                      rowClass = `flex items-center gap-3 p-2.5 rounded-[14px] ${hInfo.iconBg} outline outline-[1.5px] outline-offset-[-1.5px] cursor-pointer active:scale-[0.99] transition-transform`;
+                      rowClass = `flex flex-col gap-2 p-2.5 rounded-[14px] ${hInfo.iconBg} outline outline-[1.5px] outline-offset-[-1.5px] cursor-pointer active:scale-[0.99] transition-transform`;
+                    }
+                    
+                    const progressReto = habito.reto ? contarProgresoReto(habito, registros) : 0;
+
+                    let anchorText = '';
+                    if (habito.anclaje) {
+                      anchorText = isNegativo ? `evitar · cuando ${habito.anclaje}` : `después de ${habito.anclaje}`;
+                    } else {
+                      if (isNegativo) anchorText = 'evitar';
+                      else if (habito.frecuencia === 'semanal') anchorText = `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana`;
+                      else if (habito.metaDiaria) anchorText = `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`;
                     }
 
                     return (
                       <div key={habito.id} id={`habito-${habito.id}`} onClick={() => openHabitDetail(habito.id)} className={rowClass} style={isNext ? { outlineColor: hInfo.varColor } : undefined}>
-                        <div title={habito.momento || 'Todo el día'} className={`w-[38px] h-[38px] rounded-[11px] ${isNext ? hInfo.bg + ' text-ink' : hInfo.iconBg + ' ' + hInfo.iconColor} flex items-center justify-center shrink-0`}>
-                           <HabitIcon name={habito.icono} size={19} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
-                            {habito.nombre}
-                          </p>
-                          
-                          {isHecho ? (
-                            <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">
-                              +10 ganados
+                        <div className="flex items-center gap-3">
+                          <div title={habito.momento || 'Todo el día'} className={`w-[38px] h-[38px] rounded-[11px] ${isNext ? hInfo.bg + ' text-ink' : hInfo.iconBg + ' ' + hInfo.iconColor} flex items-center justify-center shrink-0`}>
+                             <HabitIcon name={habito.icono} size={19} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
+                              {habito.nombre}
                             </p>
-                          ) : isNext ? (
-                            <div className="m-0 mt-[1px] text-[13px] text-lila-text opacity-80 flex items-center gap-1.5 truncate">
-                              <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold shrink-0`}>
-                                Sigue
-                              </span>
-                              <span className="truncate">
-                                {habito.anclaje 
-                                  ? `después de ${habito.anclaje}` 
-                                  : isNegativo 
-                                    ? 'evitar' 
-                                    : habito.frecuencia === 'semanal' 
-                                      ? `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana` 
-                                      : habito.metaDiaria 
-                                        ? `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`
-                                        : ''}
-                              </span>
-                            </div>
+                            
+                            {isHecho ? (
+                              <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">
+                                +10 ganados
+                              </p>
+                            ) : isNext ? (
+                              <div className="m-0 mt-[1px] text-[13px] text-lila-text opacity-80 flex items-center gap-1.5 truncate">
+                                <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold shrink-0`}>
+                                  Sigue
+                                </span>
+                                {anchorText && <span className="truncate">{anchorText}</span>}
+                              </div>
+                            ) : anchorText ? (
+                              <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
+                                {anchorText}
+                              </p>
+                            ) : null}
+                            
+                            {habito.metaDiaria && !isHecho && !isNext && (
+                              <div className="mt-1.5 flex gap-[3px]" role="img" aria-label={`${valorDe(habito.id)} de ${habito.metaDiaria}`}>
+                                 {Array.from({length: habito.metaDiaria}).map((_, i) => (
+                                    <span key={i} className={`w-4 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'bg-track-empty'}`}></span>
+                                 ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
+                          
+                          {isNext && (
+                             <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[32px] px-2.5 rounded-[10px] border bg-transparent ${hInfo.iconColor} text-[13px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform`} style={{ borderColor: hInfo.varColor }}>
+                               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> 2 min
+                             </button>
+                          )}
+
+                          {habito.metaDiaria && !isHecho ? (
+                             <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="h-[32px] px-3 rounded-[10px] border border-line-strong bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
                           ) : (
-                            <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
-                              {isNegativo ? 'evitar' : habito.frecuencia === 'semanal' ? `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana` : ''}
-                              {habito.metaDiaria && `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`}
-                            </p>
-                          )}
-                          
-                          {habito.metaDiaria && !isHecho && !isNext && (
-                            <div className="mt-1.5 flex gap-[3px]" role="img" aria-label={`${valorDe(habito.id)} de ${habito.metaDiaria}`}>
-                               {Array.from({length: habito.metaDiaria}).map((_, i) => (
-                                  <span key={i} className={`w-4 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'bg-track-empty'}`}></span>
-                               ))}
-                            </div>
+                             <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'bg-ambar border-none' : `bg-transparent border-2 ${isNext ? '' : 'border-line-strong'}`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
+                                {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
+                             </button>
                           )}
                         </div>
 
-                        {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
-                        
-                        {isNext && (
-                           <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[32px] px-2.5 rounded-[10px] border bg-transparent ${hInfo.iconColor} text-[13px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform`} style={{ borderColor: hInfo.varColor }}>
-                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> 2 min
-                           </button>
-                        )}
-
-                        {habito.metaDiaria && !isHecho ? (
-                           <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="h-[32px] px-3 rounded-[10px] border border-line-strong bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
-                        ) : (
-                           <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'bg-ambar border-none' : `bg-transparent border-2 ${isNext ? '' : 'border-line-strong'}`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
-                              {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
-                           </button>
+                        {habito.reto && (
+                          <div className="flex items-center gap-2 mt-0.5" role="progressbar" aria-valuenow={progressReto} aria-valuemax={habito.reto.meta} aria-label={`Reto de ${habito.nombre}`}>
+                            <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
+                              <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((progressReto / habito.reto.meta) * 100))}%` }} />
+                            </div>
+                            <span className="text-[12px] text-text-muted font-number whitespace-nowrap">
+                              {progressReto === 0 
+                                ? `Reto de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}` 
+                                : `Reto · ${progressReto} de ${habito.reto.meta}`}
+                            </span>
+                          </div>
                         )}
                       </div>
                     );

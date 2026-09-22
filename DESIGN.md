@@ -45,6 +45,11 @@ typography:
     fontWeight: 700
     lineHeight: 1
     letterSpacing: "0.005em"
+  celebration:
+    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
+    fontSize: "28px"
+    fontWeight: 700
+    lineHeight: 1.05
   sheet-title:
     fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
     fontSize: "24px"
@@ -274,6 +279,7 @@ La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-li
 
 ### Hierarchy
 - **Display** (700, 44px, 1): la fecha del día ("Lunes 21"). Una por pantalla.
+- **Celebration** (700, 28px, 1.05): el título de un logro cumplido ("Reto cumplido: 30 días"). Solo en hojas de celebración.
 - **Headline** (700, 22px, 1.05): títulos de bloque de Hoy ("Tu día", "Misiones").
 - **Title** (700, 20px, 1.1): títulos de sección ("Misiones"), pastilla de nivel.
 - **Number** (700, 17px, cifras tabulares): números de días, puntos, contadores.
