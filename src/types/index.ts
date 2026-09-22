@@ -14,7 +14,7 @@ export const MOMENTOS: MomentoOpcion[] = [
   { id: 'manana', label: 'Mañana', icono: 'Sunrise' },
   { id: 'tarde', label: 'Tarde', icono: 'Sun' },
   { id: 'noche', label: 'Noche', icono: 'Moon' },
-  { id: 'flexible', label: 'En cualquier momento', icono: 'Clock' },
+  { id: 'flexible', label: 'Todo el día', icono: 'Clock' },
 ];
 
 export interface CategoriaHabito {

@@ -45,6 +45,11 @@ typography:
     fontWeight: 700
     lineHeight: 1
     letterSpacing: "0.005em"
+  sheet-title:
+    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
+    fontSize: "24px"
+    fontWeight: 700
+    lineHeight: 1.05
   headline:
     fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
     fontSize: "22px"
@@ -201,7 +206,7 @@ components:
 
 # Design System: Racha
 
-<!-- Diseño aprobado el 2026-09-21 a partir de la maqueta "Hoy v2" (grupos por momento y tarjeta Tu día), guardada en design/maqueta-hoy.html (referencia visual exacta de la pantalla Hoy). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
+<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día) y design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
 
 ## Overview
 
@@ -348,6 +353,23 @@ Un hábito completado NO desaparece ni cambia de posición: se queda en su lugar
 
 ### Barra de agua y metas numéricas
 Hábitos con meta diaria (ej. 8 vasos) muestran segmentos de 16×6px (llenos en text, vacíos en track-empty) y un botón secundario "+1".
+
+### Hojas (bottom sheets)
+Las pantallas secundarias que se abren sobre otra (Gestionar hábitos y similares) son hojas que suben desde abajo: fondo bg, esquinas superiores de 22px, borde superior en line, sombra de hoja (`0 -8px 24px rgba(0,0,0,0.35)`), una manija de 40×5px en line-strong arriba, y detrás un velo (negro al 60% en oscuro, ink al 35% en claro). Encabezado: título en Barlow Condensed 24px, una línea de ayuda en label text-muted y el botón cerrar circular de 36px (surface-raised). Si hay acción principal, va fija abajo en un pie con línea superior en line: botón primario ámbar de 48px a todo el ancho.
+
+**The Explicit Save Rule.** En hojas donde se editan cosas (como el orden en Gestionar hábitos), los cambios no se aplican hasta tocar "Guardar cambios". El botón está apagado (fondo surface-raised, texto text-muted) mientras no haya cambios, y se enciende en ámbar con la línea de aviso "Cambiaste el orden. Se aplicará al guardar." (label, text-muted, centrada) encima. Cerrar con la X, tocar el velo o salir a otra pantalla con cambios pendientes abre la hoja de confirmación "¿Descartar los cambios?" (título en headline, explicación en body text-muted, botones de 48px: "Seguir editando" secundario y "Descartar" con borde y texto danger). Sin cambios pendientes, cerrar es directo. Las acciones con botón propio (Restaurar, Eliminar) siguen siendo inmediatas.
+
+**The Flat Sheet Rule.** Dentro de una hoja no hay tarjetas: las filas son planas y se separan con una línea de 1px en line (la última fila de cada grupo sin línea). Tarjetas dentro de tarjetas quedan prohibidas.
+
+### Fila de gestión (Gestionar hábitos)
+Fila plana de 10px de alto de relleno vertical: asa ⋮⋮ en text-muted (22×32px, zona de arrastre), cuadrito de ícono de 38px con el ícono del hábito en el color de su momento, nombre (body-strong) y debajo una línea label con: frecuencia legible · meta si existe · constancia en ámbar (ambar-text). Chevron a la derecha: toda la fila abre el detalle del hábito. Los hábitos a evitar llevan la etiqueta "Evitar" (11px, 700, fondo surface-raised, texto text-muted, esquinas 6px) antes de la frecuencia.
+- **Frecuencia legible:** "Diario", "Lun a vie" (entre semana), días abreviados para personalizados ("Lun, Mié, Vie"), "N por semana" (semanal). Meta: "Meta: N" (la app no guarda unidad; no inventarla).
+- **Constancia por hábito:** "C/P días", donde P = días programados para ese hábito en los últimos 30 días (sin contar días anteriores a su creación, y sin contar hoy si todavía no se ha completado) y C = días de P completados o congelados con comodín. Para semanales se muestra "N de M esta semana". Nunca la racha con llama en esta pantalla.
+- **Arrastrando:** la fila que se mueve se resalta con una franja plana a todo el ancho de la hoja (fondo surface-raised, sin sombra ni esquinas).
+- **Sin botón Crear en esta hoja:** para crear está el "+" de la barra inferior. Solo el estado vacío (sin ningún hábito) muestra "Crear mi primer hábito".
+- **Encabezado de grupo:** asa ⋮⋮ para arrastrar el grupo completo, cuadrito del momento (26px), nombre en Barlow Condensed 17px y "N hábitos" a la derecha. El orden de los grupos y de los hábitos es el mismo que usa Hoy.
+- **Archivados:** grupo plegable al final con ícono de archivo en text-muted; cada fila con ícono y nombre en text-muted, "Guarda su historial", botón secundario "Restaurar" y botón cuadrado de 32px con papelera en danger. Eliminar siempre pide confirmación.
+- El nombre del momento flexible es siempre **"Todo el día"** en toda la app (nunca "En cualquier momento").
 
 ## Do's and Don'ts
 

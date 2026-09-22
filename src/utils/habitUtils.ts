@@ -231,6 +231,48 @@ export function calcularRachaSemanal(habito: Habito, registros: Registro[], toda
 }
 
 /**
+ * Calcula la constancia del hábito en los últimos 30 días, sin contar días antes de su creación
+ * ni contar hoy si todavía no se ha completado.
+ * Retorna { cumplidos, programados }
+ */
+export function calcularConstanciaHabito(
+  habito: Habito, 
+  registros: Registro[], 
+  diasCongelados: string[] = [], 
+  todayStr = getTodayString()
+): { cumplidos: number; programados: number } {
+  let programados = 0;
+  let cumplidos = 0;
+
+  const creationObj = new Date(habito.creadoEn);
+  const creationDate = formatDateToString(creationObj);
+  const isTodayCompleted = isHabitCompletedOnDate(habito.id, todayStr, registros);
+  
+  for (let i = 0; i < 30; i++) {
+    const cur = subtractDays(todayStr, i);
+    
+    if (cur < creationDate) {
+      break;
+    }
+
+    if (i === 0 && !isTodayCompleted) {
+      continue;
+    }
+
+    const scheduled = isHabitScheduledForDate(habito, cur);
+    if (scheduled) {
+      programados++;
+      const completed = isHabitCompletedOnDate(habito.id, cur, registros);
+      if (completed || diasCongelados.includes(cur)) {
+        cumplidos++;
+      }
+    }
+  }
+
+  return { cumplidos, programados };
+}
+
+/**
  * Obtiene todas las hojas del árbol de subtareas de forma recursiva
  */
 export function obtenerHojasSubtareas(subtareas?: Subtarea[]): Subtarea[] {
