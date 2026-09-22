@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
-import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea } from '../types';
+import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea, COLOR_POR_MOMENTO } from '../types';
 import {
   getTodayString,
   isHabitScheduledForDate,
@@ -67,6 +67,8 @@ interface HabitContextType {
   habitBeingEdited: Habito | null;
   openEditHabit: (habit: Habito) => void;
   cancelEditHabit: () => void;
+  habitoRecienCreadoId: string | null;
+  setHabitoRecienCreadoId: (id: string | null) => void;
 
   // Quick Management
   isManageHabitsOpen: boolean;
@@ -144,6 +146,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Habit Detail & Edit Navigation
   const [selectedHabitIdForDetail, setSelectedHabitIdForDetail] = useState<string | null>(null);
   const [habitBeingEdited, setHabitBeingEdited] = useState<Habito | null>(null);
+  const [habitoRecienCreadoId, setHabitoRecienCreadoId] = useState<string | null>(null);
   const [isManageHabitsOpen, setIsManageHabitsOpen] = useState(false);
   const [isFocusModeOpen, setIsFocusModeOpen] = useState(false);
   const [focusTarget, setFocusTarget] = useState<FocusTarget | null>(null);
@@ -357,8 +360,11 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const crearHabito = (nuevo: Omit<Habito, 'id' | 'creadoEn'>): Habito => {
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `h_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const maxOrden = habitos.reduce((m, h) => Math.max(m, h.orden ?? 0), 0);
+    const colorPorMomento = COLOR_POR_MOMENTO[nuevo.momento || 'flexible'];
+    
     const nuevoHabito: Habito = {
       ...nuevo,
+      color: colorPorMomento, // Force color based on moment
       id,
       orden: maxOrden + 1,
       creadoEn: new Date().toISOString(),
@@ -371,7 +377,14 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // Action: Editar Hábito
   const editarHabito = (id: string, updates: Partial<Habito>) => {
     setHabitos((prev) =>
-      prev.map((h) => (h.id === id ? { ...h, ...updates } : h))
+      prev.map((h) => {
+        if (h.id === id) {
+          const m = updates.momento || h.momento || 'flexible';
+          const updatedColor = COLOR_POR_MOMENTO[m];
+          return { ...h, ...updates, color: updatedColor };
+        }
+        return h;
+      })
     );
   };
 
@@ -704,6 +717,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         habitBeingEdited,
         openEditHabit,
         cancelEditHabit,
+        habitoRecienCreadoId,
+        setHabitoRecienCreadoId,
         isManageHabitsOpen,
         openManageHabits,
         closeManageHabits,

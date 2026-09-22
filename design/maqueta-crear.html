@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta aprobada de Crear y editar hábito (v5)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track:#23272D;--track-on-surface:#2C3137;--fill:#FFB547;--sel:rgba(241,243,245,.6);--scrim:rgba(0,0,0,.6);--sheet:#131518}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#B26A00;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track:#E3E6EA;--track-on-surface:#E3E6EA;--fill:#B26A00;--sel:rgba(21,24,27,.6);--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.scroll{flex:1;overflow:hidden;padding:0 20px}
+.field{padding:18px 0 0}
+.lbl{margin:0 0 8px;font-size:13px;font-weight:500;color:var(--muted)}
+.opt{font-size:12px;font-weight:600;color:var(--muted)}
+.sub{margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.35}
+.name{margin:0;font-size:15px;font-weight:600}
+.name.muted{color:var(--muted)}
+.chips-scroll{display:flex;gap:8px;overflow:hidden;margin-right:-20px}
+.chip{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--muted)}
+.chip.sm{min-height:44px;padding:6px 14px;color:var(--muted)}
+.chip.on{background:var(--raised);color:var(--text);font-weight:700;border-color:var(--sel)}
+.sugs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.bigtile{width:52px;height:52px;border-radius:14px;border:none;display:grid;place-items:center;flex-shrink:0;padding:0}
+.bigtile>*{grid-area:1/1}
+.edit{align-self:end;justify-self:end;margin:0 -4px -4px 0;width:20px;height:20px;border-radius:999px;background:var(--raised);color:var(--text);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center}
+.input{flex:1;min-width:0;min-height:52px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:14px;display:flex;align-items:center;font-size:15px;font-weight:600}
+.input.empty{color:var(--muted);font-weight:500;border-color:var(--line-strong)}
+.input.anchor{min-height:48px;padding:12px 14px;gap:6px}
+.pre{color:var(--muted);font-weight:500}
+.ph{color:var(--muted);font-weight:500}
+.seg{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.seg button{flex:1;height:44px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
+.seg button.on{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1px var(--sel)}
+.moms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mom{height:64px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:600;white-space:nowrap}
+.mom.on{color:var(--text);font-weight:700;border-width:1.5px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.days button{height:44px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:14px;font-weight:600}
+.days button.on{background:var(--raised);color:var(--text);font-weight:700;border-color:var(--sel)}
+.step{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.field .step{margin-top:10px}
+.field>.step:first-child{margin-top:0}
+.sbtn{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbtn:disabled{opacity:.35;cursor:default}
+.sval{width:64px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.link{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link svg{color:var(--muted)}
+.link.center{display:flex;width:100%;justify-content:center;margin-top:4px}
+.pv{margin-bottom:10px}
+.pvhead{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px}
+.pts{font-size:13px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.name.done{text-decoration:line-through;color:var(--muted)}
+.link.quiet{color:var(--muted);font-weight:500}
+.strong{color:var(--text);font-weight:600}
+.plbl{margin:0 0 6px;font-size:12px;font-weight:600;color:var(--muted)}
+.rprog{display:flex;align-items:center;gap:10px;margin-top:10px}
+.more{width:100%;display:flex;align-items:center;gap:6px;height:48px;padding:0;border:none;border-top:1px solid var(--line);background:transparent;font-size:15px;font-weight:600;color:var(--text)}
+.more svg{margin-left:auto;color:var(--muted)}
+.foot{padding:10px 20px 20px;border-top:1px solid var(--line);background:var(--bg)}
+.hint{margin:0 0 8px;font-size:13px;color:var(--muted);text-align:center}
+.primary{width:100%;height:48px;border:none;border-radius:12px;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.primary:disabled{background:var(--raised);color:var(--muted);cursor:default}
+.hrow{border-radius:14px;background:var(--surface);border:1px solid var(--line);padding:10px 12px;margin-bottom:10px}
+.htop{display:flex;align-items:center;gap:12px}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.meta{margin:2px 0 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted)}
+.ring{width:32px;height:32px;border-radius:999px;border:2px solid var(--line-strong);flex-shrink:0}
+.rbar{display:flex;align-items:center;gap:10px;margin-top:10px}
+.track{flex:1;height:6px;border-radius:999px;background:var(--track);overflow:hidden}
+.hrow .track{background:var(--track-on-surface)}
+.fill{height:100%;border-radius:999px;background:var(--fill)}
+.hrow.compact{padding:8px 10px;margin-bottom:0}
+.hrow.compact .tile{width:32px;height:32px;border-radius:9px}
+.hrow.compact .name{font-size:14px}
+.hrow.compact .meta{font-size:12px}
+.hrow.compact .rbar{margin-top:6px}
+.rtxt{font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:auto;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35)}
+.sheet.low{top:auto}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0}
+.igrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.itile{height:48px;border-radius:12px;border:1px solid transparent;background:var(--surface);color:var(--lila-text);display:flex;align-items:center;justify-content:center}
+.itile.on{background:var(--lila-tint);border:1.5px solid var(--lila-text)}
+.behind{padding:24px 20px}
+.donecheck{width:44px;height:44px;border-radius:999px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.btn2{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:15px;font-weight:700}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+</style>
+</head>
+<body>
+<!-- Maqueta aprobada de Crear / editar hábito v5 (2026-09-22): 1 nuevo vacío, 2 Noche con reto de 30, 3 Evitarlo, 4 elegir ícono, 5 cierre al crear, 6 editar (claro), 7 reto cumplido en Hoy. Referencia visual exacta a 390px; datos de ejemplo. Reglas en DESIGN.md (Crear / editar hábito y Reto). -->
+<div class="col"><h2>1 · Nuevo, vacío (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <header class="top">
+      <h1 class="cond" style="margin:0;font-size:24px;flex:1">Nuevo hábito</h1>
+      <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+    </header>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="field">
+        <p class="lbl">Empieza con una idea <span class="opt">o escribe la tuya</span></p>
+        <div class="chips-scroll">
+          <button class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14l-1.5 17a2 2 0 0 1-2 1.8h-7a2 2 0 0 1-2-1.8z"/><path d="M6 9h12"/></svg>Beber agua</button><button class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>Ejercicio</button><button class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Leer 20 min</button><button class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Meditar</button><button class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg>Caminar</button>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl">Nombre</p>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="bigtile" aria-label="Cambiar ícono" style="background:var(--raised);color:var(--text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span class="edit"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span></button>
+          <div class="input empty">Ej. Salir a caminar</div>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-tipo">Quiero</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-tipo"><button role="radio" aria-checked="true" class="on">Hacerlo</button><button role="radio" aria-checked="false" class="">Evitarlo</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-mom">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="lbl-mom">
+          <button role="radio" aria-checked="false" class="mom"><span style="color:var(--ambar-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--coral-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--lila-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="true" class="mom on" style="background:var(--raised);border-color:var(--text)"><span style="color:var(--text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-ancla">¿Después de qué? <span class="opt">opcional</span></p>
+        <div class="input anchor" aria-labelledby="lbl-ancla"><span class="pre">Después de</span><span class="ph">algo que ya haces</span></div>
+        <div class="sugs"><button class="chip sm" aria-pressed="false">despertarme</button><button class="chip sm" aria-pressed="false">almorzar</button><button class="chip sm" aria-pressed="false">cenar</button></div>
+        <p class="sub" style="margin-top:8px">Atarlo a algo que ya haces ayuda a no olvidarlo.</p>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-frec">Frecuencia</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-frec"><button role="radio" aria-checked="true" class="on">Diario</button><button role="radio" aria-checked="false" class="">Lun a vie</button><button role="radio" aria-checked="false" class="">Elegir días</button><button role="radio" aria-checked="false" class="">Por semana</button></div>
+        
+        
+      </div>
+      <div class="field">
+        <button class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Añadir meta <span class="opt" style="margin-left:2px">ej. 8 vasos</span></button>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-reto">Reto de días cumplidos <span class="opt">opcional</span></p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-reto"><button role="radio" aria-checked="true" class="on">Sin reto</button><button role="radio" aria-checked="false" class="">7 días</button><button role="radio" aria-checked="false" class="">30 días</button><button role="radio" aria-checked="false" class="">66 días</button></div>
+        
+        <p class="sub" style="margin-top:8px">Ponte un reto y verás una barra llenarse con cada día que lo cumplas.</p>
+      </div>
+      <div class="field">
+        <button class="more">Más opciones <span class="opt" style="margin-left:4px">categoría para tus estadísticas</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        
+      </div></div></div>
+    
+    <footer class="foot">
+      <p class="plbl">Así se verá en Hoy</p>
+        <div class="pv">
+          <p class="pvhead"><span style="color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>Todo el día</p>
+          <div class="hrow compact">
+            <div class="htop">
+              <div class="tile" style="background:var(--raised);color:var(--text)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <p class="name muted">Tu hábito</p>
+                <p class="meta">Sin anclaje</p>
+              </div>
+              <span class="pts">+10</span><span class="ring" aria-hidden="true"></span>
+            </div>
+            
+          </div>
+        </div>
+      
+      <button class="primary" disabled>Escribe un nombre para crear</button>
+    </footer>
+    
+  </div></div></div>
+<div class="col"><h2>2 · Noche con reto de 30 días (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <header class="top">
+      <h1 class="cond" style="margin:0;font-size:24px;flex:1">Nuevo hábito</h1>
+      <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+    </header>
+    <div class="scroll"><div style="margin-top:-190px;padding-bottom:20px">
+      <div class="field">
+        <p class="lbl">Nombre</p>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="bigtile" aria-label="Cambiar ícono" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg><span class="edit"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span></button>
+          <div class="input">Leer 20 min</div>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-tipo">Quiero</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-tipo"><button role="radio" aria-checked="true" class="on">Hacerlo</button><button role="radio" aria-checked="false" class="">Evitarlo</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-mom">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="lbl-mom">
+          <button role="radio" aria-checked="false" class="mom"><span style="color:var(--ambar-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--coral-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="true" class="mom on" style="background:var(--lila-tint);border-color:var(--lila-text)"><span style="color:var(--lila-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-ancla">¿Después de qué? <span class="opt">opcional</span></p>
+        <div class="input anchor" aria-labelledby="lbl-ancla"><span class="pre">Después de</span><span>cenar</span></div>
+        <div class="sugs"><button class="chip sm on" aria-pressed="true">cenar</button><button class="chip sm" aria-pressed="false">lavarme los dientes</button><button class="chip sm" aria-pressed="false">acostarme</button></div>
+        <p class="sub" style="margin-top:8px">Atarlo a algo que ya haces ayuda a no olvidarlo.</p>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-frec">Frecuencia</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-frec"><button role="radio" aria-checked="false" class="">Diario</button><button role="radio" aria-checked="false" class="">Lun a vie</button><button role="radio" aria-checked="true" class="on">Elegir días</button><button role="radio" aria-checked="false" class="">Por semana</button></div>
+        <div class="days"><button aria-label="Lunes" aria-pressed="true" class="on">L</button><button aria-label="Martes" aria-pressed="false" class="">M</button><button aria-label="Miércoles" aria-pressed="true" class="on">X</button><button aria-label="Jueves" aria-pressed="false" class="">J</button><button aria-label="Viernes" aria-pressed="true" class="on">V</button><button aria-label="Sábado" aria-pressed="false" class="">S</button><button aria-label="Domingo" aria-pressed="false" class="">D</button></div>
+        
+      </div>
+      <div class="field">
+        <button class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Añadir meta <span class="opt" style="margin-left:2px">ej. 8 vasos</span></button>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-reto">Reto de días cumplidos <span class="opt">opcional</span></p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-reto"><button role="radio" aria-checked="false" class="">Sin reto</button><button role="radio" aria-checked="false" class="">7 días</button><button role="radio" aria-checked="true" class="on">30 días</button><button role="radio" aria-checked="false" class="">66 días</button></div>
+        
+        <p class="sub" style="margin-top:8px"><b class="strong">Con 3 días por semana, son unas 10 semanas.</b> Cada día que lo cumplas suma. La barra nunca baja.</p>
+      </div>
+      <div class="field">
+        <button class="more">Más opciones <span class="opt" style="margin-left:4px">categoría para tus estadísticas</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        
+      </div></div></div>
+    
+    <footer class="foot">
+      <p class="plbl">Así se verá en Hoy</p>
+        <div class="pv">
+          <p class="pvhead"><span style="color:var(--lila-text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+          <div class="hrow compact">
+            <div class="htop">
+              <div class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <p class="name">Leer 20 min</p>
+                <p class="meta">después de cenar</p>
+              </div>
+              <span class="pts">+10</span><span class="ring" aria-hidden="true"></span>
+            </div>
+            <div class="rbar" role="progressbar" aria-valuenow="0" aria-valuemax="30" aria-label="Reto"><div class="track"><div class="fill" style="width:0%"></div></div><span class="rtxt">Reto de 30 días</span></div>
+          </div>
+        </div>
+      
+      <button class="primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Crear hábito</button>
+    </footer>
+    
+  </div></div></div>
+<div class="col"><h2>3 · Evitarlo, Tarde, 66 días (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <header class="top">
+      <h1 class="cond" style="margin:0;font-size:24px;flex:1">Nuevo hábito</h1>
+      <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+    </header>
+    <div class="scroll"><div style="margin-top:-170px;padding-bottom:20px">
+      <div class="field">
+        <p class="lbl">Nombre</p>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="bigtile" aria-label="Cambiar ícono" style="background:var(--coral-tint);color:var(--coral-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span class="edit"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span></button>
+          <div class="input">Nada de redes en el trabajo</div>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-tipo">Quiero</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-tipo"><button role="radio" aria-checked="false" class="">Hacerlo</button><button role="radio" aria-checked="true" class="on">Evitarlo</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-mom">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="lbl-mom">
+          <button role="radio" aria-checked="false" class="mom"><span style="color:var(--ambar-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="true" class="mom on" style="background:var(--coral-tint);border-color:var(--coral-text)"><span style="color:var(--coral-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--lila-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-ancla">¿Cuándo te cuesta más? <span class="opt">opcional</span></p>
+        <div class="input anchor" aria-labelledby="lbl-ancla"><span class="pre">Cuando</span><span>me siente a trabajar</span></div>
+        <div class="sugs"><button class="chip sm on" aria-pressed="true">me siente a trabajar</button><button class="chip sm" aria-pressed="false">me aburra</button><button class="chip sm" aria-pressed="false">termine de almorzar</button></div>
+        <p class="sub" style="margin-top:8px">Saber cuándo llega la tentación ayuda a no caer.</p>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-frec">Frecuencia</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-frec"><button role="radio" aria-checked="false" class="">Diario</button><button role="radio" aria-checked="true" class="on">Lun a vie</button><button role="radio" aria-checked="false" class="">Elegir días</button><button role="radio" aria-checked="false" class="">Por semana</button></div>
+        
+        
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-reto">Reto de días cumplidos <span class="opt">opcional</span></p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-reto"><button role="radio" aria-checked="false" class="">Sin reto</button><button role="radio" aria-checked="false" class="">7 días</button><button role="radio" aria-checked="false" class="">30 días</button><button role="radio" aria-checked="true" class="on">66 días</button></div>
+        
+        <p class="sub" style="margin-top:8px"><b class="strong">Con Lun a vie, son unas 13 semanas.</b> En promedio, un hábito tarda unos 66 días en volverse automático, aunque varía mucho entre personas. Cada día que lo cumplas suma y la barra nunca baja.</p>
+      </div>
+      <div class="field">
+        <button class="more">Más opciones <span class="opt" style="margin-left:4px">categoría para tus estadísticas</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        
+      </div></div></div>
+    
+    <footer class="foot">
+      <p class="plbl">Así se verá en Hoy</p>
+        <div class="pv">
+          <p class="pvhead"><span style="color:var(--coral-text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>Tarde</p>
+          <div class="hrow compact">
+            <div class="htop">
+              <div class="tile" style="background:var(--coral-tint);color:var(--coral-text)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <p class="name">Nada de redes en el trabajo</p>
+                <p class="meta">evitar · cuando me siente a trabajar</p>
+              </div>
+              <span class="pts">+10</span><span class="ring" aria-hidden="true"></span>
+            </div>
+            <div class="rbar" role="progressbar" aria-valuenow="0" aria-valuemax="66" aria-label="Reto"><div class="track"><div class="fill" style="width:0%"></div></div><span class="rtxt">Reto de 66 días</span></div>
+          </div>
+        </div>
+      
+      <button class="primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Crear hábito</button>
+    </footer>
+    
+  </div></div></div>
+<div class="col"><h2>4 · Elegir ícono (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <header class="top">
+      <h1 class="cond" style="margin:0;font-size:24px;flex:1">Nuevo hábito</h1>
+      <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+    </header>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="field">
+        <p class="lbl">Nombre</p>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="bigtile" aria-label="Cambiar ícono" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg><span class="edit"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span></button>
+          <div class="input">Leer 20 min</div>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-tipo">Quiero</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-tipo"><button role="radio" aria-checked="true" class="on">Hacerlo</button><button role="radio" aria-checked="false" class="">Evitarlo</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-mom">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="lbl-mom">
+          <button role="radio" aria-checked="false" class="mom"><span style="color:var(--ambar-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--coral-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="true" class="mom on" style="background:var(--lila-tint);border-color:var(--lila-text)"><span style="color:var(--lila-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button>
+        </div>
+      </div></div></div>
+    
+    <footer class="foot">
+      
+      
+      <button class="primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Crear hábito</button>
+    </footer>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-label="Elige un ícono">
+      <div class="grab"></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 20px 2px">
+        <h2 class="cond" style="margin:0;font-size:24px;flex:1">Elige un ícono</h2>
+        <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <p class="sub" style="margin:0 20px 10px">Se verá en el color de Noche. Al tocar uno, se elige y la hoja se cierra.</p>
+      <div style="padding:0 20px 24px;display:flex;flex-direction:column;gap:12px">
+        <div><p class="lbl" style="margin-bottom:6px">General</p><div class="igrid"><button class="itile" aria-label="Diana"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></button><button class="itile" aria-label="Estrella"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></button><button class="itile" aria-label="Energía"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></button><button class="itile" aria-label="Brillo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></button><button class="itile" aria-label="Escudo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></button><button class="itile" aria-label="Prohibido"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></button></div></div><div><p class="lbl" style="margin-bottom:6px">Salud y cuerpo</p><div class="igrid"><button class="itile" aria-label="Pesas"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></button><button class="itile" aria-label="Pulso"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg></button><button class="itile" aria-label="Caminar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg></button><button class="itile" aria-label="Pastilla"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg></button><button class="itile" aria-label="Dormir"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></button><button class="itile" aria-label="Hoja"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></button></div></div><div><p class="lbl" style="margin-bottom:6px">Mente y relaciones</p><div class="igrid"><button class="itile on" aria-label="Libro" aria-pressed="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></button><button class="itile" aria-label="Estudio"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></button><button class="itile" aria-label="Música"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button><button class="itile" aria-label="Escribir"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button><button class="itile" aria-label="Personas"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button><button class="itile" aria-label="Corazón"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div></div><div><p class="lbl" style="margin-bottom:6px">Casa y vida</p><div class="igrid"><button class="itile" aria-label="Agua"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></button><button class="itile" aria-label="Fruta"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06z"/><path d="M10 2c1 .5 2 2 2 5"/></svg></button><button class="itile" aria-label="Café"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg></button><button class="itile" aria-label="Casa"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button><button class="itile" aria-label="Dinero"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></button><button class="itile" aria-label="Celular"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></button></div></div>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>5 · Cierre al crear (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="behind">
+      <p class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 21</p>
+      <p class="sub" style="margin:6px 0 18px">Misiones de hoy: 1 de 4</p>
+      <div style="height:120px;border-radius:18px;background:var(--surface)"></div>
+    </div>
+    
+    <div class="scrim"></div>
+    <section class="sheet low" role="alertdialog" aria-label="Hábito creado">
+      <div class="grab"></div>
+      <div style="padding:14px 20px 18px">
+        <div class="donecheck" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h2 class="cond" style="margin:12px 0 4px;font-size:24px">Listo, ya está en tu día</h2>
+        <p style="margin:0 0 14px;font-size:15px;color:var(--muted)">Lo verás en <b style="color:var(--text)">Noche</b>, después de cenar. Cada día que lo cumplas suma a tu reto; la barra nunca baja.</p>
+        
+        <div class="pv">
+          <p class="pvhead"><span style="color:var(--lila-text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+          <div class="hrow compact">
+            <div class="htop">
+              <div class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <p class="name">Leer 20 min</p>
+                <p class="meta">después de cenar</p>
+              </div>
+              <span class="pts">+10</span><span class="ring" aria-hidden="true"></span>
+            </div>
+            <div class="rbar" role="progressbar" aria-valuenow="0" aria-valuemax="30" aria-label="Reto"><div class="track"><div class="fill" style="width:0%"></div></div><span class="rtxt">Reto de 30 días</span></div>
+          </div>
+        </div>
+        <button class="primary" style="margin-top:12px">Ver en Hoy</button>
+        <button class="link center">Crear otro hábito</button>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>6 · Editar, cambió a Mañana (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <header class="top">
+      <h1 class="cond" style="margin:0;font-size:24px;flex:1">Editar hábito</h1>
+      <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+    </header>
+    <div class="scroll"><div style="margin-top:-330px;padding-bottom:20px">
+      <div class="field">
+        <p class="lbl">Nombre</p>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="bigtile" aria-label="Cambiar ícono" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg><span class="edit"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span></button>
+          <div class="input">Beber agua</div>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-tipo">Quiero</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-tipo"><button role="radio" aria-checked="true" class="on">Hacerlo</button><button role="radio" aria-checked="false" class="">Evitarlo</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-mom">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="lbl-mom">
+          <button role="radio" aria-checked="true" class="mom on" style="background:var(--ambar-tint);border-color:var(--ambar-text)"><span style="color:var(--ambar-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--coral-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--lila-text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--text)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-ancla">¿Después de qué? <span class="opt">opcional</span></p>
+        <div class="input anchor" aria-labelledby="lbl-ancla"><span class="pre">Después de</span><span>tomar café</span></div>
+        <div class="sugs"><button class="chip sm" aria-pressed="false">despertarme</button><button class="chip sm on" aria-pressed="true">tomar café</button><button class="chip sm" aria-pressed="false">bañarme</button></div>
+        <p class="sub" style="margin-top:8px">Atarlo a algo que ya haces ayuda a no olvidarlo.</p>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-frec">Frecuencia</p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-frec"><button role="radio" aria-checked="true" class="on">Diario</button><button role="radio" aria-checked="false" class="">Lun a vie</button><button role="radio" aria-checked="false" class="">Elegir días</button><button role="radio" aria-checked="false" class="">Por semana</button></div>
+        
+        
+      </div>
+      <div class="field">
+        
+        <div class="step">
+          <div style="flex:1;min-width:0"><p class="name">Meta al día</p><p class="sub">Ej. 8 si son 8 vasos</p></div>
+          <button class="sbtn" aria-label="Menos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <span class="sval">8</span>
+          <button class="sbtn" aria-label="Más"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+        </div>
+        <button class="link quiet" style="margin-top:4px">Quitar meta</button>
+      </div>
+      <div class="field">
+        <p class="lbl" id="lbl-reto">Reto de días cumplidos <span class="opt">opcional</span></p>
+        <div class="seg" role="radiogroup" aria-labelledby="lbl-reto"><button role="radio" aria-checked="false" class="">Sin reto</button><button role="radio" aria-checked="false" class="">7 días</button><button role="radio" aria-checked="true" class="on">30 días</button><button role="radio" aria-checked="false" class="">66 días</button></div>
+        <div class="rprog" role="progressbar" aria-valuenow="12" aria-valuemax="30" aria-label="Reto"><div class="track"><div class="fill" style="width:40%"></div></div><span class="rtxt">Reto · 12 de 30</span></div>
+        <p class="sub" style="margin-top:8px"><b class="strong">Si cambias o quitas el reto, no pierdes lo cumplido.</b> Cada día que lo cumplas suma. La barra nunca baja.</p>
+      </div>
+      <div class="field">
+        <button class="more">Más opciones <span class="opt" style="margin-left:4px">categoría para tus estadísticas</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="link quiet" style="margin-top:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>Archivar hábito</button>
+      </div></div></div>
+    
+    <footer class="foot">
+      <p class="plbl">Así se verá en Hoy</p>
+        <div class="pv">
+          <p class="pvhead"><span style="color:var(--ambar-text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span>Mañana</p>
+          <div class="hrow compact">
+            <div class="htop">
+              <div class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <p class="name">Beber agua</p>
+                <p class="meta">después de tomar café</p>
+              </div>
+              <span class="pts">+1</span><span class="ring" aria-hidden="true"></span>
+            </div>
+            <div class="rbar" role="progressbar" aria-valuenow="12" aria-valuemax="30" aria-label="Reto"><div class="track"><div class="fill" style="width:40%"></div></div><span class="rtxt">Reto · 12 de 30</span></div>
+          </div>
+        </div>
+      <p class="hint">Cambiaste el momento y el anclaje. Se aplicará al guardar.</p>
+      <button class="primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Guardar cambios</button>
+    </footer>
+    
+  </div></div></div>
+<div class="col"><h2>7 · Reto cumplido, en Hoy (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="behind">
+      <p class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 21</p>
+      <p class="sub" style="margin:6px 0 18px">Misiones de hoy: 1 de 4</p>
+      <div style="height:120px;border-radius:18px;background:var(--surface)"></div>
+    </div>
+    
+    <div class="scrim"></div>
+    <section class="sheet low" role="alertdialog" aria-label="Reto cumplido">
+      <div class="grab"></div>
+      <div style="padding:14px 20px 18px">
+        <div class="donecheck" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></div>
+        <h2 class="cond" style="margin:12px 0 2px;font-size:28px">Reto cumplido: 30 días</h2>
+        <p class="cond" style="margin:0 0 6px;font-size:17px;color:var(--ambar-text)">30 días cumplidos en 12 semanas</p>
+        <p style="margin:0 0 14px;font-size:15px;color:var(--muted)">No fue perfecto y no hacía falta: volviste cada vez. <b style="color:var(--text)">Leer 20 min</b> sigue en tu día como siempre.</p>
+        
+        <div class="pv">
+          <p class="pvhead"><span style="color:var(--lila-text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+          <div class="hrow compact">
+            <div class="htop">
+              <div class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div>
+              <div style="flex:1;min-width:0">
+                <p class="name done">Leer 20 min</p>
+                <p class="meta"><span style="color:var(--ambar-text);font-weight:600">+10 ganados</span></p>
+              </div>
+              <span class="ring done" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+            </div>
+            <div class="rbar" role="progressbar" aria-valuenow="30" aria-valuemax="30" aria-label="Reto"><div class="track"><div class="fill" style="width:100%"></div></div><span class="rtxt">Reto · 30 de 30</span></div>
+          </div>
+        </div>
+        <button class="primary" style="margin-top:12px">Ir por 66 días</button>
+        <button class="link center">Seguir sin reto</button>
+      </div>
+    </section>
+  </div></div></div>
+
+</body>
+</html>

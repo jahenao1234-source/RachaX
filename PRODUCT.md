@@ -57,11 +57,12 @@ Frase de posicionamiento: "Huella te ayuda a organizar tu vida. Racha te ayuda a
 **Hoja de ruta:**
 - Fase 0 (requisito para vender): cuentas y datos en la nube con sincronización, acceso solo para compradores conectado al pago, recordatorios push.
 - Fase 1 (lanzamiento): modo rescate y métrica de constancia, versión mínima de cada hábito, diagnóstico inicial con rueda de la vida (máximo 3 hábitos), arranque de 60 segundos y cierre del día, arranque de 2 minutos en modo Foco, centro de tutoriales, Academia del método, modo claro.
-- Fase 2: IA con créditos ("Divídelo por mí", coach de rescate, resumen semanal), revisión semanal, programas y retos de 30 días, "¿para qué lo hago?", tareas con día asignado.
+- En curso (rediseño, 2026-09): **reto por hábito** (7, 30 o 66 días cumplidos; con frecuencia semanal, 4, 8 o 12 semanas). Cuenta días cumplidos, la barra nunca baja y el hábito sigue al terminar. Se adelantó de la Fase 2 por decisión del dueño.
+- Fase 2: IA con créditos ("Divídelo por mí", coach de rescate, resumen semanal), revisión semanal, programas guiados, "¿para qué lo hago?", tareas con día asignado.
 
 **Por decidir:** proveedor de base de datos y autenticación, plataforma de cobro, precio final (hipótesis: USD 19–24 pago único de lanzamiento), dominio y hosting.
 
-**Terminología:** hábito, rutina, tarea, subtarea/paso, comodín, racha, constancia, momento del día, anclaje, modo Foco, misiones, nivel, puntos, insignias.
+**Terminología:** hábito, rutina, tarea, subtarea/paso, comodín, racha, constancia, momento del día, anclaje, reto (de días cumplidos), modo Foco, misiones, nivel, puntos, insignias.
 
 ## Brand Commitments
 

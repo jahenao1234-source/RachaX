@@ -1,4 +1,4 @@
-import { Habito, Registro, Subtarea } from '../types';
+import { Habito, Registro, Subtarea, FrecuenciaHabito } from '../types';
 
 /**
  * Returns today's date formatted as YYYY-MM-DD in local time
@@ -415,5 +415,53 @@ export function calcularNivel(puntos: number): number {
 
 export function calcularProgresoNivel(puntos: number): number {
   return puntos % 1000;
+}
+
+/**
+ * Reto
+ */
+
+export function contarProgresoReto(habito: Habito, registros: Registro[]): number {
+  if (!habito.reto) return 0;
+  
+  if (habito.frecuencia === 'semanal') {
+    let count = 0;
+    const inicio = habito.reto.inicio;
+    const hoy = getTodayString();
+    if (inicio > hoy) return 0;
+    
+    let curWeekStart = getSemanaDates(inicio)[0];
+    const maxWeekStart = getSemanaDates(hoy)[0];
+    
+    while (curWeekStart <= maxWeekStart) {
+      const completed = contarCompletadosSemana(habito.id, curWeekStart, registros);
+      if (completed >= (habito.vecesPorSemana || 1)) {
+        count++;
+      }
+      const d = parseDateString(curWeekStart);
+      d.setDate(d.getDate() + 7);
+      curWeekStart = formatDateToString(d);
+    }
+    return count;
+  }
+  
+  let count = 0;
+  for (const reg of registros) {
+    if (reg.habitoId === habito.id && reg.fecha >= habito.reto.inicio && reg.completado) {
+      count++;
+    }
+  }
+  return count;
+}
+
+export function semanasEstimadasReto(meta: number, frecuencia: FrecuenciaHabito, diasPersonalizados?: number[]): number | null {
+  if (frecuencia === 'semanal') return null;
+  let porSemana = 7;
+  if (frecuencia === 'diario') porSemana = 7;
+  else if (frecuencia === 'entreSemana') porSemana = 5;
+  else if (frecuencia === 'personalizado') porSemana = diasPersonalizados?.length || 1;
+  
+  if (porSemana === 7) return null;
+  return Math.ceil(meta / porSemana);
 }
 

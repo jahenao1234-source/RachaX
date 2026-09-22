@@ -13,6 +13,7 @@ import { FocusModeScreen } from '../screens/FocusModeScreen';
 import { RutinaEditorModal } from '../screens/RutinaEditorModal';
 import { TareaEditorModal } from '../screens/TareaEditorModal';
 import { CreateMenu } from './CreateMenu';
+import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { BadgeUnlockToast } from '../badges/BadgeUnlockToast';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
@@ -24,6 +25,10 @@ export const AppShell: React.FC = () => {
     setActiveTab,
     selectedHabitIdForDetail,
     closeHabitDetail,
+    habitos,
+    habitoRecienCreadoId,
+    setHabitoRecienCreadoId,
+    closeCreateModal,
   } = useHabitStore();
 
   const renderActiveScreen = () => {
@@ -32,7 +37,9 @@ export const AppShell: React.FC = () => {
       return <HabitDetailScreen habitId={selectedHabitIdForDetail} onBack={closeHabitDetail} />;
     }
 
-    switch (activeTab) {
+    const screenToRender = activeTab === 'crear' ? 'hoy' : activeTab;
+
+    switch (screenToRender) {
       case 'hoy':
         return <TodayScreen />;
       case 'stats':
@@ -41,12 +48,12 @@ export const AppShell: React.FC = () => {
         return <CalendarScreen />;
       case 'perfil':
         return <ProfileScreen />;
-      case 'crear':
-        return <CreateHabitScreen />;
       default:
         return <TodayScreen />;
     }
   };
+
+  const habitoRecienCreado = habitoRecienCreadoId ? habitos.find((h) => h.id === habitoRecienCreadoId) || null : null;
 
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-center items-center py-0 sm:py-6 lg:py-8 px-0 sm:px-4 lg:px-6">
@@ -107,6 +114,23 @@ export const AppShell: React.FC = () => {
         <TareaEditorModal />
         <OnboardingModal />
         <BadgeUnlockToast />
+
+        {/* Create Habit Modal */}
+        {activeTab === 'crear' && <CreateHabitScreen />}
+
+        {/* Habit Created Sheet */}
+        <HabitCreatedSheet 
+          habito={habitoRecienCreado} 
+          onViewToday={() => {
+            setHabitoRecienCreadoId(null);
+            closeCreateModal();
+            setActiveTab('hoy');
+          }}
+          onCreateAnother={() => {
+            setHabitoRecienCreadoId(null);
+            // stays in 'crear' mode, so the create screen remains open
+          }}
+        />
       </main>
     </div>
   );

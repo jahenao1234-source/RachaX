@@ -17,6 +17,13 @@ export const MOMENTOS: MomentoOpcion[] = [
   { id: 'flexible', label: 'Todo el día', icono: 'Clock' },
 ];
 
+export const COLOR_POR_MOMENTO: Record<MomentoDia, string> = {
+  manana: '#FFB547',
+  tarde: '#FF7A59',
+  noche: '#8E9BFF',
+  flexible: '#98A0AA',
+};
+
 export interface CategoriaHabito {
   key: string;
   label: string;
@@ -70,6 +77,7 @@ export type Habito = {
   diasPersonalizados?: number[];   // 0=Dom ... 6=Sáb, si es personalizado
   recordatorio?: string | null;      // "08:00" o null
   metaDiaria?: number;        // opcional (ej. 8 vasos); si no, es sí/no
+  reto?: { meta: number; inicio: string; cumplidoEn?: string }; // meta = días o semanas, inicio = YYYY-MM-DD
   creadoEn: string;           // ISO date
 };
 
@@ -148,75 +156,41 @@ export interface IconoHabitoOpcion {
 
 export const ICONOS_DISPONIBLES: IconoHabitoOpcion[] = [
   // General
-  { name: 'Flame', label: 'Fuego', category: 'General' },
+  { name: 'Target', label: 'Diana', category: 'General' },
+  { name: 'Star', label: 'Estrella', category: 'General' },
   { name: 'Zap', label: 'Energía', category: 'General' },
-  { name: 'CheckCircle', label: 'Tarea', category: 'General' },
+  { name: 'Sparkles', label: 'Brillo', category: 'General' },
+  { name: 'ShieldCheck', label: 'Escudo', category: 'General' },
+  { name: 'Ban', label: 'Prohibido', category: 'General' },
 
-  // Salud & Ejercicio
-  { name: 'Dumbbell', label: 'Ejercicio', category: 'Salud & Ejercicio' },
-  { name: 'HeartPulse', label: 'Cardio', category: 'Salud & Ejercicio' },
-  { name: 'Bike', label: 'Bicicleta', category: 'Salud & Ejercicio' },
-  { name: 'Footprints', label: 'Caminar', category: 'Salud & Ejercicio' },
-  { name: 'Heart', label: 'Salud', category: 'Salud & Ejercicio' },
-  { name: 'Activity', label: 'Actividad', category: 'Salud & Ejercicio' },
-  { name: 'PersonStanding', label: 'Yoga', category: 'Salud & Ejercicio' },
-  { name: 'Weight', label: 'Pesas', category: 'Salud & Ejercicio' },
-  { name: 'MountainSnow', label: 'Senderismo', category: 'Salud & Ejercicio' },
+  // Salud y cuerpo
+  { name: 'Dumbbell', label: 'Pesas', category: 'Salud y cuerpo' },
+  { name: 'HeartPulse', label: 'Pulso', category: 'Salud y cuerpo' },
+  { name: 'Footprints', label: 'Caminar', category: 'Salud y cuerpo' },
+  { name: 'Pill', label: 'Pastilla', category: 'Salud y cuerpo' },
+  { name: 'Bed', label: 'Dormir', category: 'Salud y cuerpo' },
+  { name: 'Leaf', label: 'Hoja', category: 'Salud y cuerpo' },
 
-  // Mente & Bienestar
-  { name: 'Brain', label: 'Mente', category: 'Mente & Bienestar' },
-  { name: 'Sparkles', label: 'Mindfulness', category: 'Mente & Bienestar' },
-  { name: 'Wind', label: 'Respiración', category: 'Mente & Bienestar' },
-  { name: 'Moon', label: 'Sueño', category: 'Mente & Bienestar' },
-  { name: 'Bed', label: 'Descanso', category: 'Mente & Bienestar' },
-  { name: 'Sun', label: 'Mañana', category: 'Mente & Bienestar' },
-  { name: 'Smile', label: 'Ánimo', category: 'Mente & Bienestar' },
-  { name: 'Music', label: 'Música', category: 'Mente & Bienestar' },
-  { name: 'Headphones', label: 'Podcast', category: 'Mente & Bienestar' },
-  { name: 'NotebookPen', label: 'Diario', category: 'Mente & Bienestar' },
-  { name: 'Feather', label: 'Escribir', category: 'Mente & Bienestar' },
+  // Mente y relaciones
+  { name: 'BookOpen', label: 'Libro', category: 'Mente y relaciones' },
+  { name: 'GraduationCap', label: 'Estudio', category: 'Mente y relaciones' },
+  { name: 'Music', label: 'Música', category: 'Mente y relaciones' },
+  { name: 'PenLine', label: 'Escribir', category: 'Mente y relaciones' },
+  { name: 'Users', label: 'Personas', category: 'Mente y relaciones' },
+  { name: 'Heart', label: 'Corazón', category: 'Mente y relaciones' },
 
-  // Nutrición
-  { name: 'GlassWater', label: 'Agua', category: 'Nutrición' },
-  { name: 'Apple', label: 'Nutrición', category: 'Nutrición' },
-  { name: 'Salad', label: 'Comer sano', category: 'Nutrición' },
-  { name: 'Carrot', label: 'Verduras', category: 'Nutrición' },
-  { name: 'Utensils', label: 'Comida', category: 'Nutrición' },
-  { name: 'Coffee', label: 'Café', category: 'Nutrición' },
-
-  // Productividad
-  { name: 'Briefcase', label: 'Trabajo', category: 'Productividad' },
-  { name: 'Laptop', label: 'Computador', category: 'Productividad' },
-  { name: 'BookOpen', label: 'Lectura', category: 'Productividad' },
-  { name: 'GraduationCap', label: 'Aprender', category: 'Productividad' },
-  { name: 'Target', label: 'Meta', category: 'Productividad' },
-  { name: 'ListChecks', label: 'Tareas', category: 'Productividad' },
-  { name: 'Code', label: 'Programar', category: 'Productividad' },
-  { name: 'Lightbulb', label: 'Ideas', category: 'Productividad' },
-
-  // Finanzas & Vida
-  { name: 'PiggyBank', label: 'Ahorrar', category: 'Finanzas & Vida' },
-  { name: 'Wallet', label: 'Presupuesto', category: 'Finanzas & Vida' },
-  { name: 'Leaf', label: 'Naturaleza', category: 'Finanzas & Vida' },
-  { name: 'Sprout', label: 'Crecer', category: 'Finanzas & Vida' },
-  { name: 'Dog', label: 'Mascota', category: 'Finanzas & Vida' },
-  { name: 'Home', label: 'Hogar', category: 'Finanzas & Vida' },
-  { name: 'Sunrise', label: 'Madrugar', category: 'Finanzas & Vida' },
-
-  // Evitar
-  { name: 'Cigarette', label: 'No fumar', category: 'Evitar' },
-  { name: 'Wine', label: 'No alcohol', category: 'Evitar' },
-  { name: 'Smartphone', label: 'Menos pantalla', category: 'Evitar' },
-  { name: 'Gamepad2', label: 'Menos juegos', category: 'Evitar' },
-  { name: 'Tv', label: 'Menos TV', category: 'Evitar' },
-  { name: 'Ban', label: 'Evitar', category: 'Evitar' },
-  { name: 'ShieldCheck', label: 'Resistir', category: 'Evitar' },
+  // Casa y vida
+  { name: 'Droplet', label: 'Agua', category: 'Casa y vida' },
+  { name: 'Apple', label: 'Fruta', category: 'Casa y vida' },
+  { name: 'Coffee', label: 'Café', category: 'Casa y vida' },
+  { name: 'Home', label: 'Casa', category: 'Casa y vida' },
+  { name: 'Wallet', label: 'Dinero', category: 'Casa y vida' },
+  { name: 'Smartphone', label: 'Celular', category: 'Casa y vida' },
 ];
 
 export interface PlantillaHabito {
   nombre: string;
   icono: string;
-  color: string;
   categoria?: string;
   momento?: MomentoDia;
   frecuencia?: FrecuenciaHabito;
@@ -226,16 +200,16 @@ export interface PlantillaHabito {
 }
 
 export const PLANTILLAS_HABITOS: PlantillaHabito[] = [
-  { nombre: 'Beber agua', icono: 'GlassWater', color: '#378ADD', categoria: 'nutricion', momento: 'flexible', frecuencia: 'diario', metaDiaria: 8 },
-  { nombre: 'Ejercicio', icono: 'Dumbbell', color: '#F97316', categoria: 'ejercicio', momento: 'manana', frecuencia: 'semanal', vecesPorSemana: 3 },
-  { nombre: 'Leer 20 min', icono: 'BookOpen', color: '#F59E0B', categoria: 'productividad', momento: 'noche', frecuencia: 'diario' },
-  { nombre: 'Meditar', icono: 'Sparkles', color: '#8B5CF6', categoria: 'mente', momento: 'manana', frecuencia: 'diario' },
-  { nombre: 'Caminar', icono: 'Footprints', color: '#34D399', categoria: 'ejercicio', momento: 'flexible', frecuencia: 'diario' },
-  { nombre: 'Comer fruta', icono: 'Apple', color: '#34D399', categoria: 'nutricion', momento: 'flexible', frecuencia: 'diario' },
-  { nombre: 'Estudiar', icono: 'GraduationCap', color: '#378ADD', categoria: 'productividad', momento: 'tarde', frecuencia: 'diario' },
-  { nombre: 'Gratitud', icono: 'NotebookPen', color: '#ED93B1', categoria: 'mente', momento: 'noche', frecuencia: 'diario' },
-  { nombre: 'No fumar', icono: 'Cigarette', color: '#F97316', categoria: 'salud', momento: 'flexible', frecuencia: 'diario', tipo: 'negativo' },
-  { nombre: 'Menos pantalla', icono: 'Smartphone', color: '#F59E0B', categoria: 'otro', momento: 'noche', frecuencia: 'diario', tipo: 'negativo' },
+  { nombre: 'Beber agua', icono: 'Droplet', categoria: 'nutricion', momento: 'flexible', frecuencia: 'diario', metaDiaria: 8 },
+  { nombre: 'Ejercicio', icono: 'Dumbbell', categoria: 'ejercicio', momento: 'manana', frecuencia: 'semanal', vecesPorSemana: 3 },
+  { nombre: 'Leer 20 min', icono: 'BookOpen', categoria: 'productividad', momento: 'noche', frecuencia: 'diario' },
+  { nombre: 'Meditar', icono: 'Sparkles', categoria: 'mente', momento: 'manana', frecuencia: 'diario' },
+  { nombre: 'Caminar', icono: 'Footprints', categoria: 'ejercicio', momento: 'flexible', frecuencia: 'diario' },
+  { nombre: 'Comer fruta', icono: 'Apple', categoria: 'nutricion', momento: 'flexible', frecuencia: 'diario' },
+  { nombre: 'Estudiar', icono: 'GraduationCap', categoria: 'productividad', momento: 'tarde', frecuencia: 'diario' },
+  { nombre: 'Gratitud', icono: 'PenLine', categoria: 'mente', momento: 'noche', frecuencia: 'diario' },
+  { nombre: 'No fumar', icono: 'Ban', categoria: 'salud', momento: 'flexible', frecuencia: 'diario', tipo: 'negativo' },
+  { nombre: 'Menos pantalla', icono: 'Smartphone', categoria: 'otro', momento: 'noche', frecuencia: 'diario', tipo: 'negativo' },
 ];
 
 export interface Rutina {
