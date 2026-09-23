@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta aprobada del Calendario (v2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+</style>
+</head>
+<body>
+<!-- Maqueta aprobada del Calendario v2 (2026-09-22): 1 mes en curso, 2 tocar un día pasado, 3 día con comodín, 4 mes anterior, 5 empezaste hace poco, 6 mes difícil (volviste), 7 sin comodines, 8 modo claro. Referencia visual exacta a 390px; datos de ejemplo calculados. Reglas en DESIGN.md (Calendario). -->
+<div class="col"><h2>1 · Mes en curso (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><button class="d full" aria-label="martes 1, 5 de 5, todo cumplido">1</button><button class="d part" aria-label="miércoles 2, 4 de 5">2<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="jueves 3, 5 de 5, todo cumplido">3</button><button class="d part" aria-label="viernes 4, 3 de 5">4<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="sábado 5, 3 de 3, todo cumplido">5</button><button class="d full" aria-label="domingo 6, 3 de 3, todo cumplido">6</button><button class="d full" aria-label="lunes 7, 5 de 5, todo cumplido">7</button><button class="d part" aria-label="martes 8, 2 de 5">8<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="miércoles 9, 5 de 5, todo cumplido">9</button><button class="d full" aria-label="jueves 10, 5 de 5, todo cumplido">10</button><button class="d part" aria-label="viernes 11, 4 de 5">11<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="sábado 12, 3 de 3, todo cumplido">12</button><button class="d part" aria-label="domingo 13, 1 de 3">13<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d full" aria-label="lunes 14, 5 de 5, todo cumplido">14</button><button class="d part" aria-label="martes 15, 3 de 5">15<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="miércoles 16, 5 de 5, todo cumplido">16</button><button class="d full" aria-label="jueves 17, 5 de 5, todo cumplido">17</button><button class="d como" aria-label="viernes 18, congelado con comodín, 2 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>18</button><button class="d full" aria-label="sábado 19, 3 de 3, todo cumplido">19</button><button class="d part" aria-label="domingo 20, 2 de 3">20<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d full" aria-label="lunes 21, 5 de 5, todo cumplido">21</button><button class="d today" aria-label="hoy, martes 22, 2 de 5">22<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div>
+      <section class="card">
+        <div class="cardhead"><h2 class="cond">Tu mes</h2><span class="sub">sin contar hoy</span></div>
+        
+        <p class="bignum"><span class="cond">78</span><span class="of cond">de 93</span></p>
+        <p class="sub">veces que cumpliste tus hábitos programados, y 3 congeladas con comodín. Un día gris no borra los demás.</p>
+        <div class="minis"><div><span class="cond n">13</span><span class="sub">días completos</span></div><div><span class="cond n">1</span><span class="sub">comodín usado</span></div></div>
+      </section></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>2 · Tocar un día pasado (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><button class="d full" aria-label="martes 1, 5 de 5, todo cumplido">1</button><button class="d part" aria-label="miércoles 2, 4 de 5">2<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="jueves 3, 5 de 5, todo cumplido">3</button><button class="d part" aria-label="viernes 4, 3 de 5">4<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="sábado 5, 3 de 3, todo cumplido">5</button><button class="d full" aria-label="domingo 6, 3 de 3, todo cumplido">6</button><button class="d full" aria-label="lunes 7, 5 de 5, todo cumplido">7</button><button class="d part" aria-label="martes 8, 2 de 5">8<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="miércoles 9, 5 de 5, todo cumplido">9</button><button class="d full" aria-label="jueves 10, 5 de 5, todo cumplido">10</button><button class="d part" aria-label="viernes 11, 4 de 5">11<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="sábado 12, 3 de 3, todo cumplido">12</button><button class="d part" aria-label="domingo 13, 1 de 3">13<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d full" aria-label="lunes 14, 5 de 5, todo cumplido">14</button><button class="d part" aria-label="martes 15, 3 de 5">15<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="miércoles 16, 5 de 5, todo cumplido">16</button><button class="d full" aria-label="jueves 17, 5 de 5, todo cumplido">17</button><button class="d como" aria-label="viernes 18, congelado con comodín, 2 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>18</button><button class="d full" aria-label="sábado 19, 3 de 3, todo cumplido">19</button><button class="d part" aria-label="domingo 20, 2 de 3">20<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d full" aria-label="lunes 21, 5 de 5, todo cumplido">21</button><button class="d today" aria-label="hoy, martes 22, 2 de 5">22<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-label="Martes 15 de septiembre">
+      <div class="grab"></div>
+      <div class="shead">
+        <div style="flex:1;min-width:0"><h2 class="cond" style="margin:0;font-size:24px">Martes 15 de septiembre</h2><p class="sub" style="margin-top:2px">3 de 5 cumplidos · se guarda al tocar</p></div>
+        <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <div class="slist">
+        <div class="hrow">
+          <div class="hmain">
+            <span class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Beber agua</span><span class="meta">Mañana</span></span></div>
+          <div class="stepper"><button class="sb" aria-label="Quitar uno a Beber agua"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="cond sv">5<small>/8</small></span><button class="sb" aria-label="Sumar uno a Beber agua"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+          <button class="go" aria-label="Abrir Beber agua"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="true" aria-label="Quitar la marca de Meditar 10 min">
+            
+            <span class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name tach">Meditar 10 min</span><span class="meta ambar">+10 ganados</span></span>
+            <span class="ring done" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </button>
+          <button class="go" aria-label="Abrir Meditar 10 min"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="true" aria-label="Quitar la marca de Ejercicio">
+            
+            <span class="tile" style="background:var(--coral-tint);color:var(--coral-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name tach">Ejercicio</span><span class="meta ambar">+10 ganados</span></span>
+            <span class="ring done" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </button>
+          <button class="go" aria-label="Abrir Ejercicio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Leer 20 min">
+            
+            <span class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Leer 20 min</span><span class="meta">Noche</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Leer 20 min"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="true" aria-label="Quitar la marca de Menos pantalla">
+            
+            <span class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name tach">Menos pantalla</span><span class="meta ambar">+10 ganados</span></span>
+            <span class="ring done" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </button>
+          <button class="go" aria-label="Abrir Menos pantalla"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div></div>
+      <div class="sfoot"><button class="btn2 full"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>Congelar los 2 que faltan · te quedan 2</button><p class="sub" style="text-align:center;margin-top:8px">Si ese día no pudiste, congélalos: no cuentan como fallados.</p></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>3 · Día con comodín (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><button class="d full" aria-label="martes 1, 5 de 5, todo cumplido">1</button><button class="d part" aria-label="miércoles 2, 4 de 5">2<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="jueves 3, 5 de 5, todo cumplido">3</button><button class="d part" aria-label="viernes 4, 3 de 5">4<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="sábado 5, 3 de 3, todo cumplido">5</button><button class="d full" aria-label="domingo 6, 3 de 3, todo cumplido">6</button><button class="d full" aria-label="lunes 7, 5 de 5, todo cumplido">7</button><button class="d part" aria-label="martes 8, 2 de 5">8<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="miércoles 9, 5 de 5, todo cumplido">9</button><button class="d full" aria-label="jueves 10, 5 de 5, todo cumplido">10</button><button class="d part" aria-label="viernes 11, 4 de 5">11<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="sábado 12, 3 de 3, todo cumplido">12</button><button class="d part" aria-label="domingo 13, 1 de 3">13<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d full" aria-label="lunes 14, 5 de 5, todo cumplido">14</button><button class="d part" aria-label="martes 15, 3 de 5">15<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="miércoles 16, 5 de 5, todo cumplido">16</button><button class="d full" aria-label="jueves 17, 5 de 5, todo cumplido">17</button><button class="d como" aria-label="viernes 18, congelado con comodín, 2 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>18</button><button class="d full" aria-label="sábado 19, 3 de 3, todo cumplido">19</button><button class="d part" aria-label="domingo 20, 2 de 3">20<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d full" aria-label="lunes 21, 5 de 5, todo cumplido">21</button><button class="d today" aria-label="hoy, martes 22, 2 de 5">22<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-label="Viernes 18 de septiembre">
+      <div class="grab"></div>
+      <div class="shead">
+        <div style="flex:1;min-width:0"><h2 class="cond" style="margin:0;font-size:24px">Viernes 18 de septiembre</h2><p class="sub" style="margin-top:2px">2 de 5 cumplidos · 3 congelados</p></div>
+        <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <div class="slist"><div class="frozen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg><span>Congelaste lo que faltaba, así que no cuenta como fallado. Si al final sí lo cumpliste, márcalo igual.</span></div>
+        <div class="hrow">
+          <div class="hmain">
+            <span class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Beber agua</span><span class="meta">Mañana</span></span></div>
+          <div class="stepper"><button class="sb" aria-label="Quitar uno a Beber agua" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="cond sv">0<small>/8</small></span><button class="sb" aria-label="Sumar uno a Beber agua"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+          <button class="go" aria-label="Abrir Beber agua"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="true" aria-label="Quitar la marca de Meditar 10 min">
+            
+            <span class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name tach">Meditar 10 min</span><span class="meta ambar">+10 ganados</span></span>
+            <span class="ring done" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </button>
+          <button class="go" aria-label="Abrir Meditar 10 min"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="true" aria-label="Quitar la marca de Ejercicio">
+            
+            <span class="tile" style="background:var(--coral-tint);color:var(--coral-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name tach">Ejercicio</span><span class="meta ambar">+10 ganados</span></span>
+            <span class="ring done" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </button>
+          <button class="go" aria-label="Abrir Ejercicio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Leer 20 min">
+            
+            <span class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Leer 20 min</span><span class="meta">Noche</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Leer 20 min"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Menos pantalla">
+            
+            <span class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Menos pantalla</span><span class="meta"><span class="tag">Evitar</span>Noche</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Menos pantalla"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div></div>
+      <div class="sfoot"><button class="link quiet center">Quitar el comodín · vuelve a tu saldo</button></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>4 · Mes anterior (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Agosto</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        <button class="btn2 hoybtn">Ir a hoy</button>
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><span class="d ghost"></span><span class="d ghost"></span><span class="d ghost"></span><span class="d ghost"></span><button class="d full" aria-label="sábado 1, 3 de 3, todo cumplido">1</button><button class="d full" aria-label="domingo 2, 3 de 3, todo cumplido">2</button><button class="d part" aria-label="lunes 3, 4 de 5">3<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="martes 4, 5 de 5, todo cumplido">4</button><button class="d full" aria-label="miércoles 5, 5 de 5, todo cumplido">5</button><button class="d part" aria-label="jueves 6, 2 de 5">6<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="viernes 7, 5 de 5, todo cumplido">7</button><button class="d full" aria-label="sábado 8, 3 de 3, todo cumplido">8</button><button class="d part" aria-label="domingo 9, 1 de 3">9<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d como" aria-label="lunes 10, congelado con comodín, 5 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>10</button><button class="d full" aria-label="martes 11, 5 de 5, todo cumplido">11</button><button class="d part" aria-label="miércoles 12, 3 de 5">12<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="jueves 13, 5 de 5, todo cumplido">13</button><button class="d full" aria-label="viernes 14, 5 de 5, todo cumplido">14</button><button class="d part" aria-label="sábado 15, 2 de 3">15<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d full" aria-label="domingo 16, 3 de 3, todo cumplido">16</button><button class="d full" aria-label="lunes 17, 5 de 5, todo cumplido">17</button><button class="d full" aria-label="martes 18, 5 de 5, todo cumplido">18</button><button class="d full" aria-label="miércoles 19, 5 de 5, todo cumplido">19</button><button class="d part" aria-label="jueves 20, 4 de 5">20<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="viernes 21, 5 de 5, todo cumplido">21</button><button class="d full" aria-label="sábado 22, 3 de 3, todo cumplido">22</button><button class="d part" aria-label="domingo 23, 2 de 3">23<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d como" aria-label="lunes 24, congelado con comodín, 5 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>24</button><button class="d full" aria-label="martes 25, 5 de 5, todo cumplido">25</button><button class="d full" aria-label="miércoles 26, 5 de 5, todo cumplido">26</button><button class="d part" aria-label="jueves 27, 3 de 5">27<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="viernes 28, 5 de 5, todo cumplido">28</button><button class="d full" aria-label="sábado 29, 3 de 3, todo cumplido">29</button><button class="d part" aria-label="domingo 30, 1 de 3">30<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d full" aria-label="lunes 31, 5 de 5, todo cumplido">31</button></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div>
+      <section class="card">
+        <div class="cardhead"><h2 class="cond">Tu mes</h2><span class="sub">sin contar hoy</span></div>
+        
+        <p class="bignum"><span class="cond">120</span><span class="of cond">de 135</span></p>
+        <p class="sub">veces que cumpliste tus hábitos programados. Un día gris no borra los demás.</p>
+        <div class="minis"><div><span class="cond n">20</span><span class="sub">días completos</span></div><div><span class="cond n">2</span><span class="sub">comodínes usados</span></div></div>
+      </section></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>5 · Empezaste hace poco (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>3 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><span class="d fut" aria-hidden="true">1</span><span class="d fut" aria-hidden="true">2</span><span class="d fut" aria-hidden="true">3</span><span class="d fut" aria-hidden="true">4</span><span class="d fut" aria-hidden="true">5</span><span class="d fut" aria-hidden="true">6</span><span class="d fut" aria-hidden="true">7</span><span class="d fut" aria-hidden="true">8</span><span class="d fut" aria-hidden="true">9</span><span class="d fut" aria-hidden="true">10</span><span class="d fut" aria-hidden="true">11</span><span class="d fut" aria-hidden="true">12</span><span class="d fut" aria-hidden="true">13</span><span class="d fut" aria-hidden="true">14</span><span class="d fut" aria-hidden="true">15</span><span class="d fut" aria-hidden="true">16</span><span class="d fut" aria-hidden="true">17</span><span class="d fut" aria-hidden="true">18</span><button class="d part first" aria-label="sábado 19, 2 de 3">19<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d full" aria-label="domingo 20, 3 de 3, todo cumplido">20</button><button class="d part" aria-label="lunes 21, 4 de 5">21<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d today" aria-label="hoy, martes 22, 1 de 5">22<i class="bar" aria-hidden="true"><b style="width:20%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      <p class="sub" style="margin-top:10px">Empezaste el 19 de septiembre. Los días de antes no cuentan.</p>
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div>
+      <section class="card">
+        <div class="cardhead"><h2 class="cond">Tu mes</h2><span class="sub">sin contar hoy</span></div>
+        
+        <p class="bignum"><span class="cond">9</span><span class="of cond">de 11</span></p>
+        <p class="sub">veces que cumpliste tus hábitos programados. Un día gris no borra los demás.</p>
+        <div class="minis"><div><span class="cond n">1</span><span class="sub">día completo</span></div></div>
+      </section></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>6 · Mes difícil: volviste (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>0 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><button class="d part" aria-label="martes 1, 4 de 5">1<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d part" aria-label="miércoles 2, 3 de 5">2<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="jueves 3, 5 de 5, todo cumplido">3</button><button class="d part" aria-label="viernes 4, 2 de 5">4<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="sábado 5, 3 de 3, todo cumplido">5</button><button class="d part" aria-label="domingo 6, 1 de 3">6<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d miss" aria-label="lunes 7, 0 de 5">7</button><button class="d miss" aria-label="martes 8, 0 de 5">8</button><button class="d como" aria-label="miércoles 9, congelado con comodín, 0 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>9</button><button class="d como" aria-label="jueves 10, congelado con comodín, 0 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>10</button><button class="d como" aria-label="viernes 11, congelado con comodín, 0 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>11</button><button class="d miss" aria-label="sábado 12, 0 de 3">12</button><button class="d miss" aria-label="domingo 13, 0 de 3">13</button><button class="d miss" aria-label="lunes 14, 0 de 5">14</button><button class="d miss" aria-label="martes 15, 0 de 5">15</button><button class="d miss" aria-label="miércoles 16, 0 de 5">16</button><button class="d miss" aria-label="jueves 17, 0 de 5">17</button><button class="d part" aria-label="viernes 18, 2 de 5">18<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="sábado 19, 3 de 3, todo cumplido">19</button><button class="d part" aria-label="domingo 20, 2 de 3">20<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d part" aria-label="lunes 21, 4 de 5">21<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d today" aria-label="hoy, martes 22, 1 de 5">22<i class="bar" aria-hidden="true"><b style="width:20%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div>
+      <section class="card">
+        <div class="cardhead"><h2 class="cond">Tu mes</h2><span class="sub">sin contar hoy</span></div>
+        <p class="back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Volviste el 18. Eso es lo que cuenta.</p>
+        <p class="bignum"><span class="cond">29</span><span class="of cond">de 93</span></p>
+        <p class="sub">veces que cumpliste tus hábitos programados, y 15 congeladas con comodín. Un día gris no borra los demás.</p>
+        <div class="minis"><div><span class="cond n">3</span><span class="sub">días completos</span></div><div><span class="cond n">3</span><span class="sub">comodínes usados</span></div></div>
+      </section></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>7 · Sin comodines (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>0 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><button class="d part" aria-label="martes 1, 4 de 5">1<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d part" aria-label="miércoles 2, 3 de 5">2<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="jueves 3, 5 de 5, todo cumplido">3</button><button class="d part" aria-label="viernes 4, 2 de 5">4<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="sábado 5, 3 de 3, todo cumplido">5</button><button class="d part" aria-label="domingo 6, 1 de 3">6<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d miss" aria-label="lunes 7, 0 de 5">7</button><button class="d miss" aria-label="martes 8, 0 de 5">8</button><button class="d como" aria-label="miércoles 9, congelado con comodín, 0 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>9</button><button class="d como" aria-label="jueves 10, congelado con comodín, 0 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>10</button><button class="d como" aria-label="viernes 11, congelado con comodín, 0 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>11</button><button class="d miss" aria-label="sábado 12, 0 de 3">12</button><button class="d miss" aria-label="domingo 13, 0 de 3">13</button><button class="d miss" aria-label="lunes 14, 0 de 5">14</button><button class="d miss" aria-label="martes 15, 0 de 5">15</button><button class="d miss" aria-label="miércoles 16, 0 de 5">16</button><button class="d miss" aria-label="jueves 17, 0 de 5">17</button><button class="d part" aria-label="viernes 18, 2 de 5">18<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="sábado 19, 3 de 3, todo cumplido">19</button><button class="d part" aria-label="domingo 20, 2 de 3">20<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d part" aria-label="lunes 21, 4 de 5">21<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d today" aria-label="hoy, martes 22, 1 de 5">22<i class="bar" aria-hidden="true"><b style="width:20%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-label="Lunes 14 de septiembre">
+      <div class="grab"></div>
+      <div class="shead">
+        <div style="flex:1;min-width:0"><h2 class="cond" style="margin:0;font-size:24px">Lunes 14 de septiembre</h2><p class="sub" style="margin-top:2px">0 de 5 cumplidos · se guarda al tocar</p></div>
+        <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <div class="slist">
+        <div class="hrow">
+          <div class="hmain">
+            <span class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Beber agua</span><span class="meta">Mañana</span></span></div>
+          <div class="stepper"><button class="sb" aria-label="Quitar uno a Beber agua" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="cond sv">0<small>/8</small></span><button class="sb" aria-label="Sumar uno a Beber agua"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+          <button class="go" aria-label="Abrir Beber agua"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Meditar 10 min">
+            
+            <span class="tile" style="background:var(--ambar-tint);color:var(--ambar-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Meditar 10 min</span><span class="meta">Mañana</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Meditar 10 min"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Ejercicio">
+            
+            <span class="tile" style="background:var(--coral-tint);color:var(--coral-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Ejercicio</span><span class="meta">Tarde</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Ejercicio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Leer 20 min">
+            
+            <span class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Leer 20 min</span><span class="meta">Noche</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Leer 20 min"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="hrow">
+          <button class="hmain" aria-pressed="false" aria-label="Marcar Menos pantalla">
+            
+            <span class="tile" style="background:var(--lila-tint);color:var(--lila-text)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+            <span style="flex:1;min-width:0;text-align:left"><span class="name">Menos pantalla</span><span class="meta"><span class="tag">Evitar</span>Noche</span></span>
+            <span class="ring" aria-hidden="true"></span>
+          </button>
+          <button class="go" aria-label="Abrir Menos pantalla"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div></div>
+      <div class="sfoot"><button class="btn2 full" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>No te quedan comodines este mes</button><p class="sub" style="text-align:center;margin-top:8px">Se recargan el 1 de octubre. Puedes marcar lo que sí cumpliste.</p></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>8 · Mes en curso (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <div class="mhead">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Septiembre</h1>
+          <p class="sub" style="margin-top:4px">2026</p>
+        </div>
+        
+        <button class="nb" aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="nb" aria-label="Mes siguiente" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;min-height:32px">
+        <span class="sub">Toca un día para cambiarlo</span>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <div class="dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="grid7"><span class="d ghost"></span><button class="d full" aria-label="martes 1, 5 de 5, todo cumplido">1</button><button class="d part" aria-label="miércoles 2, 4 de 5">2<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="jueves 3, 5 de 5, todo cumplido">3</button><button class="d part" aria-label="viernes 4, 3 de 5">4<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="sábado 5, 3 de 3, todo cumplido">5</button><button class="d full" aria-label="domingo 6, 3 de 3, todo cumplido">6</button><button class="d full" aria-label="lunes 7, 5 de 5, todo cumplido">7</button><button class="d part" aria-label="martes 8, 2 de 5">8<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><button class="d full" aria-label="miércoles 9, 5 de 5, todo cumplido">9</button><button class="d full" aria-label="jueves 10, 5 de 5, todo cumplido">10</button><button class="d part" aria-label="viernes 11, 4 de 5">11<i class="bar" aria-hidden="true"><b style="width:80%"></b></i></button><button class="d full" aria-label="sábado 12, 3 de 3, todo cumplido">12</button><button class="d part" aria-label="domingo 13, 1 de 3">13<i class="bar" aria-hidden="true"><b style="width:33%"></b></i></button><button class="d full" aria-label="lunes 14, 5 de 5, todo cumplido">14</button><button class="d part" aria-label="martes 15, 3 de 5">15<i class="bar" aria-hidden="true"><b style="width:60%"></b></i></button><button class="d full" aria-label="miércoles 16, 5 de 5, todo cumplido">16</button><button class="d full" aria-label="jueves 17, 5 de 5, todo cumplido">17</button><button class="d como" aria-label="viernes 18, congelado con comodín, 2 de 5 cumplidos"><span class="shield"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>18</button><button class="d full" aria-label="sábado 19, 3 de 3, todo cumplido">19</button><button class="d part" aria-label="domingo 20, 2 de 3">20<i class="bar" aria-hidden="true"><b style="width:67%"></b></i></button><button class="d full" aria-label="lunes 21, 5 de 5, todo cumplido">21</button><button class="d today" aria-label="hoy, martes 22, 2 de 5">22<i class="bar" aria-hidden="true"><b style="width:40%"></b></i></button><span class="d fut" aria-hidden="true">23</span><span class="d fut" aria-hidden="true">24</span><span class="d fut" aria-hidden="true">25</span><span class="d fut" aria-hidden="true">26</span><span class="d fut" aria-hidden="true">27</span><span class="d fut" aria-hidden="true">28</span><span class="d fut" aria-hidden="true">29</span><span class="d fut" aria-hidden="true">30</span></div>
+      
+      <div class="leg">
+        <span><i class="sw full"></i>Todo cumplido</span>
+        <span><i class="sw part"><b></b></i>Una parte</span>
+        <span><i class="sw como"></i>Comodín</span>
+        <span><i class="sw free"></i>Día libre</span>
+        <span><i class="sw today"></i>Hoy</span>
+      </div>
+      <section class="card">
+        <div class="cardhead"><h2 class="cond">Tu mes</h2><span class="sub">sin contar hoy</span></div>
+        
+        <p class="bignum"><span class="cond">78</span><span class="of cond">de 93</span></p>
+        <p class="sub">veces que cumpliste tus hábitos programados, y 3 congeladas con comodín. Un día gris no borra los demás.</p>
+        <div class="minis"><div><span class="cond n">13</span><span class="sub">días completos</span></div><div><span class="cond n">1</span><span class="sub">comodín usado</span></div></div>
+      </section></div></div>
+    
+    <nav>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Estadísticas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+
+</body>
+</html>

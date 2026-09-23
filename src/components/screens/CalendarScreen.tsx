@@ -1,29 +1,18 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Flame,
-  Check,
-  X,
-  Target,
-  Percent,
-  Layers,
-  Sparkles,
-  Plus,
-  Minus,
-  Snowflake,
-} from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { ChevronLeft, ChevronRight, Check, X, ShieldCheck, ChevronRight as ChevronRightIcon, Plus, Minus } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
-import { Habito } from '../../types';
 import {
   getTodayString,
   isHabitScheduledForDate,
   isHabitCompletedOnDate,
-  formatDateToString,
   parseDateString,
+  contarCompletadosSemana
 } from '../../utils/habitUtils';
+import { getMomentoColorTokens } from '../common/HabitPreviewRow';
+
+const ordenMomentos = ['manana', 'tarde', 'noche', 'flexible'];
 
 export const CalendarScreen: React.FC = () => {
   const {
@@ -36,10 +25,9 @@ export const CalendarScreen: React.FC = () => {
     diasCongelados,
     congelarDia,
     descongelarDia,
+    openHabitDetail,
   } = useHabitStore();
 
-  // Navigation & filter state
-  const [selectedHabitId, setSelectedHabitId] = useState<string>('todos');
   const [viewDate, setViewDate] = useState<Date>(() => new Date());
   const [selectedDateForModal, setSelectedDateForModal] = useState<string | null>(null);
 
@@ -48,113 +36,173 @@ export const CalendarScreen: React.FC = () => {
   const currentMonthIdx = viewDate.getMonth();
 
   const monthNames = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
   ];
 
   const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
-  // Month navigation handlers
+  const isCurrentMonth = currentYear === new Date().getFullYear() && currentMonthIdx === new Date().getMonth();
+
   const handlePrevMonth = () => {
     setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
   };
 
   const handleNextMonth = () => {
-    setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+    if (!isCurrentMonth) {
+      setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+    }
   };
 
   const handleGoToCurrentMonth = () => {
     setViewDate(new Date());
   };
 
-  // Selected Habit reference
-  const selectedHabit = useMemo(() => {
-    if (selectedHabitId === 'todos') return null;
-    return habitos.find((h) => h.id === selectedHabitId) || null;
-  }, [habitos, selectedHabitId]);
-
-  // Days in current month calculation
   const daysInMonth = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
-  
-  // Starting day of week for the 1st of current month (0=Sun, 1=Mon, ..., 6=Sat)
-  // Adjusted for Monday-first (0=Mon, 1=Tue, ..., 6=Sun)
   const firstDayOfMonth = new Date(currentYear, currentMonthIdx, 1).getDay();
   const startDayOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-  // Month date strings array
+  // Encontrar la fecha del primer hábito creado
+  const firstHabitDateStr = useMemo(() => {
+    if (habitos.length === 0) return null;
+    let earliest = habitos[0].creadoEn;
+    for (const h of habitos) {
+      if (h.creadoEn < earliest) earliest = h.creadoEn;
+    }
+    return earliest.split('T')[0];
+  }, [habitos]);
+
+  const monthStr = `${currentYear}-${String(currentMonthIdx + 1).padStart(2, '0')}`;
+  const isFirstHabitInCurrentMonth = firstHabitDateStr && firstHabitDateStr.startsWith(monthStr) && !firstHabitDateStr.endsWith('-01');
+
   const monthDays = useMemo(() => {
-    const days: { dayNumber: number; dateStr: string; isToday: boolean; isFuture: boolean }[] = [];
+    const days: { 
+      dayNumber: number; 
+      dateStr: string; 
+      isToday: boolean; 
+      isFuture: boolean; 
+      isBeforeFirstHabit: boolean;
+      programados: number;
+      cumplidos: number;
+      isFrozen: boolean;
+    }[] = [];
+    
     for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${currentYear}-${String(currentMonthIdx + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const dateStr = `${monthStr}-${String(d).padStart(2, '0')}`;
+      
+      let programados = 0;
+      let cumplidos = 0;
+      
+      habitos.forEach(h => {
+        const createdAt = h.creadoEn.split('T')[0];
+        if (dateStr >= createdAt && isHabitScheduledForDate(h, dateStr)) {
+          programados++;
+          if (isHabitCompletedOnDate(h.id, dateStr, registros)) {
+            cumplidos++;
+          }
+        }
+      });
+
       days.push({
         dayNumber: d,
         dateStr,
         isToday: dateStr === todayStr,
         isFuture: dateStr > todayStr,
+        isBeforeFirstHabit: firstHabitDateStr ? dateStr < firstHabitDateStr : false,
+        programados,
+        cumplidos,
+        isFrozen: diasCongelados.includes(dateStr)
       });
     }
     return days;
-  }, [currentYear, currentMonthIdx, daysInMonth, todayStr]);
+  }, [monthStr, daysInMonth, todayStr, habitos, registros, firstHabitDateStr, diasCongelados]);
 
-  // Calculate Month Summary Metrics
+  // "Tu mes" metrics
   const monthMetrics = useMemo(() => {
-    let scheduledDaysCount = 0;
-    let completedDaysCount = 0;
-    let maxStreakInMonth = 0;
-    let currentStreakInMonth = 0;
+    let prog = 0;
+    let hechos = 0;
+    let congelados = 0;
+    
+    let maxZeros = 0;
+    let currentZeros = 0;
+    let hasRecovered = false;
+    let recoveryDate = '';
 
-    monthDays.forEach(({ dateStr, isFuture }) => {
-      // We only count statistics for days elapsed or today
-      if (isFuture) return;
+    monthDays.forEach((day) => {
+      if (day.dateStr >= todayStr) return;
 
-      if (selectedHabit) {
-        const isScheduled = isHabitScheduledForDate(selectedHabit, dateStr);
-        if (isScheduled) {
-          scheduledDaysCount++;
-          const isCompleted = isHabitCompletedOnDate(selectedHabit.id, dateStr, registros);
-          if (isCompleted) {
-            completedDaysCount++;
-            currentStreakInMonth++;
-            if (currentStreakInMonth > maxStreakInMonth) {
-              maxStreakInMonth = currentStreakInMonth;
-            }
+      prog += day.programados;
+      hechos += day.cumplidos;
+
+      if (!day.isFrozen) {
+        if (day.programados > 0) {
+          if (day.cumplidos === 0) {
+            currentZeros++;
           } else {
-            currentStreakInMonth = 0;
+            if (currentZeros >= 3 && !hasRecovered) {
+              hasRecovered = true;
+              recoveryDate = day.dateStr;
+            }
+            if (currentZeros > maxZeros) maxZeros = currentZeros;
+            currentZeros = 0;
           }
         }
       } else {
-        // "Todos" view: a day is counted as scheduled if at least 1 habit was scheduled
-        const scheduledHabits = habitos.filter((h) => isHabitScheduledForDate(h, dateStr));
-        if (scheduledHabits.length > 0) {
-          scheduledDaysCount++;
-          const completedCount = scheduledHabits.filter((h) => isHabitCompletedOnDate(h.id, dateStr, registros)).length;
-          // Fully completed or partial? Let's count days where 100% completed
-          if (completedCount === scheduledHabits.length) {
-            completedDaysCount++;
-            currentStreakInMonth++;
-            if (currentStreakInMonth > maxStreakInMonth) {
-              maxStreakInMonth = currentStreakInMonth;
-            }
-          } else {
-            currentStreakInMonth = 0;
-          }
-        }
+        const noCumplidos = day.programados - day.cumplidos;
+        congelados += noCumplidos;
       }
     });
 
-    const completionRate = scheduledDaysCount > 0
-      ? Math.round((completedDaysCount / scheduledDaysCount) * 100)
-      : 0;
+    let isDifficultMonth = hasRecovered;
 
-    return {
-      completedDaysCount,
-      scheduledDaysCount,
-      completionRate,
-      maxStreakInMonth,
-    };
-  }, [monthDays, selectedHabit, habitos, registros]);
+    return { prog, hechos, congelados, isDifficultMonth, recoveryDate };
+  }, [monthDays, todayStr]);
 
-  // Helper for formatting date in the retroactive bottom sheet
+  // Bottom sheet info
+  const habitsForSelectedDate = useMemo(() => {
+    if (!selectedDateForModal) return [];
+    
+    const regular = habitos.filter(h => {
+      const createdAt = h.creadoEn.split('T')[0];
+      return h.frecuencia !== 'semanal' && selectedDateForModal >= createdAt && isHabitScheduledForDate(h, selectedDateForModal);
+    }).map((h) => ({
+      ...h,
+      isCompleted: isHabitCompletedOnDate(h.id, selectedDateForModal, registros),
+    }));
+
+    regular.sort((a, b) => {
+       const m1 = ordenMomentos.indexOf(a.momento || 'flexible');
+       const m2 = ordenMomentos.indexOf(b.momento || 'flexible');
+       if (m1 !== m2) return m1 - m2;
+       return (a.orden ?? 99) - (b.orden ?? 99);
+    });
+
+    return regular;
+  }, [selectedDateForModal, habitos, registros]);
+
+  const weeklyHabitsForSelectedDate = useMemo(() => {
+    if (!selectedDateForModal) return [];
+    
+    const weekly = habitos.filter(h => {
+      const createdAt = h.creadoEn.split('T')[0];
+      return h.frecuencia === 'semanal' && selectedDateForModal >= createdAt;
+    }).map((h) => ({
+      ...h,
+      isCompleted: isHabitCompletedOnDate(h.id, selectedDateForModal, registros),
+      completadosSemana: contarCompletadosSemana(h.id, selectedDateForModal, registros)
+    }));
+
+    weekly.sort((a, b) => {
+       const m1 = ordenMomentos.indexOf(a.momento || 'flexible');
+       const m2 = ordenMomentos.indexOf(b.momento || 'flexible');
+       if (m1 !== m2) return m1 - m2;
+       return (a.orden ?? 99) - (b.orden ?? 99);
+    });
+
+    return weekly;
+  }, [selectedDateForModal, habitos, registros]);
+
+  // Helper formatting for bottom sheet
   const formattedSelectedDate = useMemo(() => {
     if (!selectedDateForModal) return '';
     const dateObj = parseDateString(selectedDateForModal);
@@ -162,553 +210,418 @@ export const CalendarScreen: React.FC = () => {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
-      year: 'numeric',
     }).format(dateObj);
-    return text.charAt(0).toUpperCase() + text.slice(1);
+    return text.charAt(0).toUpperCase() + text.slice(1).replace(',', '');
   }, [selectedDateForModal]);
 
-  // Habits scheduled on the selected date for retroactive check-in
-  const habitsForSelectedDate = useMemo(() => {
-    if (!selectedDateForModal) return [];
-    return habitos.map((h) => ({
-      ...h,
-      isScheduled: isHabitScheduledForDate(h, selectedDateForModal),
-      isCompleted: isHabitCompletedOnDate(h.id, selectedDateForModal, registros),
-    }));
-  }, [selectedDateForModal, habitos, registros]);
-
   return (
-    <div id="screen-calendar" className="space-y-5 pb-28 animate-fadeIn">
-      {/* Header */}
-      <header className="flex items-center justify-between pt-1">
-        <div>
-          <p className="text-xs font-medium text-text-muted tracking-wide uppercase font-sans">
-            Historial de Constancia
-          </p>
-          <h1 className="text-2xl font-bold font-heading text-text tracking-tight mt-0.5">
-            Mapa de Calor
+    <div id="screen-calendar" className="pb-28">
+      {/* CABECERA */}
+      <div className="flex items-start gap-2 mb-3">
+        <div className="flex-1 min-w-0">
+          <h1 className="font-heading font-bold text-[44px] leading-none m-0 capitalize text-text">
+            {monthNames[currentMonthIdx]}
           </h1>
+          <p className="text-[13px] text-text-muted mt-1">{currentYear}</p>
         </div>
-
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#378ADD]/10 text-[#7DD3FC] border border-[#378ADD]/30">
-            <Snowflake size={13} />
-            <span>{comodines}</span>
-          </div>
-
-          {/* Current Month Quick Button */}
-          {(viewDate.getMonth() !== new Date().getMonth() || viewDate.getFullYear() !== new Date().getFullYear()) && (
-            <button
-              type="button"
-              onClick={handleGoToCurrentMonth}
-              className="px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--accent-15)] text-[var(--accent)] border border-[var(--accent-30)] hover:bg-[var(--accent-25)] transition-all"
-            >
-              Ir a hoy
-            </button>
-          )}
-        </div>
-      </header>
-
-      {/* 1. HORIZONTAL HABIT SELECTOR CHIPS */}
-      <section className="space-y-1.5">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 -mx-4 px-4">
-          {/* Chip "Todos" */}
-          <button
-            id="habit-chip-todos"
-            type="button"
-            onClick={() => setSelectedHabitId('todos')}
-            className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-xs font-heading font-semibold border transition-all active:scale-95 ${
-              selectedHabitId === 'todos'
-                ? 'bg-[var(--accent)] border-[var(--accent)] text-text shadow-lg shadow-[var(--accent-25)]'
-                : 'bg-surface border-line text-text-muted hover:text-text hover:border-line-strong'
-            }`}
-          >
-            <Layers size={15} />
-            <span>Todos los Hábitos</span>
+        
+        {!isCurrentMonth && (
+          <button onClick={handleGoToCurrentMonth} className="h-11 px-3 bg-surface-raised rounded-[12px] text-[14px] font-bold text-text hover:text-text shrink-0 active:scale-95 transition-transform">
+            Ir a hoy
           </button>
-
-          {/* Individual Habit Chips */}
-          {habitos.map((habito) => {
-            const isSelected = selectedHabitId === habito.id;
-            return (
-              <button
-                key={habito.id}
-                id={`habit-chip-${habito.id}`}
-                type="button"
-                onClick={() => setSelectedHabitId(habito.id)}
-                className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-[14px] text-xs font-heading font-semibold border transition-all active:scale-95 ${
-                  isSelected
-                    ? 'text-text shadow-lg'
-                    : 'bg-surface border-line text-text-muted hover:text-text hover:border-line-strong'
-                }`}
-                style={
-                  isSelected
-                    ? {
-                        backgroundColor: habito.color,
-                        borderColor: habito.color,
-                        boxShadow: `0 8px 20px -4px ${habito.color}40`,
-                      }
-                    : undefined
-                }
-              >
-                <div
-                  className="w-4 h-4 rounded-md flex items-center justify-center shrink-0"
-                  style={{
-                    backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : `${habito.color}25`,
-                    color: isSelected ? '#FFFFFF' : habito.color,
-                  }}
-                >
-                  <HabitIcon name={habito.icono} size={12} />
-                </div>
-                <span className="truncate max-w-[130px]">{habito.nombre}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 2. CALENDAR HEATMAP CARD */}
-      <section
-        id="calendar-heatmap-card"
-        className="rounded-[18px] bg-surface border border-line p-4.5 space-y-4 shadow-xl relative"
-      >
-        {/* Month Selector Navigation */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CalendarIcon size={18} className="text-[var(--accent)]" />
-            <h2 className="font-bold font-heading text-base text-text capitalize">
-              {monthNames[currentMonthIdx]} {currentYear}
-            </h2>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              id="calendar-prev-month-btn"
-              type="button"
-              onClick={handlePrevMonth}
-              className="p-1.5 rounded-[10px] bg-surface-raised text-text-muted hover:text-text hover:bg-[#20232E] border border-line transition-all active:scale-95"
-              aria-label="Mes anterior"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              id="calendar-next-month-btn"
-              type="button"
-              onClick={handleNextMonth}
-              className="p-1.5 rounded-[10px] bg-surface-raised text-text-muted hover:text-text hover:bg-[#20232E] border border-line transition-all active:scale-95"
-              aria-label="Mes siguiente"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-
-        {/* Days of Week Header (L, M, X, J, V, S, D) */}
-        <div className="grid grid-cols-7 gap-1.5 text-center">
-          {weekDays.map((d) => (
-            <span key={d} className="text-[11px] font-semibold text-text-muted py-1 uppercase font-mono">
-              {d}
-            </span>
-          ))}
-        </div>
-
-        {/* Month Grid Heatmap */}
-        <div className="grid grid-cols-7 gap-1.5">
-          {/* Empty offset days before 1st of month */}
-          {Array.from({ length: startDayOffset }).map((_, i) => (
-            <div key={`empty-${i}`} className="aspect-square rounded-xl bg-transparent" />
-          ))}
-
-          {/* Actual days of month */}
-          {monthDays.map(({ dayNumber, dateStr, isToday, isFuture }) => {
-            // Determine styling based on selected view
-            let cellBg = 'bg-surface';
-            let cellBorder = 'border-line/60';
-            let cellTextColor = isFuture ? 'text-line-strong' : 'text-text-muted';
-            let cellCustomStyle: React.CSSProperties = {};
-            let tooltip = `${dayNumber} de ${monthNames[currentMonthIdx]}`;
-
-            if (!isFuture) {
-              if (selectedHabit) {
-                // Single habit view
-                const isScheduled = isHabitScheduledForDate(selectedHabit, dateStr);
-                const isCompleted = isHabitCompletedOnDate(selectedHabit.id, dateStr, registros);
-
-                if (!isScheduled) {
-                  // Not scheduled on this weekday
-                  cellBg = 'bg-bg/50';
-                  cellBorder = 'border-surface-raised/40';
-                  cellTextColor = 'text-line-strong';
-                  tooltip += ' (No programado)';
-                } else if (isCompleted) {
-                  // Scheduled and completed -> Habit Color
-                  cellBg = '';
-                  cellBorder = '';
-                  cellTextColor = 'text-text font-bold';
-                  cellCustomStyle = {
-                    backgroundColor: selectedHabit.color,
-                    borderColor: selectedHabit.color,
-                    boxShadow: `0 0 10px -2px ${selectedHabit.color}60`,
-                  };
-                  tooltip += ' (Completado)';
-                } else {
-                  // Scheduled but missed
-                  cellBg = 'bg-surface';
-                  cellBorder = 'border-line';
-                  cellTextColor = 'text-text-muted';
-                  tooltip += ' (No completado)';
-                }
-              } else {
-                // "Todos" view: GitHub-style violet intensity by % of completed habits
-                const scheduledHabits = habitos.filter((h) => isHabitScheduledForDate(h, dateStr));
-                if (scheduledHabits.length === 0) {
-                  cellBg = 'bg-surface';
-                  cellBorder = 'border-line/60';
-                  cellTextColor = 'text-text-muted';
-                  tooltip += ' (Sin hábitos programados)';
-                } else {
-                  const completedCount = scheduledHabits.filter((h) => isHabitCompletedOnDate(h.id, dateStr, registros)).length;
-                  const ratio = completedCount / scheduledHabits.length;
-                  tooltip += ` (${completedCount}/${scheduledHabits.length} completados)`;
-
-                  if (ratio === 0) {
-                    cellBg = 'bg-surface';
-                    cellBorder = 'border-line';
-                    cellTextColor = 'text-text-muted';
-                  } else if (ratio < 0.35) {
-                    cellBg = 'bg-[var(--accent-25)]';
-                    cellBorder = 'border-[var(--accent-40)]';
-                    cellTextColor = 'text-[#DDD6FE]';
-                  } else if (ratio < 0.7) {
-                    cellBg = 'bg-[var(--accent-55)]';
-                    cellBorder = 'border-[var(--accent-70)]';
-                    cellTextColor = 'text-text font-medium';
-                  } else if (ratio < 1) {
-                    cellBg = 'bg-[var(--accent-80)]';
-                    cellBorder = 'border-[var(--accent)]';
-                    cellTextColor = 'text-text font-bold';
-                  } else {
-                    // 100% completed
-                    cellBg = 'bg-[var(--accent)]';
-                    cellBorder = 'border-[var(--accent)]';
-                    cellTextColor = 'text-text font-bold';
-                    cellCustomStyle = {
-                      boxShadow: '0 0 12px -2px var(--accent-60)',
-                    };
-                  }
-                }
-              }
-            }
-
-            return (
-              <button
-                key={dateStr}
-                id={`calendar-cell-${dateStr}`}
-                type="button"
-                disabled={isFuture}
-                onClick={() => setSelectedDateForModal(dateStr)}
-                title={tooltip}
-                style={cellCustomStyle}
-                className={`aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all text-xs font-mono border relative select-none ${cellBg} ${cellBorder} ${cellTextColor} ${
-                  isToday ? 'ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-bg z-10' : ''
-                } ${
-                  !isFuture ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'cursor-not-allowed opacity-40'
-                }`}
-              >
-                <span>{dayNumber}</span>
-                {isToday && (
-                  <span className="w-1 h-1 rounded-full bg-[var(--accent)] mt-0.5 ring-1 ring-white" />
-                )}
-                {!isFuture && diasCongelados.includes(dateStr) && (
-                  <Snowflake size={9} className="absolute top-0.5 right-0.5 text-[#7DD3FC]" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Dynamic Legend */}
-        <div className="pt-3 border-t border-line flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-muted">
-          {selectedHabit ? (
-            /* Single Habit Legend */
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="w-2.5 h-2.5 rounded-md"
-                  style={{ backgroundColor: selectedHabit.color }}
-                />
-                <span className="text-text">Completado</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-md bg-surface border border-line" />
-                <span>No completado</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-md bg-bg border border-surface-raised" />
-                <span>No programado</span>
-              </div>
-            </div>
-          ) : (
-            /* "Todos" Intensity Legend */
-            <div className="flex items-center gap-1.5">
-              <span>Menos</span>
-              <span className="w-2.5 h-2.5 rounded-sm bg-surface border border-line" />
-              <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent-25)]" />
-              <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent-55)]" />
-              <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent-80)]" />
-              <span className="w-2.5 h-2.5 rounded-sm bg-[var(--accent)]" />
-              <span>Más (100%)</span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full ring-1 ring-[var(--accent)] bg-transparent" />
-            <span>Hoy</span>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. MONTH SUMMARY METRICS */}
-      <section className="space-y-2.5">
-        <div className="flex items-center justify-between px-1">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Resumen de {monthNames[currentMonthIdx]}
-          </h3>
-          <span className="text-[11px] text-[var(--accent)] font-medium">
-            {selectedHabit ? selectedHabit.nombre : 'Todos los hábitos'}
+        )}
+        
+        <button onClick={handlePrevMonth} className="w-11 h-11 bg-surface border border-line rounded-[12px] flex items-center justify-center text-text shrink-0 active:scale-95 transition-transform" aria-label="Mes anterior">
+          <ChevronLeft size={20} strokeWidth={2.2} />
+        </button>
+        <button onClick={handleNextMonth} disabled={isCurrentMonth} className="w-11 h-11 bg-surface border border-line rounded-[12px] flex items-center justify-center text-text shrink-0 disabled:text-line-strong disabled:active:scale-100 active:scale-95 transition-transform" aria-label="Mes siguiente">
+          <ChevronRight size={20} strokeWidth={2.2} />
+        </button>
+      </div>
+      
+      <div className="flex justify-between items-center mb-3 min-h-[32px]">
+        <span className="text-[13px] text-text-muted">Toca un día para cambiarlo</span>
+        {isCurrentMonth && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-line text-[13px] font-semibold text-text">
+            <ShieldCheck size={14} className="text-lila-text" strokeWidth={2} />
+            {comodines} comodines
           </span>
-        </div>
+        )}
+      </div>
 
-        <div className="grid grid-cols-3 gap-2.5">
-          {/* Metric 1: Días Completados */}
-          <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1.5">
-            <div className="flex items-center justify-between text-ambar">
-              <span className="text-[11px] text-text-muted font-medium">Días listos</span>
-              <Check size={14} />
-            </div>
-            <p className="text-xl font-bold font-heading text-text">
-              {monthMetrics.completedDaysCount}
-              <span className="text-xs font-normal text-text-muted">/{monthMetrics.scheduledDaysCount}</span>
-            </p>
-            <p className="text-[10px] text-text-muted">Días cumplidos</p>
-          </div>
+      {/* CUADRICULA */}
+      <div className="grid grid-cols-7 gap-1.5 text-center text-[12px] font-semibold text-text-muted mb-1.5 mt-3">
+        {weekDays.map(d => <span key={d}>{d}</span>)}
+      </div>
+      
+      <div className="grid grid-cols-7 gap-1.5">
+        {Array.from({ length: startDayOffset }).map((_, i) => (
+          <span key={`empty-${i}`} className="bg-transparent border-none"></span>
+        ))}
 
-          {/* Metric 2: Tasa del Mes */}
-          <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1.5">
-            <div className="flex items-center justify-between text-[var(--accent)]">
-              <span className="text-[11px] text-text-muted font-medium">Tasa del mes</span>
-              <Percent size={14} />
-            </div>
-            <p className="text-xl font-bold font-heading text-text">
-              {monthMetrics.completionRate}%
-            </p>
-            <p className="text-[10px] text-text-muted">Efectividad</p>
-          </div>
+        {monthDays.map((day) => {
+          let state = 'fut';
+          if (day.isFuture || day.isBeforeFirstHabit) state = 'fut';
+          else if (day.programados === 0) state = 'free';
+          else if (day.isFrozen) state = 'como';
+          else if (day.cumplidos === day.programados) state = 'full';
+          else if (day.cumplidos > 0) state = 'part';
+          else state = 'miss';
+          
+          if (day.isToday && state !== 'fut' && state !== 'como' && state !== 'full') state = 'today';
+          if (day.isToday && state === 'part') state = 'today-part';
 
-          {/* Metric 3: Mejor Racha del Mes */}
-          <div className="rounded-[16px] bg-surface border border-line p-3.5 space-y-1.5">
-            <div className="flex items-center justify-between text-ambar">
-              <span className="text-[11px] text-text-muted font-medium">Racha récord</span>
-              <Flame size={14} />
-            </div>
-            <p className="text-xl font-bold font-heading text-text">
-              {monthMetrics.maxStreakInMonth} <span className="text-xs font-normal text-text-muted">d</span>
-            </p>
-            <p className="text-[10px] text-text-muted">Racha del mes</p>
-          </div>
-        </div>
-      </section>
+          const baseClass = "h-[44px] rounded-[10px] flex items-center justify-center font-number text-[14px] font-bold relative active:scale-95 transition-transform overflow-hidden select-none outline-none";
+          
+          let btnClass = baseClass;
+          const wk = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(currentYear, currentMonthIdx, day.dayNumber));
+          let ariaLabel = `${wk.toLowerCase()} ${day.dayNumber}, ${day.cumplidos} de ${day.programados}`;
+          
+          switch (state) {
+            case 'full':
+              btnClass += " bg-ambar text-ink border border-ambar-text";
+              ariaLabel += `, todo cumplido`;
+              break;
+            case 'part':
+              btnClass += " bg-surface text-text border border-line";
+              break;
+            case 'miss':
+              btnClass += " bg-surface text-text-muted border border-line";
+              break;
+            case 'como':
+              btnClass += " bg-comodin-bg text-comodin-text border-[1.5px] border-lila-text";
+              ariaLabel += `, congelado con comodín`;
+              break;
+            case 'free':
+              btnClass += " bg-transparent text-text-muted border-[1.5px] border-dashed border-text-muted font-medium";
+              ariaLabel = `${wk.toLowerCase()} ${day.dayNumber}, día libre`;
+              break;
+            case 'today':
+              btnClass += " bg-transparent text-text border-[1.5px] border-dashed border-text";
+              ariaLabel += `, hoy`;
+              break;
+            case 'today-part':
+              btnClass += " bg-transparent text-text border-[1.5px] border-dashed border-text";
+              ariaLabel += `, hoy`;
+              break;
+            case 'fut':
+              btnClass += " bg-transparent border-transparent text-text-muted font-medium cursor-default active:scale-100";
+              break;
+          }
 
-      {/* 4. RETROACTIVE CHECK-IN BOTTOM SHEET MODAL */}
-      {selectedDateForModal && (
-        <div
-          id="calendar-retroactive-modal"
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm animate-fadeIn"
-          onClick={() => setSelectedDateForModal(null)}
-        >
-          <div
-            className="w-full max-w-[430px] bg-surface border-t sm:border border-line rounded-t-[24px] sm:rounded-[24px] p-5 space-y-4 shadow-2xl animate-slideUp max-h-[85vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-line">
-              <div>
-                <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wide">
-                  Registro Retroactivo
-                </span>
-                <h3 className="text-base font-bold font-heading text-text">
-                  {formattedSelectedDate}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedDateForModal(null)}
-                aria-label="Cerrar modal"
-                className="w-8 h-8 rounded-full bg-surface-raised hover:bg-surface-raised text-text-muted hover:text-text flex items-center justify-center transition-colors"
-              >
-                <X size={16} />
-              </button>
-            </div>
+          if (isFirstHabitInCurrentMonth && day.dateStr === firstHabitDateStr) {
+            btnClass += " ring-inset ring-[1.5px] ring-ambar-text";
+          }
 
-            {/* List of Habits for this specific date */}
-            <div className="space-y-2.5">
-              {habitos.length === 0 ? (
-                <div className="text-center py-6 space-y-2">
-                  <p className="text-xs text-text-muted">No tienes hábitos creados aún.</p>
-                </div>
-              ) : (
-                habitsForSelectedDate.map((h) => {
-                  return (
-                    <div
-                      key={h.id}
-                      className={`p-3 rounded-[14px] border flex items-center justify-between transition-all ${
-                        h.isCompleted
-                          ? 'bg-surface-raised border-line-strong'
-                          : 'bg-bg/70 border-line'
-                      } ${!h.isScheduled ? 'opacity-70' : ''}`}
-                    >
-                      {/* Left: Icon & Name */}
-                      <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
-                        <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                          style={{
-                            backgroundColor: `${h.color}20`,
-                            color: h.color,
-                            border: `1px solid ${h.color}40`,
-                          }}
-                        >
-                          <HabitIcon name={h.icono} size={16} />
-                        </div>
+          const hasBar = (state === 'part' || state === 'today-part') && day.programados > 0;
+          const barWidth = hasBar ? `${(day.cumplidos / day.programados) * 100}%` : '0%';
 
-                        <div className="min-w-0 flex-1">
-                          <p
-                            className={`text-xs font-semibold font-heading truncate ${
-                              h.isCompleted ? 'text-text' : 'text-text-muted'
-                            }`}
-                          >
-                            {h.nombre}
-                          </p>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] text-text-muted">
-                              {h.isScheduled ? 'Programado' : 'No programado'}
-                            </span>
-                            {h.metaDiaria && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-surface text-text-muted">
-                                Meta: {h.metaDiaria}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+          if (state === 'fut') {
+             return <span key={day.dateStr} className={btnClass} aria-hidden="true">{day.dayNumber}</span>;
+          }
 
-                      {/* Right: Check Toggle Button or Counter */}
-                      {h.metaDiaria ? (
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => setValor(h.id, selectedDateForModal, valorDe(h.id, selectedDateForModal) - 1)}
-                            disabled={valorDe(h.id, selectedDateForModal) <= 0}
-                            aria-label={`Quitar uno a ${h.nombre}`}
-                            className="w-8 h-8 rounded-full border-2 border-line-strong text-text-muted hover:text-text hover:border-[#6B6F7B] flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 disabled:pointer-events-none"
-                          >
-                            <Minus size={14} strokeWidth={2.5} />
-                          </button>
-                          <div
-                            className="min-w-[46px] h-8 px-1.5 rounded-full flex items-center justify-center gap-1 text-[11px] font-bold font-heading border-2"
-                            style={h.isCompleted
-                              ? { backgroundColor: h.color, borderColor: h.color, color: '#FFFFFF', boxShadow: `0 0 12px -2px ${h.color}60` }
-                              : { borderColor: 'var(--line-strong)', color: 'var(--text)', backgroundColor: 'transparent' }}
-                          >
-                            {h.isCompleted && <Check size={12} strokeWidth={3} />}
-                            <span>{valorDe(h.id, selectedDateForModal)}/{h.metaDiaria}</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setValor(h.id, selectedDateForModal, valorDe(h.id, selectedDateForModal) + 1)}
-                            aria-label={`Sumar uno a ${h.nombre}`}
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-text transition-all active:scale-90"
-                            style={{ backgroundColor: h.color, boxShadow: `0 0 12px -2px ${h.color}60` }}
-                          >
-                            <Plus size={14} strokeWidth={2.5} />
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => toggleCompletado(h.id, selectedDateForModal)}
-                          aria-label={h.isCompleted ? `Desmarcar ${h.nombre}` : `Completar ${h.nombre}`}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 shrink-0 active:scale-90 focus:outline-none ${
-                            h.isCompleted
-                              ? 'shadow-md scale-100'
-                              : 'border-2 border-line-strong hover:border-[#6B6F7B] bg-transparent'
-                          }`}
-                          style={{
-                            backgroundColor: h.isCompleted ? h.color : 'transparent',
-                            borderColor: h.isCompleted ? h.color : undefined,
-                            boxShadow: h.isCompleted ? `0 0 12px -2px ${h.color}60` : undefined,
-                          }}
-                        >
-                          {h.isCompleted && (
-                            <Check size={16} strokeWidth={3} className="text-text drop-shadow" />
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  );
-                })
+          return (
+            <button 
+              key={day.dateStr}
+              className={btnClass}
+              aria-label={ariaLabel}
+              onClick={() => setSelectedDateForModal(day.dateStr)}
+            >
+              {state === 'como' && <span className="absolute top-[3px] right-[4px]"><ShieldCheck size={10} strokeWidth={3} /></span>}
+              <span className={hasBar ? 'pb-1' : ''}>{day.dayNumber}</span>
+              {hasBar && (
+                <i className="absolute left-[6px] right-[6px] bottom-[6px] h-1 rounded-full bg-track-empty block overflow-hidden" aria-hidden="true">
+                  <b className="block h-full rounded-full bg-ambar-text" style={{ width: barWidth }} />
+                </i>
               )}
-            </div>
+            </button>
+          );
+        })}
+      </div>
+      
+      <div className="flex flex-wrap gap-x-3.5 gap-y-2 mt-3 text-[12px] text-text-muted">
+        <span className="inline-flex items-center gap-1.5">
+          <i className="w-3 h-3 rounded-[3px] border border-ambar-text bg-ambar" /> Todo cumplido
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <i className="w-3 h-3 rounded-[3px] border border-line bg-surface relative overflow-hidden"><b className="absolute left-px right-px bottom-px h-[3px] bg-ambar-text" /></i> Una parte
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <i className="w-3 h-3 rounded-[3px] border border-lila-text bg-comodin-bg" /> Comodín
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <i className="w-3 h-3 rounded-[3px] border-[1.5px] border-dashed border-text-muted bg-transparent" /> Día libre
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <i className="w-3 h-3 rounded-[3px] border-[1.5px] border-dashed border-text bg-transparent" /> Hoy
+        </span>
+      </div>
+      
+      {isFirstHabitInCurrentMonth && firstHabitDateStr && (
+        <p className="text-[13px] text-text-muted mt-3">
+          Empezaste el {parseDateString(firstHabitDateStr).getDate()} de {monthNames[currentMonthIdx]}. Los días de antes no cuentan.
+        </p>
+      )}
 
-            {/* Freeze / Unfreeze Day Section */}
+      {/* TARJETA TU MES */}
+      <div className="mt-[18px] p-[14px] rounded-[18px] bg-surface border border-line">
+        <div className="flex items-baseline justify-between gap-2.5 mb-1.5">
+          <h2 className="font-heading font-bold text-[22px] m-0 text-text">Tu mes</h2>
+          <span className="text-[13px] text-text-muted">sin contar hoy</span>
+        </div>
+        
+        {monthMetrics.isDifficultMonth && (
+           <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-[10px] bg-ambar-tint text-[14px] text-text mb-2">
+             <Check size={14} className="text-ambar-text" strokeWidth={3} />
+             Volviste el {parseDateString(monthMetrics.recoveryDate).getDate()}. Eso es lo que cuenta.
+           </div>
+        )}
+
+        {monthMetrics.hechos === 0 && monthMetrics.prog > 0 ? (
+          <>
+            <p className="font-heading font-bold text-[44px] leading-none m-0 mt-1.5 mb-0.5 flex items-baseline gap-2 text-text">
+              Retoma hoy
+            </p>
+            <p className="text-[13px] text-text-muted mt-1 leading-snug">Cada día que marques se suma aquí. Un día gris no borra los demás.</p>
+          </>
+        ) : (
+          <>
+            <p className="font-heading font-bold text-[44px] leading-none m-0 mt-1.5 mb-0.5 flex items-baseline gap-2 tabular-nums text-text">
+              {monthMetrics.hechos} <span className="text-[20px] text-text-muted font-normal">de {monthMetrics.prog}</span>
+            </p>
+            <p className="text-[13px] text-text-muted leading-snug">
+              veces que cumpliste tus hábitos programados{monthMetrics.congelados > 0 ? `, y ${monthMetrics.congelados === 1 ? '1 congelada' : `${monthMetrics.congelados} congeladas`} con comodín` : ''}. Un día gris no borra los demás.
+            </p>
+          </>
+        )}
+        
+        {((monthDays.filter(d => d.dateStr < todayStr && d.programados > 0 && d.cumplidos === d.programados).length > 0) || monthMetrics.congelados > 0) && (
+          <div className="grid grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-line">
             {(() => {
-              const isPast = selectedDateForModal < todayStr;
-              const isFrozen = diasCongelados.includes(selectedDateForModal);
-              const programados = habitsForSelectedDate.filter((h) => h.isScheduled);
-              const diaCompleto = programados.length > 0 && programados.every((h) => h.isCompleted);
-              if (!isPast || (diaCompleto && !isFrozen)) return null;
+              const completados = monthDays.filter(d => d.dateStr < todayStr && d.programados > 0 && d.cumplidos === d.programados && !d.isFrozen).length;
+              if (completados === 0) return null;
               return (
-                <div className="p-3 rounded-[14px] bg-bg/70 border border-line flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-[#378ADD]/15 text-[#7DD3FC] flex items-center justify-center shrink-0">
-                      <Snowflake size={16} />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-text">
-                        {isFrozen ? 'Día protegido' : 'Proteger este día'}
-                      </p>
-                      <p className="text-[10px] text-text-muted">
-                        {isFrozen ? 'No rompe tus rachas' : `Comodines disponibles: ${comodines}`}
-                      </p>
-                    </div>
-                  </div>
-                  {isFrozen ? (
-                    <button
-                      type="button"
-                      onClick={() => descongelarDia(selectedDateForModal)}
-                      className="px-3 py-2 rounded-[10px] text-xs font-semibold bg-surface-raised text-text-muted hover:text-text border border-line transition-colors shrink-0"
-                    >
-                      Quitar
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => congelarDia(selectedDateForModal)}
-                      disabled={comodines <= 0}
-                      className="px-3 py-2 rounded-[10px] text-xs font-semibold bg-[#378ADD] text-text shadow-md shadow-[#378ADD]/30 transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none shrink-0"
-                    >
-                      Usar comodín
-                    </button>
-                  )}
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-heading font-bold text-[22px] tabular-nums text-text">{completados}</span>
+                  <span className="text-[13px] text-text-muted">{completados === 1 ? 'día completo' : 'días completos'}</span>
                 </div>
               );
             })()}
-
-            {/* Bottom Hint */}
-            <p className="text-[11px] text-center text-text-muted pt-1">
-              Tus cambios se guardan y recalculan las rachas automáticamente.
-            </p>
+            {(() => {
+              const usados = monthDays.filter(d => d.dateStr < todayStr && d.isFrozen).length;
+              if (usados === 0) return null;
+              return (
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-heading font-bold text-[22px] tabular-nums text-text">{usados}</span>
+                  <span className="text-[13px] text-text-muted">{usados === 1 ? 'comodín usado' : 'comodines usados'}</span>
+                </div>
+              );
+            })()}
           </div>
-        </div>
+        )}
+      </div>
+
+      {/* HOJA DEL DIA */}
+      {selectedDateForModal && createPortal(
+        <div className="fixed inset-0 z-50 flex flex-col justify-end pointer-events-auto">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setSelectedDateForModal(null)} />
+          <section role="dialog" aria-label={formattedSelectedDate} className="relative w-full bg-bg rounded-t-[22px] border-t border-line shadow-[0_-8px_24px_rgba(0,0,0,0.35)] flex flex-col max-h-[78%]">
+            <div className="w-10 h-[5px] rounded-[9px] bg-line-strong mx-auto mt-2 mb-0 shrink-0" />
+            
+            <div className="flex items-start gap-3 p-3 px-5 border-b border-line pb-2.5">
+              <div className="flex-1 min-w-0">
+                <h2 className="font-heading font-bold text-[24px] m-0 leading-tight text-text">{formattedSelectedDate}</h2>
+                <p className="text-[13px] text-text-muted mt-0.5">
+                  {habitsForSelectedDate.filter(h => h.isCompleted).length} de {habitsForSelectedDate.length} cumplidos · {diasCongelados.includes(selectedDateForModal) ? (habitsForSelectedDate.filter(h => !h.isCompleted).length === 1 ? '1 congelado' : `${habitsForSelectedDate.filter(h => !h.isCompleted).length} congelados`) : 'se guarda al tocar'}
+                </p>
+              </div>
+              <button onClick={() => setSelectedDateForModal(null)} className="w-11 h-11 rounded-full bg-surface-raised flex items-center justify-center text-text-muted shrink-0" aria-label="Cerrar">
+                <X size={20} strokeWidth={2.4} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto px-5 py-2">
+              {diasCongelados.includes(selectedDateForModal) && (
+                <div className="flex gap-2.5 items-start my-3 p-2.5 rounded-[12px] bg-comodin-bg text-comodin-text text-[13px] leading-snug">
+                  <ShieldCheck size={18} className="shrink-0 mt-0.5 text-lila-text" />
+                  <span>Congelaste lo que faltaba, así que no cuenta como fallado. Si al final sí lo cumpliste, márcalo igual.</span>
+                </div>
+              )}
+              
+              {habitsForSelectedDate.map(h => {
+                const tokens = getMomentoColorTokens(h.momento || 'flexible');
+                const isHecho = h.isCompleted;
+                const isNeg = h.tipo === 'negativo';
+                return (
+                  <div key={h.id} className="flex items-center gap-1.5 py-1.5 border-b border-line last:border-0">
+                    {h.metaDiaria ? (
+                       <div className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] bg-transparent border-none text-left px-0">
+                          <div className={`w-[38px] h-[38px] rounded-[11px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
+                            <HabitIcon name={h.icono} size={19} />
+                          </div>
+                          <div className="flex-1 min-w-0 text-left">
+                            <span className={`block text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[1.5px]' : 'text-text'}`}>{h.nombre}</span>
+                            <span className={`block text-[13px] mt-px ${isHecho ? 'text-ambar-text font-semibold' : 'text-text-muted'}`}>
+                              {isHecho ? '+10 ganados' : (h.momento === 'manana' ? 'Mañana' : h.momento === 'tarde' ? 'Tarde' : h.momento === 'noche' ? 'Noche' : 'Todo el día')}
+                              {!isHecho && isNeg && <span className="ml-1.5 text-[11px] font-bold px-1.5 py-px rounded bg-surface-raised text-text-muted">Evitar</span>}
+                            </span>
+                          </div>
+                       </div>
+                    ) : (
+                      <button 
+                        aria-pressed={isHecho}
+                        aria-label={`${isHecho ? 'Quitar la marca de' : 'Marcar'} ${h.nombre}`}
+                        onClick={() => toggleCompletado(h.id, selectedDateForModal)}
+                        className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] bg-transparent border-none text-left px-0 outline-none active:opacity-70"
+                      >
+                        <div className={`w-[38px] h-[38px] rounded-[11px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
+                          <HabitIcon name={h.icono} size={19} />
+                        </div>
+                        <div className="flex-1 min-w-0 text-left">
+                          <span className={`block text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[1.5px]' : 'text-text'}`}>{h.nombre}</span>
+                          <span className={`block text-[13px] mt-px ${isHecho ? 'text-ambar-text font-semibold' : 'text-text-muted'}`}>
+                            {isHecho ? '+10 ganados' : (h.momento === 'manana' ? 'Mañana' : h.momento === 'tarde' ? 'Tarde' : h.momento === 'noche' ? 'Noche' : 'Todo el día')}
+                            {!isHecho && isNeg && <span className="ml-1.5 text-[11px] font-bold px-1.5 py-px rounded bg-surface-raised text-text-muted">Evitar</span>}
+                          </span>
+                        </div>
+                        <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shrink-0 p-0 ${isHecho ? 'bg-ambar border-ambar text-ink' : 'bg-transparent border-text-muted text-transparent'}`}>
+                          {isHecho && <Check size={18} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    )}
+                    
+                    {h.metaDiaria && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button 
+                          aria-label={`Quitar uno a ${h.nombre}`}
+                          disabled={valorDe(h.id, selectedDateForModal) <= 0}
+                          onClick={() => setValor(h.id, selectedDateForModal, valorDe(h.id, selectedDateForModal) - 1)}
+                          className="w-11 h-11 rounded-[10px] border border-line bg-surface-raised flex items-center justify-center disabled:text-line-strong disabled:cursor-default text-text active:scale-95"
+                        >
+                          <Minus size={16} strokeWidth={2.4} />
+                        </button>
+                        <span className="min-w-[44px] text-center text-[18px] font-number tabular-nums font-bold text-text">
+                          {valorDe(h.id, selectedDateForModal)}<small className="text-[13px] text-text-muted font-sans font-semibold">/{h.metaDiaria}</small>
+                        </span>
+                        <button 
+                          aria-label={`Sumar uno a ${h.nombre}`}
+                          onClick={() => setValor(h.id, selectedDateForModal, valorDe(h.id, selectedDateForModal) + 1)}
+                          className="w-11 h-11 rounded-[10px] border border-line bg-surface-raised flex items-center justify-center text-text active:scale-95"
+                        >
+                          <Plus size={16} strokeWidth={2.4} />
+                        </button>
+                      </div>
+                    )}
+                    
+                    {!h.metaDiaria && (
+                      <button 
+                        aria-label={`Abrir ${h.nombre}`}
+                        onClick={() => { setSelectedDateForModal(null); openHabitDetail(h.id); }}
+                        className="w-11 h-11 border-none bg-transparent flex items-center justify-center text-text-muted shrink-0 rounded-[10px]"
+                      >
+                        <ChevronRightIcon size={18} strokeWidth={2.2} />
+                      </button>
+                    )}
+                    {h.metaDiaria && (
+                      <button 
+                        aria-label={`Abrir ${h.nombre}`}
+                        onClick={() => { setSelectedDateForModal(null); openHabitDetail(h.id); }}
+                        className="w-11 h-11 border-none bg-transparent flex items-center justify-center text-text-muted shrink-0 rounded-[10px] ml-1"
+                      >
+                        <ChevronRightIcon size={18} strokeWidth={2.2} />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+
+              {weeklyHabitsForSelectedDate.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-line">
+                  <h3 className="text-[13px] font-semibold text-text-muted mb-2">Esta semana, cuando quieras</h3>
+                  {weeklyHabitsForSelectedDate.map(h => {
+                    const tokens = getMomentoColorTokens(h.momento || 'flexible');
+                    const isHecho = h.isCompleted;
+                    const meta = h.vecesPorSemana || 1;
+                    return (
+                      <div key={h.id} className="flex items-center gap-1.5 py-1.5 border-b border-line last:border-0">
+                        <button 
+                          aria-pressed={isHecho}
+                          aria-label={`${isHecho ? 'Quitar la marca de' : 'Marcar'} ${h.nombre}`}
+                          onClick={() => toggleCompletado(h.id, selectedDateForModal)}
+                          className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] bg-transparent border-none text-left px-0 outline-none active:opacity-70"
+                        >
+                          <div className={`w-[38px] h-[38px] rounded-[11px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
+                            <HabitIcon name={h.icono} size={19} />
+                          </div>
+                          <div className="flex-1 min-w-0 text-left">
+                            <span className={`block text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[1.5px]' : 'text-text'}`}>{h.nombre}</span>
+                            <span className={`block text-[13px] mt-px ${isHecho ? 'text-ambar-text font-semibold' : 'text-text-muted'}`}>
+                              {h.completadosSemana} de {meta} esta semana
+                            </span>
+                          </div>
+                          <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shrink-0 p-0 ${isHecho ? 'bg-ambar border-ambar text-ink' : 'bg-transparent border-text-muted text-transparent'}`}>
+                            {isHecho && <Check size={18} strokeWidth={3} />}
+                          </div>
+                        </button>
+                        <button 
+                          aria-label={`Abrir ${h.nombre}`}
+                          onClick={() => { setSelectedDateForModal(null); openHabitDetail(h.id); }}
+                          className="w-11 h-11 border-none bg-transparent flex items-center justify-center text-text-muted shrink-0 rounded-[10px]"
+                        >
+                          <ChevronRightIcon size={18} strokeWidth={2.2} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            
+            <div className="p-3 px-5 pb-5 border-t border-line">
+              {(() => {
+                const isPast = selectedDateForModal < todayStr;
+                const isFrozen = diasCongelados.includes(selectedDateForModal);
+                const faltan = habitsForSelectedDate.filter(h => !h.isCompleted).length;
+                
+                if (isFrozen) {
+                  return (
+                    <div className="w-full text-center">
+                       <button onClick={() => descongelarDia(selectedDateForModal)} className="min-h-[44px] px-3 text-[13px] font-bold text-ambar-text bg-transparent border-none active:opacity-70">
+                         Quitar el comodín · vuelve a tu saldo
+                       </button>
+                    </div>
+                  );
+                } else if (isPast && faltan > 0) {
+                  return (
+                    <>
+                      <button 
+                        disabled={comodines === 0}
+                        onClick={() => congelarDia(selectedDateForModal)}
+                        className="w-full min-h-[44px] px-3.5 rounded-[10px] border border-line bg-surface-raised text-text text-[14px] font-bold inline-flex items-center justify-center gap-2 disabled:text-text-muted disabled:cursor-default active:scale-[0.98]"
+                      >
+                        {comodines > 0 ? (
+                           <>
+                             <ShieldCheck size={16} className="text-lila-text" strokeWidth={2.5} /> 
+                             {faltan === 1 
+                               ? `Congelar el que falta · te quedan ${comodines}` 
+                               : `Congelar los ${faltan} que faltan · te quedan ${comodines}`}
+                           </>
+                        ) : (
+                           "No te quedan comodines este mes"
+                        )}
+                      </button>
+                      <p className="text-[13px] text-text-muted text-center mt-2">
+                        {comodines > 0 ? 'Si ese día no pudiste, congélalos: no cuentan como fallados.' : `Se recargan el 1 de ${monthNames[(new Date().getMonth() + 1) % 12]}. Puedes marcar lo que sí cumpliste.`}
+                      </p>
+                    </>
+                  );
+                }
+                return null;
+              })()}
+            </div>
+          </section>
+        </div>,
+        document.body
       )}
     </div>
   );

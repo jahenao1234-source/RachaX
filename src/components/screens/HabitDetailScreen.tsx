@@ -70,7 +70,6 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
   const currentStreak = rachaActual(habit.id);
   const recordStreak = mejorRacha(habit.id);
   const isHechoHoy = isHabitCompletedOnDate(habit.id, todayStr, registros);
-  const isScheduledToday = isHabitScheduledForDate(habit.id, todayStr);
   const valorHoy = valorDe(habit.id, todayStr);
   
   // Constancia
@@ -157,7 +156,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
       case 'miss': return `${base} bg-surface text-text-muted border border-line`;
       case 'como': return `${base} bg-comodin-bg text-comodin-text border-[1.5px] border-lila-text`;
       case 'today': return `${base} bg-transparent text-text border-[1.5px] border-dashed border-text`;
-      case 'free': return `${base} bg-transparent text-text-muted border-[1.5px] border-dashed border-line`;
+      case 'free': return `${base} bg-transparent text-text-muted border-[1.5px] border-dashed border-text-muted`;
       default: return base;
     }
   };

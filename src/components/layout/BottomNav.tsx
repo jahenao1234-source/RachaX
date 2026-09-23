@@ -26,7 +26,7 @@ export const BottomNav: React.FC = () => {
           id="nav-tab-hoy"
           type="button"
           onClick={() => navigateToTab('hoy')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
+          className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
             activeTab === 'hoy' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
@@ -48,7 +48,7 @@ export const BottomNav: React.FC = () => {
           id="nav-tab-stats"
           type="button"
           onClick={() => navigateToTab('stats')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
+          className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
             activeTab === 'stats' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
@@ -83,7 +83,7 @@ export const BottomNav: React.FC = () => {
           id="nav-tab-calendario"
           type="button"
           onClick={() => navigateToTab('calendario')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
+          className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
             activeTab === 'calendario' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
@@ -105,7 +105,7 @@ export const BottomNav: React.FC = () => {
           id="nav-tab-perfil"
           type="button"
           onClick={() => navigateToTab('perfil')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all duration-200 group ${
+          className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
             activeTab === 'perfil' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
