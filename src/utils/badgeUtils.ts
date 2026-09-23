@@ -26,7 +26,7 @@ export const calcularInsignias = (
   return [
     {
       id: 'primer_paso',
-      nombre: 'Primer Paso',
+      nombre: 'Primer paso',
       descripcion: 'Comenzaste tu viaje creando tu primer hábito en Racha.',
       requisito: 'Crea tu 1er hábito',
       icono: 'Sparkles',

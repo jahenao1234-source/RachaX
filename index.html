@@ -1,13 +1,27 @@
 <!doctype html>
-<html lang="es" class="dark">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Racha - Rastreador de Hábitos</title>
     
+    <!-- Theme & Appariencia Script (Anti-flicker) -->
+    <script>
+      (function() {
+        try {
+          var ap = localStorage.getItem('racha_apariencia') || 'auto';
+          var ac = localStorage.getItem('racha_acento') || 'ambar';
+          var dark = ap === 'oscuro' || (ap === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+          else document.documentElement.classList.remove('dark');
+          document.documentElement.setAttribute('data-acento', ac);
+        } catch(e) {}
+      })();
+    </script>
+
     <!-- PWA & Mobile Web Meta -->
-    <meta name="theme-color" content="#8B5CF6" />
-    <meta name="background-color" content="#0C0D12" />
+    <meta name="theme-color" content="#0F1113" />
+    <meta name="background-color" content="#0F1113" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Racha" />
@@ -15,7 +29,7 @@
     <link rel="icon" type="image/png" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon-512.png" />
   </head>
-  <body class="bg-bg text-text font-sans antialiased selection:bg-accent/30 selection:text-ink overflow-x-hidden">
+  <body class="bg-bg text-text font-sans antialiased selection:bg-accent-tint selection:text-ink overflow-x-hidden">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

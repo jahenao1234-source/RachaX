@@ -229,7 +229,7 @@ export const TodayScreen: React.FC = () => {
 
   const getMomentoColorInfo = (momento?: string) => {
     switch (momento) {
-      case 'manana': return { bg: 'bg-ambar', text: 'text-ink', iconTint: 'bg-ambar-tint text-ambar-text', iconBg: 'bg-ambar-tint', iconColor: 'text-ambar-text', varColor: 'var(--ambar-text)' };
+      case 'manana': return { bg: 'bg-manana', text: 'text-ink', iconTint: 'bg-manana-tint text-manana-text', iconBg: 'bg-manana-tint', iconColor: 'text-manana-text', varColor: 'var(--manana-text)' };
       case 'tarde': return { bg: 'bg-coral', text: 'text-ink', iconTint: 'bg-coral-tint text-coral-text', iconBg: 'bg-coral-tint', iconColor: 'text-coral-text', varColor: 'var(--coral-text)' };
       case 'noche': return { bg: 'bg-lila', text: 'text-ink', iconTint: 'bg-lila-tint text-lila-text', iconBg: 'bg-lila-tint', iconColor: 'text-lila-text', varColor: 'var(--lila-text)' };
       default: return { bg: 'bg-surface-raised', text: 'text-text', iconTint: 'bg-surface-raised text-text', iconBg: 'bg-surface-raised', iconColor: 'text-text', varColor: 'var(--text)' };

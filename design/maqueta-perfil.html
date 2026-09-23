@@ -1,0 +1,1530 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta aprobada del Perfil (v2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--danger:#F87171;--brand:#FFB547}
+.light{--danger:#C62828;--brand:#FFB547}
+.logo{background:var(--brand)}
+.dark .acc-jade{--ambar:#43D9A3;--ambar-text:#43D9A3;--ambar-tint:#14261F}
+.dark .acc-rosa{--ambar:#F59AC4;--ambar-text:#F59AC4;--ambar-tint:#2A1C24}
+.dark .acc-lima{--ambar:#C5E25A;--ambar-text:#C5E25A;--ambar-tint:#22271A}
+.light .acc-jade{--ambar:#43D9A3;--ambar-text:#0B7A52;--ambar-tint:#DDF5EA}
+.light .acc-rosa{--ambar:#F59AC4;--ambar-text:#A8356E;--ambar-tint:#FCE6F0}
+.light .acc-lima{--ambar:#C5E25A;--ambar-text:#5A6E0F;--ambar-tint:#EEF6D2}
+.sw-ambar{--sw:#FFB547;--swring:#A56200}
+.sw-jade{--sw:#43D9A3;--swring:#0B7A52}
+.sw-rosa{--sw:#F59AC4;--swring:#A8356E}
+.sw-lima{--sw:#C5E25A;--swring:#5A6E0F}
+.sr,.seg input,.acc input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.h3{margin:18px 0 0;font-size:13px;font-weight:600;color:var(--muted)}
+.muted{color:var(--muted)}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.lvl{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.lvlpill{padding:4px 10px;border-radius:999px;background:var(--lila-tint);color:var(--lila-text);font-size:13px;font-weight:700}
+.lvlnum{font-size:20px;color:var(--text)}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:10px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.track{display:block;flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.track b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.bgrow{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bdg{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.bdg-ic{width:40px;height:40px;border-radius:999px;background:var(--ambar-tint);color:var(--ambar-text);display:flex;align-items:center;justify-content:center}
+.bdg-n{font-size:13px;font-weight:600;text-align:center}
+.next{display:flex;gap:12px;align-items:flex-start;margin-top:14px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.hmain{text-decoration:none;color:inherit}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px;padding:4px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.seg label{position:relative;display:block}
+.seg span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.acc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.acc label{position:relative;display:block}
+.acc .opt{min-height:76px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600}
+.acc input:checked + .opt{border:1.5px solid var(--text);color:var(--text);font-weight:700}
+.dotc{width:32px;height:32px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--sw);color:transparent}
+.acc input:checked + .opt .dotc{color:var(--ink)}
+.light .dotc{box-shadow:inset 0 0 0 1.5px var(--swring)}
+.tile.sm{width:36px;height:36px;border-radius:10px}
+.wait{display:flex;gap:10px;align-items:flex-start;margin:10px 0 4px;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:14px;line-height:1.45;color:var(--muted)}
+.wait svg{flex-shrink:0;margin-top:1px}
+.flabel{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid var(--lila-text);background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.btnp{margin-top:18px;min-height:48px;padding:0 20px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full,.btndanger.full{width:100%}
+.btndanger{margin-top:10px;min-height:48px;border-radius:12px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-size:15px;font-weight:700}
+.sheet .link.quiet{margin-top:6px}
+</style>
+</head>
+<body>
+<!-- Maqueta aprobada del Perfil v2 (2026-09-23): 1 arriba, 2 abajo, 3 sin nombre, 4 cambiar el nombre, 5 color Jade, 6 borrar todo, 7 recuperar una copia, 8 claro, 9 claro con Rosa, 10 empezaste hace poco. Referencia visual exacta a 390px. Reglas en DESIGN.md (Perfil y Color de tus logros). -->
+<div class="col"><h2>1 · Perfil (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap1">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap1">
+          <label><input type="radio" name="tema1" checked><span>Automático</span></label><label><input type="radio" name="tema1" ><span>Claro</span></label><label><input type="radio" name="tema1" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co1">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co1">
+          
+          <label class="sw-ambar"><input type="radio" name="acc1" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc1" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc1" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc1" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>2 · Hábitos y datos (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-734px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap2">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap2">
+          <label><input type="radio" name="tema2" checked><span>Automático</span></label><label><input type="radio" name="tema2" ><span>Claro</span></label><label><input type="radio" name="tema2" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co2">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co2">
+          
+          <label class="sw-ambar"><input type="radio" name="acc2" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc2" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc2" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc2" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>3 · Sin nombre (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname muted">Sin nombre</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Añadir tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap3">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap3">
+          <label><input type="radio" name="tema3" checked><span>Automático</span></label><label><input type="radio" name="tema3" ><span>Claro</span></label><label><input type="radio" name="tema3" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co3">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co3">
+          
+          <label class="sw-ambar"><input type="radio" name="acc3" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc3" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc3" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc3" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>4 · Cambiar el nombre (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap4">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap4">
+          <label><input type="radio" name="tema4" checked><span>Automático</span></label><label><input type="radio" name="tema4" ><span>Claro</span></label><label><input type="radio" name="tema4" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co4">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co4">
+          
+          <label class="sw-ambar"><input type="radio" name="acc4" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc4" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc4" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc4" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="hn-t" aria-describedby="hn-d">
+      <div class="grab"></div>
+      <div class="shead"><div style="flex:1;min-width:0"><h2 class="cond" id="hn-t" style="margin:0;font-size:24px">¿Cómo te llamamos?</h2></div><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div style="padding:14px 20px 22px">
+        <form>
+          <label class="flabel" for="nm">Tu nombre</label>
+          <input id="nm" class="field" value="Johnatan" maxlength="24" autocomplete="nickname" enterkeyhint="done" aria-describedby="hn-d">
+          <p class="sub" id="hn-d" style="margin-top:8px">Solo se guarda en este celular. Puedes dejarlo vacío.</p>
+          <button class="btnp full" type="submit">Guardar</button>
+        </form></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>5 · Color Jade elegido (oscuro)</h2><div class="dark">
+  <div class="phone acc-jade">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-540px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap5">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap5">
+          <label><input type="radio" name="tema5" checked><span>Automático</span></label><label><input type="radio" name="tema5" ><span>Claro</span></label><label><input type="radio" name="tema5" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co5">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co5">
+          
+          <label class="sw-ambar"><input type="radio" name="acc5" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc5" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc5" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc5" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>6 · Borrar todo (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-734px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap6">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap6">
+          <label><input type="radio" name="tema6" checked><span>Automático</span></label><label><input type="radio" name="tema6" ><span>Claro</span></label><label><input type="radio" name="tema6" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co6">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co6">
+          
+          <label class="sw-ambar"><input type="radio" name="acc6" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc6" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc6" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc6" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="hb-t" aria-describedby="hb-d">
+      <div class="grab"></div>
+      <div class="shead"><div style="flex:1;min-width:0"><h2 class="cond" id="hb-t" style="margin:0;font-size:24px">¿Borrar todos tus datos?</h2></div><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div style="padding:14px 20px 22px">
+        <p id="hb-d" style="margin:0;font-size:15px;line-height:1.5">Se borran tus 5 hábitos, 412 veces cumplidas, tus insignias y tu nivel. No se puede deshacer.</p>
+        <button class="btnp full"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Guardar una copia primero</button>
+        <button class="btndanger full">Borrar todo</button>
+        <button class="link quiet center">Cancelar</button></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>7 · Recuperar una copia (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-734px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap7">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap7">
+          <label><input type="radio" name="tema7" checked><span>Automático</span></label><label><input type="radio" name="tema7" ><span>Claro</span></label><label><input type="radio" name="tema7" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co7">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co7">
+          
+          <label class="sw-ambar"><input type="radio" name="acc7" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc7" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc7" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc7" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="hi-t" aria-describedby="hi-d">
+      <div class="grab"></div>
+      <div class="shead"><div style="flex:1;min-width:0"><h2 class="cond" id="hi-t" style="margin:0;font-size:24px">¿Reemplazar tus datos?</h2></div><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div style="padding:14px 20px 22px">
+        <p id="hi-d" style="margin:0;font-size:15px;line-height:1.5">La copia del 10 de septiembre tiene 4 hábitos y 380 veces cumplidas. Lo que tienes ahora (5 hábitos, 412 veces cumplidas) se reemplaza y perderías 32 veces cumplidas.</p>
+        <button class="btnp full"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Guardar lo de ahora primero</button>
+        <button class="btndanger full">Reemplazar</button>
+        <button class="link quiet center">Cancelar</button></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>8 · Perfil (claro)</h2><div class="light">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap8">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap8">
+          <label><input type="radio" name="tema8" ><span>Automático</span></label><label><input type="radio" name="tema8" checked><span>Claro</span></label><label><input type="radio" name="tema8" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co8">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co8">
+          
+          <label class="sw-ambar"><input type="radio" name="acc8" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc8" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc8" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc8" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>9 · Color Rosa (claro)</h2><div class="light">
+  <div class="phone acc-rosa">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-540px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 2</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">340</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:34%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">3 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li><li class="bdg" aria-label="Chispa, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="bdg-n" aria-hidden="true">Chispa</span></li><li class="bdg" aria-label="Fuego, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span><span class="bdg-n" aria-hidden="true">Fuego</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 8</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:84%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">5 activos · 1 archivado</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap9">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap9">
+          <label><input type="radio" name="tema9" ><span>Automático</span></label><label><input type="radio" name="tema9" checked><span>Claro</span></label><label><input type="radio" name="tema9" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co9">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co9">
+          
+          <label class="sw-ambar"><input type="radio" name="acc9" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc9" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc9" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc9" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · la última, hace 12 días</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>10 · Empezaste hace poco (oscuro)</h2><div class="dark">
+  <div class="phone acc-ambar">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad y nivel">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0">
+            <p class="cond pname">Johnatan</p>
+            <p class="sub" style="margin-top:2px">Desde el 20 de julio</p>
+          </div>
+          <button class="nb" aria-haspopup="dialog" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+        <div class="lvl">
+          <span class="lvlpill">Nivel 1</span>
+          <span class="sub" style="font-variant-numeric:tabular-nums"><b class="cond lvlnum">30</b> / 1000 puntos</span>
+        </div>
+        <i class="lvltrack" aria-hidden="true"><b style="width:3%"></b></i>
+        <p class="sub" style="margin-top:8px">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Insignias</h2><span class="sub">1 de 8</span></div>
+        <ul class="bgrow">
+          <li class="bdg" aria-label="Primer paso, conseguida"><span class="bdg-ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span><span class="bdg-n" aria-hidden="true">Primer paso</span></li>
+        </ul>
+        <div class="next">
+          <span class="tile" style="background:var(--raised);color:var(--muted)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span class="name">Próxima: Constante</span><span class="sub">faltan 47</span>
+            </div>
+            <span class="meta">50 veces cumplidas · esta barra nunca baja</span>
+            <i class="track" style="margin-top:8px;flex:none;width:100%" aria-hidden="true"><b style="width:6%"></b></i>
+          </div>
+        </div>
+        <a class="rowlink" href="#">Ver todas las insignias<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus hábitos</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Gestionar hábitos</span>
+              <span class="meta">2 activos</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond" id="ap10">Apariencia</h2></div>
+        <div class="seg" role="radiogroup" aria-labelledby="ap10">
+          <label><input type="radio" name="tema10" checked><span>Automático</span></label><label><input type="radio" name="tema10" ><span>Claro</span></label><label><input type="radio" name="tema10" ><span>Oscuro</span></label>
+        </div>
+        <p class="sub" style="margin-top:8px">Automático sigue el modo de tu celular.</p>
+        <h3 class="h3" id="co10">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="co10">
+          
+          <label class="sw-ambar"><input type="radio" name="acc10" checked>
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span>
+          </label>
+          <label class="sw-jade"><input type="radio" name="acc10" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span>
+          </label>
+          <label class="sw-rosa"><input type="radio" name="acc10" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span>
+          </label>
+          <label class="sw-lima"><input type="radio" name="acc10" >
+            <span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span>
+          </label>
+        </div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Tus datos</h2></div>
+        <p class="wait"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span></p>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Guardar una copia</span>
+              <span class="meta">Se descarga un archivo · aún no guardas ninguna</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Recuperar una copia</span>
+              <span class="meta">Reemplaza lo que tienes ahora</span>
+            </span>
+            </button>
+        </div>
+        
+        <div class="hrow">
+          <button class="hmain" aria-haspopup="dialog">
+            <span class="tile sm" style="background:var(--raised);color:var(--danger)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name" style="color:var(--danger)">Borrar todos los datos</span>
+              <span class="meta">No se puede deshacer</span>
+            </span>
+            </button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Ayuda</h2></div>
+        
+        <div class="hrow">
+          <a class="hmain" href="#">
+            <span class="tile sm" style="background:var(--raised);color:var(--muted)" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+            <span style="flex:1;min-width:0">
+              <span class="name">Cómo funciona Racha</span>
+              <span class="meta">La guía del inicio, cuando quieras</span>
+            </span>
+            <span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+        </div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+</body>
+</html>

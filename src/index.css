@@ -10,68 +10,113 @@
     --text: #F1F3F5;
     --text-muted: #98A0AA;
     --ink: #0F1113;
+    
+    /* Variables de colores base */
     --ambar: #FFB547;
     --ambar-tint: #2B2419;
+    --ambar-text: var(--ambar);
+    --ambar-hover: #D99636;
+
+    /* Logo: siempre ámbar, no cambia con el color de logros */
+    --brand: #FFB547;
+
+    --manana: #FFB547;
+    --manana-tint: #2B2419;
+    --manana-text: var(--manana);
+
     --lila: #8E9BFF;
     --lila-tint: #1F2233;
     --lila-ink: #262B55;
-    --comodin-bg: #1B1F2E;
-    --comodin-text: #C9CFFF;
+    --lila-text: var(--lila);
+
     --coral: #FF7A59;
     --coral-tint: #2A211F;
+    --coral-text: var(--coral);
+
+    --comodin-bg: #1B1F2E;
+    --comodin-text: #C9CFFF;
     --track: #23272D;
     --track-empty: #33383F;
     --danger: #F87171;
 
-    --ambar-text: var(--ambar);
-    --lila-text: var(--lila);
-    --coral-text: var(--coral);
-
-    /* Acento dinámico heredado del sistema anterior, por defecto ámbar */
+    /* Acento dinámico heredado del DOM attr */
     --accent: var(--ambar);
     --accent-text: var(--ambar-text);
-    --accent-hover: #D99636;
-    --accent-deep: #B37A26;
-    --accent-10: rgba(255, 181, 71, 0.10);
-    --accent-15: rgba(255, 181, 71, 0.15);
-    --accent-20: rgba(255, 181, 71, 0.20);
-    --accent-25: rgba(255, 181, 71, 0.25);
-    --accent-30: rgba(255, 181, 71, 0.30);
-    --accent-40: rgba(255, 181, 71, 0.40);
-    --accent-50: rgba(255, 181, 71, 0.50);
-    --accent-55: rgba(255, 181, 71, 0.55);
-    --accent-60: rgba(255, 181, 71, 0.60);
-    --accent-70: rgba(255, 181, 71, 0.70);
-    --accent-80: rgba(255, 181, 71, 0.80);
+    --accent-tint: var(--ambar-tint);
+    --accent-hover: color-mix(in srgb, var(--ambar) 85%, black);
+    --accent-deep: color-mix(in srgb, var(--ambar) 70%, black);
+    --accent-10: color-mix(in srgb, var(--ambar) 10%, transparent);
+    --accent-15: color-mix(in srgb, var(--ambar) 15%, transparent);
+    --accent-20: color-mix(in srgb, var(--ambar) 20%, transparent);
+    --accent-25: color-mix(in srgb, var(--ambar) 25%, transparent);
+    --accent-30: color-mix(in srgb, var(--ambar) 30%, transparent);
+    --accent-40: color-mix(in srgb, var(--ambar) 40%, transparent);
+    --accent-50: color-mix(in srgb, var(--ambar) 50%, transparent);
+    --accent-55: color-mix(in srgb, var(--ambar) 55%, transparent);
+    --accent-60: color-mix(in srgb, var(--ambar) 60%, transparent);
+    --accent-70: color-mix(in srgb, var(--ambar) 70%, transparent);
+    --accent-80: color-mix(in srgb, var(--ambar) 80%, transparent);
   }
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #F6F7F8;
-      --surface: #FFFFFF;
-      --surface-raised: #EEF0F2;
-      --line: #E1E4E8;
-      --line-strong: #C9CDD4; /* Ajuste para light mode, no provisto pero necesario para check marks o bordes marcados */
-      --text: #15181B;
-      --text-muted: #5D6570;
-      /* Versiones strong para texto/ícono sobre light mode */
-      --ambar-strong: #A56200;
-      --lila-strong: #4F5BD5;
-      --coral-strong: #D9492A;
-      --danger: #C62828;
+  /* Selector de acento en el DOM */
+  html[data-acento="jade"] {
+    --ambar: #43D9A3;
+    --ambar-tint: #14261F;
+  }
+  html[data-acento="rosa"] {
+    --ambar: #F59AC4;
+    --ambar-tint: #2A1C24;
+  }
+  html[data-acento="lima"] {
+    --ambar: #C5E25A;
+    --ambar-tint: #22271A;
+  }
 
-      --ambar-tint: #FFF1DB;
-      --lila-tint: #ECEEFF;
-      --coral-tint: #FFE9E2;
-      --track: #E3E6EA;
-      --track-empty: #D5D9DE;
-      --comodin-bg: #EEF0FF;
-      --comodin-text: #3F4BC0;
+  /* Modo claro usando body o html:not(.dark) */
+  html:not(.dark) {
+    --bg: #F6F7F8;
+    --surface: #FFFFFF;
+    --surface-raised: #EEF0F2;
+    --line: #E1E4E8;
+    --line-strong: #C9CDD4;
+    --text: #15181B;
+    --text-muted: #5D6570;
+    
+    --ambar-strong: #A56200;
+    --ambar-tint: #FFF1DB;
+    
+    --manana-strong: #A56200;
+    --manana-tint: #FFF1DB;
+    
+    --lila-strong: #4F5BD5;
+    --coral-strong: #D9492A;
+    --danger: #C62828;
 
-      --ambar-text: var(--ambar-strong);
-      --lila-text: var(--lila-strong);
-      --coral-text: var(--coral-strong);
-    }
+    --lila-tint: #ECEEFF;
+    --coral-tint: #FFE9E2;
+    --track: #E3E6EA;
+    --track-empty: #D5D9DE;
+    --comodin-bg: #EEF0FF;
+    --comodin-text: #3F4BC0;
+
+    --ambar-text: var(--ambar-strong);
+    
+    --manana-text: var(--manana-strong);
+    --lila-text: var(--lila-strong);
+    --coral-text: var(--coral-strong);
+  }
+
+  html:not(.dark)[data-acento="jade"] {
+    --ambar-strong: #0B7A52;
+    --ambar-tint: #DDF5EA;
+  }
+  html:not(.dark)[data-acento="rosa"] {
+    --ambar-strong: #A8356E;
+    --ambar-tint: #FCE6F0;
+  }
+  html:not(.dark)[data-acento="lima"] {
+    --ambar-strong: #5A6E0F;
+    --ambar-tint: #EEF6D2;
   }
 
   body {
@@ -92,6 +137,7 @@
   --font-heading: 'Barlow Condensed', sans-serif;
   --font-number: 'Barlow Condensed', sans-serif;
 
+  --color-brand: var(--brand);
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
@@ -100,27 +146,46 @@
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
   --color-ink: var(--ink);
+  
   --color-ambar: var(--ambar);
   --color-ambar-tint: var(--ambar-tint);
-  --color-ambar-strong: var(--ambar-strong);
+  --color-ambar-text: var(--ambar-text);
+
+  --color-manana: var(--manana);
+  --color-manana-tint: var(--manana-tint);
+  --color-manana-text: var(--manana-text);
+  
   --color-lila: var(--lila);
   --color-lila-tint: var(--lila-tint);
   --color-lila-ink: var(--lila-ink);
-  --color-lila-strong: var(--lila-strong);
-  --color-comodin-bg: var(--comodin-bg);
-  --color-comodin-text: var(--comodin-text);
+  --color-lila-text: var(--lila-text);
+  
   --color-coral: var(--coral);
   --color-coral-tint: var(--coral-tint);
-  --color-coral-strong: var(--coral-strong);
+  --color-coral-text: var(--coral-text);
+  
+  --color-comodin-bg: var(--comodin-bg);
+  --color-comodin-text: var(--comodin-text);
   --color-track: var(--track);
   --color-track-empty: var(--track-empty);
   --color-danger: var(--danger);
+  
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
-  
-  --color-ambar-text: var(--ambar-text);
-  --color-lila-text: var(--lila-text);
-  --color-coral-text: var(--coral-text);
+  --color-accent-tint: var(--accent-tint);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-10: var(--accent-10);
+  --color-accent-15: var(--accent-15);
+  --color-accent-20: var(--accent-20);
+  --color-accent-25: var(--accent-25);
+  --color-accent-30: var(--accent-30);
+  --color-accent-40: var(--accent-40);
+  --color-accent-50: var(--accent-50);
+  --color-accent-55: var(--accent-55);
+  --color-accent-60: var(--accent-60);
+  --color-accent-70: var(--accent-70);
+  --color-accent-80: var(--accent-80);
 }
 
 /* Custom Scrollbar */
@@ -128,22 +193,16 @@
   width: 4px;
   height: 4px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--line);
   border-radius: 9999px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--line-strong);
 }
 
-/* Chip que sube (Progreso). En claro, ámbar sobre el tinte no pasa AA: va con contorno. */
 .chip-sube { background: var(--ambar-tint); color: var(--ambar-text); }
-@media (prefers-color-scheme: light) {
-  .chip-sube { background: transparent; box-shadow: inset 0 0 0 1px var(--ambar-text); }
-}
+html:not(.dark) .chip-sube { background: transparent; box-shadow: inset 0 0 0 1px var(--ambar-text); }

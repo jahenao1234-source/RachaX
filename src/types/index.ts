@@ -26,21 +26,19 @@ export const COLOR_POR_MOMENTO: Record<MomentoDia, string> = {
 
 
 
+export type AparienciaTheme = 'auto' | 'claro' | 'oscuro';
+export type AcentoTheme = 'ambar' | 'jade' | 'rosa' | 'lima';
+
 export interface AccentTheme {
-  key: string;
+  key: AcentoTheme;
   label: string;
-  accent: string;
-  accentHover: string;
-  accentDeep: string;
 }
 
 export const THEMES: AccentTheme[] = [
-  { key: 'violeta', label: 'Violeta', accent: '#8B5CF6', accentHover: '#7C4DF0', accentDeep: '#7C3AED' },
-  { key: 'esmeralda', label: 'Esmeralda', accent: '#34D399', accentHover: '#10B981', accentDeep: '#059669' },
-  { key: 'azul', label: 'Azul', accent: '#378ADD', accentHover: '#2E6FBD', accentDeep: '#1E5A9E' },
-  { key: 'ambar', label: 'Ámbar', accent: '#F59E0B', accentHover: '#D97706', accentDeep: '#B45309' },
-  { key: 'rosa', label: 'Rosa', accent: '#EC4899', accentHover: '#DB2777', accentDeep: '#BE185D' },
-  { key: 'cyan', label: 'Cyan', accent: '#22D3EE', accentHover: '#06B6D4', accentDeep: '#0891B2' },
+  { key: 'ambar', label: 'Ámbar' },
+  { key: 'jade', label: 'Jade' },
+  { key: 'rosa', label: 'Rosa' },
+  { key: 'lima', label: 'Lima' },
 ];
 
 export const TEMAS = THEMES;

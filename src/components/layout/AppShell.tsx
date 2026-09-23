@@ -100,8 +100,8 @@ export const AppShell: React.FC = () => {
               className="flex items-center gap-2 group text-left transition-opacity hover:opacity-90 active:scale-95"
               aria-label="Ir a la pantalla principal"
             >
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center text-text shadow-sm shadow-[var(--accent-30)] group-hover:scale-105 transition-transform">
-                <Flame size={14} className="fill-white" />
+              <div className="w-6 h-6 rounded-lg bg-brand flex items-center justify-center text-ink group-hover:scale-105 transition-transform">
+                <Flame size={14} className="fill-current" />
               </div>
               <span className="font-heading font-bold text-sm text-text tracking-tight">
                 Racha

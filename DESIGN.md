@@ -212,7 +212,7 @@ components:
 
 # Design System: Racha
 
-<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día), design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro) y design/maqueta-crear.html (Crear / editar hábito v5 con reto, 2026-09-22) y design/maqueta-detalle.html (Detalle del hábito v2, 2026-09-22) y design/maqueta-calendario.html (Calendario v2, 2026-09-22) y design/maqueta-progreso.html (Progreso v1 y Tu mes del Calendario con %, 2026-09-22). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
+<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día), design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro) y design/maqueta-crear.html (Crear / editar hábito v5 con reto, 2026-09-22) y design/maqueta-detalle.html (Detalle del hábito v2, 2026-09-22) y design/maqueta-calendario.html (Calendario v2, 2026-09-22) y design/maqueta-progreso.html (Progreso v1 y Tu mes del Calendario con %, 2026-09-22) y design/maqueta-perfil.html (Perfil v2, 2026-09-23). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
 
 ## Overview
 
@@ -237,6 +237,13 @@ Grafito neutro con tres acentos que **significan algo**; ningún color es decora
 
 ### Primary
 - **Ámbar Logro** (ambar): días cumplidos, hábitos completados, botón Crear, barra de insignias, acción principal. Es el color de "ya lo hiciste". Texto sobre ámbar siempre en ink.
+- **Color de tus logros (elegible):** el usuario puede cambiar el color de logro en Perfil. Las opciones son Ámbar (por defecto), Jade, Rosa y Lima; todas pasan AA y no chocan con el lila (comodín/noche), el coral (tarde) ni el rojo (borrar). Cambian SOLO los tokens de logro (ambar, ambar-text, ambar-tint): lo cumplido, los botones principales y el "+". NO cambian el logo (brand, siempre #FFB547) ni el color de la Mañana (tokens manana propios, siempre ámbar).
+  | Opción | Relleno (ambar) | Texto oscuro (ambar-text) | Tinte oscuro | Texto claro (ambar-text) | Tinte claro |
+  |---|---|---|---|---|---|
+  | Ámbar | #FFB547 | #FFB547 | #2B2419 | #A56200 | #FFF1DB |
+  | Jade | #43D9A3 | #43D9A3 | #14261F | #0B7A52 | #DDF5EA |
+  | Rosa | #F59AC4 | #F59AC4 | #2A1C24 | #A8356E | #FCE6F0 |
+  | Lima | #C5E25A | #C5E25A | #22271A | #5A6E0F | #EEF6D2 |
 
 ### Secondary
 - **Lila Nivel** (lila): pastilla de nivel, barra de puntos, comodines, hábitos de la noche, el enlace "Siguiente" de la tarjeta Tu día y el resaltado de la fila siguiente. Texto secundario sobre lila en lila-ink.
@@ -256,13 +263,13 @@ Grafito neutro con tres acentos que **significan algo**; ningún color es decora
 ### Momento del día
 | Momento | Color del ícono | Fondo del cuadrito |
 |---|---|---|
-| Mañana | ambar | ambar-tint |
+| Mañana | manana (#FFB547; texto claro #A56200) | manana-tint (#2B2419; claro #FFF1DB). Fijo: no cambia con el color de logros |
 | Todo el día | text | surface-raised |
 | Tarde | coral | coral-tint |
 | Noche | lila | lila-tint |
 
 ### Modo claro
-La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-light`: fondo bg-light, superficies surface-light / surface-raised-light, texto text-light / text-muted-light. Los rellenos ámbar, lila y coral se mantienen (texto ink encima); cuando el acento se usa como **texto o ícono sobre fondo claro** se usa su variante `-strong-light` para cumplir contraste. Los valores claros son propuesta inicial: validarlos en pantalla al implementar.
+Por defecto la app sigue el modo del sistema del teléfono ("Automático"); en Perfil › Apariencia se puede fijar Claro u Oscuro. En claro se usan los tokens `-light`: fondo bg-light, superficies surface-light / surface-raised-light, texto text-light / text-muted-light. Los rellenos ámbar, lila y coral se mantienen (texto ink encima); cuando el acento se usa como **texto o ícono sobre fondo claro** se usa su variante `-strong-light` para cumplir contraste. Los valores claros son propuesta inicial: validarlos en pantalla al implementar.
 
 **Todo token tiene su pareja clara.** En modo claro, cada tinte y pista cambia a su versión `-light`: ambar-tint → ambar-tint-light, lila-tint → lila-tint-light, coral-tint → coral-tint-light, track → track-light, track-empty → track-empty-light, comodin-bg → comodin-bg-light, comodin-text → comodin-text-light, y surface-raised → surface-raised-light. Ningún fondo oscuro del modo oscuro puede quedar visible en modo claro. Sobre un tinte claro, el texto va en text-light y los íconos en la variante `-strong-light` de su acento.
 
@@ -289,6 +296,7 @@ La app sigue el modo del sistema del teléfono. En claro se usan los tokens `-li
 - **Button** (700, 14px): texto de botones compactos ("2 min", "+1").
 - **Label** (500, 13px): metadatos ("Tarde · 1 de 3 esta semana"), ayudas.
 - **Caption** (600, 12px): letras de los días, la palabra "ahora" y textos cortos auxiliares.
+- **Input** (500, 16px): texto dentro de campos de formulario (evita el zoom automático de iOS).
 - **Micro** (600, 11px): etiquetas de la barra de navegación y la etiqueta "Sigue". Nada más pequeño que 11px.
 
 ### Named Rules
@@ -435,6 +443,18 @@ Pestaña que responde "¿voy mejorando?" y "¿qué me cuesta?". Referencia exact
 - **Empezaste hace poco** (menos de 14 días desde el primer hábito): cabecera "Llevas N días y M veces cumplidas · sin contar hoy"; la fuerza con el chip "creciendo" y el texto "Todo hábito empieza en 0 y sube con cada día que cumples. En unas semanas verás la curva tomar forma."; en Dónde puedes mejorar, el aviso "Con 2 semanas de datos verás aquí qué días y qué momentos te cuestan más. Te faltan N días."; luego Tus hábitos. Sin Este mes ni récords.
 - **Sin hábitos:** ícono de tendencia en text-muted, "Tu progreso empieza con un hábito" (26px), "Cuando cumplas unos días, aquí verás la fuerza de tus hábitos, tus récords y qué días te cuestan más." y el botón primario "Crear mi primer hábito".
 - **Ámbar solo para lo logrado:** la curva, el chip que sube y el mes actual. Las barras de comparación van en gris.
+
+### Perfil
+Referencia exacta: design/maqueta-perfil.html. Orden: "Perfil" (display 44px) → tarjeta de identidad → Insignias → Tus hábitos → Apariencia → Tus datos → Ayuda. La pantalla nunca termina en la acción roja.
+- **Identidad (tarjeta):** avatar de 56px neutro (surface-raised con la inicial en text, 28px condensada; sin nombre, ícono de persona), nombre en 28px condensado (sin nombre: "Sin nombre" en text-muted), "Desde el {fecha del primer hábito}" y a la derecha el botón lápiz de 44px ("Cambiar tu nombre" / "Añadir tu nombre"). Debajo, separado por una línea: pastilla "Nivel N" (lila) y "340 / 1000 puntos", la barra lila de 8px y "Cada hábito cumplido suma 10 puntos." El nivel es EXACTAMENTE el mismo de Hoy (calcularPuntosTotales / calcularNivel / calcularProgresoNivel).
+- **Nombre:** opcional y solo local. Hoja "¿Cómo te llamamos?" con el campo "Tu nombre" (máx. 24, borde lila al enfocar), la ayuda "Solo se guarda en este celular. Puedes dejarlo vacío." y "Guardar".
+- **Insignias:** "N de 8"; hasta 3 insignias conseguidas en tarjetas (círculo de 40px con tinte de logro); la **próxima** siempre es una que no puede bajar (acumulativas: veces cumplidas o hábitos creados, nunca de racha), con "faltan N", el requisito "· esta barra nunca baja" y su barra en color de logro; enlace "Ver todas las insignias".
+- **Tus hábitos:** fila "Gestionar hábitos" con "N activos · M archivados".
+- **Apariencia:** control segmentado Automático / Claro / Oscuro (seleccionado: surface-raised con contorno de 1.5px en text) y "Automático sigue el modo de tu celular."; debajo "Color de tus logros": 4 opciones de 76px (círculo de 32px con el color, ✓ ink en la elegida, contorno de 1.5px en text; en claro cada círculo lleva un aro de 1.5px en su texto claro) y "Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear."
+- **Tus datos:** aviso "Tus datos viven solo en este celular. Guarda una copia de vez en cuando…"; filas sin flecha "Guardar una copia" ("Se descarga un archivo · la última, hace N días" / "aún no guardas ninguna"), "Recuperar una copia" y "Borrar todos los datos" en danger.
+- **Borrar todo:** hoja de alerta "¿Borrar todos tus datos?" con lo que se pierde en números, botón primario "Guardar una copia primero", botón con borde danger "Borrar todo" y "Cancelar".
+- **Recuperar una copia:** hoja de alerta "¿Reemplazar tus datos?" que compara la copia con lo actual y dice cuánto se perdería; primario "Guardar lo de ahora primero", borde danger "Reemplazar" y "Cancelar".
+- **Ayuda:** fila "Cómo funciona Racha" (abre la guía del inicio).
 
 ### Reto
 Un reto opcional por hábito: **cuenta días cumplidos, no días de calendario**, y su barra **nunca baja**. Opciones: Sin reto, 7, 30 o 66 días (con "Por semana": 4, 8 o 12 semanas cumplidas). El 66 se explica como "en promedio, un hábito tarda unos 66 días en volverse automático, aunque varía mucho entre personas" (Lally et al., UCL). No usar el mito de los 21 días.

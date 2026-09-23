@@ -1,109 +1,125 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { THEMES, AccentTheme } from '../types';
+import { THEMES, AcentoTheme, AparienciaTheme } from '../types';
 
-const STORAGE_THEME_KEY = 'racha_tema';
+const STORAGE_NOMBRE_KEY = 'racha_nombre';
+const STORAGE_ACENTO_KEY = 'racha_acento';
+const STORAGE_APARIENCIA_KEY = 'racha_apariencia';
 
-export function hexToRgb(hex: string): { r: number; g: number; b: number } {
-  const cleanHex = hex.replace('#', '');
-  const num = parseInt(cleanHex, 16);
-  return {
-    r: (num >> 16) & 255,
-    g: (num >> 8) & 255,
-    b: num & 255,
-  };
-}
-
-export function applyThemeVariables(themeKey: string | null) {
+export function applyApariencia(apariencia: AparienciaTheme) {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
   
-  if (!themeKey) {
-    root.style.removeProperty('--accent');
-    root.style.removeProperty('--accent-hover');
-    root.style.removeProperty('--accent-deep');
-    root.style.removeProperty('--accent-10');
-    root.style.removeProperty('--accent-15');
-    root.style.removeProperty('--accent-20');
-    root.style.removeProperty('--accent-25');
-    root.style.removeProperty('--accent-30');
-    root.style.removeProperty('--accent-40');
-    root.style.removeProperty('--accent-50');
-    root.style.removeProperty('--accent-55');
-    root.style.removeProperty('--accent-60');
-    root.style.removeProperty('--accent-70');
-    root.style.removeProperty('--accent-80');
-    return;
+  const isDark = 
+    apariencia === 'oscuro' || 
+    (apariencia === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+  if (isDark) {
+    root.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
   }
+}
 
-  const theme = THEMES.find((t) => t.key === themeKey);
-  if (!theme) return;
-  
-  const { r, g, b } = hexToRgb(theme.accent);
-
-  root.style.setProperty('--accent', theme.accent);
-  root.style.setProperty('--accent-hover', theme.accentHover);
-  root.style.setProperty('--accent-deep', theme.accentDeep);
-  root.style.setProperty('--accent-10', `rgba(${r}, ${g}, ${b}, 0.10)`);
-  root.style.setProperty('--accent-15', `rgba(${r}, ${g}, ${b}, 0.15)`);
-  root.style.setProperty('--accent-20', `rgba(${r}, ${g}, ${b}, 0.20)`);
-  root.style.setProperty('--accent-25', `rgba(${r}, ${g}, ${b}, 0.25)`);
-  root.style.setProperty('--accent-30', `rgba(${r}, ${g}, ${b}, 0.30)`);
-  root.style.setProperty('--accent-40', `rgba(${r}, ${g}, ${b}, 0.40)`);
-  root.style.setProperty('--accent-50', `rgba(${r}, ${g}, ${b}, 0.50)`);
-  root.style.setProperty('--accent-55', `rgba(${r}, ${g}, ${b}, 0.55)`);
-  root.style.setProperty('--accent-60', `rgba(${r}, ${g}, ${b}, 0.60)`);
-  root.style.setProperty('--accent-70', `rgba(${r}, ${g}, ${b}, 0.70)`);
-  root.style.setProperty('--accent-80', `rgba(${r}, ${g}, ${b}, 0.80)`);
+export function applyAcento(acento: AcentoTheme) {
+  if (typeof document === 'undefined') return;
+  document.documentElement.setAttribute('data-acento', acento);
 }
 
 interface ThemeContextType {
-  tema: string | null;
-  setTema: (temaKey: string | null) => void;
-  temaActual: AccentTheme;
-  THEMES: AccentTheme[];
+  nombre: string;
+  setNombre: (n: string) => void;
+  acento: AcentoTheme;
+  setAcento: (a: AcentoTheme) => void;
+  apariencia: AparienciaTheme;
+  setApariencia: (a: AparienciaTheme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [tema, setTemaState] = useState<string | null>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_THEME_KEY);
-      if (stored && THEMES.some((t) => t.key === stored)) {
-        return stored;
-      }
-    } catch (e) {
-      console.warn('Error cargando tema:', e);
-    }
-    return null;
+  const [nombre, setNombreState] = useState<string>(() => {
+    try { return localStorage.getItem(STORAGE_NOMBRE_KEY) || ''; } catch { return ''; }
   });
 
-  const setTema = (nuevoTema: string | null) => {
-    let validTheme = null;
-    if (nuevoTema && THEMES.some((t) => t.key === nuevoTema)) {
-      validTheme = nuevoTema;
-    }
-    setTemaState(validTheme);
+  const [acento, setAcentoState] = useState<AcentoTheme>(() => {
     try {
-      if (validTheme) {
-        localStorage.setItem(STORAGE_THEME_KEY, validTheme);
-      } else {
-        localStorage.removeItem(STORAGE_THEME_KEY);
-      }
-    } catch (e) {
-      console.warn('Error guardando tema:', e);
-    }
-    applyThemeVariables(validTheme);
+      const stored = localStorage.getItem(STORAGE_ACENTO_KEY) as AcentoTheme;
+      if (stored && THEMES.some(t => t.key === stored)) return stored;
+    } catch {}
+    return 'ambar';
+  });
+
+  const [apariencia, setAparienciaState] = useState<AparienciaTheme>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_APARIENCIA_KEY) as AparienciaTheme;
+      if (stored === 'auto' || stored === 'claro' || stored === 'oscuro') return stored;
+    } catch {}
+    return 'auto';
+  });
+
+  // Listen to external storage changes (like import/reset from HabitContext)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const storedNombre = localStorage.getItem(STORAGE_NOMBRE_KEY) || '';
+        const storedAcento = (localStorage.getItem(STORAGE_ACENTO_KEY) || 'ambar') as AcentoTheme;
+        const storedApariencia = (localStorage.getItem(STORAGE_APARIENCIA_KEY) || 'auto') as AparienciaTheme;
+        
+        setNombreState(storedNombre);
+        
+        if (THEMES.some(t => t.key === storedAcento)) {
+          setAcentoState(storedAcento);
+        }
+        
+        if (['auto', 'claro', 'oscuro'].includes(storedApariencia)) {
+          setAparienciaState(storedApariencia);
+        }
+      } catch {}
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('racha_sync_theme', handleStorageChange); // Custom event for in-app sync
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('racha_sync_theme', handleStorageChange);
+    };
+  }, []);
+
+  const setNombre = (nuevo: string) => {
+    setNombreState(nuevo);
+    try { localStorage.setItem(STORAGE_NOMBRE_KEY, nuevo); } catch {}
   };
 
-  useEffect(() => {
-    applyThemeVariables(tema);
-  }, [tema]);
+  const setAcento = (nuevo: AcentoTheme) => {
+    setAcentoState(nuevo);
+    try { localStorage.setItem(STORAGE_ACENTO_KEY, nuevo); } catch {}
+    applyAcento(nuevo);
+  };
 
-  const temaActual = tema ? (THEMES.find((t) => t.key === tema) || THEMES.find((t) => t.key === 'ambar') || THEMES[0]) : (THEMES.find((t) => t.key === 'ambar') || THEMES[0]);
+  const setApariencia = (nueva: AparienciaTheme) => {
+    setAparienciaState(nueva);
+    try { localStorage.setItem(STORAGE_APARIENCIA_KEY, nueva); } catch {}
+    applyApariencia(nueva);
+  };
+
+  // Sync to DOM when mounted and on changes
+  useEffect(() => {
+    applyAcento(acento);
+  }, [acento]);
+
+  useEffect(() => {
+    applyApariencia(apariencia);
+    
+    if (apariencia === 'auto') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => applyApariencia('auto');
+      mediaQuery.addEventListener('change', listener);
+      return () => mediaQuery.removeEventListener('change', listener);
+    }
+  }, [apariencia]);
 
   return (
-    <ThemeContext.Provider value={{ tema, setTema, temaActual, THEMES }}>
+    <ThemeContext.Provider value={{ nombre, setNombre, acento, setAcento, apariencia, setApariencia }}>
       {children}
     </ThemeContext.Provider>
   );

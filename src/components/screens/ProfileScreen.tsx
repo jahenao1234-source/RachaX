@@ -1,31 +1,119 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   User,
-  Shield,
-  Sparkles,
   Download,
   Upload,
   RefreshCw,
   Flame,
-  Award,
-  Layers,
   ChevronRight,
   HelpCircle,
-  Trophy,
-  Zap,
-  Crown,
   CheckCircle2,
   Lock,
-  FileJson,
   AlertTriangle,
   X,
   Palette,
+  Award,
+  Layers,
+  Sparkles,
+  Zap,
+  Shield,
+  Trophy,
+  Crown
 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { calcularInsignias, InsigniaDef } from '../../utils/badgeUtils';
 import { BadgeDetailModal } from '../badges/BadgeDetailModal';
-import { Habito, Registro, TEMAS } from '../../types';
+import { TEMAS } from '../../types';
+import { calcularProgresoNivel, getTodayString } from '../../utils/habitUtils';
+
+// Componente para la hoja modal del nombre
+const NameModal = ({
+  nombreActual,
+  onClose,
+  onSave
+}: {
+  nombreActual: string;
+  onClose: () => void;
+  onSave: (nombre: string) => void;
+}) => {
+  const [val, setVal] = useState(nombreActual);
+
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/60 z-40 transition-opacity" onClick={onClose} />
+      <div className="fixed left-0 right-0 bottom-0 max-h-[78%] flex flex-col bg-surface rounded-t-[22px] border-t border-line shadow-2xl z-50 animate-slideUp" role="dialog" aria-modal="true" aria-labelledby="name-modal-title">
+        <div className="w-10 h-1.5 rounded-full bg-line-strong mx-auto mt-2 shrink-0" />
+        <div className="flex items-start gap-3 p-3 px-5 border-b border-line">
+          <button
+            onClick={onClose}
+            className="w-11 h-11 rounded-full bg-surface-raised text-text-muted flex items-center justify-center shrink-0 border-none cursor-pointer"
+          >
+            <X size={20} />
+          </button>
+          <div className="flex-1 min-w-0 pt-0.5">
+            <h2 id="name-modal-title" className="m-0 text-[22px] font-heading font-bold text-text">Cómo te llamas</h2>
+            <p id="name-modal-desc" className="m-0 text-[13px] text-text-muted leading-snug mt-0.5">Para personalizar tu perfil</p>
+          </div>
+        </div>
+        <form onSubmit={(e) => { e.preventDefault(); onSave(val.trim()); onClose(); }} className="p-5 pt-3 border-t border-line mt-auto">
+          <label className="block text-[13px] font-semibold text-text-muted mb-1.5" htmlFor="nn">
+            Tu nombre o apodo
+          </label>
+          <input
+            type="text"
+            id="nn"
+            className="w-full min-h-[48px] px-3.5 rounded-xl border-[1.5px] border-lila-text bg-surface text-text font-sans text-base outline-none"
+            value={val}
+            onChange={(e) => setVal(e.target.value)}
+            autoFocus
+            autoComplete="nickname"
+            maxLength={24}
+            aria-describedby="name-modal-desc"
+          />
+          <button
+            type="submit"
+            className="mt-4 w-full min-h-[48px] px-5 rounded-xl bg-ambar text-ink text-[15px] font-bold flex items-center justify-center border-none cursor-pointer"
+          >
+            Guardar nombre
+          </button>
+          {nombreActual && (
+            <button
+              type="button"
+              onClick={() => { onSave(''); onClose(); }}
+              className="mt-1 w-full min-h-[44px] px-5 bg-transparent text-text-muted text-[15px] font-medium flex items-center justify-center border-none cursor-pointer"
+            >
+              Borrar nombre
+            </button>
+          )}
+        </form>
+      </div>
+    </>
+  );
+};
+
+const AlertSheet = ({ title, desc, onPrimary, primaryText, onDanger, dangerText, onClose }: any) => (
+  <>
+    <div className="fixed inset-0 bg-black/60 z-40 transition-opacity" onClick={onClose} />
+    <div className="fixed left-0 right-0 bottom-0 max-h-[78%] flex flex-col bg-bg rounded-t-[22px] border-t border-line shadow-2xl z-50 animate-slideUp" role="alertdialog" aria-modal="true" aria-labelledby="alert-title">
+      <div className="w-10 h-1.5 rounded-full bg-line-strong mx-auto mt-2 shrink-0" />
+      <div className="flex justify-end p-2 px-3 pb-0">
+        <button onClick={onClose} className="w-11 h-11 rounded-full text-text-muted flex items-center justify-center border-none bg-transparent cursor-pointer">
+          <X size={24} />
+        </button>
+      </div>
+      <div className="px-6 pb-6 text-center">
+        <h2 id="alert-title" className="m-0 text-[24px] font-heading font-bold text-text">{title}</h2>
+        <p className="m-0 mt-3 text-[14px] text-text-muted leading-relaxed">{desc}</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <button onClick={onPrimary} className="w-full min-h-[48px] rounded-[14px] bg-surface text-text border border-line text-[15px] font-bold cursor-pointer">{primaryText}</button>
+          <button onClick={onDanger} className="w-full min-h-[48px] rounded-[14px] bg-transparent text-danger border-[1.5px] border-danger text-[15px] font-bold cursor-pointer">{dangerText}</button>
+          <button onClick={onClose} className="w-full min-h-[48px] rounded-[14px] bg-transparent text-text-muted border-none text-[15px] font-bold cursor-pointer mt-1">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </>
+);
 
 export const ProfileScreen: React.FC = () => {
   const {
@@ -39,32 +127,61 @@ export const ProfileScreen: React.FC = () => {
     exportarDatos,
     importarDatos,
   } = useHabitStore();
-  const { tema, setTema, temaActual } = useTheme();
+  
+  const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedBadge, setSelectedBadge] = useState<InsigniaDef | null>(null);
   const [importPendingData, setImportPendingData] = useState<{
     data: any;
     fileName: string;
+    fecha: string;
+    habitos: number;
+    registros: number;
   } | null>(null);
   const [notification, setNotification] = useState<{
     type: 'success' | 'error';
     message: string;
   } | null>(null);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showAllBadges, setShowAllBadges] = useState(false);
+  const vecesCumplidas = registros.filter((r) => r.completado).length;
+
+  // Escape cierra la hoja que esté abierta
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setShowNameModal(false);
+      setShowDeleteConfirm(false);
+      setShowAllBadges(false);
+      setImportPendingData(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const totalCompletados = registros.filter((r) => r.completado).length;
   const globalStreak = rachaGlobal();
   const maxHabitStreak = mejorRachaGlobalHabitos();
 
-  // Nivel del perfil: cada 20 check-ins = 1 nivel
-  const CHECKINS_PER_LEVEL = 20;
-  const currentLevel = Math.floor(totalCompletados / CHECKINS_PER_LEVEL) + 1;
-  const checkinsInCurrentLevel = totalCompletados % CHECKINS_PER_LEVEL;
-  const levelProgressPercent = Math.round((checkinsInCurrentLevel / CHECKINS_PER_LEVEL) * 100);
+  // Fecha de inicio
+  const primerRegistro = registros.length > 0 ? registros.reduce((min, r) => r.fecha < min.fecha ? r : min, registros[0]) : null;
+  const startDateStr = primerRegistro ? primerRegistro.fecha : new Date().toISOString().split('T')[0];
+  const startDateFormatted = new Date(startDateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+  const isRecent = registros.length === 0;
+
+  // Nivel del perfil: cada hábito suma 10 pts
+  const totalPuntos = totalCompletados * 10;
+  const currentLevel = Math.floor(totalPuntos / 1000) + 1;
+  const puntosEnNivel = calcularProgresoNivel(totalPuntos);
+  const levelProgressPercent = Math.round((puntosEnNivel / 1000) * 100);
 
   // Insignias dinámicas
   const insignias = calcularInsignias(habitos, registros, maxHabitStreak, globalStreak);
   const totalDesbloqueadas = insignias.filter((b) => b.desbloqueada).length;
+  const lockedInsignias = insignias.filter(b => !b.desbloqueada && b.categoria !== 'racha');
+  const nextBadge = lockedInsignias.length > 0 ? lockedInsignias.reduce((max, badge) => (badge.progresoActual / badge.meta > max.progresoActual / max.meta ? badge : max), lockedInsignias[0]) : null;
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -84,582 +201,361 @@ export const ProfileScreen: React.FC = () => {
         const parsed = JSON.parse(text);
 
         if (!parsed || !Array.isArray(parsed.habitos) || !Array.isArray(parsed.registros)) {
-          showNotification(
-            'error',
-            'El archivo no tiene el formato de respaldo de Racha (faltan listas de hábitos o registros).'
-          );
+          showNotification('error', 'El archivo no tiene el formato de respaldo de Racha.');
           return;
         }
-
-        // Valid habit schema check
-        const hasValidHabits = parsed.habitos.every(
-          (h: any) => h && typeof h.id === 'string' && typeof h.nombre === 'string'
-        );
-
-        if (!hasValidHabits) {
-          showNotification(
-            'error',
-            'El archivo contiene hábitos con estructura inválida.'
-          );
-          return;
+        const hCount = parsed.habitos?.length || 0;
+        const rCount = Array.isArray(parsed.registros) ? parsed.registros.filter((r: { completado?: boolean }) => r && r.completado).length : 0;
+        let exportDate = 'desconocida';
+        if (parsed.exportedAt) {
+          const d = new Date(parsed.exportedAt);
+          exportDate = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', timeZone: 'UTC' });
         }
-
-        // Stage for confirmation modal
-        setImportPendingData({
-          data: parsed,
-          fileName: file.name,
-        });
+        setImportPendingData({ data: parsed, fileName: file.name, fecha: exportDate, habitos: hCount, registros: rCount });
       } catch (err) {
-        showNotification(
-          'error',
-          'No se pudo leer el archivo JSON. Verifica que sea un archivo de texto válido.'
-        );
+        showNotification('error', 'No se pudo leer el archivo JSON.');
       } finally {
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
     };
-
-    reader.onerror = () => {
-      showNotification('error', 'Error al abrir el archivo.');
-    };
-
+    reader.onerror = () => showNotification('error', 'Error al abrir el archivo.');
     reader.readAsText(file);
   };
 
   const confirmImport = () => {
     if (!importPendingData) return;
-
     const result = importarDatos(importPendingData.data);
-
     if (result.success) {
-      showNotification(
-        'success',
-        `¡Copia restaurada! Se importaron ${importPendingData.data.habitos.length} hábitos y ${importPendingData.data.registros.length} registros.`
-      );
+      showNotification('success', `¡Copia restaurada!`);
     } else {
       showNotification('error', result.error || 'Error al importar datos.');
     }
-
     setImportPendingData(null);
   };
 
-  const renderBadgeIcon = (iconName: string, unlocked: boolean, color: string) => {
+  const renderBadgeIcon = (iconName: string) => {
     const size = 20;
-    const iconClass = unlocked ? '' : 'text-text-muted';
-
     switch (iconName) {
-      case 'Sparkles':
-        return <Sparkles size={size} className={iconClass} />;
-      case 'Flame':
-        return <Flame size={size} className={unlocked ? 'fill-current' : iconClass} />;
-      case 'Zap':
-        return <Zap size={size} className={iconClass} />;
-      case 'Shield':
-        return <Shield size={size} className={iconClass} />;
-      case 'Award':
-        return <Award size={size} className={iconClass} />;
-      case 'Layers':
-        return <Layers size={size} className={iconClass} />;
-      case 'Trophy':
-        return <Trophy size={size} className={iconClass} />;
-      case 'Crown':
-        return <Crown size={size} className={iconClass} />;
-      default:
-        return <Award size={size} className={iconClass} />;
+      case 'Sparkles': return <Sparkles size={size} />;
+      case 'Flame': return <Flame size={size} />;
+      case 'Zap': return <Zap size={size} />;
+      case 'Shield': return <Shield size={size} />;
+      case 'Award': return <Award size={size} />;
+      case 'Layers': return <Layers size={size} />;
+      case 'Trophy': return <Trophy size={size} />;
+      case 'Crown': return <Crown size={size} />;
+      default: return <Award size={size} />;
     }
   };
 
   return (
-    <div id="screen-profile" className="space-y-6 pb-24 animate-fadeIn">
-      {/* Hidden File Input for Backup Import */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        // Sin filtro de tipo: en Android los .json descargados suelen llegar como tipo genérico
-        // y el selector los bloquea. El contenido se valida al leerlo.
-        className="hidden"
-        onChange={handleFileChange}
-      />
-
-      {/* Floating Notification Toast */}
+    <div className="space-y-6 pb-24 px-4 pt-4 min-h-screen">
+      <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
+      
       {notification && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 w-full max-w-[390px] px-4 animate-slideDown">
           <div
             className={`p-3.5 rounded-[16px] border flex items-center justify-between gap-3 shadow-2xl backdrop-blur-md ${
               notification.type === 'success'
-                ? 'bg-surface/95 border-ambar/50 text-ambar'
+                ? 'bg-surface/95 border-ambar-text text-ambar-text'
                 : 'bg-surface/95 border-danger/50 text-danger'
             }`}
           >
             <div className="flex items-center gap-2.5 text-xs font-medium">
-              {notification.type === 'success' ? (
-                <CheckCircle2 size={16} className="shrink-0" />
-              ) : (
-                <AlertTriangle size={16} className="shrink-0" />
-              )}
+              {notification.type === 'success' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
               <span className="text-text">{notification.message}</span>
             </div>
-            <button
-              type="button"
-              onClick={() => setNotification(null)}
-              className="text-text-muted hover:text-text"
-            >
+            <button type="button" onClick={() => setNotification(null)} className="text-text-muted cursor-pointer bg-transparent border-none">
               <X size={14} />
             </button>
           </div>
         </div>
       )}
 
-      {/* Header */}
-      <header className="pt-2">
-        <p className="text-xs font-medium text-text-muted tracking-wide uppercase">
-          Configuración y Logros
-        </p>
-        <h1 className="text-2xl font-bold font-heading text-text tracking-tight mt-0.5">
-          Perfil
-        </h1>
-      </header>
-
-      <div className="space-y-7">
-        {/* === ZONA 1: IDENTIDAD (hero) === */}
-        <section
-          id="profile-user-card"
-          className="rounded-[20px] bg-surface border border-line p-5 space-y-4 relative overflow-hidden shadow-xl"
-        >
-          {/* Avatar + Name + Level Pill */}
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[var(--accent-15)] border-2 border-[var(--accent)] flex items-center justify-center text-[var(--accent)] shrink-0 shadow-lg shadow-[var(--accent-20)]">
-              <User size={28} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold font-heading text-text truncate">
-                  Atleta de Hábitos
-                </h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[var(--accent-20)] text-[var(--accent)] border border-[var(--accent-40)] shadow-sm">
-                  Nv. {currentLevel}
-                </span>
-              </div>
-              <p className="text-xs text-text-muted truncate mt-0.5">
-                Construyendo consistencia día a día
-              </p>
-            </div>
+      {/* Header Profile */}
+      <h1 className="font-heading font-bold text-[44px] leading-none m-0 text-text">Perfil</h1>
+      
+      {/* Identity Card */}
+      <section className="mt-4 p-3.5 rounded-[18px] bg-surface border border-line" aria-label="Tu identidad y nivel">
+        <div className="flex items-center gap-3.5">
+          <span className="w-14 h-14 rounded-full bg-surface-raised text-text flex items-center justify-center shrink-0">
+            {nombre ? (
+              <span className="font-heading font-bold text-[28px] leading-none uppercase">{nombre.charAt(0)}</span>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            )}
+          </span>
+          <div className="flex-1 min-w-0">
+            {nombre ? (
+              <p className="m-0 font-heading font-bold text-[28px] leading-[1.05] text-text truncate">{nombre}</p>
+            ) : (
+              <p className="m-0 font-heading font-bold text-[28px] leading-[1.05] text-text-muted truncate">Sin nombre</p>
+            )}
+            <p className="m-0 text-[13px] text-text-muted mt-0.5">
+              {isRecent ? 'Empezaste hace poco' : `Desde el ${startDateFormatted}`}
+            </p>
           </div>
-
-          {/* 3 Clean Metric Tiles */}
-          <div className="grid grid-cols-3 gap-2.5 pt-1">
-            <div className="bg-surface-raised/80 border border-line rounded-[14px] p-2.5 text-center">
-              <p className="text-[11px] text-text-muted font-medium">Nivel</p>
-              <p className="text-base font-bold font-heading text-[var(--accent)] mt-0.5">
-                {currentLevel}
-              </p>
-            </div>
-            <div className="bg-surface-raised/80 border border-line rounded-[14px] p-2.5 text-center">
-              <p className="text-[11px] text-text-muted font-medium">Check-ins</p>
-              <p className="text-base font-bold font-heading text-text mt-0.5">
-                {totalCompletados}
-              </p>
-            </div>
-            <div className="bg-surface-raised/80 border border-line rounded-[14px] p-2.5 text-center">
-              <p className="text-[11px] text-text-muted font-medium">Racha</p>
-              <p className="text-base font-bold font-heading text-ambar mt-0.5 flex items-center justify-center gap-1">
-                <span>{globalStreak}d</span>
-                <Flame size={14} className="fill-ambar" />
-              </p>
-            </div>
-          </div>
-
-          {/* Level XP Progress Bar */}
-          <div className="pt-2 border-t border-line space-y-1.5">
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="text-text-muted">Progreso de Nivel</span>
-              <span className="text-text font-medium">
-                {checkinsInCurrentLevel} / {CHECKINS_PER_LEVEL} check-ins para Nv. {currentLevel + 1}
-              </span>
-            </div>
-            <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-deep)] transition-all duration-500"
-                style={{ width: `${levelProgressPercent}%` }}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* === ZONA 2: LOGROS === */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between px-0.5">
-            <h3 className="text-sm font-semibold font-heading text-text">
-              Logros
-            </h3>
-            <span className="text-xs text-[var(--accent)] bg-[var(--accent-15)] px-2.5 py-0.5 rounded-full border border-[var(--accent-30)] font-medium">
-              {totalDesbloqueadas} / {insignias.length} Desbloqueadas
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {insignias.map((badge) => (
-              <button
-                key={badge.id}
-                type="button"
-                onClick={() => setSelectedBadge(badge)}
-                className={`rounded-[18px] p-3 text-center space-y-2 transition-all text-left relative overflow-hidden group cursor-pointer active:scale-95 ${
-                  badge.desbloqueada
-                    ? 'bg-surface border hover:border-opacity-80 shadow-md'
-                    : 'bg-[#12131A]/60 border border-line/70 opacity-60 hover:opacity-80'
-                }`}
-                style={{
-                  borderColor: badge.desbloqueada ? `${badge.color}60` : undefined,
-                  boxShadow: badge.desbloqueada ? `0 4px 15px -3px ${badge.color}20` : undefined,
-                }}
-              >
-                {/* Status Pill on top-right */}
-                <div className="flex items-center justify-between">
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
-                    style={{
-                      backgroundColor: badge.desbloqueada ? `${badge.color}20` : 'var(--surface-raised)',
-                      color: badge.desbloqueada ? badge.color : 'var(--text-muted)',
-                    }}
-                  >
-                    {renderBadgeIcon(badge.icono, badge.desbloqueada, badge.color)}
-                  </div>
-
-                  {badge.desbloqueada ? (
-                    <CheckCircle2 size={14} className="text-ambar" />
-                  ) : (
-                    <Lock size={12} className="text-text-muted" />
-                  )}
-                </div>
-
-                <div>
-                  <p
-                    className={`text-xs font-bold font-heading truncate ${
-                      badge.desbloqueada ? 'text-text' : 'text-text-muted'
-                    }`}
-                  >
-                    {badge.nombre}
-                  </p>
-                  <p className="text-[10px] text-text-muted truncate mt-0.5">
-                    {badge.requisito}
-                  </p>
-                </div>
-
-                {/* Progress mini indicator */}
-                <div className="w-full h-1 rounded-full bg-surface-raised overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${Math.min(100, Math.round((badge.progresoActual / badge.meta) * 100))}%`,
-                      backgroundColor: badge.desbloqueada ? badge.color : 'var(--text-muted)',
-                    }}
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* === ZONA 3: AJUSTES === */}
-        <section className="space-y-3">
-          <h3 className="text-sm font-semibold font-heading text-text px-0.5">
-            Ajustes
-          </h3>
-
-          <div className="rounded-[16px] bg-surface border border-line divide-y divide-[var(--line)] overflow-hidden shadow-lg shadow-black/20">
-            {/* Color de Acento / Selector de Temas */}
-            <div className="p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                    <Palette size={16} />
-                  </div>
-                  <div>
-                    <span className="text-xs font-medium text-text block">Color de acento</span>
-                    <span className="text-[10px] text-text-muted">Personaliza el tono principal de la interfaz</span>
-                  </div>
-                </div>
-                <span className="text-xs font-semibold font-heading text-[var(--accent)] bg-[var(--accent-15)] px-2.5 py-0.5 rounded-full border border-[var(--accent-30)] capitalize">
-                  {temaActual.label}
-                </span>
-              </div>
-
-              {/* Fila de swatches circulares */}
-              <div className="grid grid-cols-6 gap-2 pt-1">
-                {TEMAS.map((t) => {
-                  const isSelected = tema === t.key;
-                  return (
-                    <button
-                      key={t.key}
-                      type="button"
-                      onClick={() => setTema(t.key)}
-                      title={t.label}
-                      aria-label={`Seleccionar tema ${t.label}`}
-                      className={`flex flex-col items-center gap-1.5 p-1.5 rounded-xl transition-all ${
-                        isSelected
-                          ? 'bg-surface-raised border border-[var(--accent-30)] shadow-sm'
-                          : 'hover:bg-surface-raised/60 border border-transparent opacity-75 hover:opacity-100'
-                      }`}
-                    >
-                      <div
-                        className={`w-7 h-7 rounded-full transition-all flex items-center justify-center ${
-                          isSelected
-                            ? 'ring-2 ring-white ring-offset-2 ring-offset-surface scale-105'
-                            : 'border border-white/20'
-                        }`}
-                        style={{
-                          backgroundColor: t.accent,
-                          boxShadow: isSelected ? `0 0 10px ${t.accent}80` : undefined,
-                        }}
-                      >
-                        {isSelected && (
-                          <CheckCircle2 size={15} className="text-text drop-shadow" strokeWidth={2.5} />
-                        )}
-                      </div>
-                      <span
-                        className={`text-[10px] font-medium transition-colors truncate max-w-full ${
-                          isSelected ? 'text-text font-bold' : 'text-text-muted'
-                        }`}
-                      >
-                        {t.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={openManageHabits}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                  <Layers size={16} />
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-text block">Gestionar Hábitos</span>
-                  <span className="text-[10px] text-text-muted">Editar, revisar o eliminar catálogo</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-[var(--accent)] font-medium">{habitos.length} hábitos</span>
-                <ChevronRight size={16} className="text-text-muted group-hover:text-text transition-colors" />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={openOnboarding}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                  <HelpCircle size={16} />
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-text block">Ver introducción de nuevo</span>
-                  <span className="text-[10px] text-text-muted">Repasar la guía de bienvenida</span>
-                </div>
-              </div>
-              <ChevronRight size={16} className="text-text-muted group-hover:text-text transition-colors" />
-            </button>
-          </div>
-        </section>
-
-        {/* === ZONA 4: DATOS Y RESPALDO === */}
-        <section className="space-y-3">
-          <h3 className="text-sm font-semibold font-heading text-text px-0.5">
-            Datos y respaldo
-          </h3>
-
-          <div className="rounded-[16px] bg-surface border border-line divide-y divide-[var(--line)] overflow-hidden shadow-lg shadow-black/20">
-            {/* Exportar datos */}
-            <button
-              id="profile-export-backup-btn"
-              type="button"
-              onClick={exportarDatos}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-ambar/15 text-ambar flex items-center justify-center shrink-0">
-                  <Download size={16} />
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-text block">Exportar datos</span>
-                  <span className="text-[10px] text-text-muted">
-                    Descarga un archivo .json con tus hábitos y registros
-                  </span>
-                </div>
-              </div>
-              <span className="text-xs font-medium text-ambar bg-ambar/10 px-2.5 py-1 rounded-lg border border-ambar/30 group-hover:bg-ambar/20 transition-colors">
-                Descargar .json
-              </span>
-            </button>
-
-            {/* Importar datos */}
-            <button
-              id="profile-import-backup-btn"
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-surface-raised transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                  <Upload size={16} />
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-text block">Importar datos</span>
-                  <span className="text-[10px] text-text-muted">
-                    Restaura tu información desde un archivo .json de respaldo
-                  </span>
-                </div>
-              </div>
-              <span className="text-xs font-medium text-[var(--accent)] bg-[var(--accent-10)] px-2.5 py-1 rounded-lg border border-[var(--accent-30)] group-hover:bg-[var(--accent-20)] transition-colors">
-                Cargar archivo
-              </span>
-            </button>
-
-            {/* Estado de persistencia local */}
-            <div className="p-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
-                  <Shield size={16} />
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-text block">Persistencia Local</span>
-                  <span className="text-[10px] text-text-muted">Almacenamiento seguro en navegador</span>
-                </div>
-              </div>
-              <span className="text-xs text-ambar font-medium">Activa</span>
-            </div>
-          </div>
-        </section>
-
-        {/* === ZONA 5: ZONA DE PELIGRO === */}
-        <section className="space-y-3 pt-1">
-          <h3 className="text-sm font-semibold font-heading text-danger px-0.5">
-            Zona de peligro
-          </h3>
-
-          <div className="rounded-[16px] bg-surface border border-danger/25 overflow-hidden shadow-lg shadow-black/20">
-            <button
-              id="profile-reset-data-btn"
-              type="button"
-              onClick={() => {
-                if (window.confirm('¿Deseas reiniciar todos los hábitos y registros de Racha? Esta acción no se puede deshacer.')) {
-                  reiniciarTodo();
-                  showNotification('success', 'Almacenamiento local reiniciado.');
-                }
-              }}
-              className="w-full p-3.5 flex items-center justify-between text-left hover:bg-danger/10 transition-colors group"
-            >
-              <div className="flex items-center gap-3 text-danger">
-                <div className="w-8 h-8 rounded-xl bg-danger/15 text-danger flex items-center justify-center shrink-0">
-                  <RefreshCw size={16} />
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-text block">Reiniciar Almacenamiento</span>
-                  <span className="text-[10px] text-text-muted">Limpiar todos los datos locales</span>
-                </div>
-              </div>
-              <span className="text-xs font-medium text-danger bg-danger/10 px-2.5 py-1 rounded-lg border border-danger/30 group-hover:bg-danger/20 transition-colors">
-                Reiniciar
-              </span>
-            </button>
-          </div>
-        </section>
-      </div>
-
-      {/* Badge Detail Modal */}
-      <BadgeDetailModal
-        badge={selectedBadge}
-        onClose={() => setSelectedBadge(null)}
-      />
-
-      {/* Confirmation Modal for Data Import */}
-      {importPendingData && (
-        <div
-          id="import-confirmation-overlay"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-bg/85 backdrop-blur-md p-4 animate-fadeIn"
-          onClick={() => setImportPendingData(null)}
-        >
-          <div
-            id="import-confirmation-card"
-            className="w-full max-w-[360px] bg-bg border border-line rounded-[28px] p-6 shadow-2xl relative text-center space-y-4 animate-scaleUp"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            onClick={() => setShowNameModal(true)}
+            className="w-11 h-11 rounded-xl border border-line bg-surface text-text flex items-center justify-center shrink-0 cursor-pointer"
+            aria-label="Cambiar tu nombre"
           >
-            <div className="w-14 h-14 rounded-2xl bg-ambar/15 border border-ambar/30 text-ambar flex items-center justify-center mx-auto">
-              <AlertTriangle size={28} />
-            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+          </button>
+        </div>
+        
+        <div className="flex justify-between items-center mt-4 pt-3.5 border-t border-line">
+          <span className="px-2.5 py-1 rounded-full bg-lila-tint text-lila-text text-[13px] font-bold">Nivel {currentLevel}</span>
+          <span className="text-[13px] text-text-muted tabular-nums">
+            <b className="font-heading font-bold text-[20px] text-text">{puntosEnNivel}</b> / 1000 puntos
+          </span>
+        </div>
+        
+        <div className="block h-2 rounded-full bg-track-empty overflow-hidden mt-2.5">
+          <b className="block h-full rounded-full bg-lila-text" style={{ width: `${levelProgressPercent}%` }}></b>
+        </div>
+        
+        <p className="text-[13px] text-text-muted m-0 mt-2">Cada hábito cumplido suma 10 puntos.</p>
+      </section>
 
-            <div className="space-y-1.5">
-              <h3 className="text-lg font-bold font-heading text-text">
-                ¿Restaurar copia de seguridad?
-              </h3>
-              <p className="text-xs text-text-muted leading-relaxed">
-                Esto reemplazará tus datos actuales con la copia seleccionada:
-              </p>
-            </div>
+      {/* Insignias */}
+      <section className="mt-[26px]">
+        <div className="flex items-baseline justify-between gap-2.5">
+          <h2 className="m-0 font-heading font-bold text-[22px] text-text">Insignias</h2>
+          <span className="text-[13px] text-text-muted">{totalDesbloqueadas} de {insignias.length}</span>
+        </div>
+        
+        <ul className="list-none m-0 p-0 mt-3 grid grid-cols-3 gap-2.5">
+          {insignias.slice(0, 3).map(badge => (
+            <li key={badge.id} className="flex flex-col items-center gap-1.5 p-3 rounded-[14px] bg-surface border border-line cursor-pointer" onClick={() => setSelectedBadge(badge)}>
+              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${badge.desbloqueada ? 'bg-[var(--accent-tint)] text-[var(--accent-text)]' : 'bg-surface-raised text-text-muted'}`}>
+                {renderBadgeIcon(badge.icono)}
+              </span>
+              <span className={`text-[13px] font-semibold text-center ${badge.desbloqueada ? 'text-text' : 'text-text-muted'}`}>{badge.nombre}</span>
+            </li>
+          ))}
+        </ul>
 
-            <div className="p-3.5 rounded-[14px] bg-surface border border-line text-left space-y-1.5 text-xs font-mono">
-              <div className="flex justify-between text-text-muted">
-                <span>Archivo:</span>
-                <span className="text-text truncate max-w-[170px]">
-                  {importPendingData.fileName}
-                </span>
+        {nextBadge && (
+          <div className="flex gap-3 items-start mt-3.5 cursor-pointer" onClick={() => setSelectedBadge(nextBadge)}>
+            <span className="w-[38px] h-[38px] rounded-[11px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
+              {renderBadgeIcon(nextBadge.icono)}
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-baseline gap-2">
+                <span className="block text-[15px] font-semibold text-text truncate">Próxima: {nextBadge.nombre}</span>
+                <span className="text-[13px] text-text-muted shrink-0">faltan {nextBadge.meta - nextBadge.progresoActual}</span>
               </div>
-              <div className="flex justify-between text-text-muted">
-                <span>Hábitos a cargar:</span>
-                <span className="text-[var(--accent)] font-bold">
-                  {importPendingData.data.habitos?.length || 0}
-                </span>
+              <span className="block text-[13px] text-text-muted mt-px">{nextBadge.requisito} · esta barra nunca baja</span>
+              <div className="block w-full h-2 rounded-full bg-track-empty overflow-hidden mt-2 shrink-0">
+                <b className="block h-full rounded-full bg-[var(--accent-text)]" style={{ width: `${Math.min(100, (nextBadge.progresoActual / nextBadge.meta) * 100)}%` }}></b>
               </div>
-              <div className="flex justify-between text-text-muted">
-                <span>Registros a cargar:</span>
-                <span className="text-ambar font-bold">
-                  {importPendingData.data.registros?.length || 0}
-                </span>
-              </div>
-              {Array.isArray(importPendingData.data.rutinas) && importPendingData.data.rutinas.length > 0 && (
-                <div className="flex justify-between text-text-muted">
-                  <span>Rutinas a cargar:</span>
-                  <span className="text-[#60A5FA] font-bold">
-                    {importPendingData.data.rutinas.length}
-                  </span>
-                </div>
-              )}
-              {Array.isArray(importPendingData.data.tareas) && importPendingData.data.tareas.length > 0 && (
-                <div className="flex justify-between text-text-muted">
-                  <span>Tareas a cargar:</span>
-                  <span className="text-ambar font-bold">
-                    {importPendingData.data.tareas.length}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5 pt-2">
-              <button
-                type="button"
-                onClick={() => setImportPendingData(null)}
-                className="py-2.5 px-4 rounded-[12px] bg-surface-raised hover:bg-surface-raised text-text-muted hover:text-text text-xs font-semibold font-heading transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={confirmImport}
-                className="py-2.5 px-4 rounded-[12px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-text text-xs font-semibold font-heading shadow-lg shadow-[var(--accent-30)] transition-all active:scale-95"
-              >
-                Confirmar
-              </button>
             </div>
           </div>
+        )}
+        
+        <button onClick={() => setShowAllBadges(true)} className="w-full min-h-[48px] flex items-center justify-between border-t border-line text-text text-[15px] font-semibold bg-transparent border-none mt-2 p-0 cursor-pointer">
+          Ver todas las insignias
+          <span className="text-text-muted flex shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </span>
+        </button>
+      </section>
+
+      {/* Tus hábitos */}
+      <section className="mt-[26px]">
+        <h2 className="m-0 font-heading font-bold text-[22px] text-text">Tus hábitos</h2>
+        <div className="flex items-center gap-1.5 py-1.5 border-b border-line">
+          <button onClick={openManageHabits} className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Gestionar hábitos</span>
+              <span className="block text-[13px] text-text-muted mt-px">
+                {habitos.filter(h => !h.archivado).length} activos
+                {habitos.filter(h => h.archivado).length > 0 ? ` · ${habitos.filter(h => h.archivado).length} archivado${habitos.filter(h => h.archivado).length === 1 ? '' : 's'}` : ''}
+              </span>
+            </span>
+            <span className="text-text-muted flex shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </span>
+          </button>
         </div>
+      </section>
+
+      {/* Apariencia */}
+      <section className="mt-[26px]">
+        <h2 className="m-0 font-heading font-bold text-[22px] text-text" id="ap2">Apariencia</h2>
+        <div className="grid grid-cols-3 gap-1 mt-3 p-1 rounded-[14px] bg-surface border border-line" role="radiogroup" aria-labelledby="ap2">
+          {(['auto', 'claro', 'oscuro'] as const).map(op => (
+            <label key={op} className="relative block cursor-pointer">
+              <input type="radio" name="apariencia" checked={apariencia === op} onChange={() => setApariencia(op)} className="absolute w-px h-px opacity-0 overflow-hidden" />
+              <span className={`min-h-[44px] flex items-center justify-center rounded-[10px] text-[14px] ${apariencia === op ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1.5px_var(--text)]' : 'text-text-muted font-semibold'}`}>
+                {op === 'auto' ? 'Automático' : op === 'claro' ? 'Claro' : 'Oscuro'}
+              </span>
+            </label>
+          ))}
+        </div>
+        <p className="m-0 mt-2 text-[13px] text-text-muted">Automático sigue el modo de tu celular.</p>
+
+        <h3 className="m-0 mt-4.5 text-[13px] font-semibold text-text-muted" id="co2">Color de tus logros</h3>
+        <div className="grid grid-cols-4 gap-2 mt-2.5" role="radiogroup" aria-labelledby="co2">
+          {TEMAS.map(t => (
+            <label key={t.key} className="relative block cursor-pointer">
+              <input type="radio" name="acento" checked={acento === t.key} onChange={() => setAcento(t.key as any)} className="absolute w-px h-px opacity-0 overflow-hidden" />
+              <span className={`min-h-[76px] p-2.5 px-1.5 flex flex-col items-center justify-center gap-2 rounded-[14px] border ${acento === t.key ? 'border-[1.5px] border-text text-text font-bold bg-surface' : 'border-line bg-surface text-text-muted font-semibold'} text-[13px]`}>
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center`} style={{ backgroundColor: `var(--${t.key})`, color: acento === t.key ? 'var(--ink)' : 'transparent', boxShadow: acento === t.key ? (apariencia === 'claro' || (apariencia === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches) ? `inset 0 0 0 1.5px var(--${t.key}-text)` : 'none') : (apariencia === 'claro' || (apariencia === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches) ? `inset 0 0 0 1.5px var(--${t.key}-text)` : 'none') }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                <span>{t.label}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+        <p className="m-0 mt-2 text-[13px] text-text-muted">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+      </section>
+
+      {/* Tus datos */}
+      <section className="mt-[26px]">
+        <h2 className="m-0 font-heading font-bold text-[22px] text-text">Tus datos</h2>
+        <p className="flex gap-2.5 items-start m-0 mt-2.5 p-3 rounded-[12px] bg-surface border border-line text-[14px] leading-[1.45] text-text-muted">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-px"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+          <span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span>
+        </p>
+
+        <div className="flex items-center gap-1.5 py-1.5 border-b border-line mt-2">
+          <button onClick={exportarDatos} className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Guardar una copia</span>
+              <span className="block text-[13px] text-text-muted mt-px">
+                {(() => {
+                  const savedStr = localStorage.getItem('racha_ultima_copia');
+                  if (!savedStr) return 'Se descarga un archivo · aún no guardas ninguna';
+                  if (savedStr === getTodayString()) return 'Se descarga un archivo · la última, hoy';
+                  const d1 = new Date(savedStr);
+                  const d2 = new Date(getTodayString());
+                  const diff = Math.floor((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24));
+                  return `Se descarga un archivo · la última, hace ${diff} día${diff === 1 ? '' : 's'}`;
+                })()}
+              </span>
+            </span>
+          </button>
+        </div>
+        
+        <div className="flex items-center gap-1.5 py-1.5 border-b border-line">
+          <button onClick={() => fileInputRef.current?.click()} className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Recuperar una copia</span>
+              <span className="block text-[13px] text-text-muted mt-px">Reemplaza lo que tienes ahora</span>
+            </span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-1.5 py-1.5 border-b border-line">
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer"
+          >
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-danger flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-danger truncate">Borrar todos los datos</span>
+              <span className="block text-[13px] text-text-muted mt-px">No se puede deshacer</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      {/* Ayuda */}
+      <section className="mt-[26px]">
+        <h2 className="m-0 font-heading font-bold text-[22px] text-text">Ayuda</h2>
+        <div className="flex items-center gap-1.5 py-1.5">
+          <button onClick={openOnboarding} className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Cómo funciona Racha</span>
+              <span className="block text-[13px] text-text-muted mt-px">La guía del inicio, cuando quieras</span>
+            </span>
+            <span className="text-text-muted flex shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      {/* Modals */}
+      <BadgeDetailModal badge={selectedBadge} onClose={() => setSelectedBadge(null)} />
+      {showNameModal && <NameModal nombreActual={nombre} onClose={() => setShowNameModal(false)} onSave={setNombre} />}
+      
+      {showDeleteConfirm && (
+        <AlertSheet 
+          title="¿Borrar todos tus datos?"
+          desc={`Se borran tus ${habitos.length} hábitos, ${vecesCumplidas} veces cumplidas, tus insignias y tu nivel. No se puede deshacer.`}
+          primaryText="Guardar una copia primero"
+          onPrimary={exportarDatos}
+          dangerText="Borrar todo"
+          onDanger={() => { reiniciarTodo(); setShowDeleteConfirm(false); showNotification('success', 'Datos borrados'); }}
+          onClose={() => setShowDeleteConfirm(false)}
+        />
+      )}
+
+      {importPendingData && (
+        <AlertSheet 
+          title="¿Reemplazar tus datos?"
+          desc={`La copia del ${importPendingData.fecha} tiene ${importPendingData.habitos} hábitos y ${importPendingData.registros} veces cumplidas. Lo que tienes ahora (${habitos.length} hábitos, ${vecesCumplidas} veces cumplidas) se reemplaza${importPendingData.registros < vecesCumplidas ? ` y perderías ${vecesCumplidas - importPendingData.registros} veces cumplidas` : ''}.`}
+          primaryText="Guardar lo de ahora primero"
+          onPrimary={exportarDatos}
+          dangerText="Reemplazar"
+          onDanger={confirmImport}
+          onClose={() => setImportPendingData(null)}
+        />
+      )}
+
+      {showAllBadges && (
+        <>
+          <div className="fixed inset-0 bg-black/60 z-40 transition-opacity" onClick={() => setShowAllBadges(false)} />
+          <div role="dialog" aria-modal="true" aria-labelledby="todas-insignias-t" className="fixed left-0 right-0 bottom-0 max-h-[85%] flex flex-col bg-bg rounded-t-[22px] border-t border-line shadow-2xl z-50 animate-slideUp">
+            <div className="w-10 h-1.5 rounded-full bg-line-strong mx-auto mt-2 shrink-0" />
+            <div className="flex items-start justify-between p-3 px-5 border-b border-line">
+              <h2 id="todas-insignias-t" className="m-0 text-[22px] font-heading font-bold text-text pt-1">Todas las insignias</h2>
+              <button aria-label="Cerrar" onClick={() => setShowAllBadges(false)} className="w-11 h-11 rounded-full bg-surface-raised text-text-muted flex items-center justify-center shrink-0 border-none cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+              <div className="space-y-2">
+                {insignias.map(badge => (
+                  <div key={badge.id} className="flex gap-3 items-center p-3 rounded-[14px] bg-surface border border-line">
+                    <span className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${badge.desbloqueada ? 'bg-[var(--accent-tint)] text-[var(--accent-text)]' : 'bg-surface-raised text-text-muted'}`}>
+                      {renderBadgeIcon(badge.icono)}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className={`m-0 text-[15px] font-semibold truncate ${badge.desbloqueada ? 'text-text' : 'text-text-muted'}`}>{badge.nombre}</p>
+                      <p className="m-0 text-[13px] text-text-muted">{badge.requisito}</p>
+                    </div>
+                    <div className="shrink-0 text-right text-[13px] font-semibold">
+                      {badge.desbloqueada ? (
+                        <span className="text-[var(--accent-text)]">Conseguida</span>
+                      ) : (
+                        <span className="text-text-muted">faltan {badge.meta - badge.progresoActual}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

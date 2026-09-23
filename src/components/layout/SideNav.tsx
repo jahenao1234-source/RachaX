@@ -39,8 +39,8 @@ export const SideNav: React.FC = () => {
           className="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-surface-raised transition-all group text-left w-full"
           aria-label="Ir a la pantalla principal"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center text-text shadow-md shadow-[var(--accent-30)] group-hover:scale-105 transition-transform shrink-0">
-            <Flame size={20} className="fill-white" />
+          <div className="w-9 h-9 rounded-xl bg-brand flex items-center justify-center text-ink group-hover:scale-105 transition-transform shrink-0">
+            <Flame size={20} className="fill-current" />
           </div>
           <div className="flex flex-col min-w-0">
             <span className="font-heading font-bold text-base text-text tracking-tight leading-tight">

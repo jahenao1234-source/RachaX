@@ -8,7 +8,7 @@ import { calcularConstanciaHabito, contarCompletadosSemana, getTodayString, getF
 
 const getMomentoColorInfo = (momento?: string) => {
   switch (momento) {
-    case 'manana': return { bg: 'bg-ambar-tint', icon: 'text-ambar-text' };
+    case 'manana': return { bg: 'bg-manana-tint', icon: 'text-manana-text' };
     case 'tarde': return { bg: 'bg-coral-tint', icon: 'text-coral-text' };
     case 'noche': return { bg: 'bg-lila-tint', icon: 'text-lila-text' };
     default: return { bg: 'bg-surface-raised', icon: 'text-text' };

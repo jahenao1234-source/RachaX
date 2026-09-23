@@ -107,6 +107,9 @@ interface HabitContextType {
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
+    nombre?: string;
+    acento?: string;
+    apariencia?: string;
   }) => { success: boolean; error?: string };
   exportarDatos: () => void;
   reordenarSecciones: (nuevoOrden: MomentoDia[]) => void;
@@ -456,6 +459,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem(STORAGE_COMODINES_KEY);
     localStorage.removeItem(STORAGE_CONGELADOS_KEY);
     localStorage.removeItem(STORAGE_COMODINES_MES_KEY);
+    localStorage.removeItem('racha_nombre');
+    localStorage.removeItem('racha_acento');
+    localStorage.removeItem('racha_apariencia');
+    window.dispatchEvent(new Event('racha_sync_theme'));
   };
 
   // Action: Exportar datos como JSON
@@ -472,10 +479,14 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         comodines,
         diasCongelados,
         ordenMomentos,
+        nombre: localStorage.getItem('racha_nombre') || '',
+        acento: localStorage.getItem('racha_acento') || 'ambar',
+        apariencia: localStorage.getItem('racha_apariencia') || 'auto',
       };
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObject, null, 2));
       const downloadAnchor = document.createElement('a');
       const dateStr = getTodayString();
+      localStorage.setItem('racha_ultima_copia', dateStr);
       downloadAnchor.setAttribute('href', dataStr);
       downloadAnchor.setAttribute('download', `racha-backup-${dateStr}.json`);
       document.body.appendChild(downloadAnchor);
@@ -495,6 +506,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
+    nombre?: string;
+    acento?: string;
+    apariencia?: string;
   }): { success: boolean; error?: string } => {
     try {
       if (!datos || !Array.isArray(datos.habitos) || !Array.isArray(datos.registros)) {
@@ -526,6 +540,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (typeof datos.comodines === 'number') setComodines(Math.max(0, Math.min(COMODINES_MAX, datos.comodines)));
       if (Array.isArray(datos.diasCongelados)) setDiasCongelados(datos.diasCongelados);
       if (Array.isArray(datos.ordenMomentos)) setOrdenMomentos(datos.ordenMomentos);
+
+      if (typeof datos.nombre === 'string') localStorage.setItem('racha_nombre', datos.nombre);
+      if (typeof datos.acento === 'string') localStorage.setItem('racha_acento', datos.acento);
+      if (typeof datos.apariencia === 'string') localStorage.setItem('racha_apariencia', datos.apariencia);
+      
+      window.dispatchEvent(new Event('racha_sync_theme'));
 
       return { success: true };
     } catch (err) {
