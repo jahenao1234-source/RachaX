@@ -4,19 +4,7 @@ import { X, ChevronRight, Layers, GripVertical, Archive, Trash2, Check } from 'l
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { MOMENTOS, MomentoDia, Habito } from '../../types';
-import { calcularConstanciaHabito, contarCompletadosSemana, getTodayString } from '../../utils/habitUtils';
-
-const DIAS_CORTOS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-const getFrecuenciaLegible = (habito: Habito): string => {
-  if (habito.frecuencia === 'diario') return 'Diario';
-  if (habito.frecuencia === 'entreSemana') return 'Lun a vie';
-  if (habito.frecuencia === 'semanal') return `${habito.vecesPorSemana || 1} por semana`;
-  if (habito.frecuencia === 'personalizado' && habito.diasPersonalizados) {
-    return habito.diasPersonalizados.map(d => DIAS_CORTOS[d]).join(', ');
-  }
-  return 'Personalizado';
-};
+import { calcularConstanciaHabito, contarCompletadosSemana, getTodayString, getFrecuenciaLegible } from '../../utils/habitUtils';
 
 const getMomentoColorInfo = (momento?: string) => {
   switch (momento) {

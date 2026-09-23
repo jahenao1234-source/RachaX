@@ -22,6 +22,7 @@ colors:
   track: "#23272D"
   track-empty: "#33383F"
   danger: "#F87171"
+  danger-light: "#C62828"
   bg-light: "#F6F7F8"
   surface-light: "#FFFFFF"
   surface-raised-light: "#EEF0F2"
@@ -30,7 +31,7 @@ colors:
   text-muted-light: "#5D6570"
   lila-strong-light: "#4F5BD5"
   coral-strong-light: "#D9492A"
-  ambar-strong-light: "#B26A00"
+  ambar-strong-light: "#A56200"
   ambar-tint-light: "#FFF1DB"
   lila-tint-light: "#ECEEFF"
   coral-tint-light: "#FFE9E2"
@@ -211,7 +212,7 @@ components:
 
 # Design System: Racha
 
-<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día), design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro) y design/maqueta-crear.html (Crear / editar hábito v5 con reto, 2026-09-22). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
+<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día), design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro) y design/maqueta-crear.html (Crear / editar hábito v5 con reto, 2026-09-22) y design/maqueta-detalle.html (Detalle del hábito v2, 2026-09-22). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
 
 ## Overview
 
@@ -319,7 +320,7 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 ### Buttons
 - **Primary** (button-primary): ámbar con texto ink, 44px de alto. Para la acción principal fuera de tarjetas de color.
 - **Sobre acento** (button-on-accent): ink con texto tiza, para acciones dentro de superficies de acento.
-- **Arranque "2 min"**: botón de contorno de 32px de alto con borde y texto en el color del momento y un ícono de play relleno; solo aparece en la fila siguiente.
+- **Arranque "Empezar"**: botón secundario de 44px con ícono de play relleno que abre el modo Foco. Dice **"Empezar"**, nunca un tiempo: la app no sabe cuánto tarda cada hábito y prometer "2 min" era inventarlo. En la fila siguiente de Hoy lleva borde y texto en el color del momento; en Detalle del hábito es un botón secundario normal (surface-raised).
 - **Contorno sobre acento**: transparente con borde ink al 45% ("Solo 2 min").
 - **Secondary** (button-secondary): surface-raised con borde line, 32px; contadores como "+1".
 - **Crear** (button-create): círculo ámbar de 54px con un "+" ink, centrado en la barra inferior.
@@ -387,6 +388,19 @@ Pantalla completa (no hoja), porque el formulario es largo: capa fija que tapa l
 - **Todo lo tocable mide al menos 44px** (segmentos, días, chips, botones − y +, cerrar).
 - **Cierre al crear:** hoja sobre Hoy con check ámbar de 44px, "Listo, ya está en tu día", una frase que dice dónde lo verá ("Lo verás en Noche, después de cenar."), la fila tal como quedó, un solo botón primario "Ver en Hoy" y el enlace "Crear otro hábito".
 - **Hoja "Elige un ícono":** 24 íconos en 4 grupos de 6 (General, Salud y cuerpo, Mente y relaciones, Casa y vida), en el color del momento; el elegido con fondo tinte y borde de 1.5px. Sin sol, luna, amanecer, reloj ni check (se confunden con los momentos y el check). Al tocar uno se elige y la hoja se cierra.
+
+### Detalle del hábito
+Pantalla completa a la que se llega tocando un hábito. Referencia exacta: design/maqueta-detalle.html. Orden: identidad → estado de hoy → Tu constancia → Reto → racha → calendario de 30 días → progreso de la insignia → enlaces de archivar y eliminar. Botón fijo abajo: "Editar hábito" en ámbar.
+- **Encabezado:** botón volver de 44px. Al desplazar más allá de la identidad, el encabezado muestra el cuadrito del momento (26px) y el nombre del hábito en Barlow Condensed 20px, con línea inferior en line. Nunca se pierde de vista de qué hábito se trata.
+- **Identidad:** cuadrito de 52px con el tinte del momento, nombre en Barlow Condensed 24px (sheet-title) y debajo una línea label con momento · frecuencia · anclaje. Los hábitos a evitar llevan la etiqueta "Evitar" en su propia línea, antes del metadato.
+- **Estado de hoy:** fila de surface con el check de 44px (aro de 2px en el color del momento, ámbar relleno cuando está cumplido), el texto "Pendiente hoy" con la ayuda "Toca el círculo para marcarlo" o "Cumplido hoy" con "+10 ganados" en ámbar, y el botón "Empezar". Con meta numérica muestra "5 de 8 hoy", los segmentos y el botón "+1", igual que en Hoy.
+- **Tu constancia:** tarjeta con la cifra en display 44px ("17") y "de 21" en 20px text-muted, más la explicación "días programados que cumpliste, con N congelados con comodín. Un día gris no borra los demás." La cifra y el calendario salen del mismo cálculo: P = días programados de los últimos 30 sin contar hoy, C = cumplidos más congelados con comodín. **Primero la constancia, después la racha.**
+- **Racha:** fila fina con la llama en ámbar, "N días seguidos" (en los de evitar, "sin recaer") y "Mejor: N" a la derecha. No se muestra hasta que haya al menos 2 días.
+- **Calendario de 30 días:** 7 columnas alineadas por día de la semana, con encabezado L M X J V S D, para que se vea el patrón (los días libres de un "Lun a vie" quedan en columna). Va directo sobre el fondo, nunca dentro de una tarjeta, para que los estados se distingan. Celdas de 44px: cumplido = ámbar con el número en ink y borde del mismo ámbar; sin cumplir = surface con el número en text-muted (Grey Day Rule); comodín = comodin-bg con borde de 1.5px en lila, escudo pequeño arriba a la derecha y el número visible; día libre = transparente con borde discontinuo y número en text-muted; hoy = transparente con borde discontinuo de 1.5px en text. Cada celda lleva aria-label con el día y su estado. Debajo, una leyenda de los cuatro estados.
+- **Tocar un día sin cumplir** abre una hoja con el nombre del día y dos salidas: "Sí lo cumplí" (botón ámbar) y "Congelar con un comodín · te quedan N" (secundario), más "Dejarlo como está". Es el rescate del día después de fallar.
+- **Hábito recién creado:** nunca se muestra "0 de 0" ni la racha en cero. La constancia dice "Empieza hoy" con la explicación "Tu primer día cuenta desde hoy", y en vez del calendario de 30 días se muestra solo la semana en curso con "Aquí se irán llenando tus días cumplidos".
+- **Final de la pantalla:** el progreso de la próxima insignia (ícono de medalla en ámbar, barra y "faltan N") antes de los enlaces. "Archivar hábito" en text-muted y "Eliminar hábito" en danger. La pantalla nunca termina en una acción destructiva sin nada después.
+- **Eliminar:** hoja que nombra la pérdida en la moneda del usuario ("Se borrarán sus 83 días cumplidos y su reto") y empuja a la salida suave: "Mejor archivarlo" como botón principal, "Eliminar los N días" como enlace en danger y "Cancelar" debajo.
 
 ### Reto
 Un reto opcional por hábito: **cuenta días cumplidos, no días de calendario**, y su barra **nunca baja**. Opciones: Sin reto, 7, 30 o 66 días (con "Por semana": 4, 8 o 12 semanas cumplidas). El 66 se explica como "en promedio, un hábito tarda unos 66 días en volverse automático, aunque varía mucho entre personas" (Lally et al., UCL). No usar el mito de los 21 días.

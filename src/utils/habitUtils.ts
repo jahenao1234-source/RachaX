@@ -240,9 +240,10 @@ export function calcularConstanciaHabito(
   registros: Registro[], 
   diasCongelados: string[] = [], 
   todayStr = getTodayString()
-): { cumplidos: number; programados: number } {
+): { cumplidos: number; programados: number; comodinesUsados: number } {
   let programados = 0;
   let cumplidos = 0;
+  let comodinesUsados = 0;
 
   const creationObj = new Date(habito.creadoEn);
   const creationDate = formatDateToString(creationObj);
@@ -263,13 +264,28 @@ export function calcularConstanciaHabito(
     if (scheduled) {
       programados++;
       const completed = isHabitCompletedOnDate(habito.id, cur, registros);
-      if (completed || diasCongelados.includes(cur)) {
+      if (completed) {
         cumplidos++;
+      } else if (diasCongelados.includes(cur)) {
+        cumplidos++;
+        comodinesUsados++;
       }
     }
   }
 
-  return { cumplidos, programados };
+  return { cumplidos, programados, comodinesUsados };
+}
+
+const DIAS_CORTOS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+export function getFrecuenciaLegible(habito: Habito): string {
+  if (habito.frecuencia === 'diario') return 'Diario';
+  if (habito.frecuencia === 'entreSemana') return 'Lun a vie';
+  if (habito.frecuencia === 'semanal') return `${habito.vecesPorSemana || 1} por semana`;
+  if (habito.frecuencia === 'personalizado' && habito.diasPersonalizados) {
+    return habito.diasPersonalizados.map(d => DIAS_CORTOS[d]).join(', ');
+  }
+  return 'Personalizado';
 }
 
 /**

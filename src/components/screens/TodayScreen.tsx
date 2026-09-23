@@ -464,7 +464,7 @@ export const TodayScreen: React.FC = () => {
                           
                           {isNext && (
                              <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[32px] px-2.5 rounded-[10px] border bg-transparent ${hInfo.iconColor} text-[13px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform`} style={{ borderColor: hInfo.varColor }}>
-                               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> 2 min
+                               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> Empezar
                              </button>
                           )}
 

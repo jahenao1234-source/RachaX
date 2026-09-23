@@ -56,11 +56,6 @@ export const AppShell: React.FC = () => {
   const retoHabito = retoCumplidoHabitId ? habitosActivos.find((h) => h.id === retoCumplidoHabitId) || null : null;
 
   const renderActiveScreen = () => {
-    // If a habit detail is active, prioritize showing the Habit Detail view
-    if (selectedHabitIdForDetail) {
-      return <HabitDetailScreen habitId={selectedHabitIdForDetail} onBack={closeHabitDetail} />;
-    }
-
     const screenToRender = activeTab === 'crear' ? 'hoy' : activeTab;
 
     switch (screenToRender) {
@@ -129,6 +124,11 @@ export const AppShell: React.FC = () => {
 
         {/* Fixed Bottom Navigation (hidden on desktop) */}
         <BottomNav />
+
+        {/* Detalle del hábito: capa completa por encima de la barra inferior */}
+        {selectedHabitIdForDetail && (
+          <HabitDetailScreen habitId={selectedHabitIdForDetail} onBack={closeHabitDetail} />
+        )}
 
         {/* Global Modals */}
         <ManageHabitsModal />

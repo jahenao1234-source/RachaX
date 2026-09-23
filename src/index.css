@@ -55,9 +55,10 @@
       --text: #15181B;
       --text-muted: #5D6570;
       /* Versiones strong para texto/ícono sobre light mode */
-      --ambar-strong: #B26A00;
+      --ambar-strong: #A56200;
       --lila-strong: #4F5BD5;
       --coral-strong: #D9492A;
+      --danger: #C62828;
 
       --ambar-tint: #FFF1DB;
       --lila-tint: #ECEEFF;
