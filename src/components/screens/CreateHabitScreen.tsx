@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShieldCheck, Check, Edit3, Target, CheckCircle2, Archive, Plus } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
-import { Habito, MomentoDia, FrecuenciaHabito, ICONOS_DISPONIBLES, MOMENTOS, CATEGORIAS, PLANTILLAS_HABITOS } from '../../types';
+import { Habito, MomentoDia, FrecuenciaHabito, ICONOS_DISPONIBLES, MOMENTOS, PLANTILLAS_HABITOS } from '../../types';
 import { HabitIcon } from '../common/HabitIcon';
 import { HabitPreviewRow, getMomentoColorTokens } from '../common/HabitPreviewRow';
 import { getTodayString, semanasEstimadasReto, contarProgresoReto } from '../../utils/habitUtils';
@@ -64,11 +64,8 @@ export const CreateHabitScreen: React.FC = () => {
   const [metaDiaria, setMetaDiaria] = useState<number>(h?.metaDiaria || 8);
   
   const [reto, setReto] = useState<number | null>(h?.reto?.meta || null);
-  const [categoria, setCategoria] = useState<string | undefined>(h?.categoria);
-
   const [isSelectingIcon, setIsSelectingIcon] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
-  const [showMore, setShowMore] = useState(!!h?.categoria);
 
   // Suggestions logic
   const getSuggestions = () => {
@@ -101,8 +98,7 @@ export const CreateHabitScreen: React.FC = () => {
       (frecuencia === 'personalizado' && !arrEqual(diasPersonalizados, h.diasPersonalizados || [])) ||
       (frecuencia === 'semanal' && vecesPorSemana !== (h.vecesPorSemana || 3)) ||
       metaA !== metaB ||
-      reto !== (h.reto?.meta || null) ||
-      categoria !== h.categoria;
+      reto !== (h.reto?.meta || null);
   };
 
   const getChangesList = () => {
@@ -126,7 +122,6 @@ export const CreateHabitScreen: React.FC = () => {
     
     if (metaA !== metaB) list.push('la meta');
     if (reto !== (h.reto?.meta || null)) list.push('el reto');
-    if (categoria !== h.categoria) list.push('la categoría');
     return list;
   };
 
@@ -161,7 +156,6 @@ export const CreateHabitScreen: React.FC = () => {
       diasPersonalizados: frecuencia === 'personalizado' ? diasPersonalizados : undefined,
       vecesPorSemana: frecuencia === 'semanal' ? vecesPorSemana : undefined,
       metaDiaria: finalMeta,
-      categoria,
       reto: reto ? { meta: reto, inicio: h?.reto?.inicio || getTodayString() } : undefined,
     };
 
@@ -208,7 +202,6 @@ export const CreateHabitScreen: React.FC = () => {
     } else {
       setShowMeta(false);
     }
-    setCategoria(t.categoria);
   };
 
   const momentoObj = MOMENTOS.find(m => m.id === momento);
@@ -498,37 +491,7 @@ export const CreateHabitScreen: React.FC = () => {
             {getRetoHelp()}
           </div>
 
-          {!showMore ? (
-            <button onClick={() => setShowMore(true)} className="w-full flex items-center justify-between h-12 border-t border-line bg-transparent text-text font-semibold text-[15px] mt-2">
-              <span className="flex items-center gap-1">Más opciones <span className="text-[12px] font-semibold text-text-muted ml-1">categoría para tus estadísticas</span></span>
-              <span className="text-text-muted">▾</span>
-            </button>
-          ) : (
-            <div className="space-y-4 pt-2 border-t border-line">
-              <div>
-                <p className="text-[13px] font-medium text-text-muted mb-2">Categoría</p>
-                <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5">
-                  <button
-                    aria-pressed={!categoria}
-                    onClick={() => setCategoria(undefined)}
-                    className={`h-11 px-3.5 rounded-full border text-[13px] shrink-0 transition-colors ${!categoria ? 'bg-surface-raised border-text/60 text-text font-bold' : 'bg-surface border-line text-text-muted font-semibold hover:bg-surface-raised'}`}
-                  >
-                    Sin categoría
-                  </button>
-                  {CATEGORIAS.map(c => (
-                    <button
-                      key={c.key}
-                      aria-pressed={categoria === c.key}
-                      onClick={() => setCategoria(c.key)}
-                      className={`flex items-center gap-1.5 h-11 px-3.5 rounded-full border text-[13px] shrink-0 transition-colors ${categoria === c.key ? 'bg-surface-raised border-text/60 text-text font-bold' : 'bg-surface border-line text-text-muted font-semibold hover:bg-surface-raised'}`}
-                    >
-                      <HabitIcon name={c.icono} size={15} /> {c.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+
           
           {isEditing && (
             <div className="pt-4 flex justify-center pb-6">

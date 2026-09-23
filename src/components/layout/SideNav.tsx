@@ -14,7 +14,7 @@ export const SideNav: React.FC = () => {
 
   const navItems: { id: TabRoute; label: string; icon: React.FC<{ className?: string; size?: number; strokeWidth?: number }> }[] = [
     { id: 'hoy', label: 'Hoy', icon: CalendarCheck },
-    { id: 'stats', label: 'Estadísticas', icon: BarChart3 },
+    { id: 'stats', label: 'Progreso', icon: BarChart3 },
     { id: 'calendario', label: 'Calendario', icon: Calendar },
     { id: 'perfil', label: 'Perfil', icon: User },
   ];

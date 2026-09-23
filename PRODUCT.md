@@ -42,10 +42,10 @@ Frase de posicionamiento: "Huella te ayuda a organizar tu vida. Racha te ayuda a
 ## Capabilities and Constraints
 
 **Existe hoy (React 19 + TypeScript + Vite + Tailwind 4, PWA):**
-- Hábitos a hacer y a evitar, categorías, momentos del día (mañana, tarde, noche, todo el día), frecuencia diaria / entre semana / personalizada / N veces por semana, metas numéricas (ej. 8 vasos), anclajes, archivar y reordenar.
+- Hábitos a hacer y a evitar (sin categorías: se quitaron el 22 sep 2026 porque no llevaban a ninguna decisión), momentos del día (mañana, tarde, noche, todo el día), frecuencia diaria / entre semana / personalizada / N veces por semana, metas numéricas (ej. 8 vasos), anclajes, archivar y reordenar.
 - Plantillas de hábitos, rutinas, tareas con subtareas anidadas sin límite, modo Foco (día, rutina o tarea).
 - Comodines para congelar un día sin romper la racha (límite mensual).
-- Estadísticas, calendario de calor, tasa de éxito, 8 insignias, onboarding.
+- Progreso (antes Estadísticas): fuerza de los hábitos, este mes contra el anterior, qué días y momentos cuestan más, y récords. Calendario del mes con % y mejor racha. 8 insignias, onboarding.
 - Exportar e importar datos (JSON). Layout de escritorio con barra lateral.
 
 **Limitaciones actuales:**

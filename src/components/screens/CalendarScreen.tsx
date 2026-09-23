@@ -10,6 +10,7 @@ import {
   parseDateString,
   contarCompletadosSemana
 } from '../../utils/habitUtils';
+import { tasaPeriodo, calcularMejorRachaGlobal } from '../../utils/progresoUtils';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 
 const ordenMomentos = ['manana', 'tarde', 'noche', 'flexible'];
@@ -32,6 +33,10 @@ export const CalendarScreen: React.FC = () => {
   const [selectedDateForModal, setSelectedDateForModal] = useState<string | null>(null);
 
   const todayStr = getTodayString();
+  const yesterdayDate = new Date(parseDateString(todayStr));
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+
   const currentYear = viewDate.getFullYear();
   const currentMonthIdx = viewDate.getMonth();
 
@@ -117,46 +122,36 @@ export const CalendarScreen: React.FC = () => {
     return days;
   }, [monthStr, daysInMonth, todayStr, habitos, registros, firstHabitDateStr, diasCongelados]);
 
-  // "Tu mes" metrics
+  // Tu mes: hasta ayer (o hasta el último día si es un mes pasado)
   const monthMetrics = useMemo(() => {
-    let prog = 0;
-    let hechos = 0;
-    let congelados = 0;
-    
-    let maxZeros = 0;
-    let currentZeros = 0;
-    let hasRecovered = false;
-    let recoveryDate = '';
+    const startOfMonth = `${monthStr}-01`;
+    let calcEndStr = todayStr > monthDays[monthDays.length - 1].dateStr ? monthDays[monthDays.length - 1].dateStr : yesterdayStr;
+    if (todayStr <= startOfMonth) {
+      return { programados: 0, cumplidos: 0, congelados: 0, pct: 0, racha: 0, lineaMesDificil: null };
+    }
 
-    monthDays.forEach((day) => {
-      if (day.dateStr >= todayStr) return;
+    const tp = tasaPeriodo(habitos, registros, diasCongelados, startOfMonth, calcEndStr);
+    const racha = calcularMejorRachaGlobal(habitos, registros, diasCongelados, startOfMonth, calcEndStr);
 
-      prog += day.programados;
-      hechos += day.cumplidos;
-
-      if (!day.isFrozen) {
-        if (day.programados > 0) {
-          if (day.cumplidos === 0) {
-            currentZeros++;
-          } else {
-            if (currentZeros >= 3 && !hasRecovered) {
-              hasRecovered = true;
-              recoveryDate = day.dateStr;
-            }
-            if (currentZeros > maxZeros) maxZeros = currentZeros;
-            currentZeros = 0;
+    let lineaMesDificil = null;
+    let rachaCeros = 0;
+    for (const d of monthDays) {
+      if (d.dateStr > calcEndStr) break;
+      if (d.programados > 0) {
+        if (d.cumplidos === 0 && !d.isFrozen) {
+          rachaCeros++;
+        } else if (d.cumplidos > 0) {
+          if (rachaCeros >= 3) {
+             const dayNum = parseInt(d.dateStr.split('-')[2], 10);
+             lineaMesDificil = `Volviste el ${dayNum}. Eso es lo que cuenta.`;
           }
+          rachaCeros = 0;
         }
-      } else {
-        const noCumplidos = day.programados - day.cumplidos;
-        congelados += noCumplidos;
       }
-    });
+    }
 
-    let isDifficultMonth = hasRecovered;
-
-    return { prog, hechos, congelados, isDifficultMonth, recoveryDate };
-  }, [monthDays, todayStr]);
+    return { ...tp, racha, lineaMesDificil };
+  }, [monthStr, todayStr, habitos, registros, diasCongelados, monthDays, yesterdayStr]);
 
   // Bottom sheet info
   const habitsForSelectedDate = useMemo(() => {
@@ -369,15 +364,8 @@ export const CalendarScreen: React.FC = () => {
           <h2 className="font-heading font-bold text-[22px] m-0 text-text">Tu mes</h2>
           <span className="text-[13px] text-text-muted">sin contar hoy</span>
         </div>
-        
-        {monthMetrics.isDifficultMonth && (
-           <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-[10px] bg-ambar-tint text-[14px] text-text mb-2">
-             <Check size={14} className="text-ambar-text" strokeWidth={3} />
-             Volviste el {parseDateString(monthMetrics.recoveryDate).getDate()}. Eso es lo que cuenta.
-           </div>
-        )}
 
-        {monthMetrics.hechos === 0 && monthMetrics.prog > 0 ? (
+        {monthMetrics.cumplidos === 0 && monthMetrics.programados > 0 ? (
           <>
             <p className="font-heading font-bold text-[44px] leading-none m-0 mt-1.5 mb-0.5 flex items-baseline gap-2 text-text">
               Retoma hoy
@@ -386,16 +374,24 @@ export const CalendarScreen: React.FC = () => {
           </>
         ) : (
           <>
-            <p className="font-heading font-bold text-[44px] leading-none m-0 mt-1.5 mb-0.5 flex items-baseline gap-2 tabular-nums text-text">
-              {monthMetrics.hechos} <span className="text-[20px] text-text-muted font-normal">de {monthMetrics.prog}</span>
+            {monthMetrics.lineaMesDificil && (
+              <div className="mb-2 mt-1 py-1.5 px-2.5 rounded-[10px] bg-ambar-tint text-[14px] text-text font-semibold flex items-center gap-2">
+                <Check size={16} strokeWidth={3} className="text-ambar-text" />
+                {monthMetrics.lineaMesDificil}
+              </div>
+            )}
+            <p className="font-heading font-bold text-[44px] leading-none m-0 mt-1.5 mb-0.5 flex items-baseline gap-2 text-text">
+              {monthMetrics.pct}%
             </p>
             <p className="text-[13px] text-text-muted leading-snug">
-              veces que cumpliste tus hábitos programados{monthMetrics.congelados > 0 ? `, y ${monthMetrics.congelados === 1 ? '1 congelada' : `${monthMetrics.congelados} congeladas`} con comodín` : ''}. Un día gris no borra los demás.
+              {monthMetrics.cumplidos} de {monthMetrics.programados} veces cumpliste tus hábitos programados.{' '}
+              {monthMetrics.congelados > 0 ? (monthMetrics.congelados === 1 ? 'La congelada con comodín no cuenta en contra. ' : `Las ${monthMetrics.congelados} congeladas con comodín no cuentan en contra. `) : ''}
+              Un día gris no borra los demás.
             </p>
           </>
         )}
         
-        {((monthDays.filter(d => d.dateStr < todayStr && d.programados > 0 && d.cumplidos === d.programados).length > 0) || monthMetrics.congelados > 0) && (
+        {(monthDays.filter(d => d.dateStr < todayStr && d.programados > 0 && d.cumplidos === d.programados).length > 0 || monthMetrics.racha >= 2) && (
           <div className="grid grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-line">
             {(() => {
               const completados = monthDays.filter(d => d.dateStr < todayStr && d.programados > 0 && d.cumplidos === d.programados && !d.isFrozen).length;
@@ -407,16 +403,12 @@ export const CalendarScreen: React.FC = () => {
                 </div>
               );
             })()}
-            {(() => {
-              const usados = monthDays.filter(d => d.dateStr < todayStr && d.isFrozen).length;
-              if (usados === 0) return null;
-              return (
-                <div className="flex items-baseline gap-1.5">
-                  <span className="font-heading font-bold text-[22px] tabular-nums text-text">{usados}</span>
-                  <span className="text-[13px] text-text-muted">{usados === 1 ? 'comodín usado' : 'comodines usados'}</span>
-                </div>
-              );
-            })()}
+            {monthMetrics.racha >= 2 && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-heading font-bold text-[22px] tabular-nums text-text">{monthMetrics.racha}</span>
+                <span className="text-[13px] text-text-muted">seguidos, tu mejor racha</span>
+              </div>
+            )}
           </div>
         )}
       </div>

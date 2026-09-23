@@ -61,7 +61,7 @@ export const BottomNav: React.FC = () => {
             )}
           </div>
           <span className="text-[11px] font-medium tracking-tight mt-1 font-sans">
-            Estadísticas
+            Progreso
           </span>
         </button>
 

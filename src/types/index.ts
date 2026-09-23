@@ -24,12 +24,7 @@ export const COLOR_POR_MOMENTO: Record<MomentoDia, string> = {
   flexible: '#98A0AA',
 };
 
-export interface CategoriaHabito {
-  key: string;
-  label: string;
-  color: string;
-  icono: string;
-}
+
 
 export interface AccentTheme {
   key: string;
@@ -50,22 +45,13 @@ export const THEMES: AccentTheme[] = [
 
 export const TEMAS = THEMES;
 
-export const CATEGORIAS: CategoriaHabito[] = [
-  { key: 'salud', label: 'Salud', color: '#34D399', icono: 'HeartPulse' },
-  { key: 'ejercicio', label: 'Ejercicio', color: '#F97316', icono: 'Dumbbell' },
-  { key: 'mente', label: 'Mente', color: '#8B5CF6', icono: 'Brain' },
-  { key: 'productividad', label: 'Productividad', color: '#378ADD', icono: 'Briefcase' },
-  { key: 'nutricion', label: 'Nutrición', color: '#F59E0B', icono: 'Salad' },
-  { key: 'social', label: 'Social', color: '#ED93B1', icono: 'Users' },
-  { key: 'finanzas', label: 'Finanzas', color: '#2DD4BF', icono: 'PiggyBank' },
-  { key: 'otro', label: 'Otro', color: '#6B6F7B', icono: 'Tag' },
-];
+
 
 export type Habito = {
   id: string;                 // uuid
   nombre: string;
   tipo?: 'positivo' | 'negativo'; // 'positivo' por defecto (hacer), 'negativo' (evitar)
-  categoria?: string;         // key de categoría opcional (ej. 'salud', 'mente', etc.)
+  categoria?: string;         /** @deprecated key de categoría opcional */
   color: string;              // hex del acento elegido (ej. #8B5CF6)
   icono: string;              // nombre del icono lucide (ej. "Flame", "Dumbbell", etc.)
   momento?: MomentoDia;       // momento del día para organizar
@@ -191,7 +177,7 @@ export const ICONOS_DISPONIBLES: IconoHabitoOpcion[] = [
 export interface PlantillaHabito {
   nombre: string;
   icono: string;
-  categoria?: string;
+
   momento?: MomentoDia;
   frecuencia?: FrecuenciaHabito;
   tipo?: 'positivo' | 'negativo';
@@ -200,16 +186,16 @@ export interface PlantillaHabito {
 }
 
 export const PLANTILLAS_HABITOS: PlantillaHabito[] = [
-  { nombre: 'Beber agua', icono: 'Droplet', categoria: 'nutricion', momento: 'flexible', frecuencia: 'diario', metaDiaria: 8 },
-  { nombre: 'Ejercicio', icono: 'Dumbbell', categoria: 'ejercicio', momento: 'manana', frecuencia: 'semanal', vecesPorSemana: 3 },
-  { nombre: 'Leer 20 min', icono: 'BookOpen', categoria: 'productividad', momento: 'noche', frecuencia: 'diario' },
-  { nombre: 'Meditar', icono: 'Sparkles', categoria: 'mente', momento: 'manana', frecuencia: 'diario' },
-  { nombre: 'Caminar', icono: 'Footprints', categoria: 'ejercicio', momento: 'flexible', frecuencia: 'diario' },
-  { nombre: 'Comer fruta', icono: 'Apple', categoria: 'nutricion', momento: 'flexible', frecuencia: 'diario' },
-  { nombre: 'Estudiar', icono: 'GraduationCap', categoria: 'productividad', momento: 'tarde', frecuencia: 'diario' },
-  { nombre: 'Gratitud', icono: 'PenLine', categoria: 'mente', momento: 'noche', frecuencia: 'diario' },
-  { nombre: 'No fumar', icono: 'Ban', categoria: 'salud', momento: 'flexible', frecuencia: 'diario', tipo: 'negativo' },
-  { nombre: 'Menos pantalla', icono: 'Smartphone', categoria: 'otro', momento: 'noche', frecuencia: 'diario', tipo: 'negativo' },
+  { nombre: 'Beber agua', icono: 'Droplet', momento: 'flexible', frecuencia: 'diario', metaDiaria: 8 },
+  { nombre: 'Ejercicio', icono: 'Dumbbell', momento: 'manana', frecuencia: 'semanal', vecesPorSemana: 3 },
+  { nombre: 'Leer 20 min', icono: 'BookOpen', momento: 'noche', frecuencia: 'diario' },
+  { nombre: 'Meditar', icono: 'Sparkles', momento: 'manana', frecuencia: 'diario' },
+  { nombre: 'Caminar', icono: 'Footprints', momento: 'flexible', frecuencia: 'diario' },
+  { nombre: 'Comer fruta', icono: 'Apple', momento: 'flexible', frecuencia: 'diario' },
+  { nombre: 'Estudiar', icono: 'GraduationCap', momento: 'tarde', frecuencia: 'diario' },
+  { nombre: 'Gratitud', icono: 'PenLine', momento: 'noche', frecuencia: 'diario' },
+  { nombre: 'No fumar', icono: 'Ban', momento: 'flexible', frecuencia: 'diario', tipo: 'negativo' },
+  { nombre: 'Menos pantalla', icono: 'Smartphone', momento: 'noche', frecuencia: 'diario', tipo: 'negativo' },
 ];
 
 export interface Rutina {
