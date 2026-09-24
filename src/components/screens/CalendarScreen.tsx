@@ -5,6 +5,7 @@ import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import {
   getTodayString,
+  formatDateToString,
   isHabitScheduledForDate,
   isHabitCompletedOnDate,
   parseDateString,
@@ -99,7 +100,7 @@ export const CalendarScreen: React.FC = () => {
       let cumplidos = 0;
       
       habitos.forEach(h => {
-        const createdAt = h.creadoEn.split('T')[0];
+        const createdAt = formatDateToString(new Date(h.creadoEn));
         if (dateStr >= createdAt && isHabitScheduledForDate(h, dateStr)) {
           programados++;
           if (isHabitCompletedOnDate(h.id, dateStr, registros)) {
@@ -158,7 +159,7 @@ export const CalendarScreen: React.FC = () => {
     if (!selectedDateForModal) return [];
     
     const regular = habitos.filter(h => {
-      const createdAt = h.creadoEn.split('T')[0];
+      const createdAt = formatDateToString(new Date(h.creadoEn));
       return h.frecuencia !== 'semanal' && selectedDateForModal >= createdAt && isHabitScheduledForDate(h, selectedDateForModal);
     }).map((h) => ({
       ...h,
@@ -179,7 +180,7 @@ export const CalendarScreen: React.FC = () => {
     if (!selectedDateForModal) return [];
     
     const weekly = habitos.filter(h => {
-      const createdAt = h.creadoEn.split('T')[0];
+      const createdAt = formatDateToString(new Date(h.creadoEn));
       return h.frecuencia === 'semanal' && selectedDateForModal >= createdAt;
     }).map((h) => ({
       ...h,

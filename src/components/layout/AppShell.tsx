@@ -34,6 +34,7 @@ export const AppShell: React.FC = () => {
     registros,
     editarHabito,
     closeCreateModal,
+    agregarPremio
   } = useHabitStore();
 
   const [retoCumplidoHabitId, setRetoCumplidoHabitId] = useState<string | null>(null);
@@ -47,11 +48,21 @@ export const AppShell: React.FC = () => {
         if (progreso >= habito.reto.meta) {
           setRetoCumplidoHabitId(habito.id);
           editarHabito(habito.id, { reto: { ...habito.reto, cumplidoEn: getTodayString() } });
+          
+          const meta = habito.reto.meta;
+          const clave = `reto-habito:${habito.id}:${habito.reto.inicio}`;
+          if (meta === 7 || meta === 4) {
+            agregarPremio(`Reto de ${meta} ${meta === 4 ? 'semanas' : 'días'} completado`, 100, clave, { cajas: 1 });
+          } else if (meta === 30 || meta === 8) {
+            agregarPremio(`Reto de ${meta} ${meta === 8 ? 'semanas' : 'días'} completado`, 300, clave, { comodines: 1, cajas: 1 });
+          } else if (meta === 66 || meta === 12) {
+            agregarPremio(`Reto de ${meta} ${meta === 12 ? 'semanas' : 'días'} completado`, 1000, clave, { comodines: 1, cajas: 1 });
+          }
           break;
         }
       }
     }
-  }, [habitosActivos, registros, retoCumplidoHabitId, editarHabito]);
+  }, [habitosActivos, registros, retoCumplidoHabitId, editarHabito, agregarPremio]);
 
   const retoHabito = retoCumplidoHabitId ? habitosActivos.find((h) => h.id === retoCumplidoHabitId) || null : null;
 

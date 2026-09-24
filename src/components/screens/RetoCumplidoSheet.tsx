@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star } from 'lucide-react';
+import { Star, Sparkles, Gift, ChevronRight } from 'lucide-react';
 import { Habito } from '../../types';
 import { HabitPreviewRow } from '../common/HabitPreviewRow';
 import { getTodayString } from '../../utils/habitUtils';
+import { CajaSorpresaSheet } from '../juego/CajaSorpresaSheet';
 
 interface RetoCumplidoSheetProps {
   habito: Habito | null;
@@ -22,6 +23,7 @@ const calcularSemanasPasadas = (inicio: string, fin: string) => {
 export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, onSiguienteNivel, onQuitarReto }) => {
   if (!habito || !habito.reto) return null;
 
+  const [isCajaOpen, setIsCajaOpen] = useState(false);
   const isSemanal = habito.frecuencia === 'semanal';
   const meta = habito.reto.meta;
   const unit = isSemanal ? 'semanas' : 'días';
@@ -38,6 +40,7 @@ export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, on
   const semanasPasadas = calcularSemanasPasadas(habito.reto.inicio, getTodayString());
 
   return (
+    <>
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex flex-col justify-end pointer-events-auto">
         {/* Velo */}
@@ -80,9 +83,34 @@ export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, on
               No fue perfecto y no hacía falta: volviste cada vez. <b className="text-text font-semibold">{habito.nombre}</b> sigue en tu día como siempre.
             </p>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <HabitPreviewRow habito={habito} cumplido={true} retoProgreso={meta} />
             </div>
+
+            <p className="flabel m-0 pl-1" id="pr8">Ganaste</p>
+            <ul className="prize mb-6" role="list" aria-labelledby="pr8">
+              {(meta === 7 || meta === 4) && (
+                <>
+                  <li><span className="cond">+100</span> puntos</li>
+                  <li className="giftli"><button className="giftbtn" onClick={() => setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
+                </>
+              )}
+              {(meta === 30 || meta === 8) && (
+                <>
+                  <li><span className="cond">+300</span> puntos</li>
+                  <li><Sparkles size={14} strokeWidth={2} className="mr-1.5" />1 comodín</li>
+                  <li className="giftli"><button className="giftbtn" onClick={() => setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
+                </>
+              )}
+              {(meta === 66 || meta === 12) && (
+                <>
+                  <li><span className="cond">+1000</span> puntos</li>
+                  <li>Llama Raíz</li>
+                  <li>Certificado</li>
+                  <li className="giftli"><button className="giftbtn" onClick={() => setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
+                </>
+              )}
+            </ul>
 
             {siguienteMeta ? (
               <>
@@ -112,5 +140,7 @@ export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, on
         </motion.section>
       </div>
     </AnimatePresence>
+    {isCajaOpen && <CajaSorpresaSheet onClose={() => setIsCajaOpen(false)} />}
+  </>
   );
 };

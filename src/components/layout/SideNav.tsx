@@ -102,9 +102,6 @@ export const SideNav: React.FC = () => {
       {/* Bottom Section: Overall Streak Badge */}
       <div className="pt-4 border-t border-line/80">
         <div className="p-3 rounded-[14px] bg-bg border border-line flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-ambar/10 border border-ambar/30 flex items-center justify-center text-ambar shrink-0">
-            <Flame size={16} className="fill-ambar" />
-          </div>
           <div className="min-w-0">
             <p className="text-[10px] text-text-muted uppercase font-mono tracking-wider font-semibold">
               Racha Global

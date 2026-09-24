@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowLeft, Edit3, Archive, ArchiveRestore, Trash2, ShieldCheck, 
-  AlertTriangle, Flame, Award, Play, Check 
+  AlertTriangle, Award, Play, Check 
 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
@@ -316,7 +316,6 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
           {/* RACHA */}
           {currentStreak >= 2 && (
             <div className="flex items-center gap-3 p-3.5 bg-surface rounded-[14px] mb-6">
-              <span className="text-ambar-text shrink-0"><Flame size={18} strokeWidth={2.5} /></span>
               <span className="text-[15px] font-semibold text-text">{currentStreak} días seguidos{isNegativo ? ' sin recaer' : ''}</span>
               <span className="text-[14px] text-text-muted ml-auto">Mejor: {recordStreak}</span>
             </div>

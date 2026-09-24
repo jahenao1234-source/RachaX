@@ -226,3 +226,28 @@ export type FocusTarget =
   | { tipo: 'rutina'; nombre: string; habitoIds: string[] }
   | { tipo: 'tarea'; tareaId: string };
 
+export type Premio = {
+  fecha: string;
+  motivo: string;
+  puntos: number;
+  clave?: string;
+};
+
+export type EstadoRetoSemanal = 'propuesto' | 'aceptado' | 'saltado' | 'cumplido' | 'no_salio';
+
+export type RetoSemanal = {
+  id: string; // YYYY-MM-DD del lunes
+  opciones: {
+    id: string;
+    texto: string;
+    metaTexto: string;
+    habitoId?: string; // si aplica
+    dia?: number;      // si aplica (0=Dom, 6=Sab)
+    metaRequerida: number; // K o N
+  }[];
+  opcionElegida?: string; // id de la opción
+  estado: EstadoRetoSemanal;
+  avance: number;
+  anteriorNoSalio?: boolean;
+};
+

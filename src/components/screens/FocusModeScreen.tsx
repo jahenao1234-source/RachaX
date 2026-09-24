@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, ArrowRight, Zap, Trophy, Flame, Link2, ListChecks } from 'lucide-react';
+import { X, Check, ArrowRight, Zap, Trophy, Link2, ListChecks } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { getTodayString, aplanarArbolSubtareas } from '../../utils/habitUtils';
@@ -118,7 +118,7 @@ export const FocusModeScreen: React.FC = () => {
                 <div className="space-y-2">
                   <h2 className="text-2xl font-bold font-heading text-text leading-tight">{paso.habito.nombre}</h2>
                   <div className="flex items-center justify-center gap-3 text-xs">
-                    <span className="flex items-center gap-1 text-ambar font-medium"><Flame size={14} className="fill-ambar" />{rachaActual(paso.habito.id)} días</span>
+                    <span className="flex items-center gap-1 text-ambar-text font-medium">{rachaActual(paso.habito.id)} días</span>
                     {paso.habito.metaDiaria && <span className="text-text-muted">Meta: {paso.habito.metaDiaria}</span>}
                   </div>
                   {paso.habito.anclaje && (

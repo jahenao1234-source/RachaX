@@ -35,9 +35,9 @@ export const StatsScreen: React.FC = () => {
   // Identificar el día 1 (hábito más antiguo)
   const firstHabitDateStr = useMemo(() => {
     if (habitos.length === 0) return null;
-    let earliest = habitos[0].creadoEn.split('T')[0];
+    let earliest = formatDateToString(new Date(habitos[0].creadoEn));
     for (const h of habitos) {
-      const d = h.creadoEn.split('T')[0];
+      const d = formatDateToString(new Date(h.creadoEn));
       if (d < earliest) earliest = d;
     }
     return earliest;

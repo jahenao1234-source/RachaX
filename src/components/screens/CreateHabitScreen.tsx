@@ -217,14 +217,10 @@ export const CreateHabitScreen: React.FC = () => {
   };
 
   const getRetoHelp = () => {
-    if (!reto) return "Ponte un reto y verás una barra llenarse con cada día que lo cumplas.";
+    if (!reto) return null;
     let baseHelp = "";
-    if (reto === 66) {
-      baseHelp = "En promedio, un hábito tarda unos 66 días en volverse automático, aunque varía mucho entre personas. Cada día que lo cumplas suma y la barra nunca baja.";
-    } else if (frecuencia === 'semanal') {
-      baseHelp = `Cada semana que cumplas tus ${vecesPorSemana} veces suma. La barra nunca baja.`;
-    } else {
-      baseHelp = "Cada día que lo cumplas suma. La barra nunca baja.";
+    if (reto === 66 || reto === 12) {
+      baseHelp = "En promedio, un hábito tarda unos 66 días en volverse automático, aunque varía mucho entre personas.";
     }
 
     let estimation = "";
@@ -239,12 +235,22 @@ export const CreateHabitScreen: React.FC = () => {
       editingHelp = "Si cambias o quitas el reto, no pierdes lo cumplido. ";
     }
 
+    let prizeText = "";
+    if (reto === 7 || reto === 4) prizeText = "+100 puntos y una caja sorpresa.";
+    else if (reto === 30 || reto === 8) prizeText = "+300 puntos, un comodín, una insignia y una caja sorpresa.";
+    else if (reto === 66 || reto === 12) prizeText = "+1000 puntos, la llama Raíz, tu certificado y una caja sorpresa.";
+
     return (
-      <span className="text-[13px] text-text-muted mt-2 block leading-snug">
-        {editingHelp && <b className="text-text font-semibold">{editingHelp}</b>}
-        {estimation && <b className="text-text font-semibold">{estimation}</b>}
-        {baseHelp}
-      </span>
+      <>
+        {(editingHelp || estimation || baseHelp) && (
+          <p className="sub" style={{ marginTop: '10px' }}>
+            {editingHelp && <b className="text-text font-semibold">{editingHelp}</b>}
+            {estimation && <b className="text-text font-semibold">{estimation}</b>}
+            {baseHelp}
+          </p>
+        )}
+        <p className="prizeline" style={{ marginTop: '12px' }}><b>Si lo cumples:</b> {prizeText}</p>
+      </>
     );
   };
 
@@ -457,25 +463,23 @@ export const CreateHabitScreen: React.FC = () => {
             </div>
           )}
 
-          <div>
-            <p className="text-[13px] font-medium text-text-muted mb-2" id="lbl-reto">Reto de días cumplidos <span className="font-semibold text-text-muted text-[12px]">opcional</span></p>
-            <div className="flex gap-1 p-1 rounded-[12px] bg-surface border border-line" role="radiogroup" aria-labelledby="lbl-reto">
+          <section className="sec" style={{ marginTop: '18px' }}>
+            <div className="cardhead"><h2 className="cond" id="rh11" style={{ margin: 0, fontSize: '22px' }}>Reto</h2></div>
+            <p className="sub" style={{ marginTop: '4px' }}>Cuenta días cumplidos, no días de calendario. La barra nunca baja.</p>
+            <fieldset className="seg4">
+              <legend className="sr">Duración del reto</legend>
               {[
                 { val: null, label: 'Sin reto' },
-                { val: frecuencia === 'semanal' ? 4 : 7, label: frecuencia === 'semanal' ? '4 semanas' : '7 días' },
-                { val: frecuencia === 'semanal' ? 8 : 30, label: frecuencia === 'semanal' ? '8 semanas' : '30 días' },
-                { val: frecuencia === 'semanal' ? 12 : 66, label: frecuencia === 'semanal' ? '12 semanas' : '66 días' }
+                { val: frecuencia === 'semanal' ? 4 : 7, label: frecuencia === 'semanal' ? '4 sem' : '7 días' },
+                { val: frecuencia === 'semanal' ? 8 : 30, label: frecuencia === 'semanal' ? '8 sem' : '30 días' },
+                { val: frecuencia === 'semanal' ? 12 : 66, label: frecuencia === 'semanal' ? '12 sem' : '66 días' }
               ].map(r => (
-                <button 
-                  key={r.label}
-                  role="radio" aria-checked={reto === r.val}
-                  onClick={() => setReto(r.val)}
-                  className={`flex-1 h-11 rounded-[9px] text-[13px] transition-colors whitespace-nowrap ${reto === r.val ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_rgba(241,243,245,0.6)]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
-                >
-                  {r.label}
-                </button>
+                <label key={r.label}>
+                  <input type="radio" name="rh11" checked={reto === r.val} onChange={() => setReto(r.val)} />
+                  <span>{r.label}</span>
+                </label>
               ))}
-            </div>
+            </fieldset>
             
             {isEditing && h?.reto && reto === h.reto.meta && (
               <div className="flex items-center gap-2.5 mt-3 mb-2" role="progressbar" aria-valuenow={contarProgresoReto(h, registros)} aria-valuemax={reto!}>
@@ -489,7 +493,7 @@ export const CreateHabitScreen: React.FC = () => {
             )}
             
             {getRetoHelp()}
-          </div>
+          </section>
 
 
           

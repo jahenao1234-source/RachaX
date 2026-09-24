@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
-import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea, COLOR_POR_MOMENTO } from '../types';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode, useMemo } from 'react';
+import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea, COLOR_POR_MOMENTO, Premio, RetoSemanal } from '../types';
 import {
   getTodayString,
   isHabitScheduledForDate,
@@ -10,7 +10,12 @@ import {
   esTareaCompletada,
   toggleSubtareaEnArbol,
   limpiarArbolSubtareas,
+  calcularPuntosTotales,
+  calcularNivel,
+  calcularProgresoNivel,
+  etapaDeNivel
 } from '../utils/habitUtils';
+import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
 
 const STORAGE_HABITOS_KEY = 'racha_habitos';
 const STORAGE_REGISTROS_KEY = 'racha_registros';
@@ -21,6 +26,9 @@ const STORAGE_CONGELADOS_KEY = 'racha_dias_congelados';
 const STORAGE_COMODINES_MES_KEY = 'racha_comodines_mes';
 const STORAGE_RUTINAS_KEY = 'racha_rutinas';
 const STORAGE_TAREAS_KEY = 'racha_tareas';
+const STORAGE_PREMIOS_KEY = 'racha_premios';
+const STORAGE_CAJAS_KEY = 'racha_cajas';
+const STORAGE_RETO_SEMANAL_KEY = 'racha_reto_semanal';
 const COMODINES_MAX = 3;
 
 interface HabitContextType {
@@ -89,6 +97,15 @@ interface HabitContextType {
   ordenMomentos: MomentoDia[];
   comodines: number;
   diasCongelados: string[];
+  premios: Premio[];
+  cajasPorAbrir: number;
+  retoSemanal: RetoSemanal | null;
+
+  // Computed globally
+  puntosTotales: number;
+  nivelActual: number;
+  progresoNivel: { actual: number; meta: number };
+  etapaLlama: number;
 
   // Actions
   crearHabito: (nuevo: Omit<Habito, 'id' | 'creadoEn'>) => Habito;
@@ -107,6 +124,9 @@ interface HabitContextType {
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
+    premios?: Premio[];
+    cajasPorAbrir?: number;
+    retoSemanal?: RetoSemanal | null;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -118,6 +138,10 @@ interface HabitContextType {
   reordenarTareas: (idsOrdenados: string[]) => void;
   congelarDia: (fecha: string) => void;
   descongelarDia: (fecha: string) => void;
+  agregarPremio: (motivo: string, puntos: number, clave?: string, extras?: { comodines?: number; cajas?: number }) => void;
+  sumarCajas: (n: number) => void;
+  sumarComodines: (n: number) => void;
+  setRetoSemanal: (reto: RetoSemanal | null) => void;
 
   // Computed Utilities
   rachaActual: (habitoId: string) => number;
@@ -238,6 +262,30 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return [];
   });
 
+  const [premios, setPremios] = useState<Premio[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_PREMIOS_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
+
+  const [cajasPorAbrir, setCajasPorAbrir] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_CAJAS_KEY);
+      if (stored !== null) return parseInt(stored) || 0;
+    } catch {}
+    return 0;
+  });
+
+  const [retoSemanal, setRetoSemanalState] = useState<RetoSemanal | null>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_RETO_SEMANAL_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return null;
+  });
+
   useEffect(() => {
     try { localStorage.setItem(STORAGE_ORDEN_MOMENTOS_KEY, JSON.stringify(ordenMomentos)); } catch {}
   }, [ordenMomentos]);
@@ -249,6 +297,21 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     try { localStorage.setItem(STORAGE_CONGELADOS_KEY, JSON.stringify(diasCongelados)); } catch {}
   }, [diasCongelados]);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_PREMIOS_KEY, JSON.stringify(premios)); } catch {}
+  }, [premios]);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_CAJAS_KEY, String(cajasPorAbrir)); } catch {}
+  }, [cajasPorAbrir]);
+
+  useEffect(() => {
+    try {
+      if (retoSemanal) localStorage.setItem(STORAGE_RETO_SEMANAL_KEY, JSON.stringify(retoSemanal));
+      else localStorage.removeItem(STORAGE_RETO_SEMANAL_KEY);
+    } catch {}
+  }, [retoSemanal]);
 
   useEffect(() => {
     try {
@@ -459,6 +522,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem(STORAGE_COMODINES_KEY);
     localStorage.removeItem(STORAGE_CONGELADOS_KEY);
     localStorage.removeItem(STORAGE_COMODINES_MES_KEY);
+    localStorage.removeItem(STORAGE_PREMIOS_KEY);
+    premiosEntregados.current.clear();
+    localStorage.removeItem(STORAGE_CAJAS_KEY);
+    localStorage.removeItem(STORAGE_RETO_SEMANAL_KEY);
     localStorage.removeItem('racha_nombre');
     localStorage.removeItem('racha_acento');
     localStorage.removeItem('racha_apariencia');
@@ -479,6 +546,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         comodines,
         diasCongelados,
         ordenMomentos,
+        premios,
+        cajasPorAbrir,
+        retoSemanal,
         nombre: localStorage.getItem('racha_nombre') || '',
         acento: localStorage.getItem('racha_acento') || 'ambar',
         apariencia: localStorage.getItem('racha_apariencia') || 'auto',
@@ -506,6 +576,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
+    premios?: Premio[];
+    cajasPorAbrir?: number;
+    retoSemanal?: RetoSemanal | null;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -540,6 +613,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (typeof datos.comodines === 'number') setComodines(Math.max(0, Math.min(COMODINES_MAX, datos.comodines)));
       if (Array.isArray(datos.diasCongelados)) setDiasCongelados(datos.diasCongelados);
       if (Array.isArray(datos.ordenMomentos)) setOrdenMomentos(datos.ordenMomentos);
+      if (Array.isArray(datos.premios)) {
+        setPremios(datos.premios);
+        premiosEntregados.current = new Set(datos.premios.map((p) => p.clave).filter((c): c is string => !!c));
+      }
+      if (typeof datos.cajasPorAbrir === 'number') setCajasPorAbrir(datos.cajasPorAbrir);
+      if (datos.retoSemanal !== undefined) setRetoSemanalState(datos.retoSemanal);
 
       if (typeof datos.nombre === 'string') localStorage.setItem('racha_nombre', datos.nombre);
       if (typeof datos.acento === 'string') localStorage.setItem('racha_acento', datos.acento);
@@ -644,6 +723,32 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setComodines((c) => Math.min(COMODINES_MAX, c + 1));
   };
 
+  // Claves ya entregadas: se revisan de forma síncrona para que un efecto que corre
+  // dos veces (StrictMode o renders seguidos) no duplique cajas ni comodines.
+  const premiosEntregados = useRef<Set<string>>(new Set(premios.map(p => p.clave).filter((c): c is string => !!c)));
+
+  const agregarPremio = (motivo: string, puntos: number, clave?: string, extras?: { comodines?: number; cajas?: number }) => {
+    if (clave) {
+      if (premiosEntregados.current.has(clave)) return;
+      premiosEntregados.current.add(clave);
+    }
+    setPremios(prev => [...prev, { fecha: getTodayString(), motivo, puntos, clave }]);
+    if (extras?.comodines) setComodines(c => Math.min(COMODINES_MAX, c + extras.comodines!));
+    if (extras?.cajas) setCajasPorAbrir(c => c + extras.cajas!);
+  };
+
+  const sumarCajas = (n: number) => {
+    setCajasPorAbrir(prev => prev + n);
+  };
+
+  const sumarComodines = (n: number) => {
+    setComodines(prev => Math.min(COMODINES_MAX, prev + n));
+  };
+
+  const setRetoSemanal = (reto: RetoSemanal | null) => {
+    setRetoSemanalState(reto);
+  };
+
   const crearRutina = (nueva: Omit<Rutina, 'id' | 'creadoEn'>) => {
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `r_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     setRutinas((prev) => [...prev, { ...nueva, id, creadoEn: new Date().toISOString() }]);
@@ -700,6 +805,45 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const openTareaEditor = (tarea: Tarea | null = null) => { setTareaBeingEdited(tarea); setIsTareaEditorOpen(true); };
   const closeTareaEditor = () => { setIsTareaEditorOpen(false); setTareaBeingEdited(null); };
 
+  // Calculated values
+  const puntosTotales = useMemo(() => calcularPuntosTotales(registros, habitosActivos, premios, diasCongelados), [registros, habitosActivos, premios, diasCongelados]);
+  const nivelActual = useMemo(() => calcularNivel(puntosTotales), [puntosTotales]);
+  const progresoNivel = useMemo(() => calcularProgresoNivel(puntosTotales), [puntosTotales]);
+  const etapaLlama = useMemo(() => etapaDeNivel(nivelActual), [nivelActual]);
+
+  // Reto semanal evaluation & generation
+  useEffect(() => {
+    const currentToday = getTodayString();
+    let currentReto = retoSemanal;
+    let didUpdate = false;
+
+    // 1. Evaluate current if accepted
+    if (currentReto && currentReto.estado === 'aceptado') {
+      const evaluado = evaluarRetoSemanal(currentReto, habitos, registros, currentToday);
+      if (evaluado.estado !== currentReto.estado || evaluado.avance !== currentReto.avance) {
+        currentReto = evaluado;
+        didUpdate = true;
+        if (evaluado.estado === 'cumplido') {
+          agregarPremio('Reto de la semana', 50, `reto-semanal:${evaluado.id}`, { comodines: 1, cajas: 1 });
+        }
+      }
+    }
+
+    // 2. Generate new if missing or outdated
+    const lunesActual = getLunesActual(currentToday);
+    if (!currentReto || currentReto.id !== lunesActual) {
+      const nuevo = generarOpcionesReto(habitosActivos, registros, diasCongelados, currentToday, currentReto);
+      if (nuevo) {
+        currentReto = nuevo;
+        didUpdate = true;
+      }
+    }
+
+    if (didUpdate && currentReto) {
+      setRetoSemanalState(currentReto);
+    }
+  }, [registros, habitos, retoSemanal, premios, habitosActivos, diasCongelados]);
+
   return (
     <HabitContext.Provider
       value={{
@@ -753,6 +897,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         ordenMomentos,
         comodines,
         diasCongelados,
+        premios,
+        cajasPorAbrir,
+        retoSemanal,
+        puntosTotales,
+        nivelActual,
+        progresoNivel,
+        etapaLlama,
         crearHabito,
         editarHabito,
         eliminarHabito,
@@ -769,6 +920,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         reordenarTareas,
         congelarDia,
         descongelarDia,
+        agregarPremio,
+        sumarCajas,
+        sumarComodines,
+        setRetoSemanal,
         rachaActual,
         mejorRacha,
         mejorRachaGlobalHabitos,

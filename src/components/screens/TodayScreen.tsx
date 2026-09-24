@@ -1,23 +1,27 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap } from 'lucide-react';
+import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
+import { Llama } from '../juego/Llama';
+import { RetoSemanalSheet } from '../juego/RetoSemanalSheet';
+import { CajaSorpresaSheet } from '../juego/CajaSorpresaSheet';
 import { Habito, Subtarea } from '../../types';
 import { 
   getTodayString, 
   contarHojasSubtareas, 
   subtractDays, 
   isHabitCompletedOnDate, 
-  calcularPuntosTotales, 
-  calcularNivel, 
-  calcularProgresoNivel,
   esTareaCompletada,
   toggleSubtareaEnArbol,
   limpiarArbolSubtareas,
   contarProgresoReto,
-  contarCompletadosSemana
+  contarCompletadosSemana,
+  getDiasDeRegreso,
+  puntosParaNivel,
+  ETAPAS
 } from '../../utils/habitUtils';
 import { calcularInsignias } from '../../utils/badgeUtils';
+import { getLunesActual } from '../../utils/retoSemanal';
 
 const SubtareaTreeNode: React.FC<{
   sub: Subtarea;
@@ -96,7 +100,17 @@ export const TodayScreen: React.FC = () => {
     ordenMomentos,
     comodines,
     diasCongelados,
+    retoSemanal,
+    setRetoSemanal,
+    navigateToTab,
+    puntosTotales,
+    nivelActual,
+    progresoNivel,
+    etapaLlama
   } = useHabitStore();
+
+  const [isRetoSheetOpen, setIsRetoSheetOpen] = useState(false);
+  const [isCajaSheetOpen, setIsCajaSheetOpen] = useState(false);
 
   const hoy = getTodayString();
   const currentHour = new Date().getHours();
@@ -123,16 +137,18 @@ export const TodayScreen: React.FC = () => {
     });
   };
 
+
   const formattedDate = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date());
   const displayDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1) + ' ' + new Date().getDate();
   const completedCount = completadosHoy();
   const totalToday = habitosDeHoy.length;
 
   // Puntos y Nivel
-  const puntosTotales = calcularPuntosTotales(registros);
-  const nivelActual = calcularNivel(puntosTotales);
-  const progresoNivel = calcularProgresoNivel(puntosTotales);
-  const progresoNivelPercent = Math.min(100, Math.max(0, (progresoNivel / 1000) * 100));
+  const ptosMeta = progresoNivel.actual + progresoNivel.meta;
+  const progresoNivelPercent = Math.min(100, Math.max(0, (progresoNivel.actual / ptosMeta) * 100));
+
+  // Nombre Llama
+  const lvlName = ETAPAS[etapaLlama - 1].nombre;
 
   // Últimos 7 días y Constancia del Mes
   const ultimos7Dias = useMemo(() => {
@@ -260,16 +276,32 @@ export const TodayScreen: React.FC = () => {
   const proximasInsignias = badgeCalculations.filter(b => !b.desbloqueada);
   const proximaInsignia = proximasInsignias.length > 0 ? proximasInsignias[0] : null;
 
+  const esDiaRegreso = getDiasDeRegreso(habitosActivos, registros, diasCongelados, hoy).includes(hoy);
+  
+  const handleAcceptReto = (optId: string) => {
+    if (retoSemanal) {
+      setRetoSemanal({ ...retoSemanal, opcionElegida: optId, estado: 'aceptado' });
+    }
+    setIsRetoSheetOpen(false);
+  };
+
+  const handleSkipReto = () => {
+    if (retoSemanal) {
+      setRetoSemanal({ ...retoSemanal, estado: 'saltado' });
+    }
+    setIsRetoSheetOpen(false);
+  };
+
   return (
     <div id="screen-today" className="pb-28 animate-fadeIn text-text font-body pt-2">
-      {/* 2. Nivel y puntos */}
-      <div className="mt-3.5 flex items-center gap-2.5">
-        <span className="font-heading font-bold text-[15px] text-ink bg-lila px-2 py-0.5 rounded-[6px]">Nivel {nivelActual}</span>
-        <div className="flex-1 h-2 rounded-full bg-track overflow-hidden">
-          <div className="h-full rounded-full bg-lila" style={{ width: `${progresoNivelPercent}%` }}></div>
-        </div>
-        <span className="text-[13px] text-text-muted font-number">{progresoNivel} / 1000</span>
-      </div>
+      <a className="lvlstrip" href="#" onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }} aria-label={`Nivel ${nivelActual}, ${lvlName}: ${progresoNivel.actual} de ${ptosMeta} puntos para el nivel ${nivelActual+1}. Ver tu llama`}>
+        <span className="lvlflame">
+          <Llama etapa={etapaLlama} size={30} />
+        </span>
+        <span className="cond lvlname">Nivel {nivelActual} · {lvlName}</span>
+        <i className="lvltrack2" aria-hidden="true"><b style={{ width: `${progresoNivelPercent}%` }}></b></i>
+        <span className="lvlnums">{progresoNivel.actual} / {ptosMeta}</span>
+      </a>
 
       {/* 3. Fecha en display y comodines */}
       <section className="pt-3.5 flex items-start justify-between">
@@ -323,8 +355,15 @@ export const TodayScreen: React.FC = () => {
         <div className="p-3.5 rounded-[18px] bg-surface border border-line flex flex-col gap-2.5">
           <div className="flex justify-between items-baseline">
             <h2 className="m-0 font-heading font-bold text-[22px]">Tu día</h2>
-            <span className="font-heading font-bold text-[18px] text-ambar-text">+{completedCount * 10} pts hoy</span>
+            <span className="font-heading font-bold text-[18px] text-ambar-text">+{completedCount * (esDiaRegreso ? 20 : 10)} pts hoy</span>
           </div>
+          
+          {esDiaRegreso && (
+            <p className="bono">
+              <ShieldCheck size={16} strokeWidth={2.2} />
+              <span><b>Volviste.</b> Hoy cada hábito vale el doble: +20.</span>
+            </p>
+          )}
           <div className="flex gap-1" role="img" aria-label={`${completedCount} de ${totalToday} hábitos cumplidos hoy`}>
             {habitosOrdenados.map(h => (
                <i key={h.id} className={`flex-1 h-3 rounded-[4px] ${esHabitoCompletado(h.id) ? 'bg-ambar' : 'bg-track'}`}></i>
@@ -356,6 +395,65 @@ export const TodayScreen: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Reto Semanal */}
+      {retoSemanal && (
+        <>
+          {retoSemanal.estado === 'propuesto' && (
+            <button className="retorow nuevo w-full text-left" onClick={() => setIsRetoSheetOpen(true)}>
+              <span className="retoic" aria-hidden="true"><Target size={18} strokeWidth={2} /></span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span className="name" style={{ whiteSpace: 'normal' }}>
+                  {retoSemanal.anteriorNoSalio ? 'El reto pasado no salió. Te tengo uno nuevo.' : 'Tu reto de la semana está listo'}
+                </span>
+                <span className="meta">Premio: +50 puntos, un comodín y una caja sorpresa</span>
+              </span>
+              <span className="chev" aria-hidden="true"><ChevronRight size={18} strokeWidth={2.2} /></span>
+            </button>
+          )}
+
+          {retoSemanal.estado === 'aceptado' && retoSemanal.opcionElegida && (
+            <button className="retorow w-full text-left" onClick={() => setIsRetoSheetOpen(true)}>
+              <span className="retoic" aria-hidden="true"><Target size={18} strokeWidth={2} /></span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                {(() => {
+                  const opt = retoSemanal.opciones.find(o => o.id === retoSemanal.opcionElegida);
+                  if (!opt) return null;
+                  
+                  if (opt.id === 'dia_dificil' && opt.dia !== undefined) {
+                    const targetD = new Date(retoSemanal.id + 'T12:00:00');
+                    const offset = opt.dia === 0 ? 6 : opt.dia - 1;
+                    targetD.setDate(targetD.getDate() + offset);
+                    const diff = Math.round((targetD.getTime() - new Date(hoy + 'T12:00:00').getTime()) / 86400000);
+                    
+                    let dayName = opt.dia === 0 ? 'domingo' : opt.dia === 1 ? 'lunes' : opt.dia === 2 ? 'martes' : opt.dia === 3 ? 'miércoles' : opt.dia === 4 ? 'jueves' : opt.dia === 5 ? 'viernes' : 'sábado';
+                    let metaT = '';
+                    if (diff > 1) metaT = `El ${dayName} es en ${diff} días`;
+                    else if (diff === 1) metaT = `El ${dayName} es mañana`;
+                    else if (diff === 0) metaT = `Hoy es el día`;
+
+                    return (
+                      <>
+                        <span className="name" style={{ whiteSpace: 'normal' }}>Reto: {opt.texto}</span>
+                        {metaT && <span className="meta">{metaT}</span>}
+                      </>
+                    );
+                  }
+
+                  return (
+                    <>
+                      <span className="name" style={{ whiteSpace: 'normal' }}>Reto: {opt.texto}</span>
+                      <i className="minibar" aria-hidden="true"><b style={{ width: `${(retoSemanal.avance / (opt.metaRequerida || 1)) * 100}%` }}></b></i>
+                      <span className="meta">{retoSemanal.avance} de {opt.metaRequerida} · hasta el domingo</span>
+                    </>
+                  );
+                })()}
+              </span>
+              <span className="chev" aria-hidden="true"><ChevronRight size={18} strokeWidth={2.2} /></span>
+            </button>
+          )}
+        </>
+      )}
 
       {/* 6. Misiones Agrupadas */}
       <div className="mt-4.5 flex justify-between items-baseline mb-3">
@@ -605,6 +703,19 @@ export const TodayScreen: React.FC = () => {
         </div>
       )}
 
+      {/* Modals */}
+      {isRetoSheetOpen && retoSemanal && (
+        <RetoSemanalSheet 
+          reto={retoSemanal} 
+          onClose={() => setIsRetoSheetOpen(false)} 
+          onAccept={handleAcceptReto}
+          onSkip={handleSkipReto}
+          onOpenCaja={() => setIsCajaSheetOpen(true)}
+        />
+      )}
+      {isCajaSheetOpen && (
+        <CajaSorpresaSheet onClose={() => setIsCajaSheetOpen(false)} />
+      )}
     </div>
   );
 };

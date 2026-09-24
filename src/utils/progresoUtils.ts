@@ -25,7 +25,7 @@ export function fuerzaSerieHabito(
   diasCongelados: string[], 
   hastaStr: string
 ): { fecha: string; valor: number }[] {
-  const startStr = habito.creadoEn.split('T')[0];
+  const startStr = formatDateToString(new Date(habito.creadoEn));
   if (startStr > hastaStr) return [];
 
   const result: { fecha: string; valor: number }[] = [];
@@ -92,9 +92,9 @@ export function serieFuerzaTotal(
   if (habitosActivos.length === 0) return [];
   
   // Encontrar el creadoEn más antiguo
-  let oldestDate = habitosActivos[0].creadoEn.split('T')[0];
+  let oldestDate = formatDateToString(new Date(habitosActivos[0].creadoEn));
   for (const h of habitosActivos) {
-    const d = h.creadoEn.split('T')[0];
+    const d = formatDateToString(new Date(h.creadoEn));
     if (d < oldestDate) oldestDate = d;
   }
   
@@ -157,7 +157,7 @@ export function tasaPeriodo(
     for (const h of habitos) {
       if (h.frecuencia === 'semanal') continue;
       
-      const creadoEnStr = h.creadoEn.split('T')[0];
+      const creadoEnStr = formatDateToString(new Date(h.creadoEn));
       if (curDate < creadoEnStr) continue;
       
       if (isHabitScheduledForDate(h, curDate)) {
@@ -199,7 +199,7 @@ export function calcularMejorRachaGlobal(
   let curDate = desdeStr;
   while (curDate <= hastaStr) {
     // Buscar programados de hoy
-    const scheduled = habitosActivos.filter(h => h.frecuencia !== 'semanal' && curDate >= h.creadoEn.split('T')[0] && isHabitScheduledForDate(h, curDate));
+    const scheduled = habitosActivos.filter(h => h.frecuencia !== 'semanal' && curDate >= formatDateToString(new Date(h.creadoEn)) && isHabitScheduledForDate(h, curDate));
     
     if (scheduled.length === 0) {
       // día sin nada programado: se salta

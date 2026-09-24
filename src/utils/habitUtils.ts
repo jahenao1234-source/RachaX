@@ -43,6 +43,10 @@ export function subtractDays(dateStr: string, days: number): string {
  * 0 = Sunday, 1 = Monday, ..., 6 = Saturday
  */
 export function isHabitScheduledForDate(habito: Habito, dateStr: string): boolean {
+  if (habito.creadoEn) {
+    const createdStr = formatDateToString(new Date(habito.creadoEn));
+    if (dateStr < createdStr) return false;
+  }
   if (habito.frecuencia === 'semanal') {
     return false; // los semanales no son de un día fijo; se gestionan por cuota semanal
   }
@@ -420,17 +424,107 @@ export function aplanarArbolSubtareas(subtareas: Subtarea[], depth = 0): Subtare
  * Puntos y Nivel
  */
 
-export function calcularPuntosTotales(registros: Registro[]): number {
+export function puntosParaNivel(n: number): number {
+  if (n < 1) return 0;
+  return 100 * (n - 1) + 25 * (n - 1) * (n - 2);
+}
+
+export function getDiasDeRegreso(habitos: Habito[], registros: Registro[], diasCongelados: string[], limitDate = getTodayString()): string[] {
+  if (habitos.length === 0) return [];
+  const startStr = habitos.reduce((min, h) => {
+    const d = formatDateToString(new Date(h.creadoEn));
+    return d < min ? d : min;
+  }, limitDate);
+  const diasRegreso: string[] = [];
+  
+  let cerosConsecutivos = 0;
+  let curObj = parseDateString(startStr);
+  let curDate = startStr;
+  
+  while (curDate <= limitDate) {
+    const scheduledHabits = habitos.filter((h) => isHabitScheduledForDate(h, curDate));
+    if (scheduledHabits.length > 0) {
+      if (diasCongelados.includes(curDate)) {
+        cerosConsecutivos = 0;
+      } else {
+        const completedCount = scheduledHabits.filter((h) => isHabitCompletedOnDate(h.id, curDate, registros)).length;
+        if (completedCount === 0) {
+          cerosConsecutivos++;
+        } else {
+          if (cerosConsecutivos >= 3) {
+            diasRegreso.push(curDate);
+          }
+          cerosConsecutivos = 0;
+        }
+      }
+    }
+    curObj.setDate(curObj.getDate() + 1);
+    curDate = formatDateToString(curObj);
+  }
+  return diasRegreso;
+}
+
+export function calcularPuntosTotales(
+  registros: Registro[],
+  habitos: Habito[] = [],
+  premios: { puntos: number }[] = [],
+  diasCongelados: string[] = []
+): number {
+  let puntos = 0;
+  // 1. Puntos base
   const completados = registros.filter((r) => r.completado).length;
-  return completados * 10;
+  puntos += completados * 10;
+  
+  // 2. Premios
+  puntos += premios.reduce((acc, p) => acc + (p.puntos || 0), 0);
+  
+  // 3. Bono de regreso
+  const diasRegreso = getDiasDeRegreso(habitos, registros, diasCongelados);
+  for (const dia of diasRegreso) {
+    const completadosEseDia = registros.filter(r => r.fecha === dia && r.completado).length;
+    puntos += completadosEseDia * 10;
+  }
+  
+  return puntos;
+}
+
+export const ETAPAS = [
+  { nivel: 1, nombre: 'Chispa' },
+  { nivel: 3, nombre: 'Brasa' },
+  { nivel: 5, nombre: 'Llama' },
+  { nivel: 8, nombre: 'Fogata' },
+  { nivel: 12, nombre: 'Fuego' },
+  { nivel: 16, nombre: 'Hoguera' },
+  { nivel: 20, nombre: 'Antorcha' },
+  { nivel: 25, nombre: 'Volcán' },
+  { nivel: 30, nombre: 'Sol' },
+  { nivel: 40, nombre: 'Estrella' }
+];
+
+export function etapaDeNivel(nivel: number): number {
+  let idx = 0;
+  for (let i = ETAPAS.length - 1; i >= 0; i--) {
+    if (nivel >= ETAPAS[i].nivel) {
+      idx = i;
+      break;
+    }
+  }
+  return idx + 1; // 1 to 10
 }
 
 export function calcularNivel(puntos: number): number {
-  return Math.floor(puntos / 1000) + 1;
+  let n = 1;
+  while (puntosParaNivel(n + 1) <= puntos) {
+    n++;
+  }
+  return n;
 }
 
-export function calcularProgresoNivel(puntos: number): number {
-  return puntos % 1000;
+export function calcularProgresoNivel(puntos: number): { actual: number, meta: number } {
+  const nivel = calcularNivel(puntos);
+  const actual = puntos - puntosParaNivel(nivel);
+  const meta = puntosParaNivel(nivel + 1) - puntosParaNivel(nivel);
+  return { actual, meta };
 }
 
 /**

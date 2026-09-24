@@ -18,14 +18,16 @@ import {
   Zap,
   Shield,
   Trophy,
-  Crown
+  Crown,
+  Pencil
 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { calcularInsignias, InsigniaDef } from '../../utils/badgeUtils';
 import { BadgeDetailModal } from '../badges/BadgeDetailModal';
 import { TEMAS } from '../../types';
-import { calcularProgresoNivel, getTodayString } from '../../utils/habitUtils';
+import { getTodayString, ETAPAS } from '../../utils/habitUtils';
+import { Llama } from '../juego/Llama';
 
 // Componente para la hoja modal del nombre
 const NameModal = ({
@@ -126,6 +128,10 @@ export const ProfileScreen: React.FC = () => {
     openOnboarding,
     exportarDatos,
     importarDatos,
+    puntosTotales,
+    nivelActual,
+    progresoNivel,
+    etapaLlama
   } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
@@ -171,11 +177,26 @@ export const ProfileScreen: React.FC = () => {
   const startDateFormatted = new Date(startDateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
   const isRecent = registros.length === 0;
 
-  // Nivel del perfil: cada hábito suma 10 pts
-  const totalPuntos = totalCompletados * 10;
-  const currentLevel = Math.floor(totalPuntos / 1000) + 1;
-  const puntosEnNivel = calcularProgresoNivel(totalPuntos);
-  const levelProgressPercent = Math.round((puntosEnNivel / 1000) * 100);
+  // Nivel del perfil
+  const ptosMeta = progresoNivel.actual + progresoNivel.meta;
+  const levelProgressPercent = Math.round((progresoNivel.actual / ptosMeta) * 100);
+
+  const currentStageIndex = etapaLlama - 1;
+  const lvlName = ETAPAS[currentStageIndex].nombre;
+  
+  let startIndex = Math.max(0, Math.min(currentStageIndex - 1, ETAPAS.length - 5));
+  const stagesToShow = ETAPAS.slice(startIndex, startIndex + 5).map((stg, idx) => {
+    const realIdx = startIndex + idx;
+    return {
+      lvl: stg.nivel,
+      name: stg.nombre,
+      etapa: realIdx + 1,
+      isPast: realIdx < currentStageIndex,
+      isNow: realIdx === currentStageIndex,
+      isNext: realIdx > currentStageIndex
+    };
+  });
+  const nextStageLevel = currentStageIndex < ETAPAS.length - 1 ? ETAPAS[currentStageIndex + 1].nivel : null;
 
   // Insignias dinámicas
   const insignias = calcularInsignias(habitos, registros, maxHabitStreak, globalStreak);
@@ -276,13 +297,13 @@ export const ProfileScreen: React.FC = () => {
       <h1 className="font-heading font-bold text-[44px] leading-none m-0 text-text">Perfil</h1>
       
       {/* Identity Card */}
-      <section className="mt-4 p-3.5 rounded-[18px] bg-surface border border-line" aria-label="Tu identidad y nivel">
+      <section className="mt-4 p-3.5 rounded-[18px] bg-surface border border-line" aria-label="Tu identidad">
         <div className="flex items-center gap-3.5">
           <span className="w-14 h-14 rounded-full bg-surface-raised text-text flex items-center justify-center shrink-0">
             {nombre ? (
               <span className="font-heading font-bold text-[28px] leading-none uppercase">{nombre.charAt(0)}</span>
             ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+              <User size={24} strokeWidth={2} />
             )}
           </span>
           <div className="flex-1 min-w-0">
@@ -300,22 +321,49 @@ export const ProfileScreen: React.FC = () => {
             className="w-11 h-11 rounded-xl border border-line bg-surface text-text flex items-center justify-center shrink-0 cursor-pointer"
             aria-label="Cambiar tu nombre"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+            <Pencil size={18} strokeWidth={2} />
           </button>
         </div>
-        
-        <div className="flex justify-between items-center mt-4 pt-3.5 border-t border-line">
-          <span className="px-2.5 py-1 rounded-full bg-lila-tint text-lila-text text-[13px] font-bold">Nivel {currentLevel}</span>
-          <span className="text-[13px] text-text-muted tabular-nums">
-            <b className="font-heading font-bold text-[20px] text-text">{puntosEnNivel}</b> / 1000 puntos
-          </span>
+      </section>
+
+      {/* Tu llama card */}
+      <section className="mt-4 flamecard p-3.5 rounded-[18px] bg-surface border border-line" aria-labelledby="tl9">
+        <div className="flamehero">
+          <Llama etapa={etapaLlama} size={96} />
         </div>
-        
-        <div className="block h-2 rounded-full bg-track-empty overflow-hidden mt-2.5">
-          <b className="block h-full rounded-full bg-lila-text" style={{ width: `${levelProgressPercent}%` }}></b>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h2 className="sub m-0 font-medium text-[15px]" id="tl9">Tu llama</h2>
+          <p className="cond m-0 mt-0.5 font-bold text-[28px] leading-[1.05]">{lvlName}</p>
+          <p className="sub m-0 mt-0.5">Nivel {nivelActual}</p>
         </div>
-        
-        <p className="text-[13px] text-text-muted m-0 mt-2">Cada hábito cumplido suma 10 puntos.</p>
+        <div className="flamefoot">
+           <div className="flex justify-between items-baseline"><span className="sub text-[13px] text-text-muted">Para el nivel {nivelActual + 1}</span><span className="sub text-[13px] text-text-muted font-number">{progresoNivel.actual} / {ptosMeta} puntos</span></div>
+           <i className="lvltrack" aria-hidden="true"><b style={{ width: `${levelProgressPercent}%` }}></b></i>
+           
+           <ol className="stages list-none p-0">
+              {stagesToShow.map(stg => (
+                <li key={stg.lvl} className={stg.isPast ? 'past' : stg.isNow ? 'now' : 'next'} aria-current={stg.isNow ? 'step' : undefined}>
+                  <span className="stg-ic">
+                    {stg.isPast || stg.isNow ? (
+                      <Llama etapa={stg.etapa} size={40} />
+                    ) : (
+                      <span className="q font-heading font-bold text-[18px] text-text-muted" aria-hidden="true">?</span>
+                    )}
+                  </span>
+                  <span className={`stg-n text-[12px] font-semibold text-center ${stg.isNow ? 'text-text font-bold' : 'text-text-muted'}`}>
+                    {stg.isPast || stg.isNow ? stg.name : `Nivel ${stg.lvl}`}
+                  </span>
+                  <span className="sr">{stg.isPast ? ', superada' : stg.isNow ? ', tu etapa' : ', por descubrir'}</span>
+                </li>
+              ))}
+           </ol>
+           {nextStageLevel && (
+             <p className="sub m-0 mt-2.5 text-[13px] text-text-muted">Tu llama cambia de nuevo en el nivel {nextStageLevel}. Nunca se apaga.</p>
+           )}
+           {!nextStageLevel && (
+             <p className="sub m-0 mt-2.5 text-[13px] text-text-muted">Tu llama nunca se apaga.</p>
+           )}
+        </div>
       </section>
 
       {/* Insignias */}
@@ -405,7 +453,7 @@ export const ProfileScreen: React.FC = () => {
             <label key={t.key} className="relative block cursor-pointer">
               <input type="radio" name="acento" checked={acento === t.key} onChange={() => setAcento(t.key as any)} className="absolute w-px h-px opacity-0 overflow-hidden" />
               <span className={`min-h-[76px] p-2.5 px-1.5 flex flex-col items-center justify-center gap-2 rounded-[14px] border ${acento === t.key ? 'border-[1.5px] border-text text-text font-bold bg-surface' : 'border-line bg-surface text-text-muted font-semibold'} text-[13px]`}>
-                <span className={`w-8 h-8 rounded-full flex items-center justify-center`} style={{ backgroundColor: `var(--${t.key})`, color: acento === t.key ? 'var(--ink)' : 'transparent', boxShadow: acento === t.key ? (apariencia === 'claro' || (apariencia === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches) ? `inset 0 0 0 1.5px var(--${t.key}-text)` : 'none') : (apariencia === 'claro' || (apariencia === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches) ? `inset 0 0 0 1.5px var(--${t.key}-text)` : 'none') }}>
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center`} style={{ backgroundColor: `var(--sw-${t.key})`, color: acento === t.key ? 'var(--ink)' : 'transparent', boxShadow: `inset 0 0 0 1.5px var(--sw-${t.key}-ring)` }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                 </span>
                 <span>{t.label}</span>
