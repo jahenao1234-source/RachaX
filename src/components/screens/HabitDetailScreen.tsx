@@ -205,7 +205,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
               {' · '}
               {getFrecuenciaLegible(habit)}
               {habit.anclaje ? ` · ${isNegativo ? 'cuando' : 'después de'} ${habit.anclaje}` : ''}
-              {habit.metaDiaria ? ` · Meta: ${habit.metaDiaria}${habit.unidad ? ` ${habit.unidad}` : ''}` : ''}
+              {habit.metaDiaria ? ` · Meta: ${habit.metaDiaria}` : ''}
             </p>
           </section>
 

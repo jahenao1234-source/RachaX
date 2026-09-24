@@ -229,7 +229,7 @@ export const ProfileScreen: React.FC = () => {
     if (recentUniqueBadges.length >= 3) break;
   }
   const top3Badges = recentUniqueBadges;
-  const lockedInsignias = insignias.filter(b => !b.desbloqueada && b.categoria !== 'racha');
+  const lockedInsignias = insignias.filter(b => !b.desbloqueada);
   const nextBadge = lockedInsignias.length > 0 ? lockedInsignias.reduce((max, badge) => (badge.progresoActual / badge.meta > max.progresoActual / max.meta ? badge : max), lockedInsignias[0]) : null;
 
   const showNotification = (type: 'success' | 'error', message: string) => {

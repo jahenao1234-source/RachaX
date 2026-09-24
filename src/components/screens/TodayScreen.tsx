@@ -535,7 +535,7 @@ export const TodayScreen: React.FC = () => {
                     } else {
                       if (isNegativo) anchorText = 'evitar';
                       else if (habito.frecuencia === 'semanal') anchorText = `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana`;
-                      else if (habito.metaDiaria) anchorText = `${valorDe(habito.id)} de ${habito.metaDiaria}${(habito as any).unidad ? ` ${(habito as any).unidad}` : ''}`;
+                      else if (habito.metaDiaria) anchorText = `${valorDe(habito.id)} de ${habito.metaDiaria}`;
                     }
 
                     return (
