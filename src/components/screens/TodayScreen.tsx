@@ -324,7 +324,7 @@ export const TodayScreen: React.FC = () => {
 
       <div className="cabcomp">
         <a className="cabart" href="#" aria-label={`Tu llama: ${companeraRealName}. Ver tu llama`} onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }}>
-          <LlamaDe id={companeraId} size={60} sola />
+          <LlamaDe id={companeraId} size={64} sola />
         </a>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h1 className="cond" style={{ margin: 0, fontSize: '44px', lineHeight: 1 }}>{displayDate}</h1>

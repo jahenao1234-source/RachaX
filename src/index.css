@@ -283,7 +283,10 @@ html:not(.dark) .prize li .cond { color:var(--text); }
 
 /* Estilos extra de maquetas */
 .scrim { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90; }
-.sheet { position:fixed; bottom:0; left:0; right:0; margin:0 auto; width:100%; max-width:440px; max-height:85dvh; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; background:var(--surface); border-radius:22px 22px 0 0; border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); z-index:100; box-shadow:0 -8px 24px var(--bg); }
+.sheet { position:fixed; bottom:0; left:0; right:0; margin:0 auto; width:100%; max-width:440px; max-height:85dvh; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; background:var(--surface); border-radius:22px 22px 0 0; border-top:1px solid var(--line); padding-bottom:max(16px, env(safe-area-inset-bottom)); z-index:100; box-shadow:0 -8px 24px var(--bg); }
+/* Si el contenido no cabe, se desplaza toda la hoja: nada se encoge ni se corta por dentro */
+.sheet > * { flex-shrink:0; }
+.sheet .slist { flex:none; overflow:visible; }
 .sheet .grab { width:40px; height:5px; border-radius:9px; background:var(--line-strong); margin:8px auto 0; flex-shrink:0; }
 .sheet .shead { display:flex; align-items:flex-start; gap:12px; padding:12px 20px 10px; border-bottom:1px solid var(--line); }
 .sheet .x { width:44px; height:44px; border-radius:999px; border:none; background:var(--surface-raised); color:var(--text-muted); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; }

@@ -69,7 +69,7 @@ function renderFlameBase(id: string, pal: string[], s: number, dx = 0, dy = 0, s
 function SvgMedal({ id, size, children, ringLevel = 0, sola = false }: { id: string, size: number, children: React.ReactNode, ringLevel?: number, sola?: boolean }) {
   if (sola) {
     return (
-      <svg width={size} height={size} viewBox="14 20 72 72" aria-hidden="true">
+      <svg width={size} height={size} viewBox="6 6 88 88" aria-hidden="true">
         {/* Sin el fondo del medallón, pero con su recorte: los fondos propios de cada llama (colina, olas…) no se salen */}
         <clipPath id={`${id}cl`}>
           <circle cx="50" cy="50" r="46" />
