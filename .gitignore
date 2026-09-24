@@ -13,3 +13,5 @@ coverage/
 
 # Scripts temporales de los agentes
 scratch/
+# Maquetas temporales para verlas en el navegador
+public/zz-*.html
