@@ -283,6 +283,7 @@ html:not(.dark) .prize li .cond { color:var(--text); }
 .flabel { font-size:13px; font-weight:600; color:var(--text-muted); }
 
 /* Estilos extra de maquetas */
+.scrim { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90; }
 .sheet { position:fixed; bottom:0; left:0; right:0; margin:0 auto; width:100%; max-width:440px; max-height:85dvh; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; background:var(--surface); border-radius:22px 22px 0 0; border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); z-index:100; box-shadow:0 -8px 24px var(--bg); }
 .sheet .grab { width:40px; height:5px; border-radius:9px; background:var(--line-strong); margin:8px auto 0; flex-shrink:0; }
 .sheet .shead { display:flex; align-items:flex-start; gap:12px; padding:12px 20px 10px; border-bottom:1px solid var(--line); }
@@ -338,9 +339,28 @@ html:not(.dark) .prize li .cond { color:var(--text); }
 .bigbadge .cond { font-size: 44px; }
 
 /* Modal sheet UI */
-
-.sheet { position: fixed; left: 0; right: 0; bottom: 0; max-height: 85%; display: flex; flex-direction: column; background: var(--bg); border-radius: 22px 22px 0 0; border-top: 1px solid var(--line); z-index: 50; }
+
 .grab { width: 40px; height: 5px; border-radius: 9px; background: var(--line-strong); margin: 8px auto 0; flex-shrink: 0; }
 .shead { display: flex; align-items: flex-start; gap: 12px; padding: 12px 20px 10px; border-bottom: 1px solid var(--line); }
 .x { width: 44px; height: 44px; border-radius: 999px; border: none; background: var(--surface-raised); color: var(--text-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
 .slist { flex: 1; overflow-y: auto; padding: 0 20px; }
+
+/* CSS de Tu Colección y Llamas */
+.sec { margin-top: 24px; }
+.sec .cardhead { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+.sec .cardhead h2 { font-size: 22px; margin: 0; }
+.sub { margin: 0; }
+.next2 { margin-top: 16px; padding: 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
+.nrow { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; font-size: 15px; font-weight: 600; }
+.cgrid { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px 6px; }
+.cgrid.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cgrid.g6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.ctbtn { width: 100%; min-height: 44px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; border: none; background: transparent; color: var(--text); cursor: pointer; }
+.ctart { position: relative; display: flex; }
+.ctn { font-size: 12px; font-weight: 600; text-align: center; line-height: 1.2; }
+.cts { font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.2; }
+.ct.lock .ctn { color: var(--text-muted); font-weight: 500; }
+.ct.comp .ctart::after { content: ""; position: absolute; inset: -3px; border-radius: 999px; box-shadow: 0 0 0 2px var(--text); }
+.compdot { position: absolute; right: -2px; bottom: -2px; width: 20px; height: 20px; border-radius: 999px; background: var(--text); color: var(--bg); display: flex; align-items: center; justify-content: center; }
+.track { display: block; height: 8px; border-radius: 99px; background: var(--track); overflow: hidden; margin-top: 8px; }
+.track b { display: block; height: 100%; border-radius: 99px; background: var(--ambar-text); }

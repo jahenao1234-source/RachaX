@@ -10,3 +10,6 @@ coverage/
 # Impeccable: el programa (17 MB) se descarga solo si falta; no se sube a GitHub
 .agent/skills/impeccable/scripts/bin/
 .impeccable/config.local.json
+
+# Scripts temporales de los agentes
+scratch/

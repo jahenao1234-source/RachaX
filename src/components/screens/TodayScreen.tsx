@@ -3,7 +3,7 @@ import { BadgeIcon } from '../badges/BadgeIcon';
 import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
-import { Llama } from '../juego/Llama';
+import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
 import { RetoSemanalSheet } from '../juego/RetoSemanalSheet';
 import { CajaSorpresaSheet } from '../juego/CajaSorpresaSheet';
 import { Habito, Subtarea } from '../../types';
@@ -108,7 +108,8 @@ export const TodayScreen: React.FC = () => {
     puntosTotales,
     nivelActual,
     progresoNivel,
-    etapaLlama
+    etapaLlama,
+    companera
   } = useHabitStore();
 
   const [isRetoSheetOpen, setIsRetoSheetOpen] = useState(false);
@@ -150,7 +151,8 @@ export const TodayScreen: React.FC = () => {
   const progresoNivelPercent = Math.min(100, Math.max(0, (progresoNivel.actual / ptosMeta) * 100));
 
   // Nombre Llama
-  const lvlName = ETAPAS[etapaLlama - 1].nombre;
+  const companeraId = companera || `etapa_${etapaLlama}`;
+  const lvlName = nombreLlama(companeraId);
 
   // Últimos 7 días y Constancia del Mes
   const ultimos7Dias = useMemo(() => {
@@ -297,7 +299,7 @@ export const TodayScreen: React.FC = () => {
     <div id="screen-today" className="pb-28 animate-fadeIn text-text font-body pt-2">
       <a className="lvlstrip" href="#" onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }} aria-label={`Nivel ${nivelActual}, ${lvlName}: ${progresoNivel.actual} de ${ptosMeta} puntos para el nivel ${nivelActual+1}. Ver tu llama`}>
         <span className="lvlflame">
-          <Llama etapa={etapaLlama} size={30} />
+          <LlamaDe id={companeraId} size={30} />
         </span>
         <span className="cond lvlname">Nivel {nivelActual} · {lvlName}</span>
         <i className="lvltrack2" aria-hidden="true"><b style={{ width: `${progresoNivelPercent}%` }}></b></i>

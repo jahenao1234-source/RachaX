@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta: cajas guardadas</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547;--danger:#F87171;--sheet:#0F1113}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00;--danger:#C62828}
+.logo{background:#FFB547}
+.grab{border-radius:999px}
+.sec{margin-top:24px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.sub{margin:0}
+.next2{margin-top:16px;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.nrow{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:15px;font-weight:600}
+.cgrid{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:12px 6px}
+.cgrid.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cgrid.g6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.ctbtn{width:100%;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;border:none;background:transparent;color:var(--text)}
+.ctart{position:relative;display:flex}
+.ctn{font-size:12px;font-weight:600;text-align:center;line-height:1.2}
+.cts{font-size:12px;color:var(--muted);text-align:center;line-height:1.2}
+.ct.lock .ctn{color:var(--muted);font-weight:500}
+.ct.comp .ctart::after{content:"";position:absolute;inset:-3px;border-radius:999px;box-shadow:0 0 0 2px var(--text)}
+.compdot{position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border-radius:999px;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center}
+.track{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.track b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.legend{display:flex;align-items:center;gap:6px;margin:10px 0 0;font-size:13px;color:var(--muted)}
+.fam{padding:16px 0;border-bottom:1px solid var(--line)}
+.fam:last-child{border-bottom:none}
+.famhead{display:flex;align-items:center;gap:10px}
+.famhead h2{margin:0;font-size:20px;flex:1}
+.famic{display:flex;color:var(--ambar-text)}
+.tiers{list-style:none;margin:12px 0 0;padding:0;display:flex;gap:8px;flex-wrap:wrap}
+.tierbtn{position:relative;min-width:44px;height:44px;padding:0 10px;border-radius:999px;border:1.5px solid var(--line-strong);background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:4px}
+.tierbtn .cond{font-size:17px;white-space:nowrap}
+.tier.ok .tierbtn{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink)}
+.tier.next .tierbtn{border:1.5px solid var(--text);color:var(--text)}
+.tier.lock .tierbtn{border-style:dashed;border-color:var(--muted)}
+.tflame{display:inline-flex;color:var(--ambar-text)}
+.tier.ok .tflame{color:var(--ink)}
+.famnext{display:flex;justify-content:space-between;margin-top:12px}
+.bigbadge{width:112px;height:112px;margin:0 auto;border-radius:999px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 6px var(--ambar-tint)}
+.bigbadge .cond{font-size:44px}
+
+.dark{--sheet:#0F1113}
+.grab{border-radius:999px}
+.sub{margin:0}
+.celebody{padding:0 20px 22px;text-align:center}
+.hero{margin:0 auto;display:flex;align-items:center;justify-content:center}
+.celebt{margin:10px 0 0;font-size:28px;line-height:1.05}
+.celebs{margin:8px 0 0;font-size:15px;line-height:1.45;color:var(--text)}
+.boxrow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:15px}
+.boxrow .btn2,.retorow .btn2{min-height:44px;flex-shrink:0;border-color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.link.center{width:100%;justify-content:center}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}.segs i.on{background:var(--ambar)}.light .segs i.on{background:var(--ambar-text)}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retoic.caja{background:transparent}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 104px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="col"><h2>1 · Cajas en tu colección (oscuro)</h2><div class="dark">
+  <div class="phone">
+    <div class="bar"><button class="nb" aria-label="Volver al Perfil" style="border:none;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Tu colección</h1>
+      <p class="sub" style="margin-top:6px">8 de 40 llamas · Tu compañera: Fuego. Toca otra para cambiarla.</p>
+      
+      <section class="boxrow" aria-labelledby="fcK1" style="margin-top:14px">
+        <span aria-hidden="true"><svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cjgK2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset="1" stop-color="#E8941F"/></linearGradient></defs>
+  <rect x="22" y="44" width="56" height="46" rx="6" fill="url(#cjgK2)" stroke="#E8941F" stroke-width="1.5"/>
+  <rect x="18" y="34" width="64" height="14" rx="4" fill="#FFB547" transform=""/>
+  <rect x="46" y="34" width="8" height="56" fill="#8E9BFF"/>
+  <path d="M50 34C42 22 30 24 34 30C36 34 44 34 50 34ZM50 34C58 22 70 24 66 30C64 34 56 34 50 34Z" fill="#8E9BFF"/>
+  </svg></span>
+        <span style="flex:1;min-width:0;text-align:left">
+          <b id="fcK1" style="display:block">2 cajas sorpresa</b>
+          <span class="sub" style="display:block;font-size:13px">Ábrelas cuando quieras.</span>
+        </span>
+        <button class="btn2" aria-haspopup="dialog" aria-label="Abrir tus 2 cajas sorpresa">Abrir las 2</button>
+      </section>
+      <section class="next2" aria-labelledby="nx9">
+        <h2 class="cond" id="nx9" style="font-size:17px;margin:0">Lo próximo que puedes ganar</h2>
+        <div class="nrow"><span>Llama de septiembre</span><span class="sub">76% de 80%</span></div><i class="track" aria-hidden="true"><b style="width:95%"></b></i>
+        <div class="nrow" style="margin-top:12px"><span>Nocturna</span><span class="sub">18 de 30 noches</span></div><i class="track" aria-hidden="true"><b style="width:60%"></b></i>
+      </section>
+      <section class="sec" aria-labelledby="cs10"><div class="cardhead"><h2 class="cond" id="cs10">Etapas</h2><span class="sub">5 de 10 · crecen con tu nivel</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Chispa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m12bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e11o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e11m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e11c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m12cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m12bg)"/><g clip-path="url(#m12cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e11o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e11m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e11c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span>
+              <span class="ctn">Chispa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Brasa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m14bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e13k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e13o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e13m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e13c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m14cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m14bg)"/><g clip-path="url(#m14cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e13o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e13m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e13c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e13k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e13k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e13k)"/></g></svg></span>
+              <span class="ctn">Brasa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m16bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e15o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e15m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e15c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m16cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m16bg)"/><g clip-path="url(#m16cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e15o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e15m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e15c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span>
+              <span class="ctn">Llama</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fogata, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m18bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e17w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e17o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e17m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e17c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m18cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m18bg)"/><g clip-path="url(#m18cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e17o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e17m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e17c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e17w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e17w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+              <span class="ctn">Fogata</span>
+            </button>
+          </li>
+          <li class="ct ok comp">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fuego, conseguida, tu compañera">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m20bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e19o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e19m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e19c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m20cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m20bg)"/><g clip-path="url(#m20cl)"><g transform="translate(10 16) scale(0.8)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e19o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e19o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e19o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e19m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e19c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg><span class="compdot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="ctn">Fuego</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="La siguiente etapa, en el nivel 16">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nivel 16</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="4 etapas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+4</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs11"><div class="cardhead"><h2 class="cond" id="cs11">Hazañas</h2><span class="sub">1 de 8 · premios de tus insignias</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Alba, conseguida: 30 mañanas">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m22bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="h21o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0567A"/><stop offset="1" stop-color="#FFB08A"/></linearGradient><linearGradient id="h21m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8F8F"/><stop offset="1" stop-color="#FFD8BF"/></linearGradient><linearGradient id="h21c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF2E8"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m22cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m22bg)"/><g clip-path="url(#m22cl)"><path d="M16 86A34 34 0 0 1 84 86" fill="#FFB08A" opacity=".35"/><g transform="translate(15 26) scale(0.7)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#h21o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#h21m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#h21c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+              <span class="ctn">Alba</span><span class="cts">30 mañanas</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Nocturna, por conseguir: noches 18 de 30">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nocturna</span><span class="cts">noches 18 de 30</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fénix, por conseguir: regresos 2 de 10">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Fénix</span><span class="cts">regresos 2 de 10</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="5 hazañas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+5</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs12"><div class="cardhead"><h2 class="cond" id="cs12">Llamas del mes</h2><span class="sub">1 de 12 · con 80% ese mes</span></div><ul class="cgrid g6" role="list">
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de enero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Ene</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de febrero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Feb</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de marzo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Mar</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de abril, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Abr</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de mayo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">May</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de junio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jun</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de julio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jul</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de agosto, conseguida">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m24bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="x23o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A6FDB"/><stop offset="1" stop-color="#9AD4FF"/></linearGradient><linearGradient id="x23m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5AA2F0"/><stop offset="1" stop-color="#D0EBFF"/></linearGradient><linearGradient id="x23c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F0F9FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m24cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m24bg)"/><g clip-path="url(#m24cl)"><g transform="translate(18 36) scale(0.64)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#x23o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#x23m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#x23c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><g transform="translate(74 24) rotate(12)"><path d="M0 -12L9 0L0 14L-9 0Z" fill="#FFD24A"/><path d="M0 -12L0 14M-9 0L9 0" stroke="#E06A00" stroke-width="1.2"/><path d="M0 14C-4 20 4 24 0 30C-3 34 2 38 -1 42" stroke="#9AD4FF" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></g></svg></span>
+              <span class="ctn">Ago</span>
+            </button>
+          </li>
+          <li class="ct now">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de septiembre: vas en 76% de 80%">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--track-empty)" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--ambar-text)" stroke-width="7" stroke-linecap="round" stroke-dasharray="200.6 999" transform="rotate(-90 50 50)"/><text x="50" y="58" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="24" fill="var(--text)">76%</text></svg></span>
+              <span class="ctn">Sep</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de octubre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Oct</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de noviembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Nov</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de diciembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Dic</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs13"><div class="cardhead"><h2 class="cond" id="cs13">Raras</h2><span class="sub">1 de 10 · salen de la caja sorpresa</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Cristal, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="r25bg" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#2A2342"/><stop offset="1" stop-color="#0E0C16"/></radialGradient><linearGradient id="r25o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3B7FD9"/><stop offset="1" stop-color="#BFE7FF"/></linearGradient><linearGradient id="r25m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8CCBFF"/><stop offset="1" stop-color="#EAF8FF"/></linearGradient><linearGradient id="r25c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="url(#r25bg)"/><g transform="translate(16 28) scale(0.68)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#r25o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#r25m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#r25c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="#B7AEE8" stroke-width="1.5"/><path d="M78 19Q78.9 23.1 83 24Q78.9 24.9 78 29Q77.1 24.9 73 24Q77.1 23.1 78 19Z" fill="#FFFFFF"/><path d="M22 66.5Q22.63 69.37 25.5 70Q22.63 70.63 22 73.5Q21.37 70.63 18.5 70Q21.37 69.37 22 66.5Z" fill="#E7E2FF"/></svg></span>
+              <span class="ctn">Cristal</span>
+            </button>
+          </li>
+          <li class="ct lock rare">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="9 raras por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#15121F"/><circle cx="50" cy="50" r="45" fill="none" stroke="#6B5FA8" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="#D8D2FF">+9</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <p class="sub" style="margin-top:8px">Una rara segura cada 15 cajas · llevas 6. Nunca se repiten.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>2 · Abriste las 2 de una vez (oscuro)</h2><div class="dark">
+  <div class="phone">
+    <div class="bar"><button class="nb" aria-label="Volver al Perfil" style="border:none;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Tu colección</h1>
+      <p class="sub" style="margin-top:6px">8 de 40 llamas · Tu compañera: Fuego. Toca otra para cambiarla.</p>
+      <section class="next2" aria-labelledby="nx14">
+        <h2 class="cond" id="nx14" style="font-size:17px;margin:0">Lo próximo que puedes ganar</h2>
+        <div class="nrow"><span>Llama de septiembre</span><span class="sub">76% de 80%</span></div><i class="track" aria-hidden="true"><b style="width:95%"></b></i>
+        <div class="nrow" style="margin-top:12px"><span>Nocturna</span><span class="sub">18 de 30 noches</span></div><i class="track" aria-hidden="true"><b style="width:60%"></b></i>
+      </section>
+      <section class="sec" aria-labelledby="cs15"><div class="cardhead"><h2 class="cond" id="cs15">Etapas</h2><span class="sub">5 de 10 · crecen con tu nivel</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Chispa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m27bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e26o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e26m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e26c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m27cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m27bg)"/><g clip-path="url(#m27cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e26o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e26m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e26c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span>
+              <span class="ctn">Chispa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Brasa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m29bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e28k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e28o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e28m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e28c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m29cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m29bg)"/><g clip-path="url(#m29cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e28o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e28m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e28c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e28k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e28k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e28k)"/></g></svg></span>
+              <span class="ctn">Brasa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m31bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e30o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e30m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e30c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m31cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m31bg)"/><g clip-path="url(#m31cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e30o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e30m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e30c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span>
+              <span class="ctn">Llama</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fogata, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m33bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e32w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e32o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e32m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e32c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m33cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m33bg)"/><g clip-path="url(#m33cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e32o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e32m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e32c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e32w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e32w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+              <span class="ctn">Fogata</span>
+            </button>
+          </li>
+          <li class="ct ok comp">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fuego, conseguida, tu compañera">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m35bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e34o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e34m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e34c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m35cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m35bg)"/><g clip-path="url(#m35cl)"><g transform="translate(10 16) scale(0.8)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e34o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e34o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e34o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e34m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e34c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg><span class="compdot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="ctn">Fuego</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="La siguiente etapa, en el nivel 16">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nivel 16</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="4 etapas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+4</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs16"><div class="cardhead"><h2 class="cond" id="cs16">Hazañas</h2><span class="sub">1 de 8 · premios de tus insignias</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Alba, conseguida: 30 mañanas">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m37bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="h36o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0567A"/><stop offset="1" stop-color="#FFB08A"/></linearGradient><linearGradient id="h36m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8F8F"/><stop offset="1" stop-color="#FFD8BF"/></linearGradient><linearGradient id="h36c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF2E8"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m37cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m37bg)"/><g clip-path="url(#m37cl)"><path d="M16 86A34 34 0 0 1 84 86" fill="#FFB08A" opacity=".35"/><g transform="translate(15 26) scale(0.7)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#h36o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#h36m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#h36c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+              <span class="ctn">Alba</span><span class="cts">30 mañanas</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Nocturna, por conseguir: noches 18 de 30">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nocturna</span><span class="cts">noches 18 de 30</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fénix, por conseguir: regresos 2 de 10">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Fénix</span><span class="cts">regresos 2 de 10</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="5 hazañas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+5</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs17"><div class="cardhead"><h2 class="cond" id="cs17">Llamas del mes</h2><span class="sub">1 de 12 · con 80% ese mes</span></div><ul class="cgrid g6" role="list">
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de enero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Ene</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de febrero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Feb</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de marzo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Mar</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de abril, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Abr</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de mayo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">May</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de junio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jun</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de julio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jul</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de agosto, conseguida">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m39bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="x38o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A6FDB"/><stop offset="1" stop-color="#9AD4FF"/></linearGradient><linearGradient id="x38m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5AA2F0"/><stop offset="1" stop-color="#D0EBFF"/></linearGradient><linearGradient id="x38c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F0F9FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m39cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m39bg)"/><g clip-path="url(#m39cl)"><g transform="translate(18 36) scale(0.64)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#x38o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#x38m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#x38c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><g transform="translate(74 24) rotate(12)"><path d="M0 -12L9 0L0 14L-9 0Z" fill="#FFD24A"/><path d="M0 -12L0 14M-9 0L9 0" stroke="#E06A00" stroke-width="1.2"/><path d="M0 14C-4 20 4 24 0 30C-3 34 2 38 -1 42" stroke="#9AD4FF" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></g></svg></span>
+              <span class="ctn">Ago</span>
+            </button>
+          </li>
+          <li class="ct now">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de septiembre: vas en 76% de 80%">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--track-empty)" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--ambar-text)" stroke-width="7" stroke-linecap="round" stroke-dasharray="200.6 999" transform="rotate(-90 50 50)"/><text x="50" y="58" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="24" fill="var(--text)">76%</text></svg></span>
+              <span class="ctn">Sep</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de octubre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Oct</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de noviembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Nov</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de diciembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Dic</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs18"><div class="cardhead"><h2 class="cond" id="cs18">Raras</h2><span class="sub">1 de 10 · salen de la caja sorpresa</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Cristal, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="r40bg" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#2A2342"/><stop offset="1" stop-color="#0E0C16"/></radialGradient><linearGradient id="r40o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3B7FD9"/><stop offset="1" stop-color="#BFE7FF"/></linearGradient><linearGradient id="r40m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8CCBFF"/><stop offset="1" stop-color="#EAF8FF"/></linearGradient><linearGradient id="r40c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="url(#r40bg)"/><g transform="translate(16 28) scale(0.68)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#r40o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#r40m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#r40c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="#B7AEE8" stroke-width="1.5"/><path d="M78 19Q78.9 23.1 83 24Q78.9 24.9 78 29Q77.1 24.9 73 24Q77.1 23.1 78 19Z" fill="#FFFFFF"/><path d="M22 66.5Q22.63 69.37 25.5 70Q22.63 70.63 22 73.5Q21.37 70.63 18.5 70Q21.37 69.37 22 66.5Z" fill="#E7E2FF"/></svg></span>
+              <span class="ctn">Cristal</span>
+            </button>
+          </li>
+          <li class="ct lock rare">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="9 raras por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#15121F"/><circle cx="50" cy="50" r="45" fill="none" stroke="#6B5FA8" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="#D8D2FF">+9</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <p class="sub" style="margin-top:8px">Una rara segura cada 15 cajas · llevas 6. Nunca se repiten.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet celeb" role="dialog" aria-modal="true" aria-labelledby="ceK4" aria-describedby="cdK5">
+      <div class="grab"></div>
+      <div style="display:flex;justify-content:flex-end;padding:8px 12px 0"><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div class="celebody">
+        <div class="hero"><svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cjgK3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset="1" stop-color="#E8941F"/></linearGradient></defs>
+  <rect x="22" y="50" width="56" height="40" rx="6" fill="url(#cjgK3)" stroke="#E8941F" stroke-width="1.5"/>
+  <rect x="14" y="22" width="60" height="14" rx="4" fill="#FFB547" transform="rotate(-14 44 29)"/>
+  <rect x="46" y="50" width="8" height="40" fill="#8E9BFF"/>
+  
+  <path d="M50 31Q51.26 36.74 57 38Q51.26 39.26 50 45Q48.74 39.26 43 38Q48.74 36.74 50 31Z" fill="#FFF3DC"/><path d="M34 26Q34.72 29.28 38 30Q34.72 30.72 34 34Q33.28 30.72 30 30Q33.28 29.28 34 26Z" fill="#FFE08A"/><path d="M68 21Q68.9 25.1 73 26Q68.9 26.9 68 31Q67.1 26.9 63 26Q67.1 25.1 68 21Z" fill="#FFFFFF"/></svg></div>
+        <h2 class="cond celebt" id="ceK4" tabindex="-1">Tus 2 cajas trajeron +60 puntos</h2>
+        <p class="celebs" id="cdK5">Un extra, además de los premios que ya ganaste.</p>
+        <button class="btnp full">Seguir</button>
+        <button class="link quiet center" aria-haspopup="dialog">¿Cómo funcionan las cajas?</button></div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>3 · Perfil: aviso en Tu llama (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:16px" aria-label="Tu identidad">
+        <div class="idrow">
+          <span class="avatar" aria-hidden="true"><span class="cond">J</span></span>
+          <div style="flex:1;min-width:0"><p class="cond pname">Johnatan</p><p class="sub" style="margin-top:2px">Desde el 20 de julio</p></div>
+          <button class="nb" aria-label="Cambiar tu nombre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></button>
+        </div>
+      </section>
+      <section class="card flamecard" aria-labelledby="tl6">
+        <div class="flamehero"><svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m42bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e41w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e41o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e41m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e41c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m42cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m42bg)"/><g clip-path="url(#m42cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e41o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e41m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e41c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e41w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e41w)" stroke-width="7" stroke-linecap="round"/></g></svg></div>
+        <div style="flex:1;min-width:0">
+          <h2 class="sub" id="tl6" style="margin:0;font-weight:500">Tu llama</h2>
+          <p class="cond" style="margin:2px 0 0;font-size:28px;line-height:1.05">Fogata</p>
+          <p class="sub" style="margin-top:2px">Nivel 10</p>
+        </div>
+        <div class="flamefoot">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="sub">Para el nivel 11</span><span class="sub" style="font-variant-numeric:tabular-nums">530 / 550 puntos</span></div>
+          <i class="lvltrack" aria-hidden="true"><b style="width:96%"></b></i>
+          <ol class="stages">
+            <li class="past"><span class="stg-ic"><svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m44bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e43o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e43m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e43c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m44cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m44bg)"/><g clip-path="url(#m44cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e43o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e43m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e43c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span><span class="stg-n">Llama</span><span class="sr">, superada</span></li><li class="now" aria-current="step"><span class="stg-ic"><svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m46bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e45w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e45o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e45m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e45c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m46cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m46bg)"/><g clip-path="url(#m46cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e45o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e45m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e45c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e45w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e45w)" stroke-width="7" stroke-linecap="round"/></g></svg></span><span class="stg-n">Fogata</span><span class="sr">, tu etapa</span></li><li class="next"><span class="stg-ic"><span class="q" aria-hidden="true">?</span></span><span class="stg-n">Nivel 12</span><span class="sr">, por descubrir</span></li><li class="next"><span class="stg-ic"><span class="q" aria-hidden="true">?</span></span><span class="stg-n">Nivel 16</span><span class="sr">, por descubrir</span></li><li class="next"><span class="stg-ic"><span class="q" aria-hidden="true">?</span></span><span class="stg-n">Nivel 20</span><span class="sr">, por descubrir</span></li>
+          </ol>
+          <p class="sub" style="margin-top:10px">Tu llama cambia de nuevo en el nivel 12. Nunca se apaga.</p>
+        </div>
+        <a class="rowlink" href="#" style="grid-column:1/-1"><span style="display:flex;flex-direction:column;align-items:flex-start;gap:1px"><span>Ver tu colección de llamas</span><span class="sub" style="font-size:13px;font-weight:500">2 cajas sorpresa por abrir</span></span><span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>4 · Cómo funcionan las cajas (oscuro)</h2><div class="dark">
+  <div class="phone">
+    <div class="bar"><button class="nb" aria-label="Volver al Perfil" style="border:none;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Tu colección</h1>
+      <p class="sub" style="margin-top:6px">8 de 40 llamas · Tu compañera: Fuego. Toca otra para cambiarla.</p>
+      
+      <section class="boxrow" aria-labelledby="fcK6" style="margin-top:14px">
+        <span aria-hidden="true"><svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cjgK7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset="1" stop-color="#E8941F"/></linearGradient></defs>
+  <rect x="22" y="44" width="56" height="46" rx="6" fill="url(#cjgK7)" stroke="#E8941F" stroke-width="1.5"/>
+  <rect x="18" y="34" width="64" height="14" rx="4" fill="#FFB547" transform=""/>
+  <rect x="46" y="34" width="8" height="56" fill="#8E9BFF"/>
+  <path d="M50 34C42 22 30 24 34 30C36 34 44 34 50 34ZM50 34C58 22 70 24 66 30C64 34 56 34 50 34Z" fill="#8E9BFF"/>
+  </svg></span>
+        <span style="flex:1;min-width:0;text-align:left">
+          <b id="fcK6" style="display:block">1 caja sorpresa</b>
+          <span class="sub" style="display:block;font-size:13px">Ábrela cuando quieras.</span>
+        </span>
+        <button class="btn2" aria-haspopup="dialog" aria-label="Abrir tu caja sorpresa">Abrir</button>
+      </section>
+      <section class="next2" aria-labelledby="nx19">
+        <h2 class="cond" id="nx19" style="font-size:17px;margin:0">Lo próximo que puedes ganar</h2>
+        <div class="nrow"><span>Llama de septiembre</span><span class="sub">76% de 80%</span></div><i class="track" aria-hidden="true"><b style="width:95%"></b></i>
+        <div class="nrow" style="margin-top:12px"><span>Nocturna</span><span class="sub">18 de 30 noches</span></div><i class="track" aria-hidden="true"><b style="width:60%"></b></i>
+      </section>
+      <section class="sec" aria-labelledby="cs20"><div class="cardhead"><h2 class="cond" id="cs20">Etapas</h2><span class="sub">5 de 10 · crecen con tu nivel</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Chispa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m48bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e47o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e47m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e47c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m48cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m48bg)"/><g clip-path="url(#m48cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e47o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e47m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e47c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span>
+              <span class="ctn">Chispa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Brasa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m50bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e49k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e49o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e49m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e49c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m50cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m50bg)"/><g clip-path="url(#m50cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e49o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e49m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e49c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e49k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e49k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e49k)"/></g></svg></span>
+              <span class="ctn">Brasa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m52bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e51o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e51m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e51c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m52cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m52bg)"/><g clip-path="url(#m52cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e51o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e51m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e51c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span>
+              <span class="ctn">Llama</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fogata, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m54bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e53w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e53o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e53m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e53c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m54cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m54bg)"/><g clip-path="url(#m54cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e53o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e53m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e53c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e53w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e53w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+              <span class="ctn">Fogata</span>
+            </button>
+          </li>
+          <li class="ct ok comp">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fuego, conseguida, tu compañera">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m56bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e55o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e55m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e55c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m56cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m56bg)"/><g clip-path="url(#m56cl)"><g transform="translate(10 16) scale(0.8)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e55o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e55o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e55o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e55m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e55c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg><span class="compdot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="ctn">Fuego</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="La siguiente etapa, en el nivel 16">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nivel 16</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="4 etapas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+4</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs21"><div class="cardhead"><h2 class="cond" id="cs21">Hazañas</h2><span class="sub">1 de 8 · premios de tus insignias</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Alba, conseguida: 30 mañanas">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m58bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="h57o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0567A"/><stop offset="1" stop-color="#FFB08A"/></linearGradient><linearGradient id="h57m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8F8F"/><stop offset="1" stop-color="#FFD8BF"/></linearGradient><linearGradient id="h57c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF2E8"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m58cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m58bg)"/><g clip-path="url(#m58cl)"><path d="M16 86A34 34 0 0 1 84 86" fill="#FFB08A" opacity=".35"/><g transform="translate(15 26) scale(0.7)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#h57o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#h57m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#h57c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+              <span class="ctn">Alba</span><span class="cts">30 mañanas</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Nocturna, por conseguir: noches 18 de 30">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nocturna</span><span class="cts">noches 18 de 30</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fénix, por conseguir: regresos 2 de 10">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Fénix</span><span class="cts">regresos 2 de 10</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="5 hazañas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+5</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs22"><div class="cardhead"><h2 class="cond" id="cs22">Llamas del mes</h2><span class="sub">1 de 12 · con 80% ese mes</span></div><ul class="cgrid g6" role="list">
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de enero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Ene</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de febrero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Feb</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de marzo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Mar</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de abril, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Abr</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de mayo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">May</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de junio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jun</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de julio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jul</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de agosto, conseguida">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m60bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="x59o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A6FDB"/><stop offset="1" stop-color="#9AD4FF"/></linearGradient><linearGradient id="x59m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5AA2F0"/><stop offset="1" stop-color="#D0EBFF"/></linearGradient><linearGradient id="x59c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F0F9FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m60cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m60bg)"/><g clip-path="url(#m60cl)"><g transform="translate(18 36) scale(0.64)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#x59o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#x59m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#x59c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><g transform="translate(74 24) rotate(12)"><path d="M0 -12L9 0L0 14L-9 0Z" fill="#FFD24A"/><path d="M0 -12L0 14M-9 0L9 0" stroke="#E06A00" stroke-width="1.2"/><path d="M0 14C-4 20 4 24 0 30C-3 34 2 38 -1 42" stroke="#9AD4FF" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></g></svg></span>
+              <span class="ctn">Ago</span>
+            </button>
+          </li>
+          <li class="ct now">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de septiembre: vas en 76% de 80%">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--track-empty)" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--ambar-text)" stroke-width="7" stroke-linecap="round" stroke-dasharray="200.6 999" transform="rotate(-90 50 50)"/><text x="50" y="58" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="24" fill="var(--text)">76%</text></svg></span>
+              <span class="ctn">Sep</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de octubre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Oct</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de noviembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Nov</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de diciembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Dic</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs23"><div class="cardhead"><h2 class="cond" id="cs23">Raras</h2><span class="sub">1 de 10 · salen de la caja sorpresa</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Cristal, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="r61bg" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#2A2342"/><stop offset="1" stop-color="#0E0C16"/></radialGradient><linearGradient id="r61o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3B7FD9"/><stop offset="1" stop-color="#BFE7FF"/></linearGradient><linearGradient id="r61m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8CCBFF"/><stop offset="1" stop-color="#EAF8FF"/></linearGradient><linearGradient id="r61c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="url(#r61bg)"/><g transform="translate(16 28) scale(0.68)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#r61o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#r61m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#r61c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="#B7AEE8" stroke-width="1.5"/><path d="M78 19Q78.9 23.1 83 24Q78.9 24.9 78 29Q77.1 24.9 73 24Q77.1 23.1 78 19Z" fill="#FFFFFF"/><path d="M22 66.5Q22.63 69.37 25.5 70Q22.63 70.63 22 73.5Q21.37 70.63 18.5 70Q21.37 69.37 22 66.5Z" fill="#E7E2FF"/></svg></span>
+              <span class="ctn">Cristal</span>
+            </button>
+          </li>
+          <li class="ct lock rare">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="9 raras por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#15121F"/><circle cx="50" cy="50" r="45" fill="none" stroke="#6B5FA8" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="#D8D2FF">+9</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <p class="sub" style="margin-top:8px">Una rara segura cada 15 cajas · llevas 6. Nunca se repiten.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="hcK8">
+      <div class="grab"></div>
+      <div class="shead"><div style="flex:1;min-width:0"><h2 class="cond" id="hcK8" tabindex="-1" style="margin:0;font-size:24px">Qué trae la caja sorpresa</h2></div><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div style="padding:6px 20px 22px">
+        <ul class="odds" role="list">
+          <li><span class="oddk">Siempre</span><span>Algo para ti. Y es un extra: el premio del reto o de la insignia ya lo tienes.</span></li>
+          <li><span class="oddk">19 de cada 20</span><span>Entre +10 y +50 puntos.</span></li>
+          <li><span class="oddk">1 de cada 20</span><span>Una llama rara para tu colección. Si en 15 cajas no te sale ninguna, la 15 la trae. Nunca se repiten.</span></li>
+        </ul>
+        <p class="sub" style="margin-top:12px">Las cajas se ganan con retos e insignias. Nunca se compran.</p>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>5 · Cajas en tu colección (claro)</h2><div class="light">
+  <div class="phone">
+    <div class="bar"><button class="nb" aria-label="Volver al Perfil" style="border:none;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Tu colección</h1>
+      <p class="sub" style="margin-top:6px">8 de 40 llamas · Tu compañera: Fuego. Toca otra para cambiarla.</p>
+      
+      <section class="boxrow" aria-labelledby="fcK9" style="margin-top:14px">
+        <span aria-hidden="true"><svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cjgK10" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset="1" stop-color="#E8941F"/></linearGradient></defs>
+  <rect x="22" y="44" width="56" height="46" rx="6" fill="url(#cjgK10)" stroke="#E8941F" stroke-width="1.5"/>
+  <rect x="18" y="34" width="64" height="14" rx="4" fill="#FFB547" transform=""/>
+  <rect x="46" y="34" width="8" height="56" fill="#8E9BFF"/>
+  <path d="M50 34C42 22 30 24 34 30C36 34 44 34 50 34ZM50 34C58 22 70 24 66 30C64 34 56 34 50 34Z" fill="#8E9BFF"/>
+  </svg></span>
+        <span style="flex:1;min-width:0;text-align:left">
+          <b id="fcK9" style="display:block">2 cajas sorpresa</b>
+          <span class="sub" style="display:block;font-size:13px">Ábrelas cuando quieras.</span>
+        </span>
+        <button class="btn2" aria-haspopup="dialog" aria-label="Abrir tus 2 cajas sorpresa">Abrir las 2</button>
+      </section>
+      <section class="next2" aria-labelledby="nx24">
+        <h2 class="cond" id="nx24" style="font-size:17px;margin:0">Lo próximo que puedes ganar</h2>
+        <div class="nrow"><span>Llama de septiembre</span><span class="sub">76% de 80%</span></div><i class="track" aria-hidden="true"><b style="width:95%"></b></i>
+        <div class="nrow" style="margin-top:12px"><span>Nocturna</span><span class="sub">18 de 30 noches</span></div><i class="track" aria-hidden="true"><b style="width:60%"></b></i>
+      </section>
+      <section class="sec" aria-labelledby="cs25"><div class="cardhead"><h2 class="cond" id="cs25">Etapas</h2><span class="sub">5 de 10 · crecen con tu nivel</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Chispa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m63bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e62o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e62m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e62c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m63cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m63bg)"/><g clip-path="url(#m63cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e62o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e62m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e62c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span>
+              <span class="ctn">Chispa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Brasa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m65bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e64k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e64o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e64m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e64c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m65cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m65bg)"/><g clip-path="url(#m65cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e64o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e64m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e64c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e64k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e64k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e64k)"/></g></svg></span>
+              <span class="ctn">Brasa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m67bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e66o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e66m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e66c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m67cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m67bg)"/><g clip-path="url(#m67cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e66o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e66m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e66c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span>
+              <span class="ctn">Llama</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fogata, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m69bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e68w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e68o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e68m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e68c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m69cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m69bg)"/><g clip-path="url(#m69cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e68o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e68m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e68c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e68w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e68w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+              <span class="ctn">Fogata</span>
+            </button>
+          </li>
+          <li class="ct ok comp">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fuego, conseguida, tu compañera">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m71bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e70o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e70m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e70c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m71cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m71bg)"/><g clip-path="url(#m71cl)"><g transform="translate(10 16) scale(0.8)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e70o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e70o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e70o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e70m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e70c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg><span class="compdot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="ctn">Fuego</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="La siguiente etapa, en el nivel 16">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nivel 16</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="4 etapas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+4</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs26"><div class="cardhead"><h2 class="cond" id="cs26">Hazañas</h2><span class="sub">1 de 8 · premios de tus insignias</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Alba, conseguida: 30 mañanas">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m73bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="h72o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0567A"/><stop offset="1" stop-color="#FFB08A"/></linearGradient><linearGradient id="h72m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8F8F"/><stop offset="1" stop-color="#FFD8BF"/></linearGradient><linearGradient id="h72c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF2E8"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m73cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m73bg)"/><g clip-path="url(#m73cl)"><path d="M16 86A34 34 0 0 1 84 86" fill="#FFB08A" opacity=".35"/><g transform="translate(15 26) scale(0.7)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#h72o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#h72m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#h72c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+              <span class="ctn">Alba</span><span class="cts">30 mañanas</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Nocturna, por conseguir: noches 18 de 30">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nocturna</span><span class="cts">noches 18 de 30</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fénix, por conseguir: regresos 2 de 10">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Fénix</span><span class="cts">regresos 2 de 10</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="5 hazañas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+5</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs27"><div class="cardhead"><h2 class="cond" id="cs27">Llamas del mes</h2><span class="sub">1 de 12 · con 80% ese mes</span></div><ul class="cgrid g6" role="list">
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de enero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Ene</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de febrero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Feb</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de marzo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Mar</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de abril, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Abr</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de mayo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">May</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de junio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jun</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de julio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jul</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de agosto, conseguida">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m75bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="x74o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A6FDB"/><stop offset="1" stop-color="#9AD4FF"/></linearGradient><linearGradient id="x74m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5AA2F0"/><stop offset="1" stop-color="#D0EBFF"/></linearGradient><linearGradient id="x74c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F0F9FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m75cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m75bg)"/><g clip-path="url(#m75cl)"><g transform="translate(18 36) scale(0.64)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#x74o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#x74m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#x74c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><g transform="translate(74 24) rotate(12)"><path d="M0 -12L9 0L0 14L-9 0Z" fill="#FFD24A"/><path d="M0 -12L0 14M-9 0L9 0" stroke="#E06A00" stroke-width="1.2"/><path d="M0 14C-4 20 4 24 0 30C-3 34 2 38 -1 42" stroke="#9AD4FF" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></g></svg></span>
+              <span class="ctn">Ago</span>
+            </button>
+          </li>
+          <li class="ct now">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de septiembre: vas en 76% de 80%">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--track-empty)" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--ambar-text)" stroke-width="7" stroke-linecap="round" stroke-dasharray="200.6 999" transform="rotate(-90 50 50)"/><text x="50" y="58" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="24" fill="var(--text)">76%</text></svg></span>
+              <span class="ctn">Sep</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de octubre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Oct</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de noviembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Nov</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de diciembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Dic</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs28"><div class="cardhead"><h2 class="cond" id="cs28">Raras</h2><span class="sub">1 de 10 · salen de la caja sorpresa</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Cristal, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="r76bg" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#2A2342"/><stop offset="1" stop-color="#0E0C16"/></radialGradient><linearGradient id="r76o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3B7FD9"/><stop offset="1" stop-color="#BFE7FF"/></linearGradient><linearGradient id="r76m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8CCBFF"/><stop offset="1" stop-color="#EAF8FF"/></linearGradient><linearGradient id="r76c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="url(#r76bg)"/><g transform="translate(16 28) scale(0.68)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#r76o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#r76m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#r76c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="#B7AEE8" stroke-width="1.5"/><path d="M78 19Q78.9 23.1 83 24Q78.9 24.9 78 29Q77.1 24.9 73 24Q77.1 23.1 78 19Z" fill="#FFFFFF"/><path d="M22 66.5Q22.63 69.37 25.5 70Q22.63 70.63 22 73.5Q21.37 70.63 18.5 70Q21.37 69.37 22 66.5Z" fill="#E7E2FF"/></svg></span>
+              <span class="ctn">Cristal</span>
+            </button>
+          </li>
+          <li class="ct lock rare">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="9 raras por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#15121F"/><circle cx="50" cy="50" r="45" fill="none" stroke="#6B5FA8" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="#D8D2FF">+9</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <p class="sub" style="margin-top:8px">Una rara segura cada 15 cajas · llevas 6. Nunca se repiten.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>6 · Abriste las 2 (claro)</h2><div class="light">
+  <div class="phone">
+    <div class="bar"><button class="nb" aria-label="Volver al Perfil" style="border:none;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div style="margin-top:-0px;padding-bottom:20px">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Tu colección</h1>
+      <p class="sub" style="margin-top:6px">8 de 40 llamas · Tu compañera: Fuego. Toca otra para cambiarla.</p>
+      <section class="next2" aria-labelledby="nx29">
+        <h2 class="cond" id="nx29" style="font-size:17px;margin:0">Lo próximo que puedes ganar</h2>
+        <div class="nrow"><span>Llama de septiembre</span><span class="sub">76% de 80%</span></div><i class="track" aria-hidden="true"><b style="width:95%"></b></i>
+        <div class="nrow" style="margin-top:12px"><span>Nocturna</span><span class="sub">18 de 30 noches</span></div><i class="track" aria-hidden="true"><b style="width:60%"></b></i>
+      </section>
+      <section class="sec" aria-labelledby="cs30"><div class="cardhead"><h2 class="cond" id="cs30">Etapas</h2><span class="sub">5 de 10 · crecen con tu nivel</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Chispa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m78bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e77o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e77m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e77c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m78cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m78bg)"/><g clip-path="url(#m78cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e77o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e77m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e77c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span>
+              <span class="ctn">Chispa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Brasa, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m80bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e79k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e79o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e79m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e79c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m80cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m80bg)"/><g clip-path="url(#m80cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e79o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e79m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e79c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e79k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e79k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e79k)"/></g></svg></span>
+              <span class="ctn">Brasa</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m82bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e81o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e81m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e81c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m82cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m82bg)"/><g clip-path="url(#m82cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e81o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e81m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e81c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span>
+              <span class="ctn">Llama</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fogata, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m84bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e83w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e83o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e83m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e83c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m84cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m84bg)"/><g clip-path="url(#m84cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e83o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e83m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e83c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e83w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e83w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+              <span class="ctn">Fogata</span>
+            </button>
+          </li>
+          <li class="ct ok comp">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fuego, conseguida, tu compañera">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m86bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e85o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e85m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e85c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m86cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m86bg)"/><g clip-path="url(#m86cl)"><g transform="translate(10 16) scale(0.8)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e85o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e85o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e85o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e85m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e85c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg><span class="compdot" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <span class="ctn">Fuego</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="La siguiente etapa, en el nivel 16">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nivel 16</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="4 etapas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+4</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs31"><div class="cardhead"><h2 class="cond" id="cs31">Hazañas</h2><span class="sub">1 de 8 · premios de tus insignias</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Alba, conseguida: 30 mañanas">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m88bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="h87o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E0567A"/><stop offset="1" stop-color="#FFB08A"/></linearGradient><linearGradient id="h87m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8F8F"/><stop offset="1" stop-color="#FFD8BF"/></linearGradient><linearGradient id="h87c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF2E8"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m88cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m88bg)"/><g clip-path="url(#m88cl)"><path d="M16 86A34 34 0 0 1 84 86" fill="#FFB08A" opacity=".35"/><g transform="translate(15 26) scale(0.7)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#h87o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#h87m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#h87c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+              <span class="ctn">Alba</span><span class="cts">30 mañanas</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Nocturna, por conseguir: noches 18 de 30">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Nocturna</span><span class="cts">noches 18 de 30</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Fénix, por conseguir: regresos 2 de 10">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><g transform="translate(22 26) scale(.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="var(--line)"/></g><text x="50" y="66" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="26" fill="var(--text)">?</text></svg></span>
+              <span class="ctn">Fénix</span><span class="cts">regresos 2 de 10</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="5 hazañas más por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="var(--raised)"/><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="var(--text)">+5</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs32"><div class="cardhead"><h2 class="cond" id="cs32">Llamas del mes</h2><span class="sub">1 de 12 · con 80% ese mes</span></div><ul class="cgrid g6" role="list">
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de enero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Ene</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de febrero, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Feb</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de marzo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Mar</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de abril, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Abr</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de mayo, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">May</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de junio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jun</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de julio, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Jul</span>
+            </button>
+          </li>
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de agosto, conseguida">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m90bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="x89o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A6FDB"/><stop offset="1" stop-color="#9AD4FF"/></linearGradient><linearGradient id="x89m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5AA2F0"/><stop offset="1" stop-color="#D0EBFF"/></linearGradient><linearGradient id="x89c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F0F9FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m90cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m90bg)"/><g clip-path="url(#m90cl)"><g transform="translate(18 36) scale(0.64)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#x89o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#x89m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#x89c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><g transform="translate(74 24) rotate(12)"><path d="M0 -12L9 0L0 14L-9 0Z" fill="#FFD24A"/><path d="M0 -12L0 14M-9 0L9 0" stroke="#E06A00" stroke-width="1.2"/><path d="M0 14C-4 20 4 24 0 30C-3 34 2 38 -1 42" stroke="#9AD4FF" stroke-width="1.6" fill="none" stroke-linecap="round"/></g></g></svg></span>
+              <span class="ctn">Ago</span>
+            </button>
+          </li>
+          <li class="ct now">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de septiembre: vas en 76% de 80%">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--track-empty)" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--ambar-text)" stroke-width="7" stroke-linecap="round" stroke-dasharray="200.6 999" transform="rotate(-90 50 50)"/><text x="50" y="58" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="24" fill="var(--text)">76%</text></svg></span>
+              <span class="ctn">Sep</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de octubre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Oct</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de noviembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Nov</span>
+            </button>
+          </li>
+          <li class="ct lock">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Llama de diciembre, por conseguir">
+              <span class="ctart"><svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/></svg></span>
+              <span class="ctn">Dic</span>
+            </button>
+          </li></ul></section>
+      <section class="sec" aria-labelledby="cs33"><div class="cardhead"><h2 class="cond" id="cs33">Raras</h2><span class="sub">1 de 10 · salen de la caja sorpresa</span></div><ul class="cgrid g4" role="list">
+          <li class="ct ok">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="Cristal, conseguida">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="r91bg" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#2A2342"/><stop offset="1" stop-color="#0E0C16"/></radialGradient><linearGradient id="r91o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3B7FD9"/><stop offset="1" stop-color="#BFE7FF"/></linearGradient><linearGradient id="r91m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8CCBFF"/><stop offset="1" stop-color="#EAF8FF"/></linearGradient><linearGradient id="r91c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="url(#r91bg)"/><g transform="translate(16 28) scale(0.68)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#r91o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#r91m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#r91c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="#B7AEE8" stroke-width="1.5"/><path d="M78 19Q78.9 23.1 83 24Q78.9 24.9 78 29Q77.1 24.9 73 24Q77.1 23.1 78 19Z" fill="#FFFFFF"/><path d="M22 66.5Q22.63 69.37 25.5 70Q22.63 70.63 22 73.5Q21.37 70.63 18.5 70Q21.37 69.37 22 66.5Z" fill="#E7E2FF"/></svg></span>
+              <span class="ctn">Cristal</span>
+            </button>
+          </li>
+          <li class="ct lock rare">
+            <button class="ctbtn" aria-haspopup="dialog" aria-label="9 raras por descubrir">
+              <span class="ctart"><svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#15121F"/><circle cx="50" cy="50" r="45" fill="none" stroke="#6B5FA8" stroke-width="1.5" stroke-dasharray="4 4"/><text x="50" y="60" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="30" fill="#D8D2FF">+9</text></svg></span>
+              <span class="ctn">por descubrir</span>
+            </button>
+          </li></ul></section>
+      <p class="sub" style="margin-top:8px">Una rara segura cada 15 cajas · llevas 6. Nunca se repiten.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet celeb" role="dialog" aria-modal="true" aria-labelledby="ceK12" aria-describedby="cdK13">
+      <div class="grab"></div>
+      <div style="display:flex;justify-content:flex-end;padding:8px 12px 0"><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div class="celebody">
+        <div class="hero"><svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cjgK11" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC766"/><stop offset="1" stop-color="#E8941F"/></linearGradient></defs>
+  <rect x="22" y="50" width="56" height="40" rx="6" fill="url(#cjgK11)" stroke="#E8941F" stroke-width="1.5"/>
+  <rect x="14" y="22" width="60" height="14" rx="4" fill="#FFB547" transform="rotate(-14 44 29)"/>
+  <rect x="46" y="50" width="8" height="40" fill="#8E9BFF"/>
+  
+  <path d="M50 31Q51.26 36.74 57 38Q51.26 39.26 50 45Q48.74 39.26 43 38Q48.74 36.74 50 31Z" fill="#FFF3DC"/><path d="M34 26Q34.72 29.28 38 30Q34.72 30.72 34 34Q33.28 30.72 30 30Q33.28 29.28 34 26Z" fill="#FFE08A"/><path d="M68 21Q68.9 25.1 73 26Q68.9 26.9 68 31Q67.1 26.9 63 26Q67.1 25.1 68 21Z" fill="#FFFFFF"/></svg></div>
+        <h2 class="cond celebt" id="ceK12" tabindex="-1">Tus 2 cajas trajeron +60 puntos</h2>
+        <p class="celebs" id="cdK13">Un extra, además de los premios que ya ganaste.</p>
+        <button class="btnp full">Seguir</button>
+        <button class="link quiet center" aria-haspopup="dialog">¿Cómo funcionan las cajas?</button></div>
+    </section>
+  </div></div></div>
+
+</body>
+</html>

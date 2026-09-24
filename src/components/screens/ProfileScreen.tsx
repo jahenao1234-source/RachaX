@@ -26,9 +26,10 @@ import { useTheme } from '../../store/ThemeContext';
 import { BadgeIcon } from '../badges/BadgeIcon';
 import { InsigniaDef } from '../../utils/badgeUtils';
 import { BadgeDetailModal } from '../badges/BadgeDetailModal';
+import { CollectionScreen } from './CollectionScreen';
 import { TEMAS } from '../../types';
 import { getTodayString, ETAPAS } from '../../utils/habitUtils';
-import { Llama } from '../juego/Llama';
+import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
 
 // Componente para la hoja modal del nombre
 const NameModal = ({
@@ -135,8 +136,9 @@ export const ProfileScreen: React.FC = () => {
     etapaLlama,
     premios,
     diasCongelados,
-      insignias
-    } = useHabitStore();
+    insignias,
+    companera
+  } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
 
@@ -156,15 +158,19 @@ export const ProfileScreen: React.FC = () => {
   const [showNameModal, setShowNameModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showAllBadges, setShowAllBadges] = useState(false);
+  const [showAllLlamas, setShowAllLlamas] = useState(false);
   const vecesCumplidas = registros.filter((r) => r.completado).length;
 
   // Escape cierra la hoja que esté abierta
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
+      // Si hay una hoja encima (detalle de una llama o de una insignia), ella se cierra sola y la pantalla de atrás se queda
+      if (document.querySelector('section.sheet[role="dialog"]')) return;
       setShowNameModal(false);
       setShowDeleteConfirm(false);
       setShowAllBadges(false);
+      setShowAllLlamas(false);
       setImportPendingData(null);
     };
     window.addEventListener('keydown', onKey);
@@ -186,7 +192,8 @@ export const ProfileScreen: React.FC = () => {
   const levelProgressPercent = Math.round((progresoNivel.actual / ptosMeta) * 100);
 
   const currentStageIndex = etapaLlama - 1;
-  const lvlName = ETAPAS[currentStageIndex].nombre;
+  const companeraId = companera || `etapa_${etapaLlama}`;
+  const lvlName = nombreLlama(companeraId);
   
   let startIndex = Math.max(0, Math.min(currentStageIndex - 1, ETAPAS.length - 5));
   const stagesToShow = ETAPAS.slice(startIndex, startIndex + 5).map((stg, idx) => {
@@ -274,6 +281,11 @@ export const ProfileScreen: React.FC = () => {
     setImportPendingData(null);
   };
 
+  // Tu colección reemplaza el contenido del Perfil (la barra de navegación sigue visible)
+  if (showAllLlamas) {
+    return <CollectionScreen onClose={() => setShowAllLlamas(false)} />;
+  }
+
   return (
     <div className="space-y-6 pb-24 px-4 pt-4 min-h-screen">
       <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
@@ -334,7 +346,7 @@ export const ProfileScreen: React.FC = () => {
       {/* Tu llama card */}
       <section className="mt-4 flamecard p-3.5 rounded-[18px] bg-surface border border-line" aria-labelledby="tl9">
         <div className="flamehero">
-          <Llama etapa={etapaLlama} size={96} />
+          <LlamaDe id={companeraId} size={96} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 className="sub m-0 font-medium text-[15px]" id="tl9">Tu llama</h2>
@@ -368,6 +380,13 @@ export const ProfileScreen: React.FC = () => {
            {!nextStageLevel && (
              <p className="sub m-0 mt-2.5 text-[13px] text-text-muted">Tu llama nunca se apaga.</p>
            )}
+
+          <button onClick={() => setShowAllLlamas(true)} className="w-full min-h-[48px] flex items-center justify-between border-t border-line text-text text-[15px] font-semibold bg-transparent border-none mt-4 p-0 cursor-pointer pt-3">
+            Ver tu colección de llamas
+            <span className="text-text-muted flex shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </span>
+          </button>
         </div>
       </section>
 

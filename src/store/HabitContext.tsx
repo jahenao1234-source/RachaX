@@ -1,3 +1,4 @@
+import { tasaPeriodo } from '../utils/progresoUtils';
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode, useMemo } from 'react';
 import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea, COLOR_POR_MOMENTO, Premio, RetoSemanal } from '../types';
 import {
@@ -102,6 +103,9 @@ interface HabitContextType {
   cajasPorAbrir: number;
   retoSemanal: RetoSemanal | null;
   insigniasGanadas: Record<string, string>;
+  llamasGanadas: Record<string, string>;
+  companera: string | null;
+  setCompanera: (id: string | null) => void;
   insignias: InsigniaDef[]
 
   // Computed globally
@@ -131,6 +135,8 @@ interface HabitContextType {
     cajasPorAbrir?: number;
     retoSemanal?: RetoSemanal | null;
     insigniasGanadas?: Record<string, string>;
+    llamasGanadas?: Record<string, string>;
+    companera?: string | null;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -288,6 +294,18 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (stored) return JSON.parse(stored);
     } catch {}
     return {};
+  });
+
+  const [llamasGanadas, setLlamasGanadas] = useState<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem('racha_llamas');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return {};
+  });
+
+  const [companera, setCompanera] = useState<string | null>(() => {
+    return localStorage.getItem('racha_companera') || null;
   });
 
   const [retoSemanal, setRetoSemanalState] = useState<RetoSemanal | null>(() => {
@@ -539,6 +557,14 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem(STORAGE_CAJAS_KEY);
     localStorage.removeItem(STORAGE_RETO_SEMANAL_KEY);
     localStorage.removeItem('racha_insignias');
+    localStorage.removeItem('racha_llamas');
+    localStorage.removeItem('racha_companera');
+    setPremios([]);
+    setCajasPorAbrir(0);
+    setRetoSemanalState(null);
+    setInsigniasGanadas({});
+    setLlamasGanadas({});
+    setCompanera(null);
     localStorage.removeItem('racha_nombre');
     localStorage.removeItem('racha_acento');
     localStorage.removeItem('racha_apariencia');
@@ -562,7 +588,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         premios,
         cajasPorAbrir,
         retoSemanal,
-        insigniasGanadas,
+        insigniasGanadas, llamasGanadas, companera,
         nombre: localStorage.getItem('racha_nombre') || '',
         acento: localStorage.getItem('racha_acento') || 'ambar',
         apariencia: localStorage.getItem('racha_apariencia') || 'auto',
@@ -594,6 +620,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     cajasPorAbrir?: number;
     retoSemanal?: RetoSemanal | null;
     insigniasGanadas?: Record<string, string>;
+    llamasGanadas?: Record<string, string>;
+    companera?: string | null;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -634,6 +662,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
       if (typeof datos.cajasPorAbrir === 'number') setCajasPorAbrir(datos.cajasPorAbrir);
       if (datos.insigniasGanadas && typeof datos.insigniasGanadas === 'object') setInsigniasGanadas(datos.insigniasGanadas);
+      if (datos.llamasGanadas && typeof datos.llamasGanadas === 'object') setLlamasGanadas(datos.llamasGanadas);
+      if (datos.companera === null || typeof datos.companera === 'string') setCompanera(datos.companera);
       if (datos.retoSemanal !== undefined) setRetoSemanalState(datos.retoSemanal);
 
       if (typeof datos.nombre === 'string') localStorage.setItem('racha_nombre', datos.nombre);
@@ -714,9 +744,24 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return calcularInsignias(habitos, registros, premios, diasCongelados, insigniasGanadas);
   }, [habitos, registros, premios, diasCongelados, insigniasGanadas]);
 
+  
+  useEffect(() => {
+    try { localStorage.setItem('racha_llamas', JSON.stringify(llamasGanadas)); } catch {}
+  }, [llamasGanadas]);
+
+  useEffect(() => {
+    try {
+      if (companera) localStorage.setItem('racha_companera', companera);
+      else localStorage.removeItem('racha_companera');
+    } catch {}
+  }, [companera]);
+
+  
+
   useEffect(() => {
     try { localStorage.setItem('racha_insignias', JSON.stringify(insigniasGanadas)); } catch {}
   }, [insigniasGanadas]);
+
 
   useEffect(() => {
     let hasNew = false;
@@ -887,6 +932,73 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [registros, habitos, retoSemanal, premios, habitosActivos, diasCongelados]);
 
+  // Descubrir nuevas llamas
+  useEffect(() => {
+    let added = false;
+    const nuevasLlamas = { ...llamasGanadas };
+    const today = getTodayString();
+
+    const add = (id) => {
+      if (!nuevasLlamas[id]) {
+        nuevasLlamas[id] = today;
+        added = true;
+      }
+    };
+
+    // 1. Etapas
+    for (let i = 1; i <= etapaLlama; i++) {
+      add('etapa_' + i);
+    }
+
+    // 2. Hazañas
+    for (const b of insignias) {
+      if (b.desbloqueada && b.premioLlama) {
+        const idStr = b.premioLlama.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        add('hazana_' + idStr);
+      }
+    }
+
+    // 3. Meses
+    const activos = habitos.filter(h => !h.archivado);
+    if (activos.length > 0) {
+      const minDate = activos.reduce((min, h) => h.creadoEn < min ? h.creadoEn : min, today);
+      const mesActual = today.substring(0, 7);
+      
+      let iterDate = minDate;
+      while (iterDate <= today) {
+        const mes = iterDate.substring(0, 7);
+        if (mes !== mesActual) {
+          const year = parseInt(mes.substring(0, 4));
+          const monthIndex = parseInt(mes.substring(5, 7));
+          
+          const primerDia = mes + '-01';
+          const lastDateObj = new Date(year, monthIndex, 0); // last day of month
+          const yy = lastDateObj.getFullYear();
+          const mm = String(lastDateObj.getMonth() + 1).padStart(2, '0');
+          const dd = String(lastDateObj.getDate()).padStart(2, '0');
+          const ultimoDia = yy + '-' + mm + '-' + dd;
+          
+          const tasa = tasaPeriodo(activos, registros, diasCongelados, primerDia, ultimoDia);
+          if (tasa.pct >= 80) {
+            add('mes_' + String(monthIndex).padStart(2, '0'));
+          }
+        }
+        
+        // avanzar mes
+        const m = parseInt(iterDate.substring(5, 7));
+        const y = parseInt(iterDate.substring(0, 4));
+        const nextDateObj = new Date(y, m, 1);
+        const ny = nextDateObj.getFullYear();
+        const nm = String(nextDateObj.getMonth() + 1).padStart(2, '0');
+        iterDate = ny + '-' + nm + '-01';
+      }
+    }
+
+    if (added) {
+      setLlamasGanadas(nuevasLlamas);
+    }
+  }, [etapaLlama, insignias, habitos, registros, diasCongelados, llamasGanadas]);
+
   return (
     <HabitContext.Provider
       value={{
@@ -945,6 +1057,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         retoSemanal,
         insignias,
         insigniasGanadas,
+        llamasGanadas,
+        companera,
+        setCompanera,
         puntosTotales,
         nivelActual,
         progresoNivel,
