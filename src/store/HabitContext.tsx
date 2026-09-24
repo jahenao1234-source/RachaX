@@ -16,6 +16,7 @@ import {
   etapaDeNivel
 } from '../utils/habitUtils';
 import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
+import { InsigniaDef, calcularInsignias } from '../utils/badgeUtils';
 
 const STORAGE_HABITOS_KEY = 'racha_habitos';
 const STORAGE_REGISTROS_KEY = 'racha_registros';
@@ -100,6 +101,8 @@ interface HabitContextType {
   premios: Premio[];
   cajasPorAbrir: number;
   retoSemanal: RetoSemanal | null;
+  insigniasGanadas: Record<string, string>;
+  insignias: InsigniaDef[]
 
   // Computed globally
   puntosTotales: number;
@@ -127,6 +130,7 @@ interface HabitContextType {
     premios?: Premio[];
     cajasPorAbrir?: number;
     retoSemanal?: RetoSemanal | null;
+    insigniasGanadas?: Record<string, string>;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -138,7 +142,7 @@ interface HabitContextType {
   reordenarTareas: (idsOrdenados: string[]) => void;
   congelarDia: (fecha: string) => void;
   descongelarDia: (fecha: string) => void;
-  agregarPremio: (motivo: string, puntos: number, clave?: string, extras?: { comodines?: number; cajas?: number }) => void;
+  agregarPremio: (motivo: string, puntos: number, clave?: string, extras?: { comodines?: number; cajas?: number; tipo?: 'reto_semanal' | 'reto_habito' | 'insignia' | 'caja'; meta?: number }) => void;
   sumarCajas: (n: number) => void;
   sumarComodines: (n: number) => void;
   setRetoSemanal: (reto: RetoSemanal | null) => void;
@@ -276,6 +280,14 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (stored !== null) return parseInt(stored) || 0;
     } catch {}
     return 0;
+  });
+
+  const [insigniasGanadas, setInsigniasGanadas] = useState<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem('racha_insignias');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return {};
   });
 
   const [retoSemanal, setRetoSemanalState] = useState<RetoSemanal | null>(() => {
@@ -526,6 +538,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     premiosEntregados.current.clear();
     localStorage.removeItem(STORAGE_CAJAS_KEY);
     localStorage.removeItem(STORAGE_RETO_SEMANAL_KEY);
+    localStorage.removeItem('racha_insignias');
     localStorage.removeItem('racha_nombre');
     localStorage.removeItem('racha_acento');
     localStorage.removeItem('racha_apariencia');
@@ -549,6 +562,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         premios,
         cajasPorAbrir,
         retoSemanal,
+        insigniasGanadas,
         nombre: localStorage.getItem('racha_nombre') || '',
         acento: localStorage.getItem('racha_acento') || 'ambar',
         apariencia: localStorage.getItem('racha_apariencia') || 'auto',
@@ -579,6 +593,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     premios?: Premio[];
     cajasPorAbrir?: number;
     retoSemanal?: RetoSemanal | null;
+    insigniasGanadas?: Record<string, string>;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -618,6 +633,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         premiosEntregados.current = new Set(datos.premios.map((p) => p.clave).filter((c): c is string => !!c));
       }
       if (typeof datos.cajasPorAbrir === 'number') setCajasPorAbrir(datos.cajasPorAbrir);
+      if (datos.insigniasGanadas && typeof datos.insigniasGanadas === 'object') setInsigniasGanadas(datos.insigniasGanadas);
       if (datos.retoSemanal !== undefined) setRetoSemanalState(datos.retoSemanal);
 
       if (typeof datos.nombre === 'string') localStorage.setItem('racha_nombre', datos.nombre);
@@ -693,6 +709,33 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return calcularRachaGlobal(habitosActivos, registros, hoyStr, diasCongelados);
   };
 
+  // Computed: Insignias
+  const insignias = useMemo(() => {
+    return calcularInsignias(habitos, registros, premios, diasCongelados, insigniasGanadas);
+  }, [habitos, registros, premios, diasCongelados, insigniasGanadas]);
+
+  useEffect(() => {
+    try { localStorage.setItem('racha_insignias', JSON.stringify(insigniasGanadas)); } catch {}
+  }, [insigniasGanadas]);
+
+  useEffect(() => {
+    let hasNew = false;
+    const newGanadas = { ...insigniasGanadas };
+    const today = getTodayString();
+    
+    insignias.forEach(ins => {
+      if (ins.desbloqueada && !insigniasGanadas[ins.id]) {
+        hasNew = true;
+        newGanadas[ins.id] = today;
+        agregarPremio(`Insignia ${ins.nombre}`, 0, `insignia:${ins.id}`, { cajas: 1, tipo: 'insignia' });
+      }
+    });
+
+    if (hasNew) {
+      setInsigniasGanadas(newGanadas);
+    }
+  }, [insignias, insigniasGanadas]);
+
   const reordenarSecciones = (nuevoOrden: MomentoDia[]) => setOrdenMomentos(nuevoOrden);
 
   const reordenarHabitosEnMomento = (momento: MomentoDia, idsOrdenados: string[]) => {
@@ -727,12 +770,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   // dos veces (StrictMode o renders seguidos) no duplique cajas ni comodines.
   const premiosEntregados = useRef<Set<string>>(new Set(premios.map(p => p.clave).filter((c): c is string => !!c)));
 
-  const agregarPremio = (motivo: string, puntos: number, clave?: string, extras?: { comodines?: number; cajas?: number }) => {
+  const agregarPremio = (motivo: string, puntos: number, clave?: string, extras?: { comodines?: number; cajas?: number; tipo?: 'reto_semanal' | 'reto_habito' | 'insignia' | 'caja'; meta?: number }) => {
     if (clave) {
       if (premiosEntregados.current.has(clave)) return;
       premiosEntregados.current.add(clave);
     }
-    setPremios(prev => [...prev, { fecha: getTodayString(), motivo, puntos, clave }]);
+    setPremios(prev => [...prev, { fecha: getTodayString(), motivo, puntos, clave, tipo: extras?.tipo, meta: extras?.meta }]);
     if (extras?.comodines) setComodines(c => Math.min(COMODINES_MAX, c + extras.comodines!));
     if (extras?.cajas) setCajasPorAbrir(c => c + extras.cajas!);
   };
@@ -824,7 +867,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         currentReto = evaluado;
         didUpdate = true;
         if (evaluado.estado === 'cumplido') {
-          agregarPremio('Reto de la semana', 50, `reto-semanal:${evaluado.id}`, { comodines: 1, cajas: 1 });
+          agregarPremio('Reto de la semana', 50, `reto-semanal:${evaluado.id}`, { comodines: 1, cajas: 1, tipo: 'reto_semanal' });
         }
       }
     }
@@ -900,6 +943,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         premios,
         cajasPorAbrir,
         retoSemanal,
+        insignias,
+        insigniasGanadas,
         puntosTotales,
         nivelActual,
         progresoNivel,

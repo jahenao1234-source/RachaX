@@ -1,14 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Sparkles, Trophy, X, Award } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
-import { calcularInsignias, InsigniaDef } from '../../utils/badgeUtils';
-
-const STORAGE_UNLOCKED_BADGES_KEY = 'racha_unlocked_badges';
+import { InsigniaDef } from '../../utils/badgeUtils';
 
 export const BadgeUnlockToast: React.FC = () => {
-  const { habitos, registros, mejorRachaGlobalHabitos, rachaGlobal } = useHabitStore();
+  const { insignias, insigniasGanadas } = useHabitStore();
   const [newlyUnlocked, setNewlyUnlocked] = useState<InsigniaDef | null>(null);
-  const isFirstRun = useRef(true);
+  const previouslyUnlocked = useRef<Set<string>>(new Set(Object.keys(insigniasGanadas)));
 
   useEffect(() => {
     if (!newlyUnlocked) return;
@@ -18,39 +16,21 @@ export const BadgeUnlockToast: React.FC = () => {
 
   useEffect(() => {
     try {
-      if (isFirstRun.current) {
-        isFirstRun.current = false;
-        const maxHabitStreakInit = mejorRachaGlobalHabitos();
-        const globalInit = rachaGlobal();
-        const badgesInit = calcularInsignias(habitos, registros, maxHabitStreakInit, globalInit);
-        localStorage.setItem(STORAGE_UNLOCKED_BADGES_KEY, JSON.stringify(badgesInit.filter((b) => b.desbloqueada).map((b) => b.id)));
-        return;
-      }
-
-      const maxHabitStreak = mejorRachaGlobalHabitos();
-      const currentGlobalStreak = rachaGlobal();
-      const currentBadges = calcularInsignias(habitos, registros, maxHabitStreak, currentGlobalStreak);
-      const unlockedIds = currentBadges.filter((b) => b.desbloqueada).map((b) => b.id);
-
-      const storedRaw = localStorage.getItem(STORAGE_UNLOCKED_BADGES_KEY);
-      const previouslyUnlocked: string[] = storedRaw ? JSON.parse(storedRaw) : [];
-
-      // Find any newly unlocked badge that wasn't in previous list
-      const newBadges = unlockedIds.filter((id) => !previouslyUnlocked.includes(id));
-
-      if (newBadges.length > 0) {
-        const firstNewBadge = currentBadges.find((b) => b.id === newBadges[0]);
-        if (firstNewBadge) {
-          setNewlyUnlocked(firstNewBadge);
+      const currentKeys = Object.keys(insigniasGanadas);
+      for (const key of currentKeys) {
+        if (!previouslyUnlocked.current.has(key)) {
+          // This is a new badge!
+          const badge = insignias.find(b => b.id === key);
+          if (badge) {
+            setNewlyUnlocked(badge);
+          }
         }
       }
-
-      // Update storage with all current unlocked IDs
-      localStorage.setItem(STORAGE_UNLOCKED_BADGES_KEY, JSON.stringify(unlockedIds));
+      previouslyUnlocked.current = new Set(currentKeys);
     } catch (e) {
       console.warn('Error verificando insignias:', e);
     }
-  }, [habitos, registros]);
+  }, [insigniasGanadas, insignias]);
 
   if (!newlyUnlocked) return null;
 
@@ -63,31 +43,26 @@ export const BadgeUnlockToast: React.FC = () => {
         {/* Glow */}
         <div className="absolute -top-10 -left-10 w-28 h-28 bg-ambar/20 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="flex items-center gap-3 relative z-10">
-          <div className="w-11 h-11 rounded-xl bg-ambar/20 border border-ambar/40 text-ambar flex items-center justify-center shrink-0 ">
-            <Trophy size={22} />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-ambar">
-              <Sparkles size={11} />
-              <span>¡Nueva Insignia Desbloqueada!</span>
-            </div>
-            <h4 className="text-sm font-bold font-heading text-text">
-              {newlyUnlocked.nombre}
-            </h4>
-            <p className="text-[11px] text-text-muted line-clamp-1">
-              {newlyUnlocked.descripcion}
-            </p>
-          </div>
+        <div className="relative shrink-0 w-14 h-14 rounded-full bg-ambar/10 flex items-center justify-center text-ambar shadow-[inset_0_0_12px_rgba(245,158,11,0.2)]">
+          <Trophy size={28} strokeWidth={1.5} />
+          <Sparkles className="absolute -top-1 -right-1 text-ambar animate-pulse" size={16} />
+        </div>
+
+        <div className="flex-1 min-w-0 relative">
+          <p className="m-0 text-[13px] font-bold text-ambar tracking-wide uppercase mb-0.5">Nueva insignia</p>
+          <h4 className="m-0 text-[17px] font-bold font-heading text-text truncate">
+            {newlyUnlocked.nombre}
+          </h4>
+          <p className="m-0 mt-0.5 text-[14px] text-text-muted leading-tight truncate">
+            {newlyUnlocked.familia}
+          </p>
         </div>
 
         <button
-          type="button"
           onClick={() => setNewlyUnlocked(null)}
-          aria-label="Cerrar notificación de insignia"
-          className="w-7 h-7 rounded-full bg-line flex items-center justify-center text-text-muted hover:text-text transition-colors relative z-10 shrink-0"
+          className="relative shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-surface-raised text-text-muted"
         >
-          <X size={14} />
+          <X size={16} strokeWidth={2.5} />
         </button>
       </div>
     </div>

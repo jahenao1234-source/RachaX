@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { BadgeIcon } from '../badges/BadgeIcon';
 import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
@@ -20,7 +21,6 @@ import {
   puntosParaNivel,
   ETAPAS
 } from '../../utils/habitUtils';
-import { calcularInsignias } from '../../utils/badgeUtils';
 import { getLunesActual } from '../../utils/retoSemanal';
 
 const SubtareaTreeNode: React.FC<{
@@ -100,6 +100,8 @@ export const TodayScreen: React.FC = () => {
     ordenMomentos,
     comodines,
     diasCongelados,
+      premios,
+      insignias,
     retoSemanal,
     setRetoSemanal,
     navigateToTab,
@@ -272,8 +274,7 @@ export const TodayScreen: React.FC = () => {
     }
   };
 
-  const badgeCalculations = calcularInsignias(habitosActivos, registros, rachaGlobal(), rachaGlobal());
-  const proximasInsignias = badgeCalculations.filter(b => !b.desbloqueada);
+  const proximasInsignias = insignias.filter(b => !b.desbloqueada);
   const proximaInsignia = proximasInsignias.length > 0 ? proximasInsignias[0] : null;
 
   const esDiaRegreso = getDiasDeRegreso(habitosActivos, registros, diasCongelados, hoy).includes(hoy);
@@ -600,7 +601,7 @@ export const TodayScreen: React.FC = () => {
       {/* 8. Progreso insignia */}
       {proximaInsignia && (
         <div className="mt-4 flex items-center gap-3">
-          <Trophy size={22} className="text-ambar-text" strokeWidth={2} />
+          <BadgeIcon iconName={proximaInsignia.icono} size={22} className="text-ambar-text" strokeWidth={2} />
           <div className="flex-1">
             <p className="m-0 flex justify-between text-[13px]"><span className="font-semibold text-text">Insignia {proximaInsignia.nombre}</span><span className="text-text-muted">faltan {proximaInsignia.meta - proximaInsignia.progresoActual}</span></p>
             <div className="mt-1.5 h-1.5 rounded-full bg-track overflow-hidden">

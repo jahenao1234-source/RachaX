@@ -283,7 +283,7 @@ html:not(.dark) .prize li .cond { color:var(--text); }
 .flabel { font-size:13px; font-weight:600; color:var(--text-muted); }
 
 /* Estilos extra de maquetas */
-.sheet { position:fixed; bottom:0; left:0; right:0; margin:0 auto; width:100%; max-width:440px; max-height:85dvh; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; background:var(--surface); border-radius:22px 22px 0 0; border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); z-index:100; box-shadow:0 -8px 24px rgba(0,0,0,0.35); }
+.sheet { position:fixed; bottom:0; left:0; right:0; margin:0 auto; width:100%; max-width:440px; max-height:85dvh; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; background:var(--surface); border-radius:22px 22px 0 0; border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); z-index:100; box-shadow:0 -8px 24px var(--bg); }
 .sheet .grab { width:40px; height:5px; border-radius:9px; background:var(--line-strong); margin:8px auto 0; flex-shrink:0; }
 .sheet .shead { display:flex; align-items:flex-start; gap:12px; padding:12px 20px 10px; border-bottom:1px solid var(--line); }
 .sheet .x { width:44px; height:44px; border-radius:999px; border:none; background:var(--surface-raised); color:var(--text-muted); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; }
@@ -292,7 +292,7 @@ html:not(.dark) .prize li .cond { color:var(--text); }
 .link { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0; border:none; background:transparent; color:var(--text); font-size:15px; font-weight:600; cursor:pointer; }
 .link.quiet { color:var(--text-muted); font-weight:500; }
 .link.center { width:100%; justify-content:center; }
-.scrim { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90; }
+
 .handle { width:36px; height:4px; background:var(--line); border-radius:4px; margin:0 auto 20px; }
 .sr { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .sub { color:var(--text-muted); font-size:14px; line-height:1.45; }
@@ -318,3 +318,29 @@ html:not(.dark) .prize li .cond { color:var(--text); }
 .stg-n { font-size:12px; font-weight:600; color:var(--text-muted); text-align:center; }
 .stages li.now .stg-n { color:var(--text); font-weight:700; }
 .q { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:18px; color:var(--text-muted); }
+
+/* Insignias UI */
+.fam { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.fam:last-child { border-bottom: none; }
+.famhead { display: flex; align-items: center; gap: 10px; }
+.famhead h2 { margin: 0; font-size: 20px; flex: 1; }
+.famic { display: flex; color: var(--ambar-text); }
+.tiers { list-style: none; margin: 12px 0 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.tierbtn { position: relative; min-width: 44px; height: 44px; padding: 0 10px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 4px; }
+.tierbtn .cond { font-size: 17px; white-space: nowrap; }
+.tier.ok .tierbtn { background: var(--ambar); border-color: var(--ambar-text); color: var(--ink); }
+.tier.next .tierbtn { border: 1.5px solid var(--text); color: var(--text); }
+.tier.lock .tierbtn { border-style: dashed; border-color: var(--text-muted); }
+.tflame { display: inline-flex; color: var(--ambar-text); }
+.tier.ok .tflame { color: var(--ink); }
+.famnext { display: flex; justify-content: space-between; margin-top: 12px; }
+.bigbadge { width: 112px; height: 112px; margin: 0 auto; border-radius: 999px; background: var(--ambar); color: var(--ink); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 6px var(--ambar-tint); }
+.bigbadge .cond { font-size: 44px; }
+
+/* Modal sheet UI */
+
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; max-height: 85%; display: flex; flex-direction: column; background: var(--bg); border-radius: 22px 22px 0 0; border-top: 1px solid var(--line); z-index: 50; }
+.grab { width: 40px; height: 5px; border-radius: 9px; background: var(--line-strong); margin: 8px auto 0; flex-shrink: 0; }
+.shead { display: flex; align-items: flex-start; gap: 12px; padding: 12px 20px 10px; border-bottom: 1px solid var(--line); }
+.x { width: 44px; height: 44px; border-radius: 999px; border: none; background: var(--surface-raised); color: var(--text-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+.slist { flex: 1; overflow-y: auto; padding: 0 20px; }

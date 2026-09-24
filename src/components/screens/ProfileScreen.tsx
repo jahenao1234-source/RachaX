@@ -14,16 +14,17 @@ import {
   Palette,
   Award,
   Layers,
-  Sparkles,
   Zap,
   Shield,
   Trophy,
   Crown,
-  Pencil
+  Pencil,
+  ArrowLeft
 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
-import { calcularInsignias, InsigniaDef } from '../../utils/badgeUtils';
+import { BadgeIcon } from '../badges/BadgeIcon';
+import { InsigniaDef } from '../../utils/badgeUtils';
 import { BadgeDetailModal } from '../badges/BadgeDetailModal';
 import { TEMAS } from '../../types';
 import { getTodayString, ETAPAS } from '../../utils/habitUtils';
@@ -131,8 +132,11 @@ export const ProfileScreen: React.FC = () => {
     puntosTotales,
     nivelActual,
     progresoNivel,
-    etapaLlama
-  } = useHabitStore();
+    etapaLlama,
+    premios,
+    diasCongelados,
+      insignias
+    } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
 
@@ -199,8 +203,24 @@ export const ProfileScreen: React.FC = () => {
   const nextStageLevel = currentStageIndex < ETAPAS.length - 1 ? ETAPAS[currentStageIndex + 1].nivel : null;
 
   // Insignias dinámicas
-  const insignias = calcularInsignias(habitos, registros, maxHabitStreak, globalStreak);
+
   const totalDesbloqueadas = insignias.filter((b) => b.desbloqueada).length;
+  
+  const ganadas = [...insignias].filter(b => b.desbloqueada).sort((a, b) => {
+    const timeA = a.fechaDesbloqueo ? new Date(a.fechaDesbloqueo).getTime() : 0;
+    const timeB = b.fechaDesbloqueo ? new Date(b.fechaDesbloqueo).getTime() : 0;
+    if (timeA !== timeB) return timeB - timeA;
+    return b.meta - a.meta;
+  });
+
+  const recentUniqueBadges = [];
+  for (const b of ganadas) {
+    if (!recentUniqueBadges.some(r => r.familia === b.familia)) {
+      recentUniqueBadges.push(b);
+    }
+    if (recentUniqueBadges.length >= 3) break;
+  }
+  const top3Badges = recentUniqueBadges;
   const lockedInsignias = insignias.filter(b => !b.desbloqueada && b.categoria !== 'racha');
   const nextBadge = lockedInsignias.length > 0 ? lockedInsignias.reduce((max, badge) => (badge.progresoActual / badge.meta > max.progresoActual / max.meta ? badge : max), lockedInsignias[0]) : null;
 
@@ -252,21 +272,6 @@ export const ProfileScreen: React.FC = () => {
       showNotification('error', result.error || 'Error al importar datos.');
     }
     setImportPendingData(null);
-  };
-
-  const renderBadgeIcon = (iconName: string) => {
-    const size = 20;
-    switch (iconName) {
-      case 'Sparkles': return <Sparkles size={size} />;
-      case 'Flame': return <Flame size={size} />;
-      case 'Zap': return <Zap size={size} />;
-      case 'Shield': return <Shield size={size} />;
-      case 'Award': return <Award size={size} />;
-      case 'Layers': return <Layers size={size} />;
-      case 'Trophy': return <Trophy size={size} />;
-      case 'Crown': return <Crown size={size} />;
-      default: return <Award size={size} />;
-    }
   };
 
   return (
@@ -374,10 +379,10 @@ export const ProfileScreen: React.FC = () => {
         </div>
         
         <ul className="list-none m-0 p-0 mt-3 grid grid-cols-3 gap-2.5">
-          {insignias.slice(0, 3).map(badge => (
+          {top3Badges.map(badge => (
             <li key={badge.id} className="flex flex-col items-center gap-1.5 p-3 rounded-[14px] bg-surface border border-line cursor-pointer" onClick={() => setSelectedBadge(badge)}>
               <span className={`w-10 h-10 rounded-full flex items-center justify-center ${badge.desbloqueada ? 'bg-[var(--accent-tint)] text-[var(--accent-text)]' : 'bg-surface-raised text-text-muted'}`}>
-                {renderBadgeIcon(badge.icono)}
+                {<BadgeIcon iconName={badge.icono} size={20} />}
               </span>
               <span className={`text-[13px] font-semibold text-center ${badge.desbloqueada ? 'text-text' : 'text-text-muted'}`}>{badge.nombre}</span>
             </li>
@@ -387,7 +392,7 @@ export const ProfileScreen: React.FC = () => {
         {nextBadge && (
           <div className="flex gap-3 items-start mt-3.5 cursor-pointer" onClick={() => setSelectedBadge(nextBadge)}>
             <span className="w-[38px] h-[38px] rounded-[11px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
-              {renderBadgeIcon(nextBadge.icono)}
+              {<BadgeIcon iconName={nextBadge.icono} size={20} />}
             </span>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-baseline gap-2">
@@ -570,40 +575,92 @@ export const ProfileScreen: React.FC = () => {
       )}
 
       {showAllBadges && (
-        <>
-          <div className="fixed inset-0 bg-black/60 z-40 transition-opacity" onClick={() => setShowAllBadges(false)} />
-          <div role="dialog" aria-modal="true" aria-labelledby="todas-insignias-t" className="fixed left-0 right-0 bottom-0 max-h-[85%] flex flex-col bg-bg rounded-t-[22px] border-t border-line shadow-2xl z-50 animate-slideUp">
-            <div className="w-10 h-1.5 rounded-full bg-line-strong mx-auto mt-2 shrink-0" />
-            <div className="flex items-start justify-between p-3 px-5 border-b border-line">
-              <h2 id="todas-insignias-t" className="m-0 text-[22px] font-heading font-bold text-text pt-1">Todas las insignias</h2>
-              <button aria-label="Cerrar" onClick={() => setShowAllBadges(false)} className="w-11 h-11 rounded-full bg-surface-raised text-text-muted flex items-center justify-center shrink-0 border-none cursor-pointer">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-              <div className="space-y-2">
-                {insignias.map(badge => (
-                  <div key={badge.id} className="flex gap-3 items-center p-3 rounded-[14px] bg-surface border border-line">
-                    <span className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${badge.desbloqueada ? 'bg-[var(--accent-tint)] text-[var(--accent-text)]' : 'bg-surface-raised text-text-muted'}`}>
-                      {renderBadgeIcon(badge.icono)}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className={`m-0 text-[15px] font-semibold truncate ${badge.desbloqueada ? 'text-text' : 'text-text-muted'}`}>{badge.nombre}</p>
-                      <p className="m-0 text-[13px] text-text-muted">{badge.requisito}</p>
-                    </div>
-                    <div className="shrink-0 text-right text-[13px] font-semibold">
-                      {badge.desbloqueada ? (
-                        <span className="text-[var(--accent-text)]">Conseguida</span>
-                      ) : (
-                        <span className="text-text-muted">faltan {badge.meta - badge.progresoActual}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="fixed inset-0 bg-bg z-50 flex flex-col animate-slideUp overflow-hidden">
+          <div className="flex items-center gap-2 p-3.5 border-b border-line">
+            <button
+              onClick={() => setShowAllBadges(false)}
+              className="w-11 h-11 rounded-[12px] bg-surface border border-line text-text flex items-center justify-center shrink-0 cursor-pointer"
+              aria-label="Volver al Perfil"
+            >
+              <ArrowLeft size={22} strokeWidth={2.2} />
+            </button>
           </div>
-        </>
+          <div className="flex-1 overflow-y-auto px-5 pb-24 custom-scrollbar">
+            <h1 className="font-heading font-bold text-[44px] leading-none m-0 mt-4 text-text">Insignias</h1>
+            <p className="m-0 mt-1.5 text-[13px] text-text-muted leading-snug">
+              {insignias.filter(b => b.desbloqueada).length} de {insignias.length} · ninguna se pierde · cada una trae una caja sorpresa
+            </p>
+            <p className="flex items-center gap-1.5 mt-2.5 text-[13px] text-text-muted">
+              <span className="tflame" aria-hidden="true">
+                <Flame size={12} strokeWidth={2.4} />
+              </span>
+              trae además una llama para tu colección
+            </p>
+
+            {Array.from(new Set(insignias.map(b => b.familia))).map((familia) => {
+              const familyBadges = insignias.filter(b => b.familia === familia);
+              const unlockedCount = familyBadges.filter(b => b.desbloqueada).length;
+              const nextBadge = familyBadges.find(b => !b.desbloqueada);
+              const iconName = familyBadges[0].icono;
+
+              return (
+                <section key={familia} className="fam" aria-labelledby={`fm-${String(familia).replace(/\s+/g, '')}`}>
+                  <div className="famhead">
+                    <span className="famic" aria-hidden="true">{<BadgeIcon iconName={iconName} size={20} />}</span>
+                    <h2 className="cond" id={`fm-${String(familia).replace(/\s+/g, '')}`}>{familia}</h2>
+                    <span className="sub">{unlockedCount} de {familyBadges.length}</span>
+                  </div>
+                  
+                  <ol className="tiers" role="list">
+                    {familyBadges.map((badge) => {
+                      const isOk = badge.desbloqueada;
+                      const isNext = nextBadge && badge.id === nextBadge.id;
+                      
+                      let tierClass = "tier";
+                      if (isOk) tierClass += " ok";
+                      else if (isNext) tierClass += " next";
+                      else tierClass += " lock";
+
+                      return (
+                        <li key={badge.id} className={tierClass}>
+                          <button 
+                            className="tierbtn cursor-pointer" 
+                            onClick={() => setSelectedBadge(badge)}
+                            aria-haspopup="dialog"
+                            aria-label={`${familia}, ${badge.requisito}, ${isOk ? 'conseguida' : isNext ? 'la siguiente' : 'por conseguir'}${!isOk && badge.premioLlama ? `, premio: la llama ${badge.premioLlama}` : ''}`}
+                          >
+                            <span className="cond">{badge.meta}</span>
+                            {badge.premioLlama && (
+                              <span className="tflame" aria-hidden="true">
+                                <Flame size={12} strokeWidth={2.4} />
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ol>
+
+                  {nextBadge ? (
+                    <>
+                      <div className="famnext">
+                        <span className="sub">Siguiente: {nextBadge.requisito}</span>
+                        <span className="sub font-number">{nextBadge.progresoActual} de {nextBadge.meta}</span>
+                      </div>
+                      <i className="track mt-2 block w-full h-2 rounded-full bg-track-empty overflow-hidden shrink-0" aria-hidden="true">
+                        <b className="block h-full rounded-full bg-ambar-text" style={{ width: `${Math.min(100, (nextBadge.progresoActual / nextBadge.meta) * 100)}%` }}></b>
+                      </i>
+                    </>
+                  ) : (
+                    <div className="mt-3 text-[13px] font-bold text-ambar-text">
+                      ¡Familia completada!
+                    </div>
+                  )}
+                </section>
+              );
+            })}
+          </div>
+        </div>
       )}
     </div>
   );

@@ -231,6 +231,8 @@ export type Premio = {
   motivo: string;
   puntos: number;
   clave?: string;
+  tipo?: 'reto_semanal' | 'reto_habito' | 'insignia' | 'caja';
+  meta?: number;
 };
 
 export type EstadoRetoSemanal = 'propuesto' | 'aceptado' | 'saltado' | 'cumplido' | 'no_salio';

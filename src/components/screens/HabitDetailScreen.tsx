@@ -11,7 +11,7 @@ import {
   parseDateString, calcularConstanciaHabito, contarProgresoReto,
   getFrecuenciaLegible
 } from '../../utils/habitUtils';
-import { calcularInsignias } from '../../utils/badgeUtils';
+
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 
 interface HabitDetailScreenProps {
@@ -40,7 +40,9 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
     diasCongelados,
     openFocusMode,
     rachaGlobal,
-    habitosActivos
+    habitosActivos,
+    premios,
+    insignias
   } = useHabitStore();
 
   const habit = habitos.find((h) => h.id === habitId);
@@ -140,9 +142,9 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
 
   // Insignia
   const proxBadge = useMemo(() => {
-    const calc = calcularInsignias(habitosActivos, registros, rachaGlobal(), rachaGlobal());
+    const calc = insignias;
     return calc.find(b => !b.desbloqueada);
-  }, [habitosActivos, registros, rachaGlobal]);
+  }, [insignias]);
 
   const handleDelete = () => {
     eliminarHabito(habit.id);

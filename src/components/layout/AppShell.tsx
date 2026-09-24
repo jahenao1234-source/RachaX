@@ -51,12 +51,13 @@ export const AppShell: React.FC = () => {
           
           const meta = habito.reto.meta;
           const clave = `reto-habito:${habito.id}:${habito.reto.inicio}`;
+          const normalizedMeta = meta === 4 ? 7 : (meta === 8 ? 30 : (meta === 12 ? 66 : meta));
           if (meta === 7 || meta === 4) {
-            agregarPremio(`Reto de ${meta} ${meta === 4 ? 'semanas' : 'días'} completado`, 100, clave, { cajas: 1 });
+            agregarPremio(`Reto de ${meta} ${meta === 4 ? 'semanas' : 'días'} completado`, 100, clave, { cajas: 1, tipo: 'reto_habito', meta: normalizedMeta });
           } else if (meta === 30 || meta === 8) {
-            agregarPremio(`Reto de ${meta} ${meta === 8 ? 'semanas' : 'días'} completado`, 300, clave, { comodines: 1, cajas: 1 });
+            agregarPremio(`Reto de ${meta} ${meta === 8 ? 'semanas' : 'días'} completado`, 300, clave, { comodines: 1, cajas: 1, tipo: 'reto_habito', meta: normalizedMeta });
           } else if (meta === 66 || meta === 12) {
-            agregarPremio(`Reto de ${meta} ${meta === 12 ? 'semanas' : 'días'} completado`, 1000, clave, { comodines: 1, cajas: 1 });
+            agregarPremio(`Reto de ${meta} ${meta === 12 ? 'semanas' : 'días'} completado`, 1000, clave, { comodines: 1, cajas: 1, tipo: 'reto_habito', meta: normalizedMeta });
           }
           break;
         }
