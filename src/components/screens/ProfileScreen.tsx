@@ -288,7 +288,7 @@ export const ProfileScreen: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 pb-24 px-4 pt-4 min-h-screen">
+    <div className="space-y-6 pb-24 pt-2 min-h-screen">
       <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
       
       {notification && (

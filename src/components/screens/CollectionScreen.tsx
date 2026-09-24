@@ -87,7 +87,7 @@ export const CollectionScreen: React.FC<CollectionScreenProps> = ({ onClose }) =
 
   return (
     <div className="flex flex-col animate-slideUp bg-bg min-h-screen">
-      <div className="flex items-center gap-2 p-3.5 border-b border-line shrink-0">
+      <div className="flex items-center gap-2 py-3.5 border-b border-line shrink-0">
         <button
           onClick={onClose}
           className="w-11 h-11 rounded-[12px] bg-surface border border-line text-text flex items-center justify-center shrink-0 cursor-pointer"
@@ -97,7 +97,7 @@ export const CollectionScreen: React.FC<CollectionScreenProps> = ({ onClose }) =
         </button>
       </div>
 
-      <div className="flex-1 px-5 pb-24 overflow-hidden" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="flex-1 pb-24 overflow-hidden" style={{ display: 'flex', flexDirection: 'column' }}>
         <h1 className="cond" style={{ margin: 0, fontSize: '44px', lineHeight: 1, marginTop: '16px' }}>Tu colección</h1>
         <p className="sub text-text-muted" style={{ marginTop: '6px' }}>
           {totalLlamas} de 40 llamas · Tu compañera: {companeraRealName}. Toca otra para cambiarla.
