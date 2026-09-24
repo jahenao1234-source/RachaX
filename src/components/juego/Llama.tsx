@@ -66,7 +66,19 @@ function renderFlameBase(id: string, pal: string[], s: number, dx = 0, dy = 0, s
   );
 }
 
-function SvgMedal({ id, size, children, ringLevel = 0 }: { id: string, size: number, children: React.ReactNode, ringLevel?: number }) {
+function SvgMedal({ id, size, children, ringLevel = 0, sola = false }: { id: string, size: number, children: React.ReactNode, ringLevel?: number, sola?: boolean }) {
+  if (sola) {
+    return (
+      <svg width={size} height={size} viewBox="14 20 72 72" aria-hidden="true">
+        {/* Sin el fondo del medallón, pero con su recorte: los fondos propios de cada llama (colina, olas…) no se salen */}
+        <clipPath id={`${id}cl`}>
+          <circle cx="50" cy="50" r="46" />
+        </clipPath>
+        <g clipPath={`url(#${id}cl)`}>{children}</g>
+      </svg>
+    );
+  }
+
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
       <defs>
@@ -97,9 +109,10 @@ function SvgMedal({ id, size, children, ringLevel = 0 }: { id: string, size: num
 interface LlamaProps {
   etapa: number;
   size?: number;
+  sola?: boolean;
 }
 
-export const Llama: React.FC<LlamaProps> = ({ etapa, size = 96 }) => {
+export const Llama: React.FC<LlamaProps> = ({ etapa, size = 96, sola = false }) => {
   const baseId = useId().replace(/:/g, '');
   const id = `l_${baseId}`;
 
@@ -242,7 +255,7 @@ export const Llama: React.FC<LlamaProps> = ({ etapa, size = 96 }) => {
 
   const ringLevel = etapa >= 9 ? 2 : etapa >= 5 ? 1 : 0;
   return (
-    <SvgMedal id={id} size={size} ringLevel={ringLevel}>
+    <SvgMedal id={id} size={size} ringLevel={ringLevel} sola={sola}>
       {extraDefs}
       {inner}
     </SvgMedal>
@@ -261,7 +274,7 @@ export const HAZ = [
   ['Tormenta', '12 retos semanales', ['#3A4A6B', '#7FA8FF', '#56709E', '#BFD4FF', '#EAF1FF', '#FFFFFF'], 'tormenta'],
 ];
 
-export const LlamaHazana = ({ id, size = 96 }: { id: string, size?: number }) => {
+export const LlamaHazana = ({ id, size = 96, sola = false }: { id: string, size?: number, sola?: boolean }) => {
   const baseId = useId().replace(/:/g, '');
   const svgId = `h_${baseId}`;
   
@@ -319,7 +332,7 @@ export const LlamaHazana = ({ id, size = 96 }: { id: string, size?: number }) =>
   const body = renderFlameBase(svgId, pal, 0.7, 0, 0, k === 'fenix' || k === 'aurora');
 
   return (
-    <SvgMedal id={svgId} size={size} ringLevel={1}>
+    <SvgMedal id={svgId} size={size} ringLevel={1} sola={sola}>
       {isBehind ? extra : null}
       {body}
       {!isBehind ? extra : null}
@@ -343,7 +356,7 @@ export const MESES_LL = [
   ['Diciembre', 'Velitas', ['#C0392B', '#FFD27A', '#F39C12', '#FFE9B0', '#FFF9E8', '#FFFFFF'], 'diciembre'],
 ];
 
-export const LlamaMes = ({ mes, size = 96 }: { mes: number, size?: number }) => {
+export const LlamaMes = ({ mes, size = 96, sola = false }: { mes: number, size?: number, sola?: boolean }) => {
   const baseId = useId().replace(/:/g, '');
   const svgId = `m_${baseId}`;
   
@@ -354,7 +367,7 @@ export const LlamaMes = ({ mes, size = 96 }: { mes: number, size?: number }) => 
 
   if (k === 'diciembre') {
     return (
-      <SvgMedal id={svgId} size={size}>
+      <SvgMedal id={svgId} size={size} sola={sola}>
         <defs>
           <linearGradient id={`${svgId}v`} x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stopColor="#E8E1D6"/>
@@ -446,7 +459,7 @@ export const LlamaMes = ({ mes, size = 96 }: { mes: number, size?: number }) => 
   const body = renderFlameBase(svgId, pal, 0.64, 0, 4);
   
   return (
-    <SvgMedal id={svgId} size={size}>
+    <SvgMedal id={svgId} size={size} sola={sola}>
       {detras ? sim : null}
       {body}
       {!detras ? sim : null}
@@ -509,10 +522,41 @@ export function nombreLlama(id: string): string {
   return 'Llama';
 }
 
-export const LlamaDe = ({ id, size = 96 }: { id: string, size?: number }) => {
-  if (id.startsWith('etapa_')) return <Llama etapa={parseInt(id.split('_')[1])} size={size} />;
-  if (id.startsWith('hazana_')) return <LlamaHazana id={id.split('_')[1]} size={size} />;
-  if (id.startsWith('mes_')) return <LlamaMes mes={parseInt(id.split('_')[1])} size={size} />;
+export const LlamaDe = ({ id, size = 96, sola = false }: { id: string, size?: number, sola?: boolean }) => {
+  if (id.startsWith('etapa_')) return <Llama etapa={parseInt(id.split('_')[1])} size={size} sola={sola} />;
+  if (id.startsWith('hazana_')) return <LlamaHazana id={id.split('_')[1]} size={size} sola={sola} />;
+  if (id.startsWith('mes_')) return <LlamaMes mes={parseInt(id.split('_')[1])} size={size} sola={sola} />;
   if (id.startsWith('rara_')) return <LlamaRara id={id.split('_')[1]} size={size} />;
   return <Llama etapa={1} size={size} />;
+};
+
+export const CajaArte = ({ size, abierta }: { size: number; abierta?: boolean }) => {
+  const gid = React.useId().replace(/:/g, '');
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
+      <defs>
+        <linearGradient id={`cjg_${gid}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFC766"/>
+          <stop offset="1" stopColor="#E8941F"/>
+        </linearGradient>
+      </defs>
+      {abierta ? (
+        <>
+          <rect x="22" y="50" width="56" height="40" rx="6" fill={`url(#cjg_${gid})`} stroke="#E8941F" strokeWidth="1.5"/>
+          <rect x="14" y="22" width="60" height="14" rx="4" fill="#FFB547" transform="rotate(-14 44 29)"/>
+          <rect x="46" y="50" width="8" height="40" fill="#8E9BFF"/>
+          <path d="M50 31Q51.26 36.74 57 38Q51.26 39.26 50 45Q48.74 39.26 43 38Q48.74 36.74 50 31Z" fill="#FFF3DC"/>
+          <path d="M34 26Q34.72 29.28 38 30Q34.72 30.72 34 34Q33.28 30.72 30 30Q33.28 29.28 34 26Z" fill="#FFE08A"/>
+          <path d="M68 21Q68.9 25.1 73 26Q68.9 26.9 68 31Q67.1 26.9 63 26Q67.1 25.1 68 21Z" fill="#FFFFFF"/>
+        </>
+      ) : (
+        <>
+          <rect x="22" y="44" width="56" height="46" rx="6" fill={`url(#cjg_${gid})`} stroke="#E8941F" strokeWidth="1.5"/>
+          <rect x="18" y="34" width="64" height="14" rx="4" fill="#FFB547"/>
+          <rect x="46" y="34" width="8" height="56" fill="#8E9BFF"/>
+          <path d="M50 34C42 22 30 24 34 30C36 34 44 34 50 34ZM50 34C58 22 70 24 66 30C64 34 56 34 50 34Z" fill="#8E9BFF"/>
+        </>
+      )}
+    </svg>
+  );
 };

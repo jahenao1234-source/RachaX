@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
-import { LlamaDe, SiluetaLlama, MasLlamas, nombreLlama, ETAPAS, HAZ, MESES_LL, etapaDeNivel, LlamaRara, HAZ_INFO } from '../juego/Llama';
+import { LlamaDe, SiluetaLlama, MasLlamas, nombreLlama, ETAPAS, HAZ, MESES_LL, etapaDeNivel, LlamaRara, HAZ_INFO, CajaArte } from '../juego/Llama';
 import { LlamaDetailModal } from '../juego/LlamaDetailModal';
+import { CajaSorpresaSheet } from '../juego/CajaSorpresaSheet';
+import { CajaResultSheet } from '../juego/CajaResultSheet';
+import { CajasResult } from '../../store/HabitContext';
 import { getTodayString } from '../../utils/habitUtils';
 import { tasaPeriodo } from '../../utils/progresoUtils';
 
@@ -11,8 +14,17 @@ interface CollectionScreenProps {
 }
 
 export const CollectionScreen: React.FC<CollectionScreenProps> = ({ onClose }) => {
-  const { llamasGanadas, companera, nivelActual, insignias, habitosActivos, registros, diasCongelados } = useHabitStore();
+  const { llamasGanadas, companera, nivelActual, insignias, habitosActivos, registros, diasCongelados, cajasPorAbrir, abrirCajas, setCompanera, cajasSinRara } = useHabitStore();
   const [selectedLlamaId, setSelectedLlamaId] = useState<string | null>(null);
+
+  const [cajasResult, setCajasResult] = useState<CajasResult | null>(null);
+
+  const handleAbrir = () => {
+    const res = abrirCajas();
+    if (res) {
+      setCajasResult(res);
+    }
+  };
 
   const totalLlamas = Object.keys(llamasGanadas).length;
   const etapaLlamaActual = etapaDeNivel(nivelActual);
@@ -90,6 +102,32 @@ export const CollectionScreen: React.FC<CollectionScreenProps> = ({ onClose }) =
         <p className="sub text-text-muted" style={{ marginTop: '6px' }}>
           {totalLlamas} de 40 llamas · Tu compañera: {companeraRealName}. Toca otra para cambiarla.
         </p>
+
+        
+        {cajasPorAbrir > 0 && (
+          <section className="boxrow" aria-labelledby="cs_cajas" style={{ marginTop: '14px' }}>
+            <span aria-hidden="true">
+              <CajaArte size={40} />
+            </span>
+            <span style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+              <b id="cs_cajas" style={{ display: 'block' }}>
+                {cajasPorAbrir} caja{cajasPorAbrir !== 1 ? 's' : ''} sorpresa
+              </b>
+              <span className="sub" style={{ display: 'block', fontSize: '13px' }}>
+                {cajasPorAbrir !== 1 ? 'Ábrelas cuando quieras.' : 'Ábrela cuando quieras.'}
+              </span>
+            </span>
+            <button
+              className="btn2"
+              style={{ borderColor: 'var(--text-muted)' }}
+              aria-haspopup="dialog"
+              aria-label={cajasPorAbrir !== 1 ? `Abrir tus ${cajasPorAbrir} cajas sorpresa` : 'Abrir tu caja sorpresa'}
+              onClick={handleAbrir}
+            >
+              {cajasPorAbrir !== 1 ? `Abrir las ${cajasPorAbrir}` : 'Abrir'}
+            </button>
+          </section>
+        )}
 
         <section className="next2" aria-labelledby="nx_lo_proximo">
           <h2 className="cond" id="nx_lo_proximo" style={{ fontSize: '17px', margin: 0 }}>Lo próximo que puedes ganar</h2>
@@ -297,13 +335,20 @@ export const CollectionScreen: React.FC<CollectionScreenProps> = ({ onClose }) =
               </button>
             </li>
           </ul>
-          <p className="sub text-text-muted mt-3" style={{ fontSize: '13px' }}>Una rara segura cada 15 cajas. Nunca se repiten.</p>
+          {numRaras < 10 && (
+            <p className="sub text-text-muted mt-3" style={{ fontSize: '13px' }}>
+              {cajasSinRara > 0 ? `Una rara segura cada 15 cajas · llevas ${cajasSinRara}. Nunca se repiten.` : 'Una rara segura cada 15 cajas. Nunca se repiten.'}
+            </p>
+          )}
         </section>
 
       </div>
 
       {selectedLlamaId && (
         <LlamaDetailModal id={selectedLlamaId} onClose={() => setSelectedLlamaId(null)} />
+      )}
+      {cajasResult && (
+        <CajaResultSheet resultado={cajasResult} onClose={() => setCajasResult(null)} />
       )}
     </div>
   );

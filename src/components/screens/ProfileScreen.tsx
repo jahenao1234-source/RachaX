@@ -137,7 +137,8 @@ export const ProfileScreen: React.FC = () => {
     premios,
     diasCongelados,
     insignias,
-    companera
+    companera,
+    cajasPorAbrir
   } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
@@ -382,7 +383,14 @@ export const ProfileScreen: React.FC = () => {
            )}
 
           <button onClick={() => setShowAllLlamas(true)} className="w-full min-h-[48px] flex items-center justify-between border-t border-line text-text text-[15px] font-semibold bg-transparent border-none mt-4 p-0 cursor-pointer pt-3">
-            Ver tu colección de llamas
+            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1px' }}>
+              <span>Ver tu colección de llamas</span>
+              {cajasPorAbrir > 0 && (
+                <span className="sub" style={{ fontSize: '13px', fontWeight: 500 }}>
+                  {cajasPorAbrir} caja{cajasPorAbrir !== 1 ? 's' : ''} sorpresa por abrir
+                </span>
+              )}
+            </span>
             <span className="text-text-muted flex shrink-0">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </span>

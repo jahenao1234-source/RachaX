@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { BadgeIcon } from '../badges/BadgeIcon';
 import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
+import { useTheme } from '../../store/ThemeContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
 import { RetoSemanalSheet } from '../juego/RetoSemanalSheet';
@@ -153,6 +154,19 @@ export const TodayScreen: React.FC = () => {
   // Nombre Llama
   const companeraId = companera || `etapa_${etapaLlama}`;
   const lvlName = nombreLlama(companeraId);
+  const companeraRealName = lvlName;
+
+  // Saludo según la hora, con el primer nombre. Se recalcula al volver a la app (la PWA se queda abierta).
+  const { nombre } = useTheme();
+  const [horaSaludo, setHoraSaludo] = useState(() => new Date().getHours());
+  React.useEffect(() => {
+    const onVisible = () => { if (document.visibilityState === 'visible') setHoraSaludo(new Date().getHours()); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
+  const saludoBase = horaSaludo >= 5 && horaSaludo < 12 ? 'Buenos días' : horaSaludo >= 12 && horaSaludo < 19 ? 'Buenas tardes' : 'Buenas noches';
+  const primerNombre = (nombre || '').trim().split(/\s+/)[0];
+  const saludo = primerNombre ? `${saludoBase}, ${primerNombre}` : saludoBase;
 
   // Últimos 7 días y Constancia del Mes
   const ultimos7Dias = useMemo(() => {
@@ -297,26 +311,26 @@ export const TodayScreen: React.FC = () => {
 
   return (
     <div id="screen-today" className="pb-28 animate-fadeIn text-text font-body pt-2">
-      <a className="lvlstrip" href="#" onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }} aria-label={`Nivel ${nivelActual}, ${lvlName}: ${progresoNivel.actual} de ${ptosMeta} puntos para el nivel ${nivelActual+1}. Ver tu llama`}>
-        <span className="lvlflame">
-          <LlamaDe id={companeraId} size={30} />
-        </span>
-        <span className="cond lvlname">Nivel {nivelActual} · {lvlName}</span>
+      <a className="lvlstrip" href="#" onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }} aria-label={`Nivel ${nivelActual}: ${progresoNivel.actual} de ${ptosMeta} puntos para el nivel ${nivelActual+1}. Ver tu llama`}>
+        <span className="cond lvlname" style={{ fontSize: '17px' }}>Nivel {nivelActual}</span>
         <i className="lvltrack2" aria-hidden="true"><b style={{ width: `${progresoNivelPercent}%` }}></b></i>
-        <span className="lvlnums">{progresoNivel.actual} / {ptosMeta}</span>
+        <span className="sub lvlnums">{progresoNivel.actual} / {ptosMeta}</span>
       </a>
 
-      {/* 3. Fecha en display y comodines */}
-      <section className="pt-3.5 flex items-start justify-between">
-        <div>
-          <h1 className="m-0 font-heading font-bold text-[44px] leading-none tracking-tight">{displayDate}</h1>
-          <p className="mt-1.5 text-[15px] text-text-muted">Misiones de hoy: {completedCount} de {totalToday}</p>
+      <div className="cabtop">
+        <p className="saludo">{saludo}</p>
+        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-line text-text text-[13px] font-semibold shrink-0 whitespace-nowrap"><ShieldCheck size={14} className="text-[var(--lila)]" />{comodines === 1 ? '1 comodín' : `${comodines ?? 0} comodines`}</span>
+      </div>
+
+      <div className="cabcomp">
+        <a className="cabart" href="#" aria-label={`Tu llama: ${companeraRealName}. Ver tu llama`} onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }}>
+          <LlamaDe id={companeraId} size={60} sola />
+        </a>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 className="cond" style={{ margin: 0, fontSize: '44px', lineHeight: 1 }}>{displayDate}</h1>
+          <p className="sub text-text-muted" style={{ marginTop: '6px', fontSize: '15px' }}>Misiones de hoy: {completedCount} de {totalToday}</p>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-line text-text text-[13px] font-semibold mt-2">
-          <ShieldCheck size={14} className="text-[var(--lila)]" />
-          {comodines === 1 ? '1 comodín' : `${comodines ?? 0} comodines`}
-        </div>
-      </section>
+      </div>
 
       {/* 4. Últimos 7 días */}
       <section aria-label="Últimos 7 días" className="mt-3.5 flex flex-col gap-2">
@@ -552,12 +566,19 @@ export const TodayScreen: React.FC = () => {
                               </p>
                             ) : null}
                             
-                            {habito.metaDiaria && !isHecho && !isNext && (
-                              <div className="mt-1.5 flex gap-[3px]" role="img" aria-label={`${valorDe(habito.id)} de ${habito.metaDiaria}`}>
-                                 {Array.from({length: habito.metaDiaria}).map((_, i) => (
-                                    <span key={i} className={`w-4 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'bg-track-empty'}`}></span>
-                                 ))}
-                              </div>
+                            {/* Conteo de hoy: también en el hábito que "Sigue". El texto "X de N" ya lo dice. */}
+                            {habito.metaDiaria && !isHecho && (
+                              habito.metaDiaria > 12 ? (
+                                <div className="mt-1.5 h-1.5 max-w-[130px] rounded-full overflow-hidden shadow-[inset_0_0_0_1px_var(--text-muted)]" aria-hidden="true">
+                                  <div className="h-full rounded-full bg-text" style={{ width: `${Math.min(100, (valorDe(habito.id) / habito.metaDiaria) * 100)}%` }} />
+                                </div>
+                              ) : (
+                                <div className="mt-1.5 flex gap-[3px] max-w-[130px]" aria-hidden="true">
+                                  {Array.from({length: habito.metaDiaria}).map((_, i) => (
+                                    <span key={i} className={`flex-1 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'shadow-[inset_0_0_0_1px_var(--text-muted)]'}`}></span>
+                                  ))}
+                                </div>
+                              )
                             )}
                           </div>
 
@@ -579,7 +600,7 @@ export const TodayScreen: React.FC = () => {
                         </div>
 
                         {habito.reto && (
-                          <div className="flex items-center gap-2 mt-0.5" role="progressbar" aria-valuenow={progressReto} aria-valuemax={habito.reto.meta} aria-label={`Reto de ${habito.nombre}`}>
+                          <div className="flex items-center gap-2 mt-0.5" role="progressbar" aria-valuenow={progressReto} aria-valuemin={0} aria-valuemax={habito.reto.meta} aria-valuetext={`${progressReto} de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}`} aria-label={`Reto de ${habito.nombre}`}>
                             <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
                               <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((progressReto / habito.reto.meta) * 100))}%` }} />
                             </div>

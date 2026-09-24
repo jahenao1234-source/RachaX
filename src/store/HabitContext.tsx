@@ -32,6 +32,10 @@ const STORAGE_PREMIOS_KEY = 'racha_premios';
 const STORAGE_CAJAS_KEY = 'racha_cajas';
 const STORAGE_RETO_SEMANAL_KEY = 'racha_reto_semanal';
 const COMODINES_MAX = 3;
+// Las 10 llamas raras (imágenes en public/llamas/raras/<id>.jpg)
+const RARAS_IDS = ['cristal', 'galaxia', 'obsidiana', 'arcoiris', 'neon', 'magma', 'perla', 'rubi', 'sakura', 'espiritu'];
+
+export type CajasResult = { cajas: number; puntos: number; raras: string[] };
 
 interface HabitContextType {
   // Onboarding
@@ -101,6 +105,8 @@ interface HabitContextType {
   diasCongelados: string[];
   premios: Premio[];
   cajasPorAbrir: number;
+  cajasSinRara: number;
+  abrirCajas: () => CajasResult | null;
   retoSemanal: RetoSemanal | null;
   insigniasGanadas: Record<string, string>;
   llamasGanadas: Record<string, string>;
@@ -133,6 +139,8 @@ interface HabitContextType {
     ordenMomentos?: MomentoDia[];
     premios?: Premio[];
     cajasPorAbrir?: number;
+    cajasSinRara?: number;
+    cajasAbiertasTotales?: number;
     retoSemanal?: RetoSemanal | null;
     insigniasGanadas?: Record<string, string>;
     llamasGanadas?: Record<string, string>;
@@ -279,6 +287,92 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch {}
     return [];
   });
+
+  const [cajasSinRara, setCajasSinRara] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem('racha_cajas_sin_rara');
+      if (stored !== null) return parseInt(stored) || 0;
+    } catch {}
+    return 0;
+  });
+
+  const [cajasAbiertasTotales, setCajasAbiertasTotales] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem('racha_cajas_abiertas');
+      if (stored !== null) return parseInt(stored) || 0;
+    } catch {}
+    return 0;
+  });
+
+  const isOpeningCajas = useRef(false);
+
+  useEffect(() => {
+    try { localStorage.setItem('racha_cajas_sin_rara', String(cajasSinRara)); } catch {}
+  }, [cajasSinRara]);
+
+  useEffect(() => {
+    try { localStorage.setItem('racha_cajas_abiertas', String(cajasAbiertasTotales)); } catch {}
+  }, [cajasAbiertasTotales]);
+
+  const abrirCajas = (): CajasResult | null => {
+    if (isOpeningCajas.current || cajasPorAbrir <= 0) return null;
+    isOpeningCajas.current = true;
+
+    const nCajas = cajasPorAbrir;
+    let newCajasSinRara = cajasSinRara;
+    let totalPuntos = 0;
+    const rarasDesbloqueadas: string[] = [];
+    const rarasGanadasSet = new Set(Object.keys(llamasGanadas).filter(k => k.startsWith('rara_')));
+    const TOTAL_RARAS = 10;
+    let addedRaras = 0;
+
+    for (let i = 0; i < nCajas; i++) {
+      const currentRarasCount = rarasGanadasSet.size + addedRaras;
+      const canDropRara = currentRarasCount < TOTAL_RARAS;
+
+      if (canDropRara && (Math.random() < 1/20 || newCajasSinRara + 1 >= 15)) {
+        // Drop a rara
+        const missingRaras = RARAS_IDS.map(k => `rara_${k}`).filter(id => !rarasGanadasSet.has(id) && !rarasDesbloqueadas.includes(id));
+        if (missingRaras.length > 0) {
+          const randomRara = missingRaras[Math.floor(Math.random() * missingRaras.length)];
+          rarasDesbloqueadas.push(randomRara);
+          addedRaras++;
+          newCajasSinRara = 0;
+        } else {
+          totalPuntos += [10, 20, 30, 40, 50][Math.floor(Math.random() * 5)];
+          newCajasSinRara++;
+        }
+      } else {
+        totalPuntos += [10, 20, 30, 40, 50][Math.floor(Math.random() * 5)];
+        newCajasSinRara++;
+      }
+    }
+
+    if (totalPuntos > 0) {
+      const key = `caja:${cajasAbiertasTotales + 1}`;
+      setPremios(prev => [...prev, { fecha: getTodayString(), motivo: 'Caja sorpresa', puntos: totalPuntos, clave: key, tipo: 'caja' }]);
+    }
+    
+    if (rarasDesbloqueadas.length > 0) {
+      setLlamasGanadas(prev => {
+        const next = { ...prev };
+        rarasDesbloqueadas.forEach(id => {
+          next[id] = getTodayString();
+        });
+        return next;
+      });
+    }
+
+    setCajasSinRara(newCajasSinRara);
+    setCajasAbiertasTotales(prev => prev + nCajas);
+    setCajasPorAbrir(0);
+
+    setTimeout(() => {
+      isOpeningCajas.current = false;
+    }, 100);
+
+    return { cajas: nCajas, puntos: totalPuntos, raras: rarasDesbloqueadas };
+  };
 
   const [cajasPorAbrir, setCajasPorAbrir] = useState<number>(() => {
     try {
@@ -559,6 +653,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem('racha_insignias');
     localStorage.removeItem('racha_llamas');
     localStorage.removeItem('racha_companera');
+    localStorage.removeItem('racha_cajas_sin_rara');
+    localStorage.removeItem('racha_cajas_abiertas');
+    setCajasSinRara(0);
+    setCajasAbiertasTotales(0);
     setPremios([]);
     setCajasPorAbrir(0);
     setRetoSemanalState(null);
@@ -588,7 +686,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         premios,
         cajasPorAbrir,
         retoSemanal,
-        insigniasGanadas, llamasGanadas, companera,
+        insigniasGanadas, llamasGanadas, companera, cajasSinRara, cajasAbiertasTotales,
         nombre: localStorage.getItem('racha_nombre') || '',
         acento: localStorage.getItem('racha_acento') || 'ambar',
         apariencia: localStorage.getItem('racha_apariencia') || 'auto',
@@ -622,6 +720,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     insigniasGanadas?: Record<string, string>;
     llamasGanadas?: Record<string, string>;
     companera?: string | null;
+    cajasSinRara?: number;
+    cajasAbiertasTotales?: number;
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -664,6 +764,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (datos.insigniasGanadas && typeof datos.insigniasGanadas === 'object') setInsigniasGanadas(datos.insigniasGanadas);
       if (datos.llamasGanadas && typeof datos.llamasGanadas === 'object') setLlamasGanadas(datos.llamasGanadas);
       if (datos.companera === null || typeof datos.companera === 'string') setCompanera(datos.companera);
+      if (typeof datos.cajasSinRara === 'number') setCajasSinRara(datos.cajasSinRara);
+      if (typeof datos.cajasAbiertasTotales === 'number') setCajasAbiertasTotales(datos.cajasAbiertasTotales);
       if (datos.retoSemanal !== undefined) setRetoSemanalState(datos.retoSemanal);
 
       if (typeof datos.nombre === 'string') localStorage.setItem('racha_nombre', datos.nombre);
@@ -1060,6 +1162,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         llamasGanadas,
         companera,
         setCompanera,
+        abrirCajas,
+        cajasSinRara,
         puntosTotales,
         nivelActual,
         progresoNivel,

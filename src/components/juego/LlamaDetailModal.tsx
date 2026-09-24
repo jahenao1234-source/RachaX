@@ -17,7 +17,7 @@ const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', '
 const fechaLarga = (f: string) => `${parseInt(f.slice(8, 10))} de ${MESES[parseInt(f.slice(5, 7)) - 1]}`;
 
 export const LlamaDetailModal: React.FC<LlamaDetailModalProps> = ({ id, onClose }) => {
-  const { llamasGanadas, companera, setCompanera, nivelActual, habitosActivos, registros, diasCongelados, insignias } = useHabitStore();
+  const { llamasGanadas, companera, setCompanera, nivelActual, habitosActivos, registros, diasCongelados, insignias, cajasSinRara } = useHabitStore();
   const tituloId = useId();
 
   useEffect(() => {
@@ -87,12 +87,17 @@ export const LlamaDetailModal: React.FC<LlamaDetailModalProps> = ({ id, onClose 
   } else if (id.startsWith('rara_')) {
     linea = 'Llama rara';
     texto = 'Salió de una caja sorpresa. Es tuya para siempre.';
+    const numRaras = Object.keys(llamasGanadas).filter(k => k.startsWith('rara_')).length;
+    if (numRaras < 10) {
+      progreso = { label: 'Llamas raras', a: numRaras, b: 10, valor: `${numRaras} de 10` };
+    }
   } else if (id === 'raras') {
     const tengo = Object.keys(llamasGanadas).filter(k => k.startsWith('rara_')).length;
     titulo = 'Llamas raras';
     linea = `${tengo} de 10 · nunca se repiten`;
     texto = 'Salen de la caja sorpresa: 1 de cada 20 cajas, y una segura cada 15 cajas. Ganas cajas con retos e insignias; nunca se compran.';
     arte = <MasLlamas n={10 - tengo} size={120} rara />;
+    if (tengo < 10) progreso = { label: 'Para tu próxima rara segura', a: cajasSinRara, b: 15 };
   }
 
   const handleElegir = () => {
@@ -114,8 +119,11 @@ export const LlamaDetailModal: React.FC<LlamaDetailModalProps> = ({ id, onClose 
 
         <div className="px-5 pb-6 text-center">
           <div className="flex justify-center">{arte}</div>
-          <h2 className="cond m-0 mt-3 text-[28px] leading-[1.05] text-text" id={tituloId}>{titulo}</h2>
-          <p className="sub m-0 mt-1.5">{linea}</p>
+          {id.startsWith('rara_') && (
+            <p className="rarelbl text-lila-text font-bold text-[13px] uppercase tracking-wider mb-2 mt-4">Llama rara</p>
+          )}
+          <h2 className={`cond m-0 ${id.startsWith('rara_') ? '' : 'mt-3'} text-[28px] leading-[1.05] text-text`} id={tituloId}>{titulo}</h2>
+          {(!id.startsWith('rara_') || id === 'raras') && <p className="sub m-0 mt-1.5">{linea}</p>}
           <p className="m-0 mt-3 text-[15px] leading-[1.45] text-text">{texto}</p>
 
           {progreso && (
