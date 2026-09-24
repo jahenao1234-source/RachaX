@@ -146,7 +146,7 @@ export const TodayScreen: React.FC = () => {
   const totalToday = habitosDeHoy.length;
 
   // Puntos y Nivel
-  const ptosMeta = progresoNivel.actual + progresoNivel.meta;
+  const ptosMeta = progresoNivel.meta; // puntos que tiene el nivel actual (de puntosParaNivel(n) a puntosParaNivel(n+1))
   const progresoNivelPercent = Math.min(100, Math.max(0, (progresoNivel.actual / ptosMeta) * 100));
 
   // Nombre Llama

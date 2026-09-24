@@ -182,7 +182,7 @@ export const ProfileScreen: React.FC = () => {
   const isRecent = registros.length === 0;
 
   // Nivel del perfil
-  const ptosMeta = progresoNivel.actual + progresoNivel.meta;
+  const ptosMeta = progresoNivel.meta; // puntos que tiene el nivel actual (de puntosParaNivel(n) a puntosParaNivel(n+1))
   const levelProgressPercent = Math.round((progresoNivel.actual / ptosMeta) * 100);
 
   const currentStageIndex = etapaLlama - 1;
