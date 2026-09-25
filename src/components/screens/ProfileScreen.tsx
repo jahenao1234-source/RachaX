@@ -21,7 +21,9 @@ import {
   Crown,
   Pencil,
   ArrowLeft,
-  LogOut
+  LogOut,
+  Cloud,
+  CloudCheck
 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
@@ -297,6 +299,52 @@ export const ProfileScreen: React.FC = () => {
   const globalStreak = rachaGlobal();
   const maxHabitStreak = mejorRachaGlobalHabitos();
 
+  const [syncPendientes, setSyncPendientes] = useState(() => { try { const p = localStorage.getItem('racha_sync_pendientes'); return p ? parseInt(p) : 0; } catch { return 0; }});
+  const [syncTime, setSyncTime] = useState(() => { try { return localStorage.getItem('racha_sync_time'); } catch { return ''; }});
+  const [syncUploading, setSyncUploading] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleSync = (e: Event) => {
+      try {
+        const p = localStorage.getItem('racha_sync_pendientes');
+        setSyncPendientes(p ? parseInt(p) : 0);
+        setSyncTime(localStorage.getItem('racha_sync_time') || '');
+        setSyncUploading(!!(e as CustomEvent).detail?.subiendo);
+      } catch {}
+    };
+    const handleUploading = () => setSyncUploading(true);
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('racha_sync_changed', handleSync);
+    window.addEventListener('racha_sync_uploading', handleUploading);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('racha_sync_changed', handleSync);
+      window.removeEventListener('racha_sync_uploading', handleUploading);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const i = setInterval(() => setTick(t => t + 1), 60000);
+    return () => clearInterval(i);
+  }, []);
+
+  const getTimeString = () => {
+    if (!syncTime) return '';
+    const diff = Math.floor((new Date().getTime() - new Date(syncTime).getTime()) / 1000);
+    if (diff < 60) return 'Hace un momento';
+    const m = Math.floor(diff / 60);
+    if (m < 60) return `Hace ${m} min`;
+    const h = Math.floor(m / 60);
+    return `Hace ${h} h`;
+  };
+
   // Fecha de inicio
   const primerRegistro = registros.length > 0 ? registros.reduce((min, r) => r.fecha < min.fecha ? r : min, registros[0]) : null;
   const startDateStr = primerRegistro ? primerRegistro.fecha : new Date().toISOString().split('T')[0];
@@ -477,7 +525,29 @@ export const ProfileScreen: React.FC = () => {
                 <span className="block text-[15px] font-bold text-text mt-px truncate">{correo}</span>
               </span>
             </div>
-            <button onClick={salir} className="flex items-center gap-3 p-2 border-none bg-transparent text-left cursor-pointer w-full group">
+            
+            <div className="flex items-center gap-3 p-2 border-b border-line">
+              <span className={`w-9 h-9 rounded-[10px] ${syncPendientes === 0 ? 'bg-comodin-bg text-comodin-text' : 'bg-surface-raised text-text-muted'} flex items-center justify-center shrink-0`}>
+                {syncPendientes === 0 ? <CloudCheck size={17} strokeWidth={2} /> : <Cloud size={17} strokeWidth={2} />}
+              </span>
+              <span className="flex-1 min-w-0">
+                {syncPendientes === 0 ? (
+                  <>
+                    <span className="block text-[15px] font-bold text-text truncate">Guardada en tu cuenta</span>
+                    {getTimeString() && <span className="block text-[13px] text-text-muted mt-px truncate">{getTimeString()}</span>}
+                  </>
+                ) : isOnline ? (
+                  <span className="block text-[15px] font-bold text-text truncate">Guardando…</span>
+                ) : (
+                  <>
+                    <span className="block text-[15px] font-bold text-text truncate">Sin conexión</span>
+                    <span className="block text-[13px] text-text-muted mt-px truncate">{syncPendientes === 1 ? '1 cambio espera para subirse' : `${syncPendientes} cambios esperan para subirse`}</span>
+                  </>
+                )}
+              </span>
+            </div>
+
+            <button onClick={() => window.dispatchEvent(new CustomEvent('racha_sync_intentar_salir'))} className="flex items-center gap-3 p-2 border-none bg-transparent text-left cursor-pointer w-full group">
               <span className="w-9 h-9 rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0 group-hover:text-text transition-colors">
                 <LogOut size={17} strokeWidth={2} />
               </span>
@@ -486,6 +556,7 @@ export const ProfileScreen: React.FC = () => {
               </span>
             </button>
           </div>
+          <p className="m-0 mt-2 text-[13px] text-text-muted">Si no hay internet, lo que hagas se guarda en el celular y se sube solo al volver la conexión.</p>
         </section>
       )}
 

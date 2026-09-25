@@ -18,6 +18,7 @@ import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { CuentaFlow } from '../cuenta/CuentaFlow';
+import { NubeSync } from '../cuenta/NubeSync';
 import { CelebracionesManager } from '../juego/CelebracionesManager';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
 import { Flame } from 'lucide-react';
@@ -34,6 +35,7 @@ export const AppShell: React.FC = () => {
     closeCreateModal
   } = useHabitStore();
   const { estado } = useCuenta();
+  const [nubeLista, setNubeLista] = useState(false);
 
   // Al entrar a la cuenta (también después de salir desde Perfil) se abre siempre en Hoy
   const [estadoAntes, setEstadoAntes] = useState(estado);
@@ -125,7 +127,8 @@ export const AppShell: React.FC = () => {
         <RutinaEditorModal />
         <TareaEditorModal />
         <CuentaFlow />
-        {estado === 'dentro' && <OnboardingModal />}
+        {estado === 'dentro' && <NubeSync onNubeLista={() => setNubeLista(true)} />}
+        {estado === 'dentro' && nubeLista && <OnboardingModal />}
         {estado === 'dentro' && <CelebracionesManager />}
 
         {/* Create Habit Modal */}

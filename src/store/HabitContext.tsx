@@ -161,6 +161,7 @@ interface HabitContextType {
     apariencia?: string;
   }) => { success: boolean; error?: string };
   exportarDatos: () => void;
+  construirRespaldo: () => any;
   reordenarSecciones: (nuevoOrden: MomentoDia[]) => void;
   reordenarHabitosEnMomento: (momento: MomentoDia, idsOrdenados: string[]) => void;
   reordenarRutinas: (idsOrdenados: string[]) => void;
@@ -740,31 +741,36 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     window.dispatchEvent(new Event('racha_sync_theme'));
   };
 
+  // Action: Construir el respaldo como JSON
+  const construirRespaldo = () => {
+    return {
+      app: 'Racha',
+      version: '2.0',
+      exportedAt: new Date().toISOString(),
+      habitos,
+      registros,
+      rutinas,
+      tareas,
+      comodines,
+      diasCongelados,
+      ordenMomentos,
+      premios,
+      cajasPorAbrir,
+      retoSemanal,
+      insigniasGanadas, llamasGanadas, companera, cajasSinRara, cajasAbiertasTotales,
+      celebrado,
+      coloresGanados,
+      nombre: localStorage.getItem('racha_nombre') || '',
+      acento: localStorage.getItem('racha_acento') || 'ambar',
+      apariencia: localStorage.getItem('racha_apariencia') || 'auto',
+      avatar: localStorage.getItem('racha_avatar') || 'inicial',
+    };
+  };
+
   // Action: Exportar datos como JSON
   const exportarDatos = () => {
     try {
-      const exportObject = {
-        app: 'Racha',
-        version: '2.0',
-        exportedAt: new Date().toISOString(),
-        habitos,
-        registros,
-        rutinas,
-        tareas,
-        comodines,
-        diasCongelados,
-        ordenMomentos,
-        premios,
-        cajasPorAbrir,
-        retoSemanal,
-        insigniasGanadas, llamasGanadas, companera, cajasSinRara, cajasAbiertasTotales,
-        celebrado,
-        coloresGanados,
-        nombre: localStorage.getItem('racha_nombre') || '',
-        acento: localStorage.getItem('racha_acento') || 'ambar',
-        apariencia: localStorage.getItem('racha_apariencia') || 'auto',
-        avatar: localStorage.getItem('racha_avatar') || 'inicial',
-      };
+      const exportObject = construirRespaldo();
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObject, null, 2));
       const downloadAnchor = document.createElement('a');
       const dateStr = getTodayString();
@@ -1317,6 +1323,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         reiniciarTodo,
         importarDatos,
         exportarDatos,
+        construirRespaldo,
         reordenarSecciones,
         reordenarHabitosEnMomento,
         reordenarRutinas,
