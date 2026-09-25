@@ -118,7 +118,7 @@ export const CuentaFlow: React.FC = () => {
         <h1 className="cond obh ctit" ref={h1Ref} tabIndex={-1} style={{ outline: 'none' }}><span className="ctiti warn" aria-hidden="true"><HelpCircle size={22} /></span>No encontramos tu compra</h1>
         <p className="sub obsub">Escribiste <b style={{ color: 'var(--text)' }}>{correo || limpio}</b>, pero no aparece ninguna compra de Racha con ese correo.</p>
         <ul className="clist">
-          <li>Revisa que sea el mismo correo que usaste al pagar en Hotmart. Búscalo en el correo de confirmación de Hotmart.</li>
+          <li>Revisa que sea el mismo correo que usaste al pagar. Búscalo en el correo de confirmación de tu pago.</li>
           <li>Si acabas de pagar, espera un par de minutos y vuelve a intentar.</li>
         </ul>
       </>,
@@ -202,7 +202,7 @@ export const CuentaFlow: React.FC = () => {
         ? <p id="cu-err" className="cerr" role="alert"><AlertCircle size={16} />{error}</p>
         : sugerencia
           ? <button type="button" className="link" style={{ fontSize: '14px' }} onClick={() => setEmail(sugerencia)}>¿Quisiste decir {sugerencia}?</button>
-          : <p id="cu-ayuda" className="sub" style={{ marginTop: '8px' }}>Es el que usaste al pagar en Hotmart.</p>}
+          : <p id="cu-ayuda" className="sub" style={{ marginTop: '8px' }}>Es el que usaste al pagar.</p>}
     </form>,
     <>
       <button type="submit" form="cu-form" className="btnp full" style={{ margin: 0 }} aria-disabled={ocupado}>{ocupado ? 'Enviando…' : 'Enviarme el código'}</button>
