@@ -167,7 +167,7 @@ export const NubeSync: React.FC<{ onNubeLista: () => void }> = ({ onNubeLista })
   const decidir = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     const uid = session?.user.id;
-    if (!uid) return;
+    if (!uid) { quedarLista(); return; } // nunca dejar a la persona en la pantalla de carga
     userRef.current = uid;
     const mismoUsuario = leer(SYNC_USER) === uid;
     const localVacio = habitos.length === 0 && registros.length === 0;

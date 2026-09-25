@@ -19,6 +19,7 @@ import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { CuentaFlow } from '../cuenta/CuentaFlow';
 import { NubeSync } from '../cuenta/NubeSync';
+import { supabaseListo } from '../../lib/supabase';
 import { CelebracionesManager } from '../juego/CelebracionesManager';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
 import { Flame } from 'lucide-react';
@@ -35,7 +36,8 @@ export const AppShell: React.FC = () => {
     closeCreateModal
   } = useHabitStore();
   const { estado } = useCuenta();
-  const [nubeLista, setNubeLista] = useState(false);
+  // Sin Supabase configurado (por ejemplo, un despliegue sin las variables), la app funciona solo en el celular
+  const [nubeLista, setNubeLista] = useState(!supabaseListo);
 
   // Al entrar a la cuenta (también después de salir desde Perfil) se abre siempre en Hoy
   const [estadoAntes, setEstadoAntes] = useState(estado);
@@ -127,7 +129,7 @@ export const AppShell: React.FC = () => {
         <RutinaEditorModal />
         <TareaEditorModal />
         <CuentaFlow />
-        {estado === 'dentro' && <NubeSync onNubeLista={() => setNubeLista(true)} />}
+        {estado === 'dentro' && supabaseListo && <NubeSync onNubeLista={() => setNubeLista(true)} />}
         {estado === 'dentro' && nubeLista && <OnboardingModal />}
         {estado === 'dentro' && <CelebracionesManager />}
 
