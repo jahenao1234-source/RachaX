@@ -35,35 +35,40 @@ import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
 // Componente para la hoja modal del nombre
 const NameModal = ({
   nombreActual,
+  avatarActual,
+  companeraId,
   onClose,
   onSave
 }: {
   nombreActual: string;
+  avatarActual: 'inicial' | 'llama';
+  companeraId: string;
   onClose: () => void;
-  onSave: (nombre: string) => void;
+  onSave: (nombre: string, avatar: 'inicial' | 'llama') => void;
 }) => {
   const [val, setVal] = useState(nombreActual);
+  const [avatarVal, setAvatarVal] = useState(avatarActual);
 
   return (
     <>
       <div className="fixed inset-0 bg-black/60 z-40 transition-opacity" onClick={onClose} />
-      <div className="fixed left-0 right-0 bottom-0 max-h-[78%] flex flex-col bg-surface rounded-t-[22px] border-t border-line shadow-2xl z-50 animate-slideUp" role="dialog" aria-modal="true" aria-labelledby="name-modal-title">
+      <div className="fixed left-0 right-0 bottom-0 max-h-[78%] flex flex-col bg-surface rounded-t-[22px] border-t border-line shadow-2xl z-50" role="dialog" aria-modal="true" aria-labelledby="name-modal-title">
         <div className="w-10 h-1.5 rounded-full bg-line-strong mx-auto mt-2 shrink-0" />
         <div className="flex items-start gap-3 p-3 px-5 border-b border-line">
           <button
             onClick={onClose}
+            aria-label="Cerrar"
             className="w-11 h-11 rounded-full bg-surface-raised text-text-muted flex items-center justify-center shrink-0 border-none cursor-pointer"
           >
             <X size={20} />
           </button>
           <div className="flex-1 min-w-0 pt-0.5">
-            <h2 id="name-modal-title" className="m-0 text-[22px] font-heading font-bold text-text">Cómo te llamas</h2>
-            <p id="name-modal-desc" className="m-0 text-[13px] text-text-muted leading-snug mt-0.5">Para personalizar tu perfil</p>
+            <h2 id="name-modal-title" className="m-0 text-[22px] font-heading font-bold text-text">Tu nombre y tu avatar</h2>
           </div>
         </div>
-        <form onSubmit={(e) => { e.preventDefault(); onSave(val.trim()); onClose(); }} className="p-5 pt-3 border-t border-line mt-auto">
+        <form onSubmit={(e) => { e.preventDefault(); onSave(val.trim(), avatarVal); onClose(); }} className="p-5 pt-3 border-t border-line mt-auto overflow-y-auto">
           <label className="block text-[13px] font-semibold text-text-muted mb-1.5" htmlFor="nn">
-            Tu nombre o apodo
+            Tu nombre
           </label>
           <input
             type="text"
@@ -74,18 +79,38 @@ const NameModal = ({
             autoFocus
             autoComplete="nickname"
             maxLength={24}
-            aria-describedby="name-modal-desc"
           />
+          <fieldset className="avopts mt-4">
+            <legend className="block text-[13px] font-semibold text-text-muted mb-1.5">Tu avatar</legend>
+            <label>
+              <input type="radio" name="avatar" value="inicial" checked={avatarVal === 'inicial'} onChange={() => setAvatarVal('inicial')} />
+              <div className="avbox">
+                <div className="avatar shrink-0">{val.trim() ? <span className="cond">{val.trim().charAt(0).toUpperCase()}</span> : <User size={20} strokeWidth={2} />}</div>
+                <span className="flex-1 text-[14px]">Tu inicial</span>
+                <div className="rdot" aria-hidden="true"></div>
+              </div>
+            </label>
+            <label>
+              <input type="radio" name="avatar" value="llama" checked={avatarVal === 'llama'} onChange={() => setAvatarVal('llama')} />
+              <div className="avbox">
+                <div className="avatarF"><LlamaDe id={companeraId} size={40} /></div>
+                <span className="flex-1 text-[14px]">Tu llama</span>
+                <div className="rdot" aria-hidden="true"></div>
+              </div>
+            </label>
+          </fieldset>
+          <p className="m-0 mt-2 text-[13px] text-text-muted leading-snug">Con tu llama como avatar, se actualiza sola cuando cambies de llama.</p>
+          
           <button
             type="submit"
-            className="mt-4 w-full min-h-[48px] px-5 rounded-xl bg-ambar text-ink text-[15px] font-bold flex items-center justify-center border-none cursor-pointer"
+            className="mt-6 w-full min-h-[48px] px-5 rounded-xl bg-ambar text-ink text-[15px] font-bold flex items-center justify-center border-none cursor-pointer"
           >
-            Guardar nombre
+            Guardar
           </button>
           {nombreActual && (
             <button
               type="button"
-              onClick={() => { onSave(''); onClose(); }}
+              onClick={() => { onSave('', avatarVal); onClose(); }}
               className="mt-1 w-full min-h-[44px] px-5 bg-transparent text-text-muted text-[15px] font-medium flex items-center justify-center border-none cursor-pointer"
             >
               Borrar nombre
@@ -212,7 +237,9 @@ export const ProfileScreen: React.FC = () => {
     cajasPorAbrir,
     coloresGanados,
     abrirColeccion,
-    setAbrirColeccion
+    setAbrirColeccion,
+    avatarPreferido,
+    setAvatarPreferido
   } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
@@ -401,13 +428,17 @@ export const ProfileScreen: React.FC = () => {
       {/* Identity Card */}
       <section className="mt-4 p-3.5 rounded-[18px] bg-surface border border-line" aria-label="Tu identidad">
         <div className="flex items-center gap-3.5">
-          <span className="w-14 h-14 rounded-full bg-surface-raised text-text flex items-center justify-center shrink-0">
-            {nombre ? (
-              <span className="font-heading font-bold text-[28px] leading-none uppercase">{nombre.charAt(0)}</span>
-            ) : (
-              <User size={24} strokeWidth={2} />
-            )}
-          </span>
+          {avatarPreferido === 'llama' ? (
+            <span className="avatarF" aria-hidden="true"><LlamaDe id={companera || `etapa_${etapaLlama}`} size={56} /></span>
+          ) : (
+            <span className="w-14 h-14 rounded-full bg-surface-raised text-text flex items-center justify-center shrink-0">
+              {nombre ? (
+                <span className="font-heading font-bold text-[28px] leading-none uppercase">{nombre.charAt(0)}</span>
+              ) : (
+                <User size={24} strokeWidth={2} />
+              )}
+            </span>
+          )}
           <div className="flex-1 min-w-0">
             {nombre ? (
               <p className="m-0 font-heading font-bold text-[28px] leading-[1.05] text-text truncate">{nombre}</p>
@@ -421,7 +452,7 @@ export const ProfileScreen: React.FC = () => {
           <button
             onClick={() => setShowNameModal(true)}
             className="w-11 h-11 rounded-xl border border-line bg-surface text-text flex items-center justify-center shrink-0 cursor-pointer"
-            aria-label="Cambiar tu nombre"
+            aria-label="Cambiar tu nombre o tu avatar"
           >
             <Pencil size={18} strokeWidth={2} />
           </button>
@@ -690,7 +721,19 @@ export const ProfileScreen: React.FC = () => {
 
       {/* Modals */}
       <BadgeDetailModal badge={selectedBadge} onClose={() => setSelectedBadge(null)} />
-      {showNameModal && <NameModal nombreActual={nombre} onClose={() => setShowNameModal(false)} onSave={setNombre} />}
+      {showNameModal && createPortal(
+        <NameModal
+          nombreActual={nombre}
+          avatarActual={avatarPreferido}
+          companeraId={companera || `etapa_${etapaLlama}`}
+          onClose={() => setShowNameModal(false)}
+          onSave={(n, avatar) => {
+            setNombre(n);
+            setAvatarPreferido(avatar);
+          }}
+        />,
+        document.body
+      )}
       
       {showDeleteConfirm && (
         <AlertSheet 

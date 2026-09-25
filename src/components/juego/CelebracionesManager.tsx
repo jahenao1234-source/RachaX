@@ -10,6 +10,7 @@ import { CajaArte } from './Llama';
 import { CajaResultSheet } from './CajaResultSheet';
 import { useTheme } from '../../store/ThemeContext';
 import { TEMAS } from '../../types';
+import { TuMesSheet } from './TuMesSheet';
 
 export const CelebracionesManager: React.FC = () => {
   const {
@@ -120,7 +121,23 @@ export const CelebracionesManager: React.FC = () => {
       return;
     }
 
-  }, [activeCeleb, canShow, isFocusModeOpen, habitosActivos, etapaLlama, nivelActual, llamasGanadas, insigniasGanadas, celebrado, cajasResult, tick]);
+    // f. Tu mes en Racha del mes anterior (50% a 79%, sin llama del mes): una vez, desde el día 1
+    const hoyStr = getTodayString();
+    const prev = new Date(parseInt(hoyStr.slice(0, 4)), parseInt(hoyStr.slice(5, 7)) - 2, 1);
+    const pAnio = prev.getFullYear();
+    const pMes = prev.getMonth() + 1;
+    const clave = `${pAnio}-${String(pMes).padStart(2, '0')}`;
+    const resumenes = celebrado.resumenes || [];
+    if (!resumenes.includes(clave) && !llamasGanadas[`mes_${String(pMes).padStart(2, '0')}`] && habitosActivos.length > 0) {
+      const tasa = tasaPeriodo(habitosActivos, registros, diasCongelados, `${clave}-01`, formatDateToString(new Date(pAnio, pMes, 0)));
+      if (tasa.pct >= 50 && tasa.pct < 80) {
+        setActiveCeleb({ tipo: 'resumen', anio: pAnio, mes: pMes, clave });
+      } else {
+        setCelebrado({ ...celebrado, resumenes: [...resumenes, clave] });
+      }
+    }
+
+  }, [activeCeleb, canShow, isFocusModeOpen, habitosActivos, etapaLlama, nivelActual, llamasGanadas, insigniasGanadas, celebrado, cajasResult, tick, registros, diasCongelados]);
 
   // Función para cerrar y marcar como celebrado TODO lo que estaba pendiente hasta este momento
   const cerrarYMarcar = () => {
@@ -128,7 +145,8 @@ export const CelebracionesManager: React.FC = () => {
       nivel: nivelActual,
       etapa: etapaLlama,
       insignias: Object.keys(insigniasGanadas),
-      meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_'))
+      meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_')),
+      resumenes: celebrado.resumenes || []
     });
 
     setActiveCeleb(null);
@@ -137,7 +155,7 @@ export const CelebracionesManager: React.FC = () => {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && activeCeleb) {
+      if (e.key === 'Escape' && activeCeleb && activeCeleb.tipo !== 'resumen') {
         cerrarYMarcar();
       }
     };
@@ -153,7 +171,8 @@ export const CelebracionesManager: React.FC = () => {
           nivel: nivelActual,
           etapa: etapaLlama,
           insignias: Object.keys(insigniasGanadas),
-          meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_'))
+          meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_')),
+          resumenes: celebrado.resumenes || []
         });
         setActiveCeleb(null);
         setPrevAcentoForUndo(null);
@@ -399,10 +418,22 @@ export const CelebracionesManager: React.FC = () => {
             <h2 className="cond celebt" id="c_m" tabIndex={-1}>La llama de {nombreMes} es tuya</h2>
             <p className="celebs">{capMes} terminó en {pct}%.</p>
             <p className="sub" style={{ marginTop: '6px' }}>La de {nombreActual} se gana con el 80% de {nombreActual}.</p>
-            
             {tambien && <p className="sub" style={{ marginTop: '10px' }}>{tambien}</p>}
 
-            <button className="btnp full" onClick={cerrarYMarcar}>Seguir</button>
+            <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button 
+                className="btnp full" 
+                style={{ margin: 0 }}
+                onClick={() => {
+                  cerrarYMarcar();
+                  const anioMes = entregada ? parseInt(entregada.slice(0, 4)) - (nMes >= parseInt(entregada.slice(5, 7)) ? 1 : 0) : new Date().getFullYear();
+                  setTimeout(() => setActiveCeleb({ tipo: 'resumen', anio: anioMes, mes: nMes, clave: null }), 50);
+                }}
+              >
+                Ver tu mes en Racha
+              </button>
+              <button className="link quiet center" onClick={cerrarYMarcar}>Seguir</button>
+            </div>
           </div>
         </section>
       </>,
@@ -467,6 +498,19 @@ export const CelebracionesManager: React.FC = () => {
         </section>
       </>,
       document.body
+    );
+  }
+
+  if (activeCeleb.tipo === 'resumen') {
+    return (
+      <TuMesSheet
+        anio={activeCeleb.anio}
+        mes={activeCeleb.mes}
+        onClose={() => {
+          if (activeCeleb.clave) setCelebrado({ ...celebrado, resumenes: [...(celebrado.resumenes || []), activeCeleb.clave] });
+          setActiveCeleb(null);
+        }}
+      />
     );
   }
 

@@ -585,3 +585,28 @@ html:not(.dark) .fill-logro {
   background: var(--ambar-text);
   color: var(--bg);
 }
+
+.story{margin-top:14px;padding:18px 16px;border-radius:22px;background:#15110C;color:#FFF3DC;text-align:left;border:1px solid #3A2A16}
+.story.st-light{background:#FFF6E6;color:#2B2419;border-color:#F2D9AE}
+.st-top{display:flex;align-items:center;gap:8px}
+.st-top .logo{color:#0F1113;display:flex;align-items:center;justify-content:center}
+.st-date{margin-left:auto;font-size:13px;opacity:.85}
+.st-flame{display:flex;justify-content:center;margin-top:10px}
+.st-big{margin:4px 0 0;font-size:56px;line-height:1;text-align:center}
+.st-cap{margin:2px 0 0;text-align:center;font-size:14px;opacity:.9}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.st-grid div{display:flex;flex-direction:column;padding:10px;border-radius:12px;background:rgba(255,255,255,.06)}
+.st-light .st-grid div{background:rgba(43,36,25,.06)}
+.st-grid .cond{font-size:24px;line-height:1}
+.st-grid span:last-child{font-size:12px;opacity:.85;margin-top:2px}
+.rdot{width:18px;height:18px;border-radius:999px;border:2px solid var(--text-muted);flex-shrink:0}
+.avopts{border:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.avopts legend{padding:0;margin-bottom:6px}
+.avopts label{position:relative;display:block;cursor:pointer}
+.avopts input{position:absolute;opacity:0;width:1px;height:1px}
+.avbox{min-height:64px;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600;transition:all 0.2s}
+.avopts input:checked + .avbox{border:1.5px solid var(--text)}
+.avopts input:focus-visible + .avbox{outline:2px solid var(--text);outline-offset:2px}
+.avopts input:checked + .avbox .rdot{border:5px solid var(--text)}
+.avatar{width:44px;height:44px;border-radius:999px;background:var(--surface-raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:22px}

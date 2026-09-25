@@ -115,12 +115,14 @@ interface HabitContextType {
   insignias: InsigniaDef[];
 
   // Celebraciones
-  celebrado: { nivel: number; etapa: number; insignias: string[]; meses: string[] };
-  setCelebrado: (nuevo: { nivel: number; etapa: number; insignias: string[]; meses: string[] }) => void;
+  celebrado: { nivel: number; etapa: number; insignias: string[]; meses: string[]; resumenes: string[] };
+  setCelebrado: (nuevo: { nivel: number; etapa: number; insignias: string[]; meses: string[]; resumenes: string[] }) => void;
   lastRegistroUpdate: number;
   coloresGanados: string[];
   abrirColeccion: boolean;
   setAbrirColeccion: (v: boolean) => void;
+  avatarPreferido: 'inicial' | 'llama';
+  setAvatarPreferido: (val: 'inicial' | 'llama') => void;
 
   // Computed globally
   puntosTotales: number;
@@ -412,12 +414,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return localStorage.getItem('racha_companera') || null;
   });
 
-  const [celebrado, setCelebrado] = useState<{ nivel: number; etapa: number; insignias: string[]; meses: string[] }>(() => {
+  const [celebrado, setCelebrado] = useState<{ nivel: number; etapa: number; insignias: string[]; meses: string[]; resumenes: string[] }>(() => {
     try {
       const stored = localStorage.getItem('racha_celebrado');
       if (stored) return JSON.parse(stored);
     } catch {}
-    return { nivel: 1, etapa: 1, insignias: [], meses: [] };
+    return { nivel: 1, etapa: 1, insignias: [], meses: [], resumenes: [] };
   });
 
   const [isFirstLoadWithoutCelebrado, setIsFirstLoadWithoutCelebrado] = useState(() => {
@@ -425,6 +427,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   });
 
   const [abrirColeccion, setAbrirColeccion] = useState(false);
+  const [avatarPreferido, setAvatarPreferido] = useState<'inicial' | 'llama'>(() => {
+    return (localStorage.getItem('racha_avatar') as 'inicial' | 'llama') || 'inicial';
+  });
 
   const [coloresGanados, setColoresGanados] = useState<string[]>(() => {
     try {
@@ -445,6 +450,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     try { localStorage.setItem(STORAGE_ORDEN_MOMENTOS_KEY, JSON.stringify(ordenMomentos)); } catch {}
   }, [ordenMomentos]);
+
+  useEffect(() => {
+    try { localStorage.setItem('racha_avatar', avatarPreferido); } catch {}
+  }, [avatarPreferido]);
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_COMODINES_KEY, String(comodines)); } catch {}
@@ -713,11 +722,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setInsigniasGanadas({});
     setLlamasGanadas({});
     setCompanera(null);
-    setCelebrado({ nivel: 1, etapa: 1, insignias: [], meses: [] });
+    setCelebrado({ nivel: 1, etapa: 1, insignias: [], meses: [], resumenes: [] });
     setColoresGanados([]);
+    setAvatarPreferido('inicial');
     localStorage.removeItem('racha_nombre');
     localStorage.removeItem('racha_acento');
     localStorage.removeItem('racha_apariencia');
+    localStorage.removeItem('racha_avatar');
     window.dispatchEvent(new Event('racha_sync_theme'));
   };
 
@@ -744,6 +755,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         nombre: localStorage.getItem('racha_nombre') || '',
         acento: localStorage.getItem('racha_acento') || 'ambar',
         apariencia: localStorage.getItem('racha_apariencia') || 'auto',
+        avatar: localStorage.getItem('racha_avatar') || 'inicial',
       };
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObject, null, 2));
       const downloadAnchor = document.createElement('a');
@@ -781,6 +793,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     nombre?: string;
     acento?: string;
     apariencia?: string;
+    avatar?: 'inicial' | 'llama';
   }): { success: boolean; error?: string } => {
     try {
       if (!datos || !Array.isArray(datos.habitos) || !Array.isArray(datos.registros)) {
@@ -821,7 +834,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (datos.llamasGanadas && typeof datos.llamasGanadas === 'object') setLlamasGanadas(datos.llamasGanadas);
       if (datos.companera === null || typeof datos.companera === 'string') setCompanera(datos.companera);
       if (datos.celebrado) {
-        setCelebrado(datos.celebrado);
+        setCelebrado({ ...datos.celebrado, resumenes: (datos.celebrado as any).resumenes || [] });
         setIsFirstLoadWithoutCelebrado(false);
       } else {
         setIsFirstLoadWithoutCelebrado(true);
@@ -834,6 +847,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (typeof datos.nombre === 'string') localStorage.setItem('racha_nombre', datos.nombre);
       if (typeof datos.acento === 'string') localStorage.setItem('racha_acento', datos.acento);
       if (typeof datos.apariencia === 'string') localStorage.setItem('racha_apariencia', datos.apariencia);
+      if (datos.avatar === 'inicial' || datos.avatar === 'llama') setAvatarPreferido(datos.avatar);
       
       window.dispatchEvent(new Event('racha_sync_theme'));
 
@@ -1200,7 +1214,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         nivel: nivelActual,
         etapa: etapaLlama,
         insignias: Object.keys(insigniasGanadas),
-        meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_'))
+        meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_')),
+        // El mes pasado cuenta como ofrecido, para no inundar la primera vez
+        resumenes: [(() => { const p = new Date(); p.setDate(1); p.setMonth(p.getMonth() - 1); return `${p.getFullYear()}-${String(p.getMonth() + 1).padStart(2, '0')}`; })()]
       };
       setCelebrado(newCelebrado);
       localStorage.setItem('racha_celebrado', JSON.stringify(newCelebrado));
@@ -1275,6 +1291,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         coloresGanados,
         abrirColeccion,
         setAbrirColeccion,
+        avatarPreferido,
+        setAvatarPreferido,
         abrirCajas,
         cajasSinRara,
         puntosTotales,
