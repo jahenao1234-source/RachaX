@@ -35,6 +35,14 @@ export const AppShell: React.FC = () => {
   } = useHabitStore();
   const { estado } = useCuenta();
 
+  // Al entrar a la cuenta (también después de salir desde Perfil) se abre siempre en Hoy
+  const [estadoAntes, setEstadoAntes] = useState(estado);
+  useEffect(() => {
+    if (estado === 'dentro' && estadoAntes !== 'dentro' && estadoAntes !== 'cargando') setActiveTab('hoy');
+    setEstadoAntes(estado);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [estado]);
+
   const renderActiveScreen = () => {
     const screenToRender = activeTab === 'crear' ? 'hoy' : activeTab;
 
