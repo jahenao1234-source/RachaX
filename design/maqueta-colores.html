@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta: colores nuevos por nivel</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.h3{margin:18px 0 0;font-size:13px;font-weight:600;color:var(--muted)}
+.acc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.acc label{position:relative;display:block}
+.acc input{position:absolute;opacity:0;width:1px;height:1px}
+.acc .opt{min-height:76px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600}
+.acc input:checked + .opt{border:1.5px solid var(--text);color:var(--text);font-weight:700}
+.dotc{width:32px;height:32px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--sw);color:transparent}
+.acc input:checked + .opt .dotc{color:var(--ink)}
+.light .dotc{box-shadow:inset 0 0 0 1.5px var(--swring)}
+.acc .opt.optlock{gap:4px;border:1px dashed var(--line-strong);background:transparent}
+.lockdot{background:color-mix(in srgb,var(--sw) 35%,transparent);color:var(--text)}
+.light .lockdot{box-shadow:inset 0 0 0 1.5px var(--line-strong);background:color-mix(in srgb,var(--sw) 45%,transparent)}
+.lockname{font-size:12px;color:var(--muted)}
+.locklv{font-size:12px;font-weight:700;color:var(--text)}
+.celebody{padding:0 20px 22px;text-align:center}
+.hero{margin:0 auto;display:flex;align-items:center;justify-content:center}
+.celebt{margin:10px 0 0;font-size:28px;line-height:1.05}
+.celebs{margin:8px 0 0;font-size:15px;line-height:1.45;color:var(--text)}
+.unlock{display:flex;gap:12px;align-items:center;margin-top:16px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:15px}
+.dotc2{width:28px;height:28px;border-radius:999px;flex-shrink:0}
+.unlock .btn2{min-height:44px;border-color:var(--muted);flex-shrink:0}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--logro,var(--ambar));color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.dias{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
+.dia{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--muted)}
+.dia b{font-size:13px;font-weight:600}
+.dia.ok{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.light .dia.ok{border-color:var(--ambar-text)}
+.light .segs i.on{background:var(--ambar-text)}
+.esc{list-style:none;margin:0;padding:6px 20px 20px}
+.escrow{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.escrow:last-child{border-bottom:none}
+.escsw{width:40px;height:40px;border-radius:999px;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.escsw{display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.escbtn{min-height:44px;border-color:var(--muted)}
+.escsep{padding:14px 0 6px;font-size:13px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line)}
+.esclv{font-size:13px;font-weight:700;color:var(--muted)}
+.esclv.ok{color:var(--text)}
+.rowlink{margin-top:10px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.link.sm{min-height:44px;border:none;background:transparent;color:var(--ambar-text);font-size:14px;font-weight:700;padding:0 6px}
+.dia.hoy{border:1.5px dashed var(--text);color:var(--text);background:transparent}
+.hbtn{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.chk{width:32px;height:32px;border-radius:999px;background:var(--logro,var(--ambar));color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="col"><h2>1 · Tus colores en el nivel 7 (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#FFB547;--logro:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Apariencia</h2></div>
+        <h3 class="h3" id="coX1">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="coX1"><label style="--sw:#FFB547;--swring:#A56200"><input type="radio" name="coX1" checked><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span></label><label style="--sw:#43D9A3;--swring:#0B7A52"><input type="radio" name="coX1" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span></label><label style="--sw:#F59AC4;--swring:#A8356E"><input type="radio" name="coX1" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span></label><label style="--sw:#C5E25A;--swring:#5A6E0F"><input type="radio" name="coX1" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span></label><label style="--sw:#5CC8FF;--swring:#0A6FA3"><input type="radio" name="coX1" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Cielo</span></span></label><label style="--sw:#E879F9"><input type="radio" name="coX1" disabled aria-describedby="lkX2"><span class="opt optlock"><span class="dotc lockdot" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="lockname">Fucsia</span><span class="locklv" id="lkX2">Nivel 10</span></span></label></div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+        <p class="sub" style="margin-top:6px">Ganas colores nuevos al subir de nivel. El siguiente: nivel 10 (te faltan 3).</p>
+        <a class="rowlink" href="#" aria-haspopup="dialog">Ver los colores por nivel<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>2 · Colores por nivel (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#FFB547;--logro:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Apariencia</h2></div>
+        <h3 class="h3" id="coX3">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="coX3"><label style="--sw:#FFB547;--swring:#A56200"><input type="radio" name="coX3" checked><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span></label><label style="--sw:#43D9A3;--swring:#0B7A52"><input type="radio" name="coX3" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span></label><label style="--sw:#F59AC4;--swring:#A8356E"><input type="radio" name="coX3" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span></label><label style="--sw:#C5E25A;--swring:#5A6E0F"><input type="radio" name="coX3" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span></label><label style="--sw:#5CC8FF;--swring:#0A6FA3"><input type="radio" name="coX3" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Cielo</span></span></label><label style="--sw:#E879F9"><input type="radio" name="coX3" disabled aria-describedby="lkX4"><span class="opt optlock"><span class="dotc lockdot" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="lockname">Fucsia</span><span class="locklv" id="lkX4">Nivel 10</span></span></label></div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+        <p class="sub" style="margin-top:6px">Ganas colores nuevos al subir de nivel. El siguiente: nivel 10 (te faltan 3).</p>
+        <a class="rowlink" href="#" aria-haspopup="dialog">Ver los colores por nivel<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="escX5" style="max-height:88%">
+      <div class="grab"></div>
+      <div class="shead"><div style="flex:1;min-width:0"><h2 class="cond" id="escX5" style="margin:0;font-size:24px">Colores por nivel</h2><p class="sub" style="margin-top:2px">Llegan al subir de nivel. Nunca se compran.</p></div><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <ul class="esc" role="list"><li class="escrow"><span class="escsw" style="background:#5CC8FF" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Cielo</b></span><button class="btn2 escbtn">Usar</button></li><li class="escsep">Estás en el nivel 7</li><li class="escrow"><span class="escsw" style="background:#E879F9" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Fucsia</b></span><span class="esclv">Nivel 10</span></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #C07D52 0%, #F6C39B 38%, #D98E5F 62%, #B8744A 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Bronce</b><span class="sub" style="display:block;font-size:13px">Metálico</span></span><span class="esclv">Nivel 14</span></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #FFC06A, #FF9A8B 55%, #F57AB0)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Atardecer</b><span class="sub" style="display:block;font-size:13px">Degradado</span></span><span class="esclv">Nivel 18</span></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #C8629F 0%, #E58CCB 38%, #D46AB0 62%, #C8629F 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Ciruela</b><span class="sub" style="display:block;font-size:13px">Joya con brillo</span></span><span class="esclv">Nivel 23</span></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #E8386D 0%, #FF7FA3 38%, #F2336E 62%, #E8386D 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Rubí</b><span class="sub" style="display:block;font-size:13px">Joya con brillo</span></span><span class="esclv">Nivel 28</span></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #D4A437 0%, #FFE7A0 38%, #F2C14E 62%, #B8892A 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Oro</b><span class="sub" style="display:block;font-size:13px">Metálico</span></span><span class="esclv">Nivel 35</span></li></ul>
+    </section>
+  </div></div></div>
+<div class="col"><h2>3 · Subiste al nivel 18: Atardecer (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#FFB547;--logro:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 18, Hoguera: 120 de 1800 puntos para el nivel 19. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m10bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e9w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e9o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e9m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e9c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m10cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m10bg)"/><g clip-path="url(#m10cl)"><g transform="translate(13 10) scale(0.74)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e9o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e9o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e9o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e9m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e9c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M24 88L76 76" stroke="url(#e9w)" stroke-width="7" stroke-linecap="round"/><path d="M24 76L76 88" stroke="url(#e9w)" stroke-width="7" stroke-linecap="round"/><path d="M34 90L66 90" stroke="url(#e9w)" stroke-width="7" stroke-linecap="round"/><circle cx="22" cy="34" r="1.8" fill="#FFD37F"/><circle cx="78" cy="28" r="2" fill="#FFB547"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+        <span class="cond lvlname">Nivel 18 · Hoguera</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:7%"></b></i>
+        <span class="lvlnums">120 / 1800</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td6">
+        <div class="cardhead"><h2 class="cond" id="td6">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet celeb" role="dialog" aria-modal="true" aria-labelledby="ceX6" aria-describedby="cdX7">
+      <div class="grab"></div>
+      <div style="display:flex;justify-content:flex-end;padding:8px 12px 0"><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <div class="celebody">
+        <div class="hero"><svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m12bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e11w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e11o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e11m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e11c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m12cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m12bg)"/><g clip-path="url(#m12cl)"><g transform="translate(13 10) scale(0.74)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e11o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e11o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e11o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e11m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e11c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M24 88L76 76" stroke="url(#e11w)" stroke-width="7" stroke-linecap="round"/><path d="M24 76L76 88" stroke="url(#e11w)" stroke-width="7" stroke-linecap="round"/><path d="M34 90L66 90" stroke="url(#e11w)" stroke-width="7" stroke-linecap="round"/><circle cx="22" cy="34" r="1.8" fill="#FFD37F"/><circle cx="78" cy="28" r="2" fill="#FFB547"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></div>
+        <h2 class="cond celebt" id="ceX6" tabindex="-1">Subiste al nivel 18</h2>
+        <p class="celebs" id="cdX7">Cada punto lo ganaste cumpliendo.</p>
+        <div class="unlock"><span class="dotc2" style="background:linear-gradient(135deg, #FFC06A, #FF9A8B 55%, #F57AB0)" aria-hidden="true"></span><span style="flex:1;text-align:left"><b>Desbloqueaste el color Atardecer</b><span class="sub" style="display:block">Para tus logros, en Perfil › Apariencia.</span></span><button class="btn2">Usarlo</button></div>
+        <p class="sub" style="margin-top:12px">En el nivel 20 tu llama pasa a Antorcha.</p>
+        <button class="btnp full">Seguir</button>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>4 · Hoy con Cielo (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#5CC8FF;--logro:#5CC8FF;--ambar-text:#5CC8FF;--ambar-tint:#132430">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 7, Llama: 120 de 700 puntos para el nivel 8. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m14bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e13o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e13m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e13c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m14cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m14bg)"/><g clip-path="url(#m14cl)"><g transform="translate(14 24) scale(0.72)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e13o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e13m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e13c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g></svg></span>
+        <span class="cond lvlname">Nivel 7 · Llama</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:17%"></b></i>
+        <span class="lvlnums">120 / 700</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td7">
+        <div class="cardhead"><h2 class="cond" id="td7">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>5 · Hoy con Bronce (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#D98E5F;--logro:linear-gradient(135deg, #C07D52 0%, #F6C39B 38%, #D98E5F 62%, #B8744A 100%);--ambar-text:#E3A277;--ambar-tint:#2A2019">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 14, Fuego: 120 de 1400 puntos para el nivel 15. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m16bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e15o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e15m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e15c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m16cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m16bg)"/><g clip-path="url(#m16cl)"><g transform="translate(10 16) scale(0.8)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e15o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e15o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e15o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e15m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e15c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+        <span class="cond lvlname">Nivel 14 · Fuego</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:9%"></b></i>
+        <span class="lvlnums">120 / 1400</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td8">
+        <div class="cardhead"><h2 class="cond" id="td8">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>6 · Hoy con Atardecer (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#FF9A8B;--logro:linear-gradient(135deg, #FFC06A, #FF9A8B 55%, #F57AB0);--ambar-text:#FF8FB8;--ambar-tint:#2C1E22">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 18, Hoguera: 120 de 1800 puntos para el nivel 19. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m18bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e17w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e17o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e17m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e17c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m18cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m18bg)"/><g clip-path="url(#m18cl)"><g transform="translate(13 10) scale(0.74)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e17o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e17o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e17o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e17m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e17c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M24 88L76 76" stroke="url(#e17w)" stroke-width="7" stroke-linecap="round"/><path d="M24 76L76 88" stroke="url(#e17w)" stroke-width="7" stroke-linecap="round"/><path d="M34 90L66 90" stroke="url(#e17w)" stroke-width="7" stroke-linecap="round"/><circle cx="22" cy="34" r="1.8" fill="#FFD37F"/><circle cx="78" cy="28" r="2" fill="#FFB547"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+        <span class="cond lvlname">Nivel 18 · Hoguera</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:7%"></b></i>
+        <span class="lvlnums">120 / 1800</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td9">
+        <div class="cardhead"><h2 class="cond" id="td9">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>7 · Hoy con Ciruela (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#D46AB0;--logro:linear-gradient(135deg, #C8629F 0%, #E58CCB 38%, #D46AB0 62%, #C8629F 100%);--ambar-text:#E07EC0;--ambar-tint:#2B1B27">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 23, Antorcha: 120 de 2300 puntos para el nivel 24. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m20bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e19t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5B4636"/><stop offset="1" stop-color="#8C6B52"/></linearGradient><linearGradient id="e19cup" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B98B2F"/><stop offset="1" stop-color="#F2C45A"/></linearGradient><linearGradient id="e19o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e19m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e19c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m20cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m20bg)"/><g clip-path="url(#m20cl)"><path d="M46 64L54 64L52 94L48 94Z" fill="url(#e19t)"/><path d="M36 58L64 58L58 68L42 68Z" fill="url(#e19cup)"/><g transform="translate(21.999999999999996 -7.105427357601002e-15) scale(0.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e19o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e19m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e19c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+        <span class="cond lvlname">Nivel 23 · Antorcha</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:5%"></b></i>
+        <span class="lvlnums">120 / 2300</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td10">
+        <div class="cardhead"><h2 class="cond" id="td10">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>8 · Hoy con Rubí (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#F2336E;--logro:linear-gradient(135deg, #E8386D 0%, #FF7FA3 38%, #F2336E 62%, #E8386D 100%);--ambar-text:#FF5C8A;--ambar-tint:#2E1A21">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 28, Volcán: 120 de 2800 puntos para el nivel 29. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m22bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e21v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A3A33"/><stop offset="1" stop-color="#241B18"/></linearGradient><linearGradient id="e21o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e21m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e21c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m22cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m22bg)"/><g clip-path="url(#m22cl)"><g transform="translate(20 6) scale(0.6)"><path d="M30 88C18 82 14 70 18 58C20 66 24 70 28 71C25 62 27 54 32 48C33 60 38 68 42 74Z" fill="url(#e21o)" opacity=".9"/><path d="M70 88C82 82 86 70 82 58C80 66 76 70 72 71C75 62 73 54 68 48C67 60 62 68 58 74Z" fill="url(#e21o)" opacity=".9"/><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e21o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e21m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e21c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M12 90L38 56L44 60L50 54L56 60L62 56L88 90Z" fill="url(#e21v)"/><path d="M50 58L47 72L52 78L49 90" stroke="#FF8A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+        <span class="cond lvlname">Nivel 28 · Volcán</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:4%"></b></i>
+        <span class="lvlnums">120 / 2800</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td11">
+        <div class="cardhead"><h2 class="cond" id="td11">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>9 · Hoy con Oro (oscuro)</h2><div class="dark">
+  <div class="phone" style="--ambar:#F2C14E;--logro:linear-gradient(135deg, #D4A437 0%, #FFE7A0 38%, #F2C14E 62%, #B8892A 100%);--ambar-text:#F2C94E;--ambar-tint:#2A2512">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 35, Sol: 120 de 3500 puntos para el nivel 36. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m24bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e23o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e23m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e23c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m24cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m24bg)"/><g clip-path="url(#m24cl)"><path d="M50.0 24.0L50.0 12.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M65.0 28.0L69.0 21.1" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M76.0 39.0L86.4 33.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M80.0 54.0L88.0 54.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M76.0 69.0L86.4 75.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M65.0 80.0L69.0 86.9" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M50.0 84.0L50.0 96.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M35.0 80.0L31.0 86.9" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M24.0 69.0L13.6 75.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M20.0 54.0L12.0 54.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M24.0 39.0L13.6 33.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M35.0 28.0L31.0 21.1" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><circle cx="50" cy="54" r="27" fill="#FFB547" opacity=".22"/><g transform="translate(20 30) scale(0.6)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e23o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e23m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e23c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/><circle cx="50.0" cy="3.0" r="1.8" fill="var(--ring)"/><circle cx="73.5" cy="9.3" r="1.8" fill="var(--ring)"/><circle cx="90.7" cy="26.5" r="1.8" fill="var(--ring)"/><circle cx="97.0" cy="50.0" r="1.8" fill="var(--ring)"/><circle cx="90.7" cy="73.5" r="1.8" fill="var(--ring)"/><circle cx="73.5" cy="90.7" r="1.8" fill="var(--ring)"/><circle cx="50.0" cy="97.0" r="1.8" fill="var(--ring)"/><circle cx="26.5" cy="90.7" r="1.8" fill="var(--ring)"/><circle cx="9.3" cy="73.5" r="1.8" fill="var(--ring)"/><circle cx="3.0" cy="50.0" r="1.8" fill="var(--ring)"/><circle cx="9.3" cy="26.5" r="1.8" fill="var(--ring)"/><circle cx="26.5" cy="9.3" r="1.8" fill="var(--ring)"/></svg></span>
+        <span class="cond lvlname">Nivel 35 · Sol</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:3%"></b></i>
+        <span class="lvlnums">120 / 3500</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td12">
+        <div class="cardhead"><h2 class="cond" id="td12">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>10 · Colores por nivel en el nivel 29 (claro)</h2><div class="light">
+  <div class="phone" style="--ambar:#F2336E;--logro:linear-gradient(135deg, #E8386D 0%, #FF7FA3 38%, #F2336E 62%, #E8386D 100%);--ambar-text:#B3124A;--ambar-tint:#FDE4EC">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <section class="sec">
+        <div class="cardhead"><h2 class="cond">Apariencia</h2></div>
+        <h3 class="h3" id="coX8">Color de tus logros</h3>
+        <div class="acc" role="radiogroup" aria-labelledby="coX8"><label style="--sw:#FFB547;--swring:#A56200"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ámbar</span></span></label><label style="--sw:#43D9A3;--swring:#0B7A52"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Jade</span></span></label><label style="--sw:#F59AC4;--swring:#A8356E"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rosa</span></span></label><label style="--sw:#C5E25A;--swring:#5A6E0F"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Lima</span></span></label><label style="--sw:#5CC8FF;--swring:#0A6FA3"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Cielo</span></span></label><label style="--sw:#E879F9;--swring:#A1239F"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Fucsia</span></span></label><label style="--sw:linear-gradient(135deg, #C07D52 0%, #F6C39B 38%, #D98E5F 62%, #B8744A 100%);--swring:#8A4B23"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Bronce</span></span></label><label style="--sw:linear-gradient(135deg, #FFC06A, #FF9A8B 55%, #F57AB0);--swring:#B23A5E"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Atardecer</span></span></label><label style="--sw:linear-gradient(135deg, #C8629F 0%, #E58CCB 38%, #D46AB0 62%, #C8629F 100%);--swring:#9C2F7E"><input type="radio" name="coX8" ><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Ciruela</span></span></label><label style="--sw:linear-gradient(135deg, #E8386D 0%, #FF7FA3 38%, #F2336E 62%, #E8386D 100%);--swring:#B3124A"><input type="radio" name="coX8" checked><span class="opt"><span class="dotc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span>Rubí</span></span></label><label style="--sw:linear-gradient(135deg, #D4A437 0%, #FFE7A0 38%, #F2C14E 62%, #B8892A 100%)"><input type="radio" name="coX8" disabled aria-describedby="lkX9"><span class="opt optlock"><span class="dotc lockdot" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="lockname">Oro</span><span class="locklv" id="lkX9">Nivel 35</span></span></label></div>
+        <p class="sub" style="margin-top:8px">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+        <p class="sub" style="margin-top:6px">Ganas colores nuevos al subir de nivel. El siguiente: nivel 35 (te faltan 6).</p>
+        <a class="rowlink" href="#" aria-haspopup="dialog">Ver los colores por nivel<span class="chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim"></div>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="escX10" style="max-height:88%">
+      <div class="grab"></div>
+      <div class="shead"><div style="flex:1;min-width:0"><h2 class="cond" id="escX10" style="margin:0;font-size:24px">Colores por nivel</h2><p class="sub" style="margin-top:2px">Llegan al subir de nivel. Nunca se compran.</p></div><button class="x" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+      <ul class="esc" role="list"><li class="escrow"><span class="escsw" style="background:#5CC8FF" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Cielo</b></span><button class="btn2 escbtn">Usar</button></li><li class="escrow"><span class="escsw" style="background:#E879F9" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Fucsia</b></span><button class="btn2 escbtn">Usar</button></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #C07D52 0%, #F6C39B 38%, #D98E5F 62%, #B8744A 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Bronce</b><span class="sub" style="display:block;font-size:13px">Metálico</span></span><button class="btn2 escbtn">Usar</button></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #FFC06A, #FF9A8B 55%, #F57AB0)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Atardecer</b><span class="sub" style="display:block;font-size:13px">Degradado</span></span><button class="btn2 escbtn">Usar</button></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #C8629F 0%, #E58CCB 38%, #D46AB0 62%, #C8629F 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Ciruela</b><span class="sub" style="display:block;font-size:13px">Joya con brillo</span></span><button class="btn2 escbtn">Usar</button></li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #E8386D 0%, #FF7FA3 38%, #F2336E 62%, #E8386D 100%)" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1;min-width:0"><b>Rubí</b><span class="sub" style="display:block;font-size:13px">Joya con brillo</span></span><span class="esclv ok">En uso</span></li><li class="escsep">Estás en el nivel 29</li><li class="escrow"><span class="escsw" style="background:linear-gradient(135deg, #D4A437 0%, #FFE7A0 38%, #F2C14E 62%, #B8892A 100%)" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>Oro</b><span class="sub" style="display:block;font-size:13px">Metálico</span></span><span class="esclv">Nivel 35</span></li></ul>
+    </section>
+  </div></div></div>
+<div class="col"><h2>11 · Hoy con Ciruela (claro)</h2><div class="light">
+  <div class="phone" style="--ambar:#D46AB0;--logro:linear-gradient(135deg, #C8629F 0%, #E58CCB 38%, #D46AB0 62%, #C8629F 100%);--ambar-text:#9C2F7E;--ambar-tint:#FAE6F3">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 23, Antorcha: 120 de 2300 puntos para el nivel 24. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m26bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e25t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5B4636"/><stop offset="1" stop-color="#8C6B52"/></linearGradient><linearGradient id="e25cup" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B98B2F"/><stop offset="1" stop-color="#F2C45A"/></linearGradient><linearGradient id="e25o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e25m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e25c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m26cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m26bg)"/><g clip-path="url(#m26cl)"><path d="M46 64L54 64L52 94L48 94Z" fill="url(#e25t)"/><path d="M36 58L64 58L58 68L42 68Z" fill="url(#e25cup)"/><g transform="translate(21.999999999999996 -7.105427357601002e-15) scale(0.56)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e25o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e25m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e25c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/></svg></span>
+        <span class="cond lvlname">Nivel 23 · Antorcha</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:5%"></b></i>
+        <span class="lvlnums">120 / 2300</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td13">
+        <div class="cardhead"><h2 class="cond" id="td13">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>12 · Hoy con Oro (claro)</h2><div class="light">
+  <div class="phone" style="--ambar:#F2C14E;--logro:linear-gradient(135deg, #D4A437 0%, #FFE7A0 38%, #F2C14E 62%, #B8892A 100%);--ambar-text:#7A5A00;--ambar-tint:#FFF4D4">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 35, Sol: 120 de 3500 puntos para el nivel 36. Ver tu llama">
+        <span class="lvlflame"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m28bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e27o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e27m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e27c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m28cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m28bg)"/><g clip-path="url(#m28cl)"><path d="M50.0 24.0L50.0 12.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M65.0 28.0L69.0 21.1" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M76.0 39.0L86.4 33.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M80.0 54.0L88.0 54.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M76.0 69.0L86.4 75.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M65.0 80.0L69.0 86.9" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M50.0 84.0L50.0 96.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M35.0 80.0L31.0 86.9" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M24.0 69.0L13.6 75.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M20.0 54.0L12.0 54.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M24.0 39.0L13.6 33.0" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><path d="M35.0 28.0L31.0 21.1" stroke="#FFB547" stroke-width="3.5" stroke-linecap="round"/><circle cx="50" cy="54" r="27" fill="#FFB547" opacity=".22"/><g transform="translate(20 30) scale(0.6)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e27o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e27m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e27c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g></g><circle cx="50" cy="50" r="47" fill="none" stroke="var(--ring)" stroke-width="1.5"/><circle cx="50.0" cy="3.0" r="1.8" fill="var(--ring)"/><circle cx="73.5" cy="9.3" r="1.8" fill="var(--ring)"/><circle cx="90.7" cy="26.5" r="1.8" fill="var(--ring)"/><circle cx="97.0" cy="50.0" r="1.8" fill="var(--ring)"/><circle cx="90.7" cy="73.5" r="1.8" fill="var(--ring)"/><circle cx="73.5" cy="90.7" r="1.8" fill="var(--ring)"/><circle cx="50.0" cy="97.0" r="1.8" fill="var(--ring)"/><circle cx="26.5" cy="90.7" r="1.8" fill="var(--ring)"/><circle cx="9.3" cy="73.5" r="1.8" fill="var(--ring)"/><circle cx="3.0" cy="50.0" r="1.8" fill="var(--ring)"/><circle cx="9.3" cy="26.5" r="1.8" fill="var(--ring)"/><circle cx="26.5" cy="9.3" r="1.8" fill="var(--ring)"/></svg></span>
+        <span class="cond lvlname">Nivel 35 · Sol</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:3%"></b></i>
+        <span class="lvlnums">120 / 3500</span>
+      </a>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+        <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>2 comodines</span>
+      </div>
+      <p class="sub" style="margin-top:6px;font-size:15px">Misiones de hoy: 3 de 5</p><div class="dias"><span class="dia ok"><b>Vi</b>18</span><span class="dia ok"><b>Sá</b>19</span><span class="dia ok"><b>Do</b>20</span><span class="dia"><b>Lu</b>21</span><span class="dia ok"><b>Ma</b>22</span><span class="dia"><b>Mi</b>23</span><span class="dia hoy"><b>Ju</b>24</span></div>
+      <section class="card" style="margin-top:14px" aria-labelledby="td14">
+        <div class="cardhead"><h2 class="cond" id="td14">Tu día</h2><span class="cond" style="font-size:18px;color:var(--ambar-text)">+30 pts hoy</span></div>
+        
+        <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="sub">3 de 5 · te quedan 2</span><a class="nextlink" href="#">Siguiente: Leer 20 min</a></div>
+      </section><div class="hbtn"><span class="chk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span style="display:block;font-weight:600;text-decoration:line-through;color:var(--muted)">Leer 20 min</span><span style="font-size:13px;font-weight:700;color:var(--ambar-text)">+10 ganados</span></span></div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+
+</body>
+</html>

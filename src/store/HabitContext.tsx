@@ -112,7 +112,15 @@ interface HabitContextType {
   llamasGanadas: Record<string, string>;
   companera: string | null;
   setCompanera: (id: string | null) => void;
-  insignias: InsigniaDef[]
+  insignias: InsigniaDef[];
+
+  // Celebraciones
+  celebrado: { nivel: number; etapa: number; insignias: string[]; meses: string[] };
+  setCelebrado: (nuevo: { nivel: number; etapa: number; insignias: string[]; meses: string[] }) => void;
+  lastRegistroUpdate: number;
+  coloresGanados: string[];
+  abrirColeccion: boolean;
+  setAbrirColeccion: (v: boolean) => void;
 
   // Computed globally
   puntosTotales: number;
@@ -145,6 +153,7 @@ interface HabitContextType {
     insigniasGanadas?: Record<string, string>;
     llamasGanadas?: Record<string, string>;
     companera?: string | null;
+    celebrado?: { nivel: number; etapa: number; insignias: string[]; meses: string[] };
     nombre?: string;
     acento?: string;
     apariencia?: string;
@@ -177,6 +186,7 @@ const HabitContext = createContext<HabitContextType | undefined>(undefined);
 export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTab] = useState<TabRoute>('hoy');
   const [previousTab, setPreviousTab] = useState<TabRoute>('hoy');
+  const [lastRegistroUpdate, setLastRegistroUpdate] = useState<number>(Date.now());
 
   // Onboarding State
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(() => {
@@ -402,6 +412,28 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return localStorage.getItem('racha_companera') || null;
   });
 
+  const [celebrado, setCelebrado] = useState<{ nivel: number; etapa: number; insignias: string[]; meses: string[] }>(() => {
+    try {
+      const stored = localStorage.getItem('racha_celebrado');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return { nivel: 1, etapa: 1, insignias: [], meses: [] };
+  });
+
+  const [isFirstLoadWithoutCelebrado, setIsFirstLoadWithoutCelebrado] = useState(() => {
+    return !localStorage.getItem('racha_celebrado');
+  });
+
+  const [abrirColeccion, setAbrirColeccion] = useState(false);
+
+  const [coloresGanados, setColoresGanados] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('racha_colores_ganados');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
+
   const [retoSemanal, setRetoSemanalState] = useState<RetoSemanal | null>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_RETO_SEMANAL_KEY);
@@ -436,6 +468,18 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       else localStorage.removeItem(STORAGE_RETO_SEMANAL_KEY);
     } catch {}
   }, [retoSemanal]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('racha_celebrado', JSON.stringify(celebrado));
+    } catch {}
+  }, [celebrado]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('racha_colores_ganados', JSON.stringify(coloresGanados));
+    } catch {}
+  }, [coloresGanados]);
 
   useEffect(() => {
     try {
@@ -592,15 +636,18 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         const existing = prev[existingIdx];
         if (existing.completado) {
           // Desmarcar
+          setLastRegistroUpdate(Date.now());
           return prev.filter((_, idx) => idx !== existingIdx);
         } else {
           // Marcar completado
+          setLastRegistroUpdate(Date.now());
           const updated = [...prev];
           updated[existingIdx] = { ...existing, completado: true };
           return updated;
         }
       } else {
         // Nuevo registro completado
+        setLastRegistroUpdate(Date.now());
         return [
           ...prev,
           {
@@ -622,6 +669,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
       const habito = habitos.find((h) => h.id === habitoId);
       const isCompleted = habito?.metaDiaria ? valor >= habito.metaDiaria : valor > 0;
+      setLastRegistroUpdate(Date.now());
       if (existingIdx >= 0) {
         const updated = [...prev];
         updated[existingIdx] = { ...updated[existingIdx], valor, completado: isCompleted };
@@ -653,6 +701,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem('racha_insignias');
     localStorage.removeItem('racha_llamas');
     localStorage.removeItem('racha_companera');
+    localStorage.removeItem('racha_celebrado');
+    localStorage.removeItem('racha_colores_ganados');
     localStorage.removeItem('racha_cajas_sin_rara');
     localStorage.removeItem('racha_cajas_abiertas');
     setCajasSinRara(0);
@@ -663,6 +713,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setInsigniasGanadas({});
     setLlamasGanadas({});
     setCompanera(null);
+    setCelebrado({ nivel: 1, etapa: 1, insignias: [], meses: [] });
+    setColoresGanados([]);
     localStorage.removeItem('racha_nombre');
     localStorage.removeItem('racha_acento');
     localStorage.removeItem('racha_apariencia');
@@ -687,6 +739,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         cajasPorAbrir,
         retoSemanal,
         insigniasGanadas, llamasGanadas, companera, cajasSinRara, cajasAbiertasTotales,
+        celebrado,
+        coloresGanados,
         nombre: localStorage.getItem('racha_nombre') || '',
         acento: localStorage.getItem('racha_acento') || 'ambar',
         apariencia: localStorage.getItem('racha_apariencia') || 'auto',
@@ -720,6 +774,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     insigniasGanadas?: Record<string, string>;
     llamasGanadas?: Record<string, string>;
     companera?: string | null;
+    celebrado?: { nivel: number; etapa: number; insignias: string[]; meses: string[] };
+    coloresGanados?: string[];
     cajasSinRara?: number;
     cajasAbiertasTotales?: number;
     nombre?: string;
@@ -764,6 +820,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (datos.insigniasGanadas && typeof datos.insigniasGanadas === 'object') setInsigniasGanadas(datos.insigniasGanadas);
       if (datos.llamasGanadas && typeof datos.llamasGanadas === 'object') setLlamasGanadas(datos.llamasGanadas);
       if (datos.companera === null || typeof datos.companera === 'string') setCompanera(datos.companera);
+      if (datos.celebrado) {
+        setCelebrado(datos.celebrado);
+        setIsFirstLoadWithoutCelebrado(false);
+      } else {
+        setIsFirstLoadWithoutCelebrado(true);
+      }
+      if (Array.isArray(datos.coloresGanados)) setColoresGanados(datos.coloresGanados);
       if (typeof datos.cajasSinRara === 'number') setCajasSinRara(datos.cajasSinRara);
       if (typeof datos.cajasAbiertasTotales === 'number') setCajasAbiertasTotales(datos.cajasAbiertasTotales);
       if (datos.retoSemanal !== undefined) setRetoSemanalState(datos.retoSemanal);
@@ -1001,6 +1064,32 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const progresoNivel = useMemo(() => calcularProgresoNivel(puntosTotales), [puntosTotales]);
   const etapaLlama = useMemo(() => etapaDeNivel(nivelActual), [nivelActual]);
 
+  // Unlock colors based on level
+  useEffect(() => {
+    let changed = false;
+    const newColors = [...coloresGanados];
+    // TEMAS is imported from types but wait, we don't have it imported here. Let's just check the known levels.
+    // Cielo: 6, Fucsia: 10, Bronce: 14, Atardecer: 18, Ciruela: 23, Rubi: 28, Oro: 35
+    const colorLevels = [
+      { key: 'cielo', nivel: 6 },
+      { key: 'fucsia', nivel: 10 },
+      { key: 'bronce', nivel: 14 },
+      { key: 'atardecer', nivel: 18 },
+      { key: 'ciruela', nivel: 23 },
+      { key: 'rubi', nivel: 28 },
+      { key: 'oro', nivel: 35 }
+    ];
+    for (const c of colorLevels) {
+      if (nivelActual >= c.nivel && !newColors.includes(c.key)) {
+        newColors.push(c.key);
+        changed = true;
+      }
+    }
+    if (changed) {
+      setColoresGanados(newColors);
+    }
+  }, [nivelActual, coloresGanados]);
+
   // Reto semanal evaluation & generation
   useEffect(() => {
     const currentToday = getTodayString();
@@ -1101,6 +1190,24 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [etapaLlama, insignias, habitos, registros, diasCongelados, llamasGanadas]);
 
+  useEffect(() => {
+    try { localStorage.setItem('racha_colores_ganados', JSON.stringify(coloresGanados)); } catch {}
+  }, [coloresGanados]);
+
+  useEffect(() => {
+    if (isFirstLoadWithoutCelebrado) {
+      const newCelebrado = {
+        nivel: nivelActual,
+        etapa: etapaLlama,
+        insignias: Object.keys(insigniasGanadas),
+        meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_'))
+      };
+      setCelebrado(newCelebrado);
+      localStorage.setItem('racha_celebrado', JSON.stringify(newCelebrado));
+      setIsFirstLoadWithoutCelebrado(false);
+    }
+  }, [isFirstLoadWithoutCelebrado, nivelActual, etapaLlama, insigniasGanadas, llamasGanadas]);
+
   return (
     <HabitContext.Provider
       value={{
@@ -1162,6 +1269,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         llamasGanadas,
         companera,
         setCompanera,
+        celebrado,
+        setCelebrado,
+        lastRegistroUpdate,
+        coloresGanados,
+        abrirColeccion,
+        setAbrirColeccion,
         abrirCajas,
         cajasSinRara,
         puntosTotales,

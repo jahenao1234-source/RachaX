@@ -27,18 +27,27 @@ export const COLOR_POR_MOMENTO: Record<MomentoDia, string> = {
 
 
 export type AparienciaTheme = 'auto' | 'claro' | 'oscuro';
-export type AcentoTheme = 'ambar' | 'jade' | 'rosa' | 'lima';
+export type AcentoTheme = 'ambar' | 'jade' | 'rosa' | 'lima' | 'cielo' | 'fucsia' | 'bronce' | 'atardecer' | 'ciruela' | 'rubi' | 'oro';
 
 export interface AccentTheme {
   key: AcentoTheme;
   label: string;
+  nivel: number;
+  acabado?: string;
 }
 
 export const THEMES: AccentTheme[] = [
-  { key: 'ambar', label: 'Ámbar' },
-  { key: 'jade', label: 'Jade' },
-  { key: 'rosa', label: 'Rosa' },
-  { key: 'lima', label: 'Lima' },
+  { key: 'ambar', label: 'Ámbar', nivel: 0 },
+  { key: 'jade', label: 'Jade', nivel: 0 },
+  { key: 'rosa', label: 'Rosa', nivel: 0 },
+  { key: 'lima', label: 'Lima', nivel: 0 },
+  { key: 'cielo', label: 'Cielo', nivel: 6 },
+  { key: 'fucsia', label: 'Fucsia', nivel: 10 },
+  { key: 'bronce', label: 'Bronce', nivel: 14, acabado: 'Metálico' },
+  { key: 'atardecer', label: 'Atardecer', nivel: 18, acabado: 'Degradado' },
+  { key: 'ciruela', label: 'Ciruela', nivel: 23, acabado: 'Joya con brillo' },
+  { key: 'rubi', label: 'Rubí', nivel: 28, acabado: 'Joya con brillo' },
+  { key: 'oro', label: 'Oro', nivel: 35, acabado: 'Metálico' },
 ];
 
 export const TEMAS = THEMES;

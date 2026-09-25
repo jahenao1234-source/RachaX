@@ -484,7 +484,7 @@ export const CreateHabitScreen: React.FC = () => {
             {isEditing && h?.reto && reto === h.reto.meta && (
               <div className="flex items-center gap-2.5 mt-3 mb-2" role="progressbar" aria-valuenow={contarProgresoReto(h, registros)} aria-valuemax={reto!}>
                 <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
-                  <div className="h-full rounded-full bg-ambar transition-all" style={{ width: `${Math.min(100, Math.round((contarProgresoReto(h, registros) / reto!) * 100))}%` }} />
+                  <div className="h-full rounded-full fill-logro transition-all" style={{ width: `${Math.min(100, Math.round((contarProgresoReto(h, registros) / reto!) * 100))}%` }} />
                 </div>
                 <span className="text-[12px] font-semibold text-text-muted font-mono whitespace-nowrap">
                   Reto · {contarProgresoReto(h, registros)} de {reto}
@@ -541,7 +541,7 @@ export const CreateHabitScreen: React.FC = () => {
             <button 
               onClick={onSubmit}
               disabled={!hasChanges() || !nombre.trim()}
-              className="w-full h-12 rounded-[12px] font-bold text-[15px] flex items-center justify-center gap-2 transition-transform active:scale-[0.98] disabled:opacity-100 disabled:cursor-not-allowed bg-ambar text-ink disabled:bg-surface-raised disabled:text-text-muted"
+              className="w-full h-12 rounded-[12px] font-bold text-[15px] flex items-center justify-center gap-2 transition-transform active:scale-[0.98] disabled:opacity-100 disabled:cursor-not-allowed logro text-ink disabled:bg-surface-raised disabled:text-text-muted"
             >
               <Check size={18} strokeWidth={2.5} />
               Guardar cambios
@@ -551,7 +551,7 @@ export const CreateHabitScreen: React.FC = () => {
           <button 
             onClick={onSubmit}
             disabled={!nombre.trim()}
-            className="w-full h-12 rounded-[12px] font-bold text-[15px] flex items-center justify-center gap-2 transition-transform active:scale-[0.98] disabled:opacity-100 disabled:cursor-not-allowed bg-ambar text-ink disabled:bg-surface-raised disabled:text-text-muted"
+            className="w-full h-12 rounded-[12px] font-bold text-[15px] flex items-center justify-center gap-2 transition-transform active:scale-[0.98] disabled:opacity-100 disabled:cursor-not-allowed logro text-ink disabled:bg-surface-raised disabled:text-text-muted"
           >
             {nombre.trim() ? <><Plus size={18} strokeWidth={2.5} /> Crear hábito</> : 'Escribe un nombre para crear'}
           </button>

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   User,
   Download,
@@ -96,6 +97,76 @@ const NameModal = ({
   );
 };
 
+// Componente para la hoja de Colores
+const ColoresSheet = ({
+  onClose,
+  coloresGanados,
+  nivelActual,
+  acentoActual,
+  setAcento
+}: any) => {
+  const premium = TEMAS.filter(t => t.nivel > 0);
+  const firstLockedIdx = premium.findIndex(t => !coloresGanados.includes(t.key));
+
+  // Escape cierra esta hoja (el de Perfil la ignora porque es una .sheet)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return createPortal(
+    <>
+      <div className="scrim" onClick={onClose} />
+      <section className="sheet" role="dialog" aria-modal="true" aria-labelledby="colores-title">
+        <div className="grab" />
+        <div className="flex items-start gap-3 p-3 px-5 border-b border-line">
+          <div className="flex-1 min-w-0">
+            <h2 id="colores-title" className="m-0 text-[24px] font-heading font-bold text-text">Colores por nivel</h2>
+            <p className="m-0 mt-0.5 text-[13px] text-text-muted leading-snug">Llegan al subir de nivel. Nunca se compran.</p>
+          </div>
+          <button onClick={onClose} aria-label="Cerrar" className="x">
+            <X size={20} strokeWidth={2.4} />
+          </button>
+        </div>
+        <ul className="flex-1 overflow-y-auto m-0 p-0 px-5 list-none pb-safe">
+          {premium.map((t, idx) => {
+            const isUnlocked = coloresGanados.includes(t.key);
+            return (
+              <React.Fragment key={t.key}>
+                {idx === firstLockedIdx && (
+                  <li className="py-3.5 text-[13px] font-bold text-text-muted border-b border-line">
+                    Estás en el nivel {nivelActual}
+                  </li>
+                )}
+                <li className={`flex items-center gap-3 min-h-[60px] py-2.5 ${idx !== premium.length - 1 ? 'border-b border-line' : ''}`}>
+                  <span className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center`} style={{ background: `var(--sw-${t.key})`, boxShadow: isUnlocked ? 'none' : 'inset 0 0 0 1px rgba(255,255,255,0.18)' }}></span>
+                  <span className="flex-1 min-w-0 flex flex-col justify-center">
+                    <b className="text-[15px] font-bold text-text leading-tight">{t.label}</b>
+                    {t.acabado && <span className="text-[13px] text-text-muted leading-tight">{t.acabado}</span>}
+                  </span>
+                  {isUnlocked ? (
+                    <button
+                      onClick={() => setAcento(t.key)}
+                      disabled={acentoActual === t.key}
+                      className="min-h-[44px] px-3.5 rounded-[10px] border border-line bg-surface-raised text-[14px] font-bold text-text flex items-center justify-center disabled:border-line-strong disabled:text-text-muted disabled:cursor-default cursor-pointer active:scale-95 transition-transform"
+                    >
+                      {acentoActual === t.key ? 'En uso' : 'Usar'}
+                    </button>
+                  ) : (
+                    <span className="text-[13px] font-bold text-text-muted">Nivel {t.nivel}</span>
+                  )}
+                </li>
+              </React.Fragment>
+            );
+          })}
+        </ul>
+      </section>
+    </>,
+    document.body
+  );
+};
+
 const AlertSheet = ({ title, desc, onPrimary, primaryText, onDanger, dangerText, onClose }: any) => (
   <>
     <div className="fixed inset-0 bg-black/60 z-40 transition-opacity" onClick={onClose} />
@@ -138,7 +209,10 @@ export const ProfileScreen: React.FC = () => {
     diasCongelados,
     insignias,
     companera,
-    cajasPorAbrir
+    cajasPorAbrir,
+    coloresGanados,
+    abrirColeccion,
+    setAbrirColeccion
   } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
@@ -160,6 +234,15 @@ export const ProfileScreen: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showAllBadges, setShowAllBadges] = useState(false);
   const [showAllLlamas, setShowAllLlamas] = useState(false);
+  const [showColoresSheet, setShowColoresSheet] = useState(false);
+
+  // "Verla en tu colección" desde la celebración de la llama
+  useEffect(() => {
+    if (abrirColeccion) {
+      setShowAllLlamas(true);
+      setAbrirColeccion(false);
+    }
+  }, [abrirColeccion, setAbrirColeccion]);
   const vecesCumplidas = registros.filter((r) => r.completado).length;
 
   // Escape cierra la hoja que esté abierta
@@ -172,6 +255,7 @@ export const ProfileScreen: React.FC = () => {
       setShowDeleteConfirm(false);
       setShowAllBadges(false);
       setShowAllLlamas(false);
+      setShowColoresSheet(false);
       setImportPendingData(null);
     };
     window.addEventListener('keydown', onKey);
@@ -481,19 +565,50 @@ export const ProfileScreen: React.FC = () => {
 
         <h3 className="m-0 mt-4.5 text-[13px] font-semibold text-text-muted" id="co2">Color de tus logros</h3>
         <div className="grid grid-cols-4 gap-2 mt-2.5" role="radiogroup" aria-labelledby="co2">
-          {TEMAS.map(t => (
-            <label key={t.key} className="relative block cursor-pointer">
-              <input type="radio" name="acento" checked={acento === t.key} onChange={() => setAcento(t.key as any)} className="absolute w-px h-px opacity-0 overflow-hidden" />
-              <span className={`min-h-[76px] p-2.5 px-1.5 flex flex-col items-center justify-center gap-2 rounded-[14px] border ${acento === t.key ? 'border-[1.5px] border-text text-text font-bold bg-surface' : 'border-line bg-surface text-text-muted font-semibold'} text-[13px]`}>
-                <span className={`w-8 h-8 rounded-full flex items-center justify-center`} style={{ backgroundColor: `var(--sw-${t.key})`, color: acento === t.key ? 'var(--ink)' : 'transparent', boxShadow: `inset 0 0 0 1.5px var(--sw-${t.key}-ring)` }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          {TEMAS.filter(t => t.nivel === 0 || coloresGanados.includes(t.key) || t === TEMAS.filter(x => x.nivel > 0 && !coloresGanados.includes(x.key))[0]).map(t => {
+            const isLocked = t.nivel > 0 && !coloresGanados.includes(t.key);
+            if (isLocked) {
+              return (
+                <label key={t.key} className="relative block cursor-default">
+                  <input type="radio" name="acento" disabled aria-describedby={`lk-${t.key}`} className="absolute w-px h-px opacity-0 overflow-hidden" />
+                  <span className="min-h-[76px] p-2.5 px-1.5 flex flex-col items-center justify-center gap-1 rounded-[14px] border border-dashed border-line-strong bg-transparent text-[13px] text-text-muted">
+                    <span className="w-8 h-8 rounded-full flex items-center justify-center text-text" style={{ background: `color-mix(in srgb, var(--sw-${t.key}) 35%, transparent)`, boxShadow: `inset 0 0 0 1.5px var(--line-strong)` }} aria-hidden="true">
+                      <Lock size={14} strokeWidth={2.4} />
+                    </span>
+                    <span className="text-[12px]">{t.label}</span>
+                    <span id={`lk-${t.key}`} className="text-[12px] font-bold text-text">Nivel {t.nivel}</span>
+                  </span>
+                </label>
+              );
+            }
+            return (
+              <label key={t.key} className="relative block cursor-pointer">
+                <input type="radio" name="acento" checked={acento === t.key} onChange={() => setAcento(t.key as any)} className="absolute w-px h-px opacity-0 overflow-hidden" />
+                <span className={`min-h-[76px] p-2.5 px-1.5 flex flex-col items-center justify-center gap-2 rounded-[14px] border ${acento === t.key ? 'border-[1.5px] border-text text-text font-bold bg-surface' : 'border-line bg-surface text-text-muted font-semibold'} text-[13px]`}>
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center`} style={{ background: `var(--sw-${t.key})`, color: acento === t.key ? 'var(--ink)' : 'transparent', boxShadow: acento === t.key ? 'none' : `inset 0 0 0 1.5px var(--sw-${t.key}-ring)` }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  </span>
+                  <span>{t.label}</span>
                 </span>
-                <span>{t.label}</span>
-              </span>
-            </label>
-          ))}
+              </label>
+            );
+          })}
         </div>
         <p className="m-0 mt-2 text-[13px] text-text-muted">Pinta lo que ya cumpliste: días completos, hábitos marcados y el botón Crear.</p>
+        {(() => {
+          const nextColor = TEMAS.find(t => t.nivel > 0 && !coloresGanados.includes(t.key));
+          if (nextColor) {
+            return <p className="m-0 mt-1.5 text-[13px] text-text-muted">Ganas colores nuevos al subir de nivel. El siguiente: nivel {nextColor.nivel} (te faltan {nextColor.nivel - nivelActual}).</p>;
+          }
+          return <p className="m-0 mt-1.5 text-[13px] text-text-muted">Ya tienes todos los colores.</p>;
+        })()}
+        
+        <button onClick={() => setShowColoresSheet(true)} className="w-full min-h-[48px] flex items-center justify-between border-t border-line text-text text-[15px] font-semibold bg-transparent border-none mt-2 p-0 cursor-pointer">
+          Ver los colores por nivel
+          <span className="text-text-muted flex shrink-0">
+            <ChevronRight size={18} strokeWidth={2.2} />
+          </span>
+        </button>
       </section>
 
       {/* Tus datos */}
@@ -688,6 +803,16 @@ export const ProfileScreen: React.FC = () => {
             })}
           </div>
         </div>
+      )}
+
+      {showColoresSheet && (
+        <ColoresSheet
+          onClose={() => setShowColoresSheet(false)}
+          coloresGanados={coloresGanados}
+          nivelActual={nivelActual}
+          acentoActual={acento}
+          setAcento={setAcento}
+        />
       )}
     </div>
   );

@@ -10,6 +10,9 @@ interface RetoCumplidoSheetProps {
   habito: Habito | null;
   onSiguienteNivel: (siguienteMeta: number) => void;
   onQuitarReto: () => void;
+  tambien?: string | null;
+  onAbrirCajas?: () => void;
+  insigniaGanada?: string | null;
 }
 
 const calcularSemanasPasadas = (inicio: string, fin: string) => {
@@ -20,7 +23,7 @@ const calcularSemanasPasadas = (inicio: string, fin: string) => {
   return Math.max(1, Math.ceil(dias / 7));
 };
 
-export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, onSiguienteNivel, onQuitarReto }) => {
+export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, onSiguienteNivel, onQuitarReto, tambien, onAbrirCajas, insigniaGanada }) => {
   if (!habito || !habito.reto) return null;
 
   const [isCajaOpen, setIsCajaOpen] = useState(false);
@@ -92,14 +95,14 @@ export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, on
               {(meta === 7 || meta === 4) && (
                 <>
                   <li><span className="cond">+100</span> puntos</li>
-                  <li className="giftli"><button className="giftbtn" onClick={() => setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
+                  <li className="giftli"><button className="giftbtn" onClick={() => onAbrirCajas ? onAbrirCajas() : setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
                 </>
               )}
               {(meta === 30 || meta === 8) && (
                 <>
                   <li><span className="cond">+300</span> puntos</li>
                   <li><Sparkles size={14} strokeWidth={2} className="mr-1.5" />1 comodín</li>
-                  <li className="giftli"><button className="giftbtn" onClick={() => setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
+                  <li className="giftli"><button className="giftbtn" onClick={() => onAbrirCajas ? onAbrirCajas() : setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
                 </>
               )}
               {(meta === 66 || meta === 12) && (
@@ -107,16 +110,21 @@ export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, on
                   <li><span className="cond">+1000</span> puntos</li>
                   <li>Llama Raíz</li>
                   <li>Certificado</li>
-                  <li className="giftli"><button className="giftbtn" onClick={() => setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
+                  <li className="giftli"><button className="giftbtn" onClick={() => onAbrirCajas ? onAbrirCajas() : setIsCajaOpen(true)}><Gift size={14} strokeWidth={2} className="mr-1.5" />caja sorpresa<ChevronRight size={13} strokeWidth={2} className="ml-1 opacity-70" /></button></li>
                 </>
               )}
+              {insigniaGanada && (
+                <li>insignia {insigniaGanada}</li>
+              )}
             </ul>
+
+            {tambien && <p className="text-[14px] text-text-muted mb-4 font-semibold">{tambien}</p>}
 
             {siguienteMeta ? (
               <>
                 <button 
                   onClick={() => onSiguienteNivel(siguienteMeta!)}
-                  className="w-full h-12 rounded-[12px] bg-ambar text-ink font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98]"
+                  className="w-full h-12 rounded-[12px] logro text-ink font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98]"
                 >
                   Ir por {siguienteMeta} {unit}
                 </button>
@@ -130,7 +138,7 @@ export const RetoCumplidoSheet: React.FC<RetoCumplidoSheetProps> = ({ habito, on
             ) : (
               <button 
                 onClick={onQuitarReto}
-                className="w-full h-12 rounded-[12px] bg-ambar text-ink font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98]"
+                className="w-full h-12 rounded-[12px] logro text-ink font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98]"
               >
                 Seguir sin reto
               </button>

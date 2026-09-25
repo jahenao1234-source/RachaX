@@ -15,9 +15,8 @@ import { RutinaEditorModal } from '../screens/RutinaEditorModal';
 import { TareaEditorModal } from '../screens/TareaEditorModal';
 import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
-import { RetoCumplidoSheet } from '../screens/RetoCumplidoSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
-import { BadgeUnlockToast } from '../badges/BadgeUnlockToast';
+import { CelebracionesManager } from '../juego/CelebracionesManager';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
 import { Flame } from 'lucide-react';
 
@@ -30,42 +29,8 @@ export const AppShell: React.FC = () => {
     habitos,
     habitoRecienCreadoId,
     setHabitoRecienCreadoId,
-    habitosActivos,
-    registros,
-    editarHabito,
-    closeCreateModal,
-    agregarPremio
+    closeCreateModal
   } = useHabitStore();
-
-  const [retoCumplidoHabitId, setRetoCumplidoHabitId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (retoCumplidoHabitId) return;
-
-    for (const habito of habitosActivos) {
-      if (habito.reto && !habito.reto.cumplidoEn) {
-        const progreso = contarProgresoReto(habito, registros);
-        if (progreso >= habito.reto.meta) {
-          setRetoCumplidoHabitId(habito.id);
-          editarHabito(habito.id, { reto: { ...habito.reto, cumplidoEn: getTodayString() } });
-          
-          const meta = habito.reto.meta;
-          const clave = `reto-habito:${habito.id}:${habito.reto.inicio}`;
-          const normalizedMeta = meta === 4 ? 7 : (meta === 8 ? 30 : (meta === 12 ? 66 : meta));
-          if (meta === 7 || meta === 4) {
-            agregarPremio(`Reto de ${meta} ${meta === 4 ? 'semanas' : 'días'} completado`, 100, clave, { cajas: 1, tipo: 'reto_habito', meta: normalizedMeta });
-          } else if (meta === 30 || meta === 8) {
-            agregarPremio(`Reto de ${meta} ${meta === 8 ? 'semanas' : 'días'} completado`, 300, clave, { comodines: 1, cajas: 1, tipo: 'reto_habito', meta: normalizedMeta });
-          } else if (meta === 66 || meta === 12) {
-            agregarPremio(`Reto de ${meta} ${meta === 12 ? 'semanas' : 'días'} completado`, 1000, clave, { comodines: 1, cajas: 1, tipo: 'reto_habito', meta: normalizedMeta });
-          }
-          break;
-        }
-      }
-    }
-  }, [habitosActivos, registros, retoCumplidoHabitId, editarHabito, agregarPremio]);
-
-  const retoHabito = retoCumplidoHabitId ? habitosActivos.find((h) => h.id === retoCumplidoHabitId) || null : null;
 
   const renderActiveScreen = () => {
     const screenToRender = activeTab === 'crear' ? 'hoy' : activeTab;
@@ -149,7 +114,7 @@ export const AppShell: React.FC = () => {
         <RutinaEditorModal />
         <TareaEditorModal />
         <OnboardingModal />
-        <BadgeUnlockToast />
+        <CelebracionesManager />
 
         {/* Create Habit Modal */}
         {activeTab === 'crear' && <CreateHabitScreen />}
@@ -165,23 +130,6 @@ export const AppShell: React.FC = () => {
           onCreateAnother={() => {
             setHabitoRecienCreadoId(null);
             // stays in 'crear' mode, so the create screen remains open
-          }}
-        />
-
-        {/* Reto Cumplido Sheet */}
-        <RetoCumplidoSheet 
-          habito={retoHabito}
-          onSiguienteNivel={(siguienteMeta) => {
-            if (retoHabito && retoHabito.reto) {
-              editarHabito(retoHabito.id, { reto: { meta: siguienteMeta, inicio: retoHabito.reto.inicio } });
-            }
-            setRetoCumplidoHabitId(null);
-          }}
-          onQuitarReto={() => {
-            if (retoHabito) {
-              editarHabito(retoHabito.id, { reto: undefined });
-            }
-            setRetoCumplidoHabitId(null);
           }}
         />
       </main>

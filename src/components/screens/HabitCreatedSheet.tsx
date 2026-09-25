@@ -70,7 +70,7 @@ export const HabitCreatedSheet: React.FC<HabitCreatedSheetProps> = ({ habito, on
 
             <button 
               onClick={onViewToday}
-              className="w-full h-12 rounded-xl bg-ambar text-ink font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98] mt-3"
+              className="w-full h-12 rounded-xl logro text-ink font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98] mt-3"
             >
               Ver en Hoy
             </button>

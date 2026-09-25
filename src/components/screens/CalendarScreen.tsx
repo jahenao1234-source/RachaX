@@ -275,7 +275,7 @@ export const CalendarScreen: React.FC = () => {
           
           switch (state) {
             case 'full':
-              btnClass += " bg-ambar text-ink border border-ambar-text";
+              btnClass += " fill-logro text-ink border border-ambar-text";
               ariaLabel += `, todo cumplido`;
               break;
             case 'part':
@@ -327,7 +327,7 @@ export const CalendarScreen: React.FC = () => {
               <span className={hasBar ? 'pb-1' : ''}>{day.dayNumber}</span>
               {hasBar && (
                 <i className="absolute left-[6px] right-[6px] bottom-[6px] h-1 rounded-full bg-track-empty block overflow-hidden" aria-hidden="true">
-                  <b className="block h-full rounded-full bg-ambar-text" style={{ width: barWidth }} />
+                  <b className="block h-full rounded-full fill-logro" style={{ width: barWidth }} />
                 </i>
               )}
             </button>
@@ -337,7 +337,7 @@ export const CalendarScreen: React.FC = () => {
       
       <div className="flex flex-wrap gap-x-3.5 gap-y-2 mt-3 text-[12px] text-text-muted">
         <span className="inline-flex items-center gap-1.5">
-          <i className="w-3 h-3 rounded-[3px] border border-ambar-text bg-ambar" /> Todo cumplido
+          <i className="w-3 h-3 rounded-[3px] border border-ambar-text fill-logro" /> Todo cumplido
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i className="w-3 h-3 rounded-[3px] border border-line bg-surface relative overflow-hidden"><b className="absolute left-px right-px bottom-px h-[3px] bg-ambar-text" /></i> Una parte
@@ -477,7 +477,7 @@ export const CalendarScreen: React.FC = () => {
                             {!isHecho && isNeg && <span className="ml-1.5 text-[11px] font-bold px-1.5 py-px rounded bg-surface-raised text-text-muted">Evitar</span>}
                           </span>
                         </div>
-                        <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shrink-0 p-0 ${isHecho ? 'bg-ambar border-ambar text-ink' : 'bg-transparent border-text-muted text-transparent'}`}>
+                        <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shrink-0 p-0 ${isHecho ? 'fill-logro border-ambar text-ink' : 'bg-transparent border-text-muted text-transparent'}`}>
                           {isHecho && <Check size={18} strokeWidth={3} />}
                         </div>
                       </button>
@@ -552,7 +552,7 @@ export const CalendarScreen: React.FC = () => {
                               {h.completadosSemana} de {meta} esta semana
                             </span>
                           </div>
-                          <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shrink-0 p-0 ${isHecho ? 'bg-ambar border-ambar text-ink' : 'bg-transparent border-text-muted text-transparent'}`}>
+                          <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shrink-0 p-0 ${isHecho ? 'fill-logro border-ambar text-ink' : 'bg-transparent border-text-muted text-transparent'}`}>
                             {isHecho && <Check size={18} strokeWidth={3} />}
                           </div>
                         </button>

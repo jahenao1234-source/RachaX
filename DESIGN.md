@@ -244,6 +244,17 @@ Grafito neutro con tres acentos que **significan algo**; ningún color es decora
   | Jade | #43D9A3 | #43D9A3 | #14261F | #0B7A52 | #DDF5EA |
   | Rosa | #F59AC4 | #F59AC4 | #2A1C24 | #A8356E | #FCE6F0 |
   | Lima | #C5E25A | #C5E25A | #22271A | #5A6E0F | #EEF6D2 |
+- **Colores premium que se ganan por nivel** (aprobado el 24 sep, design/maqueta-colores.html): los 4 de arriba siguen libres; estos 7 llegan al subir de nivel y nunca se compran. Ningún nivel coincide con un cambio de etapa de la llama. Descartados por confundirse: Aurora (con Cielo), Plata y platino (con el gris de sin cumplir y el texto), Galaxia (con el lila), naranja (con el coral), verdes (con Jade) y marrones (con Bronce).
+  | Color | Nivel | Acabado | Relleno (paradas del degradado, 135°) | Texto oscuro | Tinte oscuro | Texto claro | Tinte claro |
+  |---|---|---|---|---|---|---|---|
+  | Cielo | 6 | joya | #5CC8FF | #5CC8FF | #132430 | #0A6FA3 | #E0F3FD |
+  | Fucsia | 10 | joya | #E879F9 | #E879F9 | #2A1A2D | #A1239F | #FBE8FD |
+  | Bronce | 14 | metálico | #C07D52 0%, #F6C39B 38%, #D98E5F 62%, #B8744A 100% | #E3A277 | #2A2019 | #8A4B23 | #FBEADF |
+  | Atardecer | 18 | degradado | #FFC06A, #FF9A8B 55%, #F57AB0 | #FF8FB8 | #2C1E22 | #B23A5E | #FFE8EA |
+  | Ciruela | 23 | joya con brillo | #C8629F 0%, #E58CCB 38%, #D46AB0 62%, #C8629F 100% | #E07EC0 | #2B1B27 | #9C2F7E | #FAE6F3 |
+  | Rubí | 28 | joya con brillo | #E8386D 0%, #FF7FA3 38%, #F2336E 62%, #E8386D 100% | #FF5C8A | #2E1A21 | #B3124A | #FDE4EC |
+  | Oro | 35 | metálico | #D4A437 0%, #FFE7A0 38%, #F2C14E 62%, #B8892A 100% | #F2C94E | #2A2512 | #7A5A00 | #FFF4D4 |
+  El token --ambar es el tono sólido (la parada del medio) y --logro el degradado. Con contención: el degradado va solo en el botón principal, el "+", el check, las muestras y la celebración; los días completos y las barras usan el tono sólido. En modo claro, las barras y los días completos usan el texto claro (para todos los colores, también Lima). En Perfil se ve solo el siguiente color por ganar, atenuado, con "Nivel N" y "El siguiente: nivel N (te faltan M)"; "Ver los colores por nivel" abre la escalera (los tuyos con "Usar" o "En uso", la línea "Estás en el nivel N" y los que faltan a color completo). Al subir al nivel de un color, la celebración trae "Desbloqueaste el color X · Para tus logros, en Perfil › Apariencia" con "Usarlo" (y luego "Deshacer").
 
 ### Secondary
 - **Lila Nivel** (lila): pastilla de nivel, barra de puntos, comodines, hábitos de la noche, el enlace "Siguiente" de la tarjeta Tu día y el resaltado de la fila siguiente. Texto secundario sobre lila en lila-ink.

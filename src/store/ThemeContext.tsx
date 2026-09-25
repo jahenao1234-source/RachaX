@@ -91,6 +91,17 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   const setAcento = (nuevo: AcentoTheme) => {
+    const themeDef = THEMES.find(t => t.key === nuevo);
+    if (!themeDef) return;
+    if (themeDef.nivel > 0) {
+      let ganados: string[] = [];
+      try {
+        const stored = localStorage.getItem('racha_colores_ganados');
+        if (stored) ganados = JSON.parse(stored);
+      } catch {}
+      if (!ganados.includes(nuevo)) return; // No está ganado
+    }
+
     setAcentoState(nuevo);
     try { localStorage.setItem(STORAGE_ACENTO_KEY, nuevo); } catch {}
     applyAcento(nuevo);

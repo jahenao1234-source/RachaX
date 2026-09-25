@@ -154,7 +154,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
   const dayBtnClass = (state: string) => {
     const base = "w-full aspect-square rounded-[10px] flex items-center justify-center font-number text-[14px] font-bold relative active:scale-95 transition-transform overflow-hidden select-none outline-none";
     switch (state) {
-      case 'done': return `${base} bg-ambar text-ink border border-ambar-text`;
+      case 'done': return `${base} fill-logro text-ink border border-ambar-text`;
       case 'miss': return `${base} bg-surface text-text-muted border border-line`;
       case 'como': return `${base} bg-comodin-bg text-comodin-text border-[1.5px] border-lila-text`;
       case 'today': return `${base} bg-transparent text-text border-[1.5px] border-dashed border-text`;
@@ -301,7 +301,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
               </div>
               <div className="flex items-center gap-3 mb-2" role="progressbar" aria-valuenow={progresoReto} aria-valuemax={habit.reto!.meta}>
                 <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
-                  <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((progresoReto / habit.reto!.meta) * 100))}%` }} />
+                  <div className="h-full rounded-full fill-logro transition-all" style={{ width: `${Math.min(100, Math.round((progresoReto / habit.reto!.meta) * 100))}%` }} />
                 </div>
                 <span className="text-[14px] font-bold text-text font-number whitespace-nowrap">
                   {progresoReto === 0 ? `Reto de ${habit.reto!.meta} días` : `${progresoReto} de ${habit.reto!.meta}`}
@@ -407,7 +407,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-semibold text-text m-0 truncate">Insignia {proxBadge.nombre}</p>
                 <div className="h-1.5 rounded-full bg-track-empty overflow-hidden mt-1.5">
-                  <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((proxBadge.progresoActual / proxBadge.meta) * 100))}%` }} />
+                  <div className="h-full rounded-full fill-logro transition-all" style={{ width: `${Math.min(100, Math.round((proxBadge.progresoActual / proxBadge.meta) * 100))}%` }} />
                 </div>
               </div>
               <span className="text-[13px] text-text-muted ml-2 shrink-0">faltan {proxBadge.meta - proxBadge.progresoActual}</span>
@@ -439,7 +439,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
         <footer className="absolute bottom-0 inset-x-0 bg-bg p-4 pb-safe-4 border-t border-line/50 z-20">
           <button 
             onClick={() => openEditHabit(habit)}
-            className="w-full h-12 rounded-[14px] bg-ambar text-ink text-[15px] font-bold flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
+            className="w-full h-12 rounded-[14px] logro text-ink text-[15px] font-bold flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
           >
             <Edit3 size={17} strokeWidth={2.5} /> Editar hábito
           </button>
@@ -540,7 +540,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
                         }
                         setActionDay(null);
                       }}
-                      className="w-full h-12 rounded-[12px] bg-ambar text-ink font-bold text-[15px] mb-2"
+                      className="w-full h-12 rounded-[12px] logro text-ink font-bold text-[15px] mb-2"
                     >
                       Sí lo cumplí
                     </button>

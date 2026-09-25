@@ -342,7 +342,7 @@ export const TodayScreen: React.FC = () => {
             } else if (d.estado === 2) {
               cls = "bg-comodin-bg border-[1.5px] border-lila text-comodin-text";
             } else if (d.estado === 1) {
-              cls = "bg-ambar text-ink";
+              cls = "fill-logro";
             } else {
               cls = "bg-surface border border-line text-text-muted";
             }
@@ -383,7 +383,7 @@ export const TodayScreen: React.FC = () => {
           )}
           <div className="flex gap-1" role="img" aria-label={`${completedCount} de ${totalToday} hábitos cumplidos hoy`}>
             {habitosOrdenados.map(h => (
-               <i key={h.id} className={`flex-1 h-3 rounded-[4px] ${esHabitoCompletado(h.id) ? 'bg-ambar' : 'bg-track'}`}></i>
+               <i key={h.id} className={`flex-1 h-3 rounded-[4px] ${esHabitoCompletado(h.id) ? 'fill-logro' : 'bg-track'}`}></i>
             ))}
           </div>
           <div className="flex justify-between items-center gap-2.5 mt-0.5">
@@ -593,7 +593,7 @@ export const TodayScreen: React.FC = () => {
                           {habito.metaDiaria && !isHecho ? (
                              <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="h-[32px] px-3 rounded-[10px] border border-line-strong bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
                           ) : (
-                             <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'bg-ambar border-none' : `bg-transparent border-2 ${isNext ? '' : 'border-line-strong'}`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
+                             <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'logro border-none' : `bg-transparent border-2 ${isNext ? '' : 'border-line-strong'}`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
                                 {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
                              </button>
                           )}
@@ -628,7 +628,7 @@ export const TodayScreen: React.FC = () => {
           <div className="flex-1">
             <p className="m-0 flex justify-between text-[13px]"><span className="font-semibold text-text">Insignia {proximaInsignia.nombre}</span><span className="text-text-muted">faltan {proximaInsignia.meta - proximaInsignia.progresoActual}</span></p>
             <div className="mt-1.5 h-1.5 rounded-full bg-track overflow-hidden">
-               <div className="h-full rounded-full bg-ambar" style={{ width: `${(proximaInsignia.progresoActual / proximaInsignia.meta) * 100}%` }}></div>
+               <div className="h-full rounded-full fill-logro" style={{ width: `${(proximaInsignia.progresoActual / proximaInsignia.meta) * 100}%` }}></div>
             </div>
           </div>
         </div>

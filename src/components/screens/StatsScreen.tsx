@@ -205,7 +205,7 @@ export const StatsScreen: React.FC = () => {
         </p>
         <button 
           onClick={openCreateMenu}
-          className="h-12 px-6 rounded-[14px] bg-ambar text-ink font-bold text-[15px] flex items-center gap-2 justify-center active:scale-95 transition-transform"
+          className="h-12 px-6 rounded-[14px] logro text-ink font-bold text-[15px] flex items-center gap-2 justify-center active:scale-95 transition-transform"
         >
           <Plus size={20} strokeWidth={2.5} />
           Crear mi primer hábito
@@ -333,7 +333,7 @@ export const StatsScreen: React.FC = () => {
             <div className="flex items-center gap-3">
               <span className="w-[92px] text-[15px] font-semibold text-text capitalize shrink-0">{monthNames[currMonthIdx]}</span>
               <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
-                <div className="h-full bg-ambar-text rounded-full" style={{ width: `${thisMonthData.pct}%` }} />
+                <div className="h-full fill-logro rounded-full" style={{ width: `${thisMonthData.pct}%` }} />
               </div>
               <span className="w-10 text-right font-number text-[20px] font-bold text-text shrink-0">{thisMonthData.pct}%</span>
             </div>
