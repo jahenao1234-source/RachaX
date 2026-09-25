@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { BadgeIcon } from '../badges/BadgeIcon';
-import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target } from 'lucide-react';
+import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target, Info } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { HabitIcon } from '../common/HabitIcon';
@@ -223,6 +223,19 @@ export const TodayScreen: React.FC = () => {
   }, [hoy, registros, habitosActivos, diasCongelados]);
 
   const habitosPendientes = habitosDeHoy.filter(h => !esHabitoCompletado(h.id));
+
+  // Verificar si hay algún registro completado en toda la app para mostrar el obtip
+  const hayRegistrosCompletados = useMemo(() => registros.some(r => r.completado), [registros]);
+  // El aviso "Tu primer día" se va con el primer hábito marcado y no vuelve, aunque se desmarque
+  const [primerDiaVisto, setPrimerDiaVisto] = useState(() => {
+    try { return localStorage.getItem('racha_primer_dia') === 'visto'; } catch { return false; }
+  });
+  useEffect(() => {
+    if (hayRegistrosCompletados && !primerDiaVisto) {
+      setPrimerDiaVisto(true);
+      try { localStorage.setItem('racha_primer_dia', 'visto'); } catch {}
+    }
+  }, [hayRegistrosCompletados, primerDiaVisto]);
 
   // Determinar la fila siguiente
   const siguienteFila = useMemo(() => {
@@ -473,6 +486,12 @@ export const TodayScreen: React.FC = () => {
       )}
 
       {/* 6. Misiones Agrupadas */}
+      {!hayRegistrosCompletados && !primerDiaVisto && (
+        <div className="obtip" role="note">
+          <Info size={18} strokeWidth={2.2} />
+          <span><b>Tu primer día.</b> Si ya lo hiciste hoy, márcalo y suma tus primeros 10 puntos.</span>
+        </div>
+      )}
       <div className="mt-4.5 flex justify-between items-baseline mb-3">
         <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
         <span className="text-[13px] text-text-muted">

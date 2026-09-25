@@ -1,249 +1,289 @@
-import React, { useState } from 'react';
-import {
-  Flame,
-  ChevronRight,
-  ChevronLeft,
-  Sparkles,
-  ShieldCheck,
-  Smartphone,
-  WifiOff,
-  CheckCircle2,
-  Calendar,
-  Layers,
-  ArrowRight,
-} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ShieldCheck, Gift, Medal, Sunrise, Sun, Moon, Clock } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
+import { useTheme } from '../../store/ThemeContext';
+import { HabitIcon } from '../common/HabitIcon';
+import { Llama } from '../juego/Llama';
+import { getTodayString } from '../../utils/habitUtils';
+import { MomentoDia } from '../../types';
+
+// Maqueta aprobada: design/maqueta-onboarding.html (DESIGN.md, "Onboarding")
+const HABITOS = [
+  { nombre: 'Beber un vaso de agua', icono: 'GlassWater' },
+  { nombre: 'Leer 10 minutos', icono: 'BookOpen' },
+  { nombre: 'Moverte 15 minutos', icono: 'Dumbbell' },
+  { nombre: 'Acostarte antes de las 11', icono: 'Bed' },
+  { nombre: 'Respirar 5 minutos', icono: 'Wind' },
+  { nombre: 'Soltar el celular antes de dormir', icono: 'Smartphone' },
+  { nombre: 'Estudiar 25 minutos', icono: 'GraduationCap' },
+  { nombre: 'Ordenar 10 minutos', icono: 'Home' },
+];
+const PROPIO = -1;
+
+const SUGERENCIAS = ['despertarme', 'tomarme el café', 'almorzar', 'llegar a la casa', 'cenar', 'lavarme los dientes'];
+
+const MOMENTOS: { id: MomentoDia; label: string; Icon: React.FC<{ size?: number }>; color: string }[] = [
+  { id: 'manana', label: 'Mañana', Icon: Sunrise, color: 'var(--manana-text)' },
+  { id: 'tarde', label: 'Tarde', Icon: Sun, color: 'var(--coral-text)' },
+  { id: 'noche', label: 'Noche', Icon: Moon, color: 'var(--lila-text)' },
+  { id: 'flexible', label: 'Todo el día', Icon: Clock, color: 'var(--text)' },
+];
+
+const TOTAL = 5;
 
 export const OnboardingModal: React.FC = () => {
-  const { isOnboardingOpen, completeOnboarding } = useHabitStore();
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const { isOnboardingOpen, completeOnboarding, crearHabito, habitos, setActiveTab } = useHabitStore();
+  const { setNombre } = useTheme();
+
+  const [soloRepaso, setSoloRepaso] = useState(false);
+  const [paso, setPaso] = useState(0);
+  const [nombre, setNombreInput] = useState('');
+  const [elegido, setElegido] = useState<number | null>(null);
+  const [propio, setPropio] = useState('');
+  const [ancla, setAncla] = useState('');
+  const [momento, setMomento] = useState<MomentoDia>('flexible');
+  const [aceptaReto, setAceptaReto] = useState(false);
+  const [aviso, setAviso] = useState(false);
+  const terminando = useRef(false);
+  const h1Ref = useRef<HTMLHeadingElement>(null);
+
+  // Cada vez que se abre, empieza desde la bienvenida. Quien ya tiene hábitos solo repasa (pantallas 1 y 6).
+  useEffect(() => {
+    if (isOnboardingOpen) {
+      setSoloRepaso(habitos.length > 0);
+      setPaso(0);
+      setAviso(false);
+      terminando.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnboardingOpen]);
+
+  // Al cambiar de paso, el foco va al título
+  useEffect(() => {
+    if (isOnboardingOpen) h1Ref.current?.focus();
+  }, [paso, isOnboardingOpen]);
 
   if (!isOnboardingOpen) return null;
 
-  const totalSlides = 3;
+  const pasos = soloRepaso ? [0, 5] : [0, 1, 2, 3, 4, 5];
+  const actual = pasos[paso] ?? 0;
+  const total = soloRepaso ? 1 : TOTAL;
+  const avance = soloRepaso ? 1 : paso;
 
-  const handleNext = () => {
-    if (currentSlide < totalSlides - 1) {
-      setCurrentSlide((prev) => prev + 1);
-    } else {
-      completeOnboarding();
+  const habito = elegido === PROPIO ? { nombre: propio.trim(), icono: 'Sparkles' } : elegido !== null ? HABITOS[elegido] : null;
+  const habitoListo = !!habito && habito.nombre.length > 0;
+
+  const seguir = () => { setAviso(false); setPaso(p => Math.min(p + 1, pasos.length - 1)); };
+  const atras = () => setPaso(p => Math.max(p - 1, 0));
+
+  const terminar = () => {
+    if (terminando.current) return;
+    terminando.current = true;
+    if (!soloRepaso) {
+      if (nombre.trim()) setNombre(nombre.trim());
+      if (habito && habitoListo) {
+        crearHabito({
+          nombre: habito.nombre,
+          icono: habito.icono,
+          color: '#FFB547', // crearHabito lo cambia por el color del momento
+          momento,
+          frecuencia: 'diario',
+          tipo: 'positivo',
+          anclaje: ancla.trim() || undefined,
+          reto: aceptaReto ? { meta: 30, inicio: getTodayString() } : undefined,
+        });
+      }
     }
+    completeOnboarding();
+    setActiveTab('hoy');
   };
 
-  const handlePrev = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide((prev) => prev - 1);
-    }
-  };
+  const titulo = (texto: string, clase = 'cond obh') => (
+    <h1 className={clase} ref={h1Ref} tabIndex={-1} style={{ outline: 'none' }}>{texto}</h1>
+  );
 
-  return (
-    <div
-      id="onboarding-overlay"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-bg/95 backdrop-blur-lg animate-fadeIn p-4 overflow-y-auto"
-    >
-      <div
-        id="onboarding-card"
-        className="w-full max-w-[420px] bg-bg border border-line rounded-[32px] p-6 sm:p-7 flex flex-col justify-between min-h-[580px] shadow-2xl relative overflow-hidden text-center"
-      >
-        {/* Ambient Top Glow */}
-        <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-32 bg-[var(--accent-20)] rounded-full blur-3xl pointer-events-none" />
+  let cuerpo: React.ReactNode = null;
+  let pie: React.ReactNode = null;
 
-        {/* Top Header Controls: Skip & Indicator */}
-        <div className="flex items-center justify-between relative z-10 w-full mb-2">
-          {currentSlide > 0 ? (
-            <button
-              type="button"
-              onClick={handlePrev}
-              className="text-xs font-semibold text-text-muted hover:text-text flex items-center gap-1 transition-colors py-1 px-2"
-            >
-              <ChevronLeft size={16} />
-              <span>Atrás</span>
-            </button>
-          ) : (
-            <div className="w-12" />
-          )}
+  if (actual === 0) {
+    cuerpo = (
+      <div className="obwelcome">
+        <div className="obhero" aria-hidden="true"><Llama etapa={1} size={210} sola /></div>
+        {titulo('Que no se apague lo que empiezas', 'cond obtitle')}
+        <p className="oblead">Un hábito, amarrado a algo que ya haces. Si fallas un día, no pierdes nada: lo que cuenta es volver.</p>
+        <p className="sub obcap">Esta es Chispa, tu llama. Crece cada vez que cumples.</p>
+      </div>
+    );
+    pie = <button className="btnp full" style={{ margin: 0 }} onClick={seguir}>Empezar</button>;
+  }
 
-          <button
-            type="button"
-            onClick={completeOnboarding}
-            className="text-xs font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors py-1 px-2"
-          >
-            Omitir
-          </button>
-        </div>
+  if (actual === 1) {
+    cuerpo = (
+      <form id="ob-nombre" className="obbody" onSubmit={(e) => { e.preventDefault(); seguir(); }}>
+        {titulo('¿Cómo te llamas?')}
+        <p className="sub obsub">Para saludarte cada día en Hoy.</p>
+        <label className="lbl" htmlFor="ob-nm" style={{ display: 'block', marginTop: '22px' }}>Tu nombre</label>
+        <input
+          id="ob-nm"
+          className="input"
+          type="text"
+          value={nombre}
+          onChange={(e) => setNombreInput(e.target.value)}
+          autoComplete="given-name"
+          autoCapitalize="words"
+          enterKeyHint="next"
+          maxLength={24}
+        />
+      </form>
+    );
+    pie = (
+      <>
+        <button type="submit" form="ob-nombre" className="btnp full" style={{ margin: 0 }}>Seguir</button>
+        <button className="link quiet center" onClick={() => { setNombreInput(''); seguir(); }}>Prefiero no decirlo</button>
+      </>
+    );
+  }
 
-        {/* SLIDES CONTENT */}
-        <div className="flex-1 flex flex-col items-center justify-center py-4 relative z-10">
-          {/* SLIDE 1: Welcome & Consistency */}
-          {currentSlide === 0 && (
-            <div className="space-y-6 animate-fadeIn w-full flex flex-col items-center">
-              {/* Violet Flame Brand Badge */}
-              <div className="relative">
-                <div className="w-24 h-24 rounded-[28px] bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center text-text shadow-2xl shadow-[var(--accent-40)] animate-pulse">
-                  <Flame size={54} className="fill-white drop-shadow-md" />
-                </div>
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-surface border border-line flex items-center justify-center text-ambar shadow-lg">
-                  <Sparkles size={16} />
-                </div>
-              </div>
+  if (actual === 2) {
+    cuerpo = (
+      <div className="obbody">
+        {titulo('¿Con qué hábito empiezas?')}
+        <p className="sub obsub">Uno solo. Cuando lo tengas, sumas más.</p>
+        <fieldset className="hopts">
+          <legend className="sr-only">Tu primer hábito</legend>
+          {HABITOS.map((h, i) => (
+            <label key={h.nombre} className={`hopt${elegido === i ? ' on' : ''}`}>
+              <input type="radio" name="ob-habito" className="sr-only" checked={elegido === i} onChange={() => setElegido(i)} />
+              <span className="hopti" aria-hidden="true"><HabitIcon name={h.icono} size={19} /></span>
+              <span className="hoptn">{h.nombre}</span>
+              <span className="rdot" aria-hidden="true" />
+            </label>
+          ))}
+          <label className={`hopt mine${elegido === PROPIO ? ' on' : ''}`}>
+            <input type="radio" name="ob-habito" className="sr-only" checked={elegido === PROPIO} onChange={() => setElegido(PROPIO)} />
+            <span className="hopti" aria-hidden="true"><HabitIcon name="PenLine" size={18} /></span>
+            <span className="hoptn">Escribir el mío</span>
+            <span className="rdot" aria-hidden="true" />
+          </label>
+        </fieldset>
+        {elegido === PROPIO && (
+          <>
+            <label className="lbl" htmlFor="ob-propio" style={{ display: 'block', margin: '14px 0 8px' }}>Tu hábito</label>
+            <input id="ob-propio" className="input" type="text" value={propio} onChange={(e) => setPropio(e.target.value)} maxLength={40} autoFocus />
+            <p className="sub" style={{ marginTop: '8px' }}>Mejor si es pequeño: algo que puedas hacer hasta en un mal día.</p>
+          </>
+        )}
+      </div>
+    );
+    pie = (
+      <>
+        {aviso && !habitoListo && <p className="sub" role="status" style={{ margin: '0 0 6px', textAlign: 'center' }}>Elige uno para seguir.</p>}
+        <button
+          className={`btnp full${habitoListo ? '' : ' off'}`}
+          style={{ margin: 0 }}
+          aria-disabled={!habitoListo}
+          onClick={() => (habitoListo ? seguir() : setAviso(true))}
+        >
+          Seguir
+        </button>
+      </>
+    );
+  }
 
-              <div className="space-y-2 max-w-[320px]">
-                <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--accent)] font-semibold">
-                  Bienvenido a Racha
-                </span>
-                <h2 className="text-2xl font-bold font-heading text-text tracking-tight leading-snug">
-                  Construye hábitos que perduran
-                </h2>
-                <p className="text-xs text-text-muted leading-relaxed pt-1">
-                  La constancia no se logra por fuerza de voluntad extrema, sino paso a paso día tras día con metas claras y alcanzables.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 2: Streaks and Heatmap */}
-          {currentSlide === 1 && (
-            <div className="space-y-5 animate-fadeIn w-full flex flex-col items-center">
-              {/* Mini Interactive Heatmap Preview */}
-              <div className="w-full max-w-[300px] p-3.5 rounded-[20px] bg-surface border border-line shadow-xl space-y-2.5 text-left">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar size={13} className="text-[var(--accent)]" />
-                    <span className="text-[11px] font-heading font-bold text-text">
-                      Mapa de Constancia
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-ambar/15 text-ambar text-[10px] font-bold">
-                    <Flame size={11} className="fill-ambar" />
-                    <span>14 días</span>
-                  </div>
-                </div>
-
-                {/* 4x7 Visual Heatmap Grid */}
-                <div className="grid grid-cols-7 gap-1.5 pt-1">
-                  {Array.from({ length: 21 }).map((_, i) => {
-                    const isDone = i < 15 || i === 18 || i === 20;
-                    const isToday = i === 20;
-                    return (
-                      <div
-                        key={i}
-                        className={`aspect-square rounded-[6px] flex items-center justify-center transition-all ${
-                          isDone
-                            ? 'bg-[var(--accent)] shadow-sm shadow-[var(--accent-50)]'
-                            : 'bg-surface-raised border border-line'
-                        } ${isToday ? 'ring-2 ring-white ring-offset-1 ring-offset-surface' : ''}`}
-                      >
-                        {isDone && <CheckCircle2 size={9} className="text-text" />}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="flex items-center justify-between text-[9px] text-text-muted pt-0.5">
-                  <span>Menos</span>
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 rounded-[2px] bg-surface-raised" />
-                    <span className="w-2 h-2 rounded-[2px] bg-[var(--accent-40)]" />
-                    <span className="w-2 h-2 rounded-[2px] bg-[var(--accent)]" />
-                  </div>
-                  <span>Más</span>
-                </div>
-              </div>
-
-              <div className="space-y-2 max-w-[320px]">
-                <h2 className="text-2xl font-bold font-heading text-text tracking-tight leading-snug">
-                  Marca, no rompas la cadena
-                </h2>
-                <p className="text-xs text-text-muted leading-relaxed">
-                  Completa tus hábitos diarios con un toque, alimenta tus rachas y descubre tus patrones de éxito en gráficos visuales.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* SLIDE 3: Private, Offline, PWA */}
-          {currentSlide === 2 && (
-            <div className="space-y-5 animate-fadeIn w-full flex flex-col items-center">
-              {/* 3 Pillar Cards */}
-              <div className="w-full max-w-[320px] space-y-2 text-left">
-                <div className="p-3 rounded-[14px] bg-surface border border-line flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                    <ShieldCheck size={18} />
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-bold font-heading text-text">100% Privado</h3>
-                    <p className="text-[10px] text-text-muted">Tus datos quedan exclusivamente en tu dispositivo.</p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-[14px] bg-surface border border-line flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-ambar/15 text-ambar flex items-center justify-center shrink-0">
-                    <WifiOff size={18} />
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-bold font-heading text-text">Modo Offline</h3>
-                    <p className="text-[10px] text-text-muted">Funciona sin conexión a internet en todo momento.</p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-[14px] bg-surface border border-line flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-ambar/15 text-ambar flex items-center justify-center shrink-0">
-                    <Smartphone size={18} />
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-bold font-heading text-text">Instalable como App</h3>
-                    <p className="text-[10px] text-text-muted">Agrégala a tu pantalla de inicio como PWA nativa.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-1.5 max-w-[320px]">
-                <h2 className="text-2xl font-bold font-heading text-text tracking-tight">
-                  Todo tuyo, siempre
-                </h2>
-                <p className="text-xs text-text-muted leading-relaxed">
-                  Sin registros obligatorios ni suscripciones. Tu espacio personal de crecimiento.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* BOTTOM CONTROLS: Dots & Next Button */}
-        <div className="space-y-4 pt-2 relative z-10 w-full">
-          {/* Step Dots */}
-          <div className="flex items-center justify-center gap-1.5">
-            {Array.from({ length: totalSlides }).map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setCurrentSlide(idx)}
-                aria-label={`Ir al slide ${idx + 1}`}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentSlide === idx
-                    ? 'w-7 bg-[var(--accent)] shadow-sm shadow-[var(--accent-50)]'
-                    : 'w-2 bg-line hover:bg-[#34384A]'
-                }`}
-              />
+  if (actual === 3 && habito) {
+    cuerpo = (
+      <div className="obbody">
+        {titulo('Amárralo a algo que ya haces')}
+        <p className="sub obsub">Así tu propio día te lo recuerda.</p>
+        <div className="obhab"><span className="hopti" aria-hidden="true"><HabitIcon name={habito.icono} size={18} /></span>{habito.nombre}</div>
+        <div className="field">
+          <p className="lbl" id="ob-lbl-ancla">¿Después de qué? <span className="opt">opcional</span></p>
+          <div className="input anchor">
+            <span className="pre" aria-hidden="true">Después de</span>
+            <input type="text" aria-labelledby="ob-lbl-ancla" value={ancla} onChange={(e) => setAncla(e.target.value)} placeholder="algo que ya haces" maxLength={40} />
+          </div>
+          <div className="sugs">
+            {SUGERENCIAS.map(s => (
+              <button key={s} type="button" className={`chip sm${ancla === s ? ' on' : ''}`} aria-pressed={ancla === s} onClick={() => setAncla(s)}>{s}</button>
             ))}
           </div>
+        </div>
+        <fieldset style={{ border: 'none', margin: '18px 0 0', padding: 0 }}>
+          <legend className="lbl" style={{ padding: 0 }}>Momento del día</legend>
+          <div className="moms">
+            {MOMENTOS.map(({ id, label, Icon, color }) => (
+              <label key={id} className={`mom${momento === id ? ' on' : ''}`}>
+                <input type="radio" name="ob-momento" className="sr-only" checked={momento === id} onChange={() => setMomento(id)} />
+                <span style={{ color, display: 'flex' }} aria-hidden="true"><Icon size={18} /></span>
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+    );
+    pie = <button className="btnp full" style={{ margin: 0 }} onClick={seguir}>Seguir</button>;
+  }
 
-          {/* Action CTA Button */}
-          <button
-            id="onboarding-next-btn"
-            type="button"
-            onClick={handleNext}
-            className="w-full py-3.5 px-5 rounded-[14px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-text font-heading font-bold text-sm shadow-xl shadow-[var(--accent-30)] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          >
-            <span>{currentSlide === totalSlides - 1 ? 'Empezar' : 'Siguiente'}</span>
-            {currentSlide === totalSlides - 1 ? (
-              <Sparkles size={16} />
-            ) : (
-              <ArrowRight size={16} />
-            )}
-          </button>
+  if (actual === 4 && habito) {
+    cuerpo = (
+      <div className="obbody">
+        {titulo('¿Vas por 30 días cumplidos?')}
+        <p className="sub obsub">Marca {habito.nombre} 30 veces, sin fecha límite. No tienen que ser seguidas: si fallas un día, no pierdes lo que llevas.</p>
+        <div className="card obprize">
+          <p className="lbl" style={{ margin: '0 0 10px' }}>Al cumplirlo ganas</p>
+          <ul className="obplist">
+            <li><span className="cond obpn">+300</span> puntos</li>
+            <li><span className="obpi" aria-hidden="true"><ShieldCheck size={16} /></span>1 comodín</li>
+            <li><span className="obpi" aria-hidden="true"><Medal size={16} /></span>la insignia Retos 30</li>
+            <li><span className="obpi" aria-hidden="true"><Gift size={16} /></span>1 caja sorpresa</li>
+          </ul>
         </div>
       </div>
+    );
+    pie = (
+      <>
+        <button className="btnp full" style={{ margin: 0 }} onClick={() => { setAceptaReto(true); seguir(); }}>Voy por 30 días</button>
+        <button className="link quiet center" onClick={() => { setAceptaReto(false); seguir(); }}>Ahora no</button>
+      </>
+    );
+  }
+
+  if (actual === 5) {
+    cuerpo = (
+      <div className="obbody">
+        {titulo('Así funciona Racha')}
+        <ul className="obidea">
+          <li>
+            <span className="obic" aria-hidden="true"><Llama etapa={1} size={34} sola /></span>
+            <span><b>Cumples y tu llama crece</b><span className="sub">Cada hábito suma 10 puntos. Al subir de nivel, Chispa cambia.</span></span>
+          </li>
+          <li>
+            <span className="obic shield" aria-hidden="true"><ShieldCheck size={20} /></span>
+            <span><b>Si fallas un día, no pierdes nada</b><span className="sub">Tienes comodines para congelar un día que no pudiste. Y el día que vuelves, todo vale el doble.</span></span>
+          </li>
+          <li>
+            <span className="obic gift" aria-hidden="true"><Gift size={20} /></span>
+            <span><b>Los retos traen premios</b><span className="sub">Cajas sorpresa, insignias y llamas nuevas para tu colección.</span></span>
+          </li>
+        </ul>
+      </div>
+    );
+    pie = <button className="btnp full" style={{ margin: 0 }} onClick={terminar}>Ir a mi día</button>;
+  }
+
+  return (
+    <div className="onb fixed inset-0 z-[70] bg-bg flex flex-col h-dvh" role="dialog" aria-modal="true" aria-label="Bienvenida a Racha">
+      {actual > 0 && (
+        <div className="obtop">
+          <button className="obback" onClick={atras} aria-label="Atrás"><ChevronLeft size={22} strokeWidth={2.2} /></button>
+          <div className="obprog" role="progressbar" aria-label="Avance" aria-valuemin={1} aria-valuemax={total} aria-valuenow={avance} aria-valuetext={`Paso ${avance} de ${total}`}>
+            {Array.from({ length: total }, (_, i) => <i key={i} className={i < avance ? 'on' : ''} />)}
+          </div>
+        </div>
+      )}
+      <div className="flex-1 overflow-y-auto">{cuerpo}</div>
+      <div className="obfoot">{pie}</div>
     </div>
   );
 };

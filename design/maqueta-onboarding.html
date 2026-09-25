@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta: onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.saludo{margin:14px 0 0;font-size:16px;font-weight:600;color:var(--text)}
+.lvlbig{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none}
+.lvlbigart{display:flex;flex-shrink:0}
+.lvlbigcol .lvltrack2,.llamacard .lvltrack2{flex:none}
+.lvlbigcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.lvlbigtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cabtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.cabcomp{display:flex;align-items:center;gap:12px;margin-top:10px}
+.cabart{display:flex;flex-shrink:0;border-radius:12px}
+.cabart:focus-visible,.llamacard:focus-visible,.lvlbig:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.llamacard{display:flex;align-items:center;gap:14px;margin-top:14px;color:var(--text);text-decoration:none}
+.hrow{display:flex;flex-direction:column;align-items:stretch;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.hrow.next{border:1.5px solid var(--coral);background:color-mix(in srgb,var(--coral) 8%,var(--surface))}
+.hrowtop{display:flex;align-items:center;gap:10px}
+.hic{width:38px;height:38px;border-radius:11px;background:var(--coral);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hrow .name{display:block;font-size:15px;font-weight:600}
+.meta2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--lila-text);margin-top:2px}
+.sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.cnt{display:flex;gap:3px;margin-top:6px;max-width:130px}.cnt i{flex:1;height:6px;border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1px var(--muted)}.cnt i.on{background:var(--text)}
+.emp{min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--coral);background:transparent;color:var(--coral-text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.plus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font-size:14px;font-weight:700}
+.retobar{display:flex;align-items:center;gap:8px;margin-top:10px}.retobar i{flex:1;height:6px;border-radius:99px;background:var(--line-strong);overflow:hidden;display:block}.retobar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}.retobar span{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.field{padding:18px 0 0}
+.lbl{margin:0 0 8px;font-size:13px;font-weight:500;color:var(--muted)}
+.opt{font-size:12px;font-weight:600;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--muted)}
+.chip.sm{min-height:44px;padding:6px 14px;color:var(--muted)}
+.chip.on{background:var(--raised);color:var(--text);font-weight:700;border-color:var(--text)}
+.sugs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.input{flex:1;min-width:0;min-height:52px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:14px;display:flex;align-items:center;font-size:15px;font-weight:600}
+.input.empty{color:var(--muted);font-weight:500;border-color:var(--muted)}
+.input.anchor{min-height:48px;padding:12px 14px;gap:6px}
+.pre{color:var(--muted);font-weight:500}
+.ph{color:var(--muted);font-weight:500}
+.moms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mom{height:64px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:600;white-space:nowrap}
+.mom.on{color:var(--text);font-weight:700;border-width:1.5px}
+.obtop{display:flex;align-items:center;gap:10px;padding:10px 16px 4px}
+.obback{width:44px;height:44px;margin-left:-8px;border:none;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obprog{flex:1;display:flex;gap:4px}
+.obprog i{flex:1;height:4px;border-radius:999px;background:var(--track-empty)}
+.obprog i.on{background:var(--text)}
+.obbody{padding:14px 20px 24px}
+.obwelcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;padding-top:40px}
+.obhero{display:flex;justify-content:center}
+.obtitle{margin:18px 0 0;font-size:40px;line-height:1.02}
+.oblead{margin:12px 0 0;font-size:17px;line-height:1.4;color:var(--text)}
+.obcap{margin-top:14px}
+.obh{margin:6px 0 0;font-size:32px;line-height:1.05}
+.obsub{margin-top:6px;font-size:15px;line-height:1.4}
+.obfoot{padding:12px 20px 22px;display:grid;gap:4px;border-top:1px solid var(--line);background:var(--bg)}
+.obfoot .btnp.off{opacity:1;background:var(--raised);background-image:none;color:var(--muted)}
+.hopts{display:grid;gap:8px;margin-top:18px}
+.hopt{min-height:52px;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:15px;font-weight:600;text-align:left}
+.hopt.on{border:1.5px solid var(--text)}
+.hopt.on .rdot{border:5px solid var(--text)}
+.hopt.mine{border-style:dashed;border-color:var(--line-strong)}
+.hopti{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hopt.on .hopti{color:var(--text)}
+.hoptn{flex:1;min-width:0}
+.rdot{width:20px;height:20px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.obhab{margin-top:18px;display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:15px;font-weight:700}
+.obhab .hopti{width:32px;height:32px;color:var(--text)}
+.obprize{margin-top:18px;padding:14px 16px}
+.obplist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.obplist li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.obpn{min-width:44px;font-size:20px;color:var(--ambar-text)}
+.obpi{width:44px;display:flex;justify-content:center;color:var(--ambar-text)}
+.obidea{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:18px}
+.obidea li{display:flex;gap:14px;align-items:flex-start}
+.obidea b{display:block;font-size:17px;line-height:1.25}
+.obidea .sub{display:block;margin-top:4px;font-size:14px;line-height:1.45}
+.obic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface);border:1px solid var(--line)}
+.obic.shield{color:var(--comodin-text);background:var(--comodin-bg);border-color:transparent}
+.obic.gift{color:var(--ambar-text);background:var(--ambar-tint);border-color:transparent}
+.obtip{margin-top:14px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--ambar-tint);color:var(--text);font-size:14px;line-height:1.4}
+.obtip svg{color:var(--ambar-text);flex-shrink:0;margin-top:1px}
+.chk0{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;position:relative}
+.chk0::after{content:"";position:absolute;inset:-6px}
+</style>
+</head>
+<body>
+<div class="col"><h2>1 · Bienvenida (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="scroll"><div class="obbody obwelcome">
+      <div class="obhero" aria-hidden="true"><svg width="210" height="210" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m10bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e9o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e9m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e9c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m10cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m10cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e9o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e9m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e9c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></div>
+      <h1 class="cond obtitle" id="obO1">Que no se apague lo que empiezas</h1>
+      <p class="oblead">Un hábito, amarrado a algo que ya haces. Si fallas un día, no pierdes nada: lo que cuenta es volver.</p>
+      <p class="sub obcap">Esta es Chispa, tu llama. Crece cada vez que cumples.</p></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Empezar</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>2 · Tu nombre (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 1 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh">¿Cómo te llamas?</h1>
+      <p class="sub obsub">Para saludarte cada día en Hoy.</p>
+      <label class="lbl" for="nmO2" style="display:block;margin-top:22px">Tu nombre</label>
+      <div class="input" id="nmO2" style="min-height:52px">Johnatan</div></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Seguir</button>
+      <button class="link quiet center">Prefiero no decirlo</button>
+    </div>
+  </div></div></div>
+<div class="col"><h2>3 · Tu primer hábito (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 2 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh" id="hbO3">¿Con qué hábito empiezas?</h1>
+      <p class="sub obsub">Uno solo. Cuando lo tengas, sumas más.</p>
+      <div class="hopts" role="radiogroup" aria-labelledby="hbO3">
+        <button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span><span class="hoptn">Beber un vaso de agua</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt on" role="radio" aria-checked="true"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><span class="hoptn">Leer 10 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span><span class="hoptn">Moverte 15 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span><span class="hoptn">Acostarte antes de las 11</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg></span><span class="hoptn">Respirar 5 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><span class="hoptn">Soltar el celular antes de dormir</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><span class="hoptn">Estudiar 25 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="hoptn">Ordenar 10 minutos</span><span class="rdot" aria-hidden="true"></span></button>
+        <button class="hopt mine" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span><span class="hoptn">Escribir el mío</span><span class="rdot" aria-hidden="true"></span></button>
+      </div></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Seguir</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>4 · Escribir el mío (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 2 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody" style="transform:translateY(-133px)">
+      <h1 class="cond obh" id="hbO4">¿Con qué hábito empiezas?</h1>
+      <p class="sub obsub">Uno solo. Cuando lo tengas, sumas más.</p>
+      <div class="hopts" role="radiogroup" aria-labelledby="hbO4">
+        <button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span><span class="hoptn">Beber un vaso de agua</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><span class="hoptn">Leer 10 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span><span class="hoptn">Moverte 15 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span><span class="hoptn">Acostarte antes de las 11</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg></span><span class="hoptn">Respirar 5 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><span class="hoptn">Soltar el celular antes de dormir</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><span class="hoptn">Estudiar 25 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="hoptn">Ordenar 10 minutos</span><span class="rdot" aria-hidden="true"></span></button>
+        <div class="hopt mine on" role="radio" aria-checked="true"><span class="hopti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span><span class="hoptn">Escribir el mío</span><span class="rdot" aria-hidden="true"></span></div>
+        <label class="lbl" for="hbp" style="display:block;margin:6px 0 0">Tu hábito</label>
+        <div class="input" id="hbp" style="border-color:var(--text)">Caminar 10 minutos</div>
+        <p class="sub" style="margin:0">Mejor si es pequeño: algo que puedas hacer hasta en un mal día.</p>
+      </div></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Seguir</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>5 · Amárralo (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 3 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="3"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh">Amárralo a algo que ya haces</h1>
+      <p class="sub obsub">Así tu propio día te lo recuerda.</p>
+      <div class="obhab"><span class="hopti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>Leer 10 minutos</div>
+      <div class="field">
+        <p class="lbl" id="anO5">¿Después de qué? <span class="opt">opcional</span></p>
+        <div class="input anchor" aria-labelledby="anO5"><span class="pre">Después de</span><span>cenar</span></div>
+        <div class="sugs"><button class="chip sm" aria-pressed="false">despertarme</button><button class="chip sm" aria-pressed="false">tomarme el café</button><button class="chip sm" aria-pressed="false">almorzar</button><button class="chip sm" aria-pressed="false">llegar a la casa</button><button class="chip sm on" aria-pressed="true">cenar</button><button class="chip sm" aria-pressed="false">lavarme los dientes</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="moO6">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="moO6"><button role="radio" aria-checked="false" class="mom"><span style="color:var(--ambar-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--coral-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="true" class="mom on" style="background:var(--raised);border-color:var(--text)"><span style="color:var(--lila-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button></div>
+      </div></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Seguir</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>6 · ¿Vas por 30 días cumplidos? (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 4 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="4"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh">¿Vas por 30 días cumplidos?</h1>
+      <p class="sub obsub">Marca Leer 10 minutos 30 veces, sin fecha límite. No tienen que ser seguidas: si fallas un día, no pierdes lo que llevas.</p>
+      <div class="card obprize">
+        <p class="lbl" style="margin:0 0 10px">Al cumplirlo ganas</p>
+        <ul class="obplist" role="list">
+          <li><span class="cond obpn">+300</span> puntos</li>
+          <li><span class="obpi" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>1 comodín</li>
+          <li><span class="obpi" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span>la insignia Retos 30</li>
+          <li><span class="obpi" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span>1 caja sorpresa</li>
+        </ul>
+      </div></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Voy por 30 días</button>
+      <button class="link quiet center">Ahora no</button>
+    </div>
+  </div></div></div>
+<div class="col"><h2>7 · Así funciona Racha (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 5 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh">Así funciona Racha</h1>
+      <ul class="obidea" role="list">
+        <li><span class="obic flame" aria-hidden="true"><svg width="34" height="34" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m12bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e11o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e11m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e11c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m12cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m12cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e11o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e11m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e11c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span><span><b>Cumples y tu llama crece</b><span class="sub">Cada hábito suma 10 puntos. Al subir de nivel, Chispa cambia.</span></span></li>
+        <li><span class="obic shield" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span><b>Si fallas un día, no pierdes nada</b><span class="sub">Tienes comodines para congelar un día que no pudiste. Y el día que vuelves, todo vale el doble.</span></span></li>
+        <li><span class="obic gift" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span><span><b>Los retos traen premios</b><span class="sub">Cajas sorpresa, insignias y llamas nuevas para tu colección.</span></span></li>
+      </ul></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Ir a mi día</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>8 · Llegas a Hoy (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 1: 0 de 100 puntos para el nivel 2. Ver tu llama">
+        <span class="cond lvlname">Nivel 1</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:0%"></b></i>
+        <span class="lvlnums">0 / 100</span>
+      </a>
+      <div class="cabtop"><p class="saludo" style="margin:0">Buenas noches, Johnatan</p><span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>3 comodines</span></div>
+      <div class="cabcomp">
+        <a class="cabart" href="#" aria-label="Tu llama: Chispa. Ver tu llama"><svg width="64" height="64" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m14bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e13o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e13m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e13c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m14cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m14cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e13o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e13m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e13c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></a>
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+          <p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 0 de 1</p>
+        </div>
+      </div>
+      <div class="obtip" role="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span><b>Tu primer día.</b> Si ya lo hiciste hoy, márcalo y suma tus primeros 10 puntos.</span></div>
+      <p class="lbl" style="margin:18px 0 8px;display:flex;align-items:center;gap:6px"><span style="color:var(--lila-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+      <div class="hrow next">
+        <div class="hrowtop">
+          <span class="hic" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+          <span style="flex:1;min-width:0">
+            <span class="name">Leer 10 minutos</span>
+            <span class="meta2"><span class="sigue">Sigue</span>Después de cenar</span>
+          </span>
+          <button class="chk0" aria-label="Marcar Leer 10 minutos"></button>
+        </div>
+        <div class="retobar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-valuetext="0 de 30 días" aria-label="Reto de Leer 10 minutos"><i><b style="width:0%"></b></i><span>Reto · 0 de 30</span></div>
+      </div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>9 · Bienvenida (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="scroll"><div class="obbody obwelcome">
+      <div class="obhero" aria-hidden="true"><svg width="210" height="210" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m16bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e15o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e15m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e15c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m16cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m16cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e15o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e15m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e15c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></div>
+      <h1 class="cond obtitle" id="obO7">Que no se apague lo que empiezas</h1>
+      <p class="oblead">Un hábito, amarrado a algo que ya haces. Si fallas un día, no pierdes nada: lo que cuenta es volver.</p>
+      <p class="sub obcap">Esta es Chispa, tu llama. Crece cada vez que cumples.</p></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Empezar</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>10 · Tu primer hábito, sin elegir (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 2 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh" id="hbO8">¿Con qué hábito empiezas?</h1>
+      <p class="sub obsub">Uno solo. Cuando lo tengas, sumas más.</p>
+      <div class="hopts" role="radiogroup" aria-labelledby="hbO8">
+        <button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span><span class="hoptn">Beber un vaso de agua</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><span class="hoptn">Leer 10 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span><span class="hoptn">Moverte 15 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span><span class="hoptn">Acostarte antes de las 11</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg></span><span class="hoptn">Respirar 5 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><span class="hoptn">Soltar el celular antes de dormir</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><span class="hoptn">Estudiar 25 minutos</span><span class="rdot" aria-hidden="true"></span></button><button class="hopt" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="hoptn">Ordenar 10 minutos</span><span class="rdot" aria-hidden="true"></span></button>
+        <button class="hopt mine" role="radio" aria-checked="false"><span class="hopti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span><span class="hoptn">Escribir el mío</span><span class="rdot" aria-hidden="true"></span></button>
+      </div></div></div>
+    <div class="obfoot">
+      <p class="sub" style="margin:0 0 6px;text-align:center">Elige uno para seguir.</p><button class="btnp full off" aria-disabled="true" style="margin:0">Seguir</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>11 · Amárralo (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 3 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="3"><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh">Amárralo a algo que ya haces</h1>
+      <p class="sub obsub">Así tu propio día te lo recuerda.</p>
+      <div class="obhab"><span class="hopti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>Leer 10 minutos</div>
+      <div class="field">
+        <p class="lbl" id="anO9">¿Después de qué? <span class="opt">opcional</span></p>
+        <div class="input anchor" aria-labelledby="anO9"><span class="pre">Después de</span><span>cenar</span></div>
+        <div class="sugs"><button class="chip sm" aria-pressed="false">despertarme</button><button class="chip sm" aria-pressed="false">tomarme el café</button><button class="chip sm" aria-pressed="false">almorzar</button><button class="chip sm" aria-pressed="false">llegar a la casa</button><button class="chip sm on" aria-pressed="true">cenar</button><button class="chip sm" aria-pressed="false">lavarme los dientes</button></div>
+      </div>
+      <div class="field">
+        <p class="lbl" id="moO10">Momento del día</p>
+        <div class="moms" role="radiogroup" aria-labelledby="moO10"><button role="radio" aria-checked="false" class="mom"><span style="color:var(--ambar-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span><span>Mañana</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--coral-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span><span>Tarde</span></button><button role="radio" aria-checked="true" class="mom on" style="background:var(--raised);border-color:var(--text)"><span style="color:var(--lila-text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span><span>Noche</span></button><button role="radio" aria-checked="false" class="mom"><span style="color:var(--text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span>Todo el día</span></button></div>
+      </div></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Seguir</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>12 · Así funciona Racha (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="obtop">
+      <button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="obprog" role="progressbar" aria-label="Avance" aria-valuetext="Paso 5 de 5" aria-valuemin="1" aria-valuemax="5" aria-valuenow="5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    </div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh">Así funciona Racha</h1>
+      <ul class="obidea" role="list">
+        <li><span class="obic flame" aria-hidden="true"><svg width="34" height="34" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m18bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e17o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e17m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e17c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m18cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m18cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e17o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e17m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e17c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></span><span><b>Cumples y tu llama crece</b><span class="sub">Cada hábito suma 10 puntos. Al subir de nivel, Chispa cambia.</span></span></li>
+        <li><span class="obic shield" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span><b>Si fallas un día, no pierdes nada</b><span class="sub">Tienes comodines para congelar un día que no pudiste. Y el día que vuelves, todo vale el doble.</span></span></li>
+        <li><span class="obic gift" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span><span><b>Los retos traen premios</b><span class="sub">Cajas sorpresa, insignias y llamas nuevas para tu colección.</span></span></li>
+      </ul></div></div>
+    <div class="obfoot">
+      <button class="btnp full" style="margin:0">Ir a mi día</button>
+      
+    </div>
+  </div></div></div>
+<div class="col"><h2>13 · Llegas a Hoy (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <a class="lvlstrip" href="#" aria-label="Nivel 1: 0 de 100 puntos para el nivel 2. Ver tu llama">
+        <span class="cond lvlname">Nivel 1</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:0%"></b></i>
+        <span class="lvlnums">0 / 100</span>
+      </a>
+      <div class="cabtop"><p class="saludo" style="margin:0">Buenas noches, Johnatan</p><span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>3 comodines</span></div>
+      <div class="cabcomp">
+        <a class="cabart" href="#" aria-label="Tu llama: Chispa. Ver tu llama"><svg width="64" height="64" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m20bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e19o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e19m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e19c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m20cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m20cl)"><g transform="translate(29 46) scale(0.42)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e19o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e19m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e19c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><circle cx="34" cy="40" r="2.2" fill="#FFD37F"/><circle cx="66" cy="34" r="1.8" fill="#FFB547"/><circle cx="62" cy="52" r="1.4" fill="#FFE9B0"/></g></svg></a>
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Jueves 24</h1>
+          <p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 0 de 1</p>
+        </div>
+      </div>
+      <div class="obtip" role="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span><b>Tu primer día.</b> Si ya lo hiciste hoy, márcalo y suma tus primeros 10 puntos.</span></div>
+      <p class="lbl" style="margin:18px 0 8px;display:flex;align-items:center;gap:6px"><span style="color:var(--lila-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+      <div class="hrow next">
+        <div class="hrowtop">
+          <span class="hic" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+          <span style="flex:1;min-width:0">
+            <span class="name">Leer 10 minutos</span>
+            <span class="meta2"><span class="sigue">Sigue</span>Después de cenar</span>
+          </span>
+          <button class="chk0" aria-label="Marcar Leer 10 minutos"></button>
+        </div>
+        <div class="retobar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" aria-valuetext="0 de 30 días" aria-label="Reto de Leer 10 minutos"><i><b style="width:0%"></b></i><span>Reto · 0 de 30</span></div>
+      </div></div></div>
+    
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+</body>
+</html>

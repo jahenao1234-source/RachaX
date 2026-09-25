@@ -194,7 +194,15 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_ONBOARDING_KEY);
-      return stored !== 'true';
+      if (stored !== 'true') {
+        const storedHabitos = localStorage.getItem(STORAGE_HABITOS_KEY);
+        if (storedHabitos && JSON.parse(storedHabitos).length > 0) {
+          localStorage.setItem(STORAGE_ONBOARDING_KEY, 'true');
+          return false;
+        }
+        return true;
+      }
+      return false;
     } catch {
       return false;
     }
@@ -547,7 +555,6 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.warn('Error guardando racha_onboarding:', e);
     }
     setIsOnboardingOpen(false);
-    openCreateModal();
   };
 
   const openCreateModal = () => {
@@ -726,6 +733,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setColoresGanados([]);
     setAvatarPreferido('inicial');
     localStorage.removeItem('racha_nombre');
+    localStorage.removeItem('racha_primer_dia');
     localStorage.removeItem('racha_acento');
     localStorage.removeItem('racha_apariencia');
     localStorage.removeItem('racha_avatar');
