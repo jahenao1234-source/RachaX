@@ -20,7 +20,8 @@ import {
   Trophy,
   Crown,
   Pencil,
-  ArrowLeft
+  ArrowLeft,
+  LogOut
 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
@@ -31,6 +32,8 @@ import { CollectionScreen } from './CollectionScreen';
 import { TEMAS } from '../../types';
 import { getTodayString, ETAPAS } from '../../utils/habitUtils';
 import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
+import { useCuenta } from '../../store/CuentaContext';
+import { supabaseListo } from '../../lib/supabase';
 
 // Componente para la hoja modal del nombre
 const NameModal = ({
@@ -243,6 +246,7 @@ export const ProfileScreen: React.FC = () => {
   } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
+  const { correo, salir } = useCuenta();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedBadge, setSelectedBadge] = useState<InsigniaDef | null>(null);
@@ -458,6 +462,32 @@ export const ProfileScreen: React.FC = () => {
           </button>
         </div>
       </section>
+
+      {/* Tu cuenta */}
+      {supabaseListo && correo && (
+        <section className="mt-[26px]">
+          <h2 className="m-0 font-heading font-bold text-[22px] text-text">Tu cuenta</h2>
+          <div className="flex flex-col border border-line rounded-[16px] bg-surface mt-3 p-1.5">
+            <div className="flex items-center gap-3 p-2 border-b border-line">
+              <span className="w-9 h-9 rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-[13px] text-text-muted truncate">Correo</span>
+                <span className="block text-[15px] font-bold text-text mt-px truncate">{correo}</span>
+              </span>
+            </div>
+            <button onClick={salir} className="flex items-center gap-3 p-2 border-none bg-transparent text-left cursor-pointer w-full group">
+              <span className="w-9 h-9 rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0 group-hover:text-text transition-colors">
+                <LogOut size={17} strokeWidth={2} />
+              </span>
+              <span className="flex-1 min-w-0 text-[15px] font-semibold text-text">
+                Salir de tu cuenta
+              </span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* Tu llama card */}
       <section className="mt-4 flamecard p-3.5 rounded-[18px] bg-surface border border-line" aria-labelledby="tl9">

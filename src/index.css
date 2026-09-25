@@ -675,3 +675,20 @@ html:not(.dark) .fill-logro {
 .onb .obfoot { padding-bottom:max(22px, env(safe-area-inset-bottom)); }
 .onb .obfoot:empty { display:none; }
 .onb .card { background:var(--surface); border:1px solid var(--line); border-radius:18px; }
+
+/* Tu cuenta (solo dentro de .onb) */
+.onb .cmarca { display:flex; align-items:center; gap:8px; }
+.onb .ctit { display:flex; align-items:center; gap:10px; }
+.onb .ctiti { display:flex; color:var(--text); flex-shrink:0; }
+.onb .ctiti.warn { color:var(--coral-text); }
+.onb .clist { margin:18px 0 0; padding:0 0 0 18px; display:grid; gap:8px; font-size:15px; line-height:1.45; color:var(--text); list-style:disc; }
+.onb .otp { position:relative; display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+.onb .otpd { height:58px; border-radius:12px; border:1px solid var(--text-muted); background:var(--surface); display:flex; align-items:center; justify-content:center; font-family:var(--font-heading, 'Barlow Condensed'), sans-serif; font-weight:700; font-size:28px; color:var(--text); }
+.onb .otpd.cur { border:1.5px solid var(--text); }
+.onb .otp.bad .otpd, .onb .input.bad { border-color:var(--coral-text); }
+.onb .otpin { position:absolute; inset:0; width:100%; height:100%; opacity:0; font-size:16px; border:none; background:transparent; color:transparent; caret-color:transparent; }
+.onb .otp:focus-within .otpd.cur { outline:2px solid var(--text); outline-offset:2px; }
+.onb .cerr { display:flex; gap:8px; align-items:flex-start; margin:10px 0 0; font-size:14px; line-height:1.4; color:var(--coral-text); }
+.onb .cerr svg { flex-shrink:0; margin-top:1px; }
+html:not(.dark) .onb .cerr, html:not(.dark) .onb .ctiti.warn { color:#BF3F20; }
+html:not(.dark) .onb .otp.bad .otpd, html:not(.dark) .onb .input.bad { border-color:#BF3F20; }

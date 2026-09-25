@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
+import { useCuenta } from '../../store/CuentaContext';
 import { getTodayString, contarProgresoReto } from '../../utils/habitUtils';
 import { BottomNav } from './BottomNav';
 import { SideNav } from './SideNav';
@@ -16,6 +17,7 @@ import { TareaEditorModal } from '../screens/TareaEditorModal';
 import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
+import { CuentaFlow } from '../cuenta/CuentaFlow';
 import { CelebracionesManager } from '../juego/CelebracionesManager';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
 import { Flame } from 'lucide-react';
@@ -31,6 +33,7 @@ export const AppShell: React.FC = () => {
     setHabitoRecienCreadoId,
     closeCreateModal
   } = useHabitStore();
+  const { estado } = useCuenta();
 
   const renderActiveScreen = () => {
     const screenToRender = activeTab === 'crear' ? 'hoy' : activeTab;
@@ -113,8 +116,9 @@ export const AppShell: React.FC = () => {
         <CreateMenu />
         <RutinaEditorModal />
         <TareaEditorModal />
-        <OnboardingModal />
-        <CelebracionesManager />
+        <CuentaFlow />
+        {estado === 'dentro' && <OnboardingModal />}
+        {estado === 'dentro' && <CelebracionesManager />}
 
         {/* Create Habit Modal */}
         {activeTab === 'crear' && <CreateHabitScreen />}
