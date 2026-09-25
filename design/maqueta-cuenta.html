@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta: tu cuenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.saludo{margin:14px 0 0;font-size:16px;font-weight:600;color:var(--text)}
+.lvlbig{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none}
+.lvlbigart{display:flex;flex-shrink:0}
+.lvlbigcol .lvltrack2,.llamacard .lvltrack2{flex:none}
+.lvlbigcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.lvlbigtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cabtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.cabcomp{display:flex;align-items:center;gap:12px;margin-top:10px}
+.cabart{display:flex;flex-shrink:0;border-radius:12px}
+.cabart:focus-visible,.llamacard:focus-visible,.lvlbig:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.llamacard{display:flex;align-items:center;gap:14px;margin-top:14px;color:var(--text);text-decoration:none}
+.hrow{display:flex;flex-direction:column;align-items:stretch;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.hrow.next{border:1.5px solid var(--coral);background:color-mix(in srgb,var(--coral) 8%,var(--surface))}
+.hrowtop{display:flex;align-items:center;gap:10px}
+.hic{width:38px;height:38px;border-radius:11px;background:var(--coral);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hrow .name{display:block;font-size:15px;font-weight:600}
+.meta2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--lila-text);margin-top:2px}
+.sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.cnt{display:flex;gap:3px;margin-top:6px;max-width:130px}.cnt i{flex:1;height:6px;border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1px var(--muted)}.cnt i.on{background:var(--text)}
+.emp{min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--coral);background:transparent;color:var(--coral-text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.plus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font-size:14px;font-weight:700}
+.retobar{display:flex;align-items:center;gap:8px;margin-top:10px}.retobar i{flex:1;height:6px;border-radius:99px;background:var(--line-strong);overflow:hidden;display:block}.retobar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}.retobar span{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.field{padding:18px 0 0}
+.lbl{margin:0 0 8px;font-size:13px;font-weight:500;color:var(--muted)}
+.opt{font-size:12px;font-weight:600;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--muted)}
+.chip.sm{min-height:44px;padding:6px 14px;color:var(--muted)}
+.chip.on{background:var(--raised);color:var(--text);font-weight:700;border-color:var(--text)}
+.sugs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.input{flex:1;min-width:0;min-height:52px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:14px;display:flex;align-items:center;font-size:15px;font-weight:600}
+.input.empty{color:var(--muted);font-weight:500;border-color:var(--muted)}
+.input.anchor{min-height:48px;padding:12px 14px;gap:6px}
+.pre{color:var(--muted);font-weight:500}
+.ph{color:var(--muted);font-weight:500}
+.moms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mom{height:64px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:600;white-space:nowrap}
+.mom.on{color:var(--text);font-weight:700;border-width:1.5px}
+.obtop{display:flex;align-items:center;gap:10px;padding:10px 16px 4px}
+.obback{width:44px;height:44px;margin-left:-8px;border:none;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obprog{flex:1;display:flex;gap:4px}
+.obprog i{flex:1;height:4px;border-radius:999px;background:var(--track-empty)}
+.obprog i.on{background:var(--text)}
+.obbody{padding:14px 20px 24px}
+.obwelcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;padding-top:40px}
+.obhero{display:flex;justify-content:center}
+.obtitle{margin:18px 0 0;font-size:40px;line-height:1.02}
+.oblead{margin:12px 0 0;font-size:17px;line-height:1.4;color:var(--text)}
+.obcap{margin-top:14px}
+.obh{margin:6px 0 0;font-size:32px;line-height:1.05}
+.obsub{margin-top:6px;font-size:15px;line-height:1.4}
+.obfoot{padding:12px 20px 22px;display:grid;gap:4px;border-top:1px solid var(--line);background:var(--bg)}
+.obfoot .btnp.off{opacity:1;background:var(--raised);background-image:none;color:var(--muted)}
+.hopts{display:grid;gap:8px;margin-top:18px}
+.hopt{min-height:52px;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:15px;font-weight:600;text-align:left}
+.hopt.on{border:1.5px solid var(--text)}
+.hopt.on .rdot{border:5px solid var(--text)}
+.hopt.mine{border-style:dashed;border-color:var(--line-strong)}
+.hopti{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hopt.on .hopti{color:var(--text)}
+.hoptn{flex:1;min-width:0}
+.rdot{width:20px;height:20px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.obhab{margin-top:18px;display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:15px;font-weight:700}
+.obhab .hopti{width:32px;height:32px;color:var(--text)}
+.obprize{margin-top:18px;padding:14px 16px}
+.obplist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.obplist li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.obpn{min-width:44px;font-size:20px;color:var(--ambar-text)}
+.obpi{width:44px;display:flex;justify-content:center;color:var(--ambar-text)}
+.obidea{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:18px}
+.obidea li{display:flex;gap:14px;align-items:flex-start}
+.obidea b{display:block;font-size:17px;line-height:1.25}
+.obidea .sub{display:block;margin-top:4px;font-size:14px;line-height:1.45}
+.obic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface);border:1px solid var(--line)}
+.obic.shield{color:var(--comodin-text);background:var(--comodin-bg);border-color:transparent}
+.obic.gift{color:var(--ambar-text);background:var(--ambar-tint);border-color:transparent}
+.obtip{margin-top:14px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--ambar-tint);color:var(--text);font-size:14px;line-height:1.4}
+.obtip svg{color:var(--ambar-text);flex-shrink:0;margin-top:1px}
+.chk0{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;position:relative}
+.chk0::after{content:"";position:absolute;inset:-6px}
+
+.ctit{display:flex;align-items:center;gap:10px}
+.ctiti{display:flex;color:var(--text)}
+.ctiti.ok{color:var(--comodin-text)}
+.ctiti.warn{color:var(--coral-text)}
+.btnp.danger{background:var(--coral);background-image:none;color:var(--ink)}
+.light .cerr{color:#BF3F20}
+.cmarca{display:flex;align-items:center;gap:8px}
+.cmarca .logo{display:flex;align-items:center;justify-content:center}
+.chero{display:flex;justify-content:center;margin-top:18px}
+.cicon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--line);color:var(--text);margin-top:10px}
+.cicon.ok{background:var(--comodin-bg);color:var(--comodin-text);border-color:transparent}
+.cicon.warn{background:var(--coral-tint);color:var(--coral-text);border-color:transparent}
+.onb .input.bad,.otp.bad .otpd{border-color:var(--coral-text)}
+.cerr{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;font-size:14px;line-height:1.4;color:var(--coral-text)}
+.cerr svg{flex-shrink:0;margin-top:1px}
+.otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.otpd{height:58px;border-radius:12px;border:1px solid var(--muted);background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--text)}
+.otpd.cur{border:1.5px solid var(--text)}
+.clist{margin:18px 0 0;padding:0 0 0 18px;display:grid;gap:8px;font-size:15px;line-height:1.45;color:var(--text)}
+.cres{margin-top:18px;padding:14px;display:flex;gap:14px;align-items:center}
+.cresl{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.cresl b{color:var(--text)}
+.copts{display:grid;gap:8px;margin-top:18px}
+.copt{min-height:64px;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;text-align:left}
+.copt b{display:block;font-size:15px}
+.copt .sub{display:block;font-size:13px;margin-top:2px}
+.copt.on{border:1.5px solid var(--text)}
+.copt.on .rdot{border:5px solid var(--text)}
+.crow{display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 0;border-bottom:1px solid var(--line);color:var(--text)}
+.crow:last-child{border-bottom:none}
+.cbtn{width:100%;border:none;border-bottom:none;background:transparent;font:inherit;font-size:15px;font-weight:600;min-height:52px}
+.crowi{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crowi.ok{background:var(--comodin-bg);color:var(--comodin-text)}
+</style>
+</head>
+<body>
+<div class="col"><h2>1 · Entra con tu correo (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <div class="cmarca"><span class="logo" style="width:32px;height:32px;border-radius:9px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:24px">Racha</span></div>
+      <h1 class="cond obh" style="margin-top:40px">Entra a tu Racha</h1>
+      <p class="sub obsub">Te enviamos un código a tu correo para entrar. Sin contraseñas.</p>
+      <label class="lbl" for="cm1" style="display:block;margin-top:22px">Correo de tu compra</label>
+      <div class="input" id="cm1">johnatan@gmail.com</div>
+      <p class="sub" style="margin-top:8px">Es el que usaste al pagar en Hotmart.</p></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Enviarme el código</button>
+      <button class="link quiet center">¿Todavía no la tienes? Mira cómo conseguirla</button></div>
+  </div></div></div>
+<div class="col"><h2>2 · El código (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    <div class="obtop"><button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh ctit"><span class="ctiti" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>Revisa tu correo</h1>
+      <p class="sub obsub">Te enviamos un código de 6 dígitos a <b style="color:var(--text)">johnatan@gmail.com</b>. Puede tardar un minuto.</p>
+      <button class="link" style="font-size:14px">¿No es tu correo? Cámbialo</button>
+      <p class="lbl" style="margin:14px 0 8px">Tu código</p>
+      <div class="otp" role="group" aria-label="Código de 6 dígitos"><span class="otpd">4</span><span class="otpd">8</span><span class="otpd">2</span><span class="otpd">9</span><span class="otpd cur"></span><span class="otpd"></span></div>
+      <p class="sub" style="margin-top:10px">Si no lo ves, mira en Spam o Promociones.</p></div></div>
+    <div class="obfoot"><button class="btnp full off" style="margin:0" aria-disabled="true">Entrar</button>
+      <p class="sub" style="margin:6px 0 0;text-align:center;min-height:44px;display:flex;align-items:center;justify-content:center">Reenviar el código en 0:42</p></div>
+  </div></div></div>
+<div class="col"><h2>3 · Código que no coincide (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    <div class="obtop"><button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh ctit"><span class="ctiti" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>Revisa tu correo</h1>
+      <p class="sub obsub">Te enviamos un código de 6 dígitos a <b style="color:var(--text)">johnatan@gmail.com</b>. Puede tardar un minuto.</p>
+      <button class="link" style="font-size:14px">¿No es tu correo? Cámbialo</button>
+      <p class="lbl" style="margin:14px 0 8px">Tu código</p>
+      <div class="otp bad" role="group" aria-label="Código de 6 dígitos"><span class="otpd">4</span><span class="otpd">8</span><span class="otpd">2</span><span class="otpd">9</span><span class="otpd">3</span><span class="otpd">1</span></div>
+      <p class="cerr" role="alert"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Ese código no coincide. Revisa el último correo que te llegó.</p></div></div>
+    <div class="obfoot"><button class="btnp full off" style="margin:0" aria-disabled="true">Entrar</button>
+      <button class="link quiet center">Reenviar el código</button></div>
+  </div></div></div>
+<div class="col"><h2>4 · No encontramos tu compra (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    <div class="obtop"><button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh ctit"><span class="ctiti warn" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>No encontramos tu compra</h1>
+      <p class="sub obsub">Escribiste <b style="color:var(--text)">johnatan.h@hotmail.com</b>, pero no aparece ninguna compra de Racha con ese correo.</p>
+      <ul class="clist" role="list">
+        <li>Revisa que sea el mismo correo que usaste al pagar en Hotmart. Búscalo en el correo de confirmación de Hotmart.</li>
+        <li>Si acabas de pagar, espera un par de minutos y vuelve a intentar.</li>
+      </ul></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Probar con otro correo</button>
+      <button class="link quiet center">Escribir a soporte</button></div>
+  </div></div></div>
+<div class="col"><h2>5 · Tu Racha de este celular (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti ok" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>Encontramos tu Racha en este celular</h1>
+      <p class="sub obsub">¿La guardamos en tu cuenta? Así no la pierdes si cambias de celular y la ves también en el computador.</p>
+      <div class="card cres">
+        <span class="cresart" aria-hidden="true"><svg width="56" height="56" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m10bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e9w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e9o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e9m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e9c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m10cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m10bg)"/><g clip-path="url(#m10cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e9o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e9m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e9c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e9w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e9w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+        <ul class="cresl" role="list">
+          <li><b>4</b> hábitos</li>
+          <li><b>165</b> veces cumplidas</li>
+          <li>Nivel <b>8</b> · tu llama <b>Fogata</b></li>
+          <li><b>13</b> insignias y <b>8</b> llamas</li>
+        </ul>
+      </div></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Guardarla en mi cuenta</button>
+      <button class="link quiet center">Empezar de cero</button></div>
+  </div></div></div>
+<div class="col"><h2>6 · ¿Empezar de cero? (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti ok" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>Encontramos tu Racha en este celular</h1>
+      <p class="sub obsub">¿La guardamos en tu cuenta? Así no la pierdes si cambias de celular y la ves también en el computador.</p>
+      <div class="card cres">
+        <span class="cresart" aria-hidden="true"><svg width="56" height="56" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m12bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e11w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e11o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e11m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e11c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m12cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m12bg)"/><g clip-path="url(#m12cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e11o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e11m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e11c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e11w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e11w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+        <ul class="cresl" role="list">
+          <li><b>4</b> hábitos</li>
+          <li><b>165</b> veces cumplidas</li>
+          <li>Nivel <b>8</b> · tu llama <b>Fogata</b></li>
+          <li><b>13</b> insignias y <b>8</b> llamas</li>
+        </ul>
+      </div></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Guardarla en mi cuenta</button>
+      <button class="link quiet center">Empezar de cero</button></div>
+  
+    <div class="scrim"></div>
+    <section class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="cf1" aria-describedby="cf2" style="padding:0 20px 18px">
+      <div class="grab"></div>
+      <h2 class="cond" id="cf1" style="margin:16px 0 0;font-size:24px">¿Empezar de cero?</h2>
+      <p class="sub" id="cf2" style="margin-top:6px;font-size:15px">Se borran tus 4 hábitos y todo lo que llevas en este celular. No se puede deshacer.</p>
+      <div style="display:grid;gap:4px;margin-top:16px">
+        <button class="btnp full danger" style="margin:0">Sí, empezar de cero</button>
+        <button class="link quiet center">Mejor la guardo</button>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>7 · Tu cuenta ya tiene una Racha (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 14 2 2 4-4"/></svg></span>Tu cuenta ya tiene una Racha</h1>
+      <p class="sub obsub">Y en este celular hay otra distinta. ¿Con cuál sigues?</p>
+      <div class="copts" role="radiogroup" aria-label="Con cuál sigues">
+        <button class="copt on" role="radio" aria-checked="true"><span class="rdot" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>La de tu cuenta</b><span class="sub">Nivel 12 · 6 hábitos · 240 veces cumplidas · usada ayer</span></span></button>
+        <button class="copt" role="radio" aria-checked="false"><span class="rdot" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>La de este celular</b><span class="sub">Nivel 8 · 4 hábitos · 165 veces cumplidas · usada hoy</span></span></button>
+      </div>
+      <p class="sub" style="margin-top:12px">La que no elijas se borra. Antes, te descargamos una copia de respaldo. Si tienes dudas, sigue con la de tu cuenta.</p></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Seguir con la de tu cuenta</button></div>
+  </div></div></div>
+<div class="col"><h2>8 · Eliges la del celular (oscuro)</h2><div class="dark">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 14 2 2 4-4"/></svg></span>Tu cuenta ya tiene una Racha</h1>
+      <p class="sub obsub">Y en este celular hay otra distinta. ¿Con cuál sigues?</p>
+      <div class="copts" role="radiogroup" aria-label="Con cuál sigues">
+        <button class="copt" role="radio" aria-checked="false"><span class="rdot" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>La de tu cuenta</b><span class="sub">Nivel 12 · 6 hábitos · 240 veces cumplidas · usada ayer</span></span></button>
+        <button class="copt on" role="radio" aria-checked="true"><span class="rdot" aria-hidden="true"></span><span style="flex:1;min-width:0"><b>La de este celular</b><span class="sub">Nivel 8 · 4 hábitos · 165 veces cumplidas · usada hoy</span></span></button>
+      </div>
+      <p class="sub" style="margin-top:12px">La que no elijas se borra. Antes, te descargamos una copia de respaldo. Si tienes dudas, sigue con la de tu cuenta.</p></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Seguir con la de este celular</button></div>
+  
+    <div class="scrim"></div>
+    <section class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="cf1" aria-describedby="cf2" style="padding:0 20px 18px">
+      <div class="grab"></div>
+      <h2 class="cond" id="cf1" style="margin:16px 0 0;font-size:24px">¿Seguir con la de este celular?</h2>
+      <p class="sub" id="cf2" style="margin-top:6px;font-size:15px">La de tu cuenta (Nivel 12, 6 hábitos) se borra. Antes te descargamos una copia de respaldo.</p>
+      <div style="display:grid;gap:4px;margin-top:16px">
+        <button class="btnp full danger" style="margin:0">Sí, seguir con esta</button>
+        <button class="link quiet center">Volver</button>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>9 · Perfil: tu cuenta (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <h1 class="cond" style="margin:6px 0 0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:14px;padding:14px;display:flex;align-items:center;gap:14px">
+        <span class="avatar" style="width:56px;height:56px"><span class="cond" style="font-size:28px">J</span></span>
+        <span style="flex:1;min-width:0"><span class="cond" style="display:block;font-size:28px;line-height:1.05">Johnatan</span><span class="sub">Desde el 15 de julio</span></span>
+      </section>
+      <h2 class="cond" style="margin:26px 0 0;font-size:22px">Tu cuenta</h2>
+      <div class="card" style="margin-top:10px;padding:4px 14px">
+        <div class="crow"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><span style="flex:1;min-width:0"><span class="sub" style="display:block;font-size:13px">Correo</span><b style="font-size:15px">johnatan@gmail.com</b></span></div>
+        <div class="crow"><span class="crowi ok" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 14 2 2 4-4"/></svg></span><span style="flex:1;min-width:0"><b style="font-size:15px">Guardada en tu cuenta</b><span class="sub" style="display:block;font-size:13px">Hace un momento</span></span></div>
+        <button class="crow cbtn"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></span><span style="flex:1;text-align:left">Salir de tu cuenta</span></button>
+      </div>
+      <p class="sub" style="margin-top:8px">Si no hay internet, lo que hagas se guarda en el celular y se sube solo al volver la conexión.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>10 · Salir sin conexión (oscuro)</h2><div class="dark">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <h1 class="cond" style="margin:6px 0 0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:14px;padding:14px;display:flex;align-items:center;gap:14px">
+        <span class="avatar" style="width:56px;height:56px"><span class="cond" style="font-size:28px">J</span></span>
+        <span style="flex:1;min-width:0"><span class="cond" style="display:block;font-size:28px;line-height:1.05">Johnatan</span><span class="sub">Desde el 15 de julio</span></span>
+      </section>
+      <h2 class="cond" style="margin:26px 0 0;font-size:22px">Tu cuenta</h2>
+      <div class="card" style="margin-top:10px;padding:4px 14px">
+        <div class="crow"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><span style="flex:1;min-width:0"><span class="sub" style="display:block;font-size:13px">Correo</span><b style="font-size:15px">johnatan@gmail.com</b></span></div>
+        <div class="crow"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span><span style="flex:1;min-width:0"><b style="font-size:15px">Sin conexión</b><span class="sub" style="display:block;font-size:13px">3 cambios esperan para subirse</span></span></div>
+        <button class="crow cbtn"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></span><span style="flex:1;text-align:left">Salir de tu cuenta</span></button>
+      </div>
+      <p class="sub" style="margin-top:8px">Si no hay internet, lo que hagas se guarda en el celular y se sube solo al volver la conexión.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  
+    <div class="scrim"></div>
+    <section class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="cf1" aria-describedby="cf2" style="padding:0 20px 18px">
+      <div class="grab"></div>
+      <h2 class="cond" id="cf1" style="margin:16px 0 0;font-size:24px">Tienes 3 cambios sin subir</h2>
+      <p class="sub" id="cf2" style="margin-top:6px;font-size:15px">Conéctate a internet antes de salir o se pierden.</p>
+      <div style="display:grid;gap:4px;margin-top:16px">
+        <button class="btnp full danger" style="margin:0">Salir de todas formas</button>
+        <button class="link quiet center">Quedarme</button>
+      </div>
+    </section>
+  </div></div></div>
+<div class="col"><h2>11 · Correo con un error (claro)</h2><div class="light">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <div class="cmarca"><span class="logo" style="width:32px;height:32px;border-radius:9px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:24px">Racha</span></div>
+      <h1 class="cond obh" style="margin-top:40px">Entra a tu Racha</h1>
+      <p class="sub obsub">Te enviamos un código a tu correo para entrar. Sin contraseñas.</p>
+      <label class="lbl" for="cm1" style="display:block;margin-top:22px">Correo de tu compra</label>
+      <div class="input bad" id="cm1">johnatan@gmial.com</div>
+      <p class="cerr" role="alert"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>¿Quisiste decir johnatan@gmail.com?</p></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Enviarme el código</button>
+      <button class="link quiet center">¿Todavía no la tienes? Mira cómo conseguirla</button></div>
+  </div></div></div>
+<div class="col"><h2>12 · El código (claro)</h2><div class="light">
+  <div class="phone onb">
+    <div class="obtop"><button class="obback" aria-label="Atrás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+    <div class="scroll"><div class="obbody">
+      <h1 class="cond obh ctit"><span class="ctiti" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>Revisa tu correo</h1>
+      <p class="sub obsub">Te enviamos un código de 6 dígitos a <b style="color:var(--text)">johnatan@gmail.com</b>. Puede tardar un minuto.</p>
+      <button class="link" style="font-size:14px">¿No es tu correo? Cámbialo</button>
+      <p class="lbl" style="margin:14px 0 8px">Tu código</p>
+      <div class="otp" role="group" aria-label="Código de 6 dígitos"><span class="otpd">4</span><span class="otpd">8</span><span class="otpd">2</span><span class="otpd">9</span><span class="otpd">1</span><span class="otpd">3</span></div>
+      <p class="sub" style="margin-top:10px">Si no lo ves, mira en Spam o Promociones.</p></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Entrar</button>
+      <button class="link quiet center">Reenviar el código</button></div>
+  </div></div></div>
+<div class="col"><h2>13 · Tu Racha de este celular (claro)</h2><div class="light">
+  <div class="phone onb">
+    
+    <div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti ok" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>Encontramos tu Racha en este celular</h1>
+      <p class="sub obsub">¿La guardamos en tu cuenta? Así no la pierdes si cambias de celular y la ves también en el computador.</p>
+      <div class="card cres">
+        <span class="cresart" aria-hidden="true"><svg width="56" height="56" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="m14bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><linearGradient id="e13w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3F22"/><stop offset="1" stop-color="#A0673E"/></linearGradient><linearGradient id="e13o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e13m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e13c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m14cl"><circle cx="50" cy="50" r="46"/></clipPath><circle cx="50" cy="50" r="46" fill="url(#m14bg)"/><g clip-path="url(#m14cl)"><g transform="translate(19 22) scale(0.62)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e13o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e13m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e13c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><path d="M28 86L72 76" stroke="url(#e13w)" stroke-width="7" stroke-linecap="round"/><path d="M28 76L72 86" stroke="url(#e13w)" stroke-width="7" stroke-linecap="round"/></g></svg></span>
+        <ul class="cresl" role="list">
+          <li><b>4</b> hábitos</li>
+          <li><b>165</b> veces cumplidas</li>
+          <li>Nivel <b>8</b> · tu llama <b>Fogata</b></li>
+          <li><b>13</b> insignias y <b>8</b> llamas</li>
+        </ul>
+      </div></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0">Guardarla en mi cuenta</button>
+      <button class="link quiet center">Empezar de cero</button></div>
+  </div></div></div>
+<div class="col"><h2>14 · Perfil: tu cuenta (claro)</h2><div class="light">
+  <div class="phone">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <h1 class="cond" style="margin:6px 0 0;font-size:44px;line-height:1">Perfil</h1>
+      <section class="card" style="margin-top:14px;padding:14px;display:flex;align-items:center;gap:14px">
+        <span class="avatar" style="width:56px;height:56px"><span class="cond" style="font-size:28px">J</span></span>
+        <span style="flex:1;min-width:0"><span class="cond" style="display:block;font-size:28px;line-height:1.05">Johnatan</span><span class="sub">Desde el 15 de julio</span></span>
+      </section>
+      <h2 class="cond" style="margin:26px 0 0;font-size:22px">Tu cuenta</h2>
+      <div class="card" style="margin-top:10px;padding:4px 14px">
+        <div class="crow"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><span style="flex:1;min-width:0"><span class="sub" style="display:block;font-size:13px">Correo</span><b style="font-size:15px">johnatan@gmail.com</b></span></div>
+        <div class="crow"><span class="crowi ok" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 14 2 2 4-4"/></svg></span><span style="flex:1;min-width:0"><b style="font-size:15px">Guardada en tu cuenta</b><span class="sub" style="display:block;font-size:13px">Hace un momento</span></span></div>
+        <button class="crow cbtn"><span class="crowi" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></span><span style="flex:1;text-align:left">Salir de tu cuenta</span></button>
+      </div>
+      <p class="sub" style="margin-top:8px">Si no hay internet, lo que hagas se guarda en el celular y se sube solo al volver la conexión.</p></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendario</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+</body>
+</html>
