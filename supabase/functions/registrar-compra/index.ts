@@ -11,7 +11,7 @@
 //   PRECIO                precio en pesos (por defecto 37900)
 //   DESTINATARIO          parte del nombre del dueño como sale en los comprobantes, p. ej. "JOHNATAN" (opcional)
 //   GEMINI_MODEL          modelo de Gemini (por defecto gemini-2.5-flash)
-// SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY los pone Supabase solo.
+// SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY los pone Supabase solo (si no, crea el secreto SUPABASE_SECRET_KEY).
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { encodeBase64 } from 'jsr:@std/encoding/base64';
@@ -98,7 +98,10 @@ Deno.serve(async (req) => {
   const correo = String(d.correo || '').trim().toLowerCase();
   if (!esCorreo(correo)) return responder({ ok: false, error: 'correo_invalido' });
 
-  const supa = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+  // La llave de servicio (salta las reglas; solo vive aquí, nunca en la app). Supabase la pone sola.
+  const llave = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_SECRET_KEY');
+  if (!llave) return responder({ ok: false, error: 'falta_llave_de_servicio' }, 500);
+  const supa = createClient(Deno.env.get('SUPABASE_URL')!, llave);
 
   // Paso aparte: ManyChat solo manda el nombre de quien pagó (cuando el comprobante no lo traía)
   if (d.accion === 'nombre') {
