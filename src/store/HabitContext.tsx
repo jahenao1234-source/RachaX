@@ -16,6 +16,16 @@ import {
   calcularProgresoNivel,
   etapaDeNivel
 } from '../utils/habitUtils';
+import {
+  ponerFechaPaso as _ponerFechaPaso,
+  agregarPaso as _agregarPaso,
+  editarTextoPaso as _editarTextoPaso,
+  borrarPaso as _borrarPaso,
+  moverPaso as _moverPaso,
+  reabrirArbol as _reabrirArbol,
+  nuevoIdPaso,
+  DestinoPaso,
+} from '../utils/tareasUtils';
 import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
 import { InsigniaDef, calcularInsignias } from '../utils/badgeUtils';
 
@@ -69,6 +79,14 @@ interface HabitContextType {
   editarTarea: (id: string, updates: Partial<Tarea>) => void;
   eliminarTarea: (id: string) => void;
   toggleSubtarea: (tareaId: string, subtareaId: string) => void;
+  // Pestaña Tareas (utils/tareasUtils.ts): todas recalculan "completada"
+  ponerFechaPaso: (tareaId: string, pasoId: string, fecha?: string) => void;
+  agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
+  editarTextoPaso: (tareaId: string, pasoId: string, texto: string) => void;
+  borrarPasoTarea: (tareaId: string, pasoId: string) => void;
+  moverPasoTarea: (tareaId: string, pasoId: string, destino: DestinoPaso) => boolean;
+  reabrirTarea: (tareaId: string) => void;
+  restaurarTarea: (tarea: Tarea, indice: number) => void;
   isTareaEditorOpen: boolean;
   tareaBeingEdited: Tarea | null;
   openTareaEditor: (tarea?: Tarea | null) => void;
@@ -1086,6 +1104,43 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return { ...t, subtareas, completada: _tareaCompletada(subtareas) };
     }));
   };
+  // ---- Pestaña Tareas ----
+  const cambiarArbol = (tareaId: string, fn: (t: Tarea) => Subtarea[]) => {
+    setTareas((prev) => prev.map((t) => {
+      if (t.id !== tareaId) return t;
+      const subtareas = fn(t);
+      if (subtareas === t.subtareas) return t;
+      return { ...t, subtareas, completada: _tareaCompletada(subtareas) };
+    }));
+  };
+  const ponerFechaPaso = (tareaId: string, pasoId: string, fecha?: string) =>
+    cambiarArbol(tareaId, (t) => _ponerFechaPaso(t.subtareas, pasoId, fecha));
+  const agregarPasoTarea = (tareaId: string, padreId: string | null, texto: string): string | null => {
+    if (!texto.trim()) return null;
+    const id = nuevoIdPaso();
+    cambiarArbol(tareaId, (t) => _agregarPaso(t.subtareas, padreId, texto, id).arbol);
+    return id;
+  };
+  const editarTextoPaso = (tareaId: string, pasoId: string, texto: string) =>
+    cambiarArbol(tareaId, (t) => _editarTextoPaso(t.subtareas, pasoId, texto));
+  const borrarPasoTarea = (tareaId: string, pasoId: string) =>
+    cambiarArbol(tareaId, (t) => _borrarPaso(t.subtareas, pasoId));
+  // Valida con el estado actual; si no es válido (p. ej. meter un paso dentro de sí mismo) no cambia nada
+  const moverPasoTarea = (tareaId: string, pasoId: string, destino: DestinoPaso): boolean => {
+    const actual = tareas.find((t) => t.id === tareaId);
+    if (!actual || !_moverPaso(actual.subtareas, pasoId, destino)) return false;
+    cambiarArbol(tareaId, (t) => _moverPaso(t.subtareas, pasoId, destino) || t.subtareas);
+    return true;
+  };
+  const reabrirTarea = (tareaId: string) => cambiarArbol(tareaId, (t) => _reabrirArbol(t));
+  // "Deshacer" después de borrar una tarea: la devuelve a su lugar
+  const restaurarTarea = (tarea: Tarea, indice: number) => {
+    setTareas((prev) => {
+      if (prev.some((t) => t.id === tarea.id)) return prev;
+      const i = Math.max(0, Math.min(indice, prev.length));
+      return [...prev.slice(0, i), tarea, ...prev.slice(i)];
+    });
+  };
   const openTareaEditor = (tarea: Tarea | null = null) => { setTareaBeingEdited(tarea); setIsTareaEditorOpen(true); };
   const closeTareaEditor = () => { setIsTareaEditorOpen(false); setTareaBeingEdited(null); };
 
@@ -1268,6 +1323,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         editarTarea,
         eliminarTarea,
         toggleSubtarea,
+        ponerFechaPaso,
+        agregarPasoTarea,
+        editarTextoPaso,
+        borrarPasoTarea,
+        moverPasoTarea,
+        reabrirTarea,
+        restaurarTarea,
         isTareaEditorOpen,
         tareaBeingEdited,
         openTareaEditor,
