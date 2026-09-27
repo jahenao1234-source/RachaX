@@ -1,5 +1,5 @@
 import React from 'react';
-import { CalendarCheck, BarChart3, Plus, Calendar, User } from 'lucide-react';
+import { CalendarCheck, BarChart3, Plus, User, ListChecks } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { TabRoute } from '../../types';
 
@@ -8,9 +8,9 @@ export const BottomNav: React.FC = () => {
 
   const navItems: { id: TabRoute; label: string; icon: React.FC<{ className?: string; size?: number }> }[] = [
     { id: 'hoy', label: 'Hoy', icon: CalendarCheck },
-    { id: 'stats', label: 'Estadísticas', icon: BarChart3 },
+    { id: 'tareas', label: 'Tareas', icon: ListChecks },
     // Center element will be the floating plus button
-    { id: 'calendario', label: 'Calendario', icon: Calendar },
+    { id: 'stats', label: 'Progreso', icon: BarChart3 },
     { id: 'perfil', label: 'Perfil', icon: User },
   ];
 
@@ -43,7 +43,42 @@ export const BottomNav: React.FC = () => {
           </span>
         </button>
 
-        {/* Item 2: Estadísticas */}
+        {/* Item 2: Tareas */}
+        <button
+          id="nav-tab-tareas"
+          type="button"
+          onClick={() => navigateToTab('tareas')}
+          className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
+            activeTab === 'tareas' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
+          }`}
+        >
+          <div className={`relative p-1 rounded-xl transition-all duration-200 ${
+            activeTab === 'tareas' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
+          }`}>
+            <ListChecks size={20} strokeWidth={activeTab === 'tareas' ? 2.3 : 1.9} />
+            {activeTab === 'tareas' && (
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--accent)] rounded-full" />
+            )}
+          </div>
+          <span className="text-[11px] font-medium tracking-tight mt-1 font-sans">
+            Tareas
+          </span>
+        </button>
+
+        {/* Item 3: Botón Central Flotante (+) */}
+        <div className="flex-1 flex items-center justify-center -mt-6">
+          <button
+            id="nav-btn-create-habit"
+            type="button"
+            onClick={openCreateMenu}
+            aria-label="Crear nuevo hábito"
+            className="w-13 h-13 rounded-full logro hover:brightness-95 active:scale-95 text-ink flex items-center justify-center shadow-lg shadow-[var(--accent-40)] transition-all duration-200 border-4 border-bg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-bg"
+          >
+            <Plus size={26} strokeWidth={2.6} className="transition-transform duration-200 group-hover:rotate-90" />
+          </button>
+        </div>
+
+        {/* Item 4: Progreso */}
         <button
           id="nav-tab-stats"
           type="button"
@@ -62,41 +97,6 @@ export const BottomNav: React.FC = () => {
           </div>
           <span className="text-[11px] font-medium tracking-tight mt-1 font-sans">
             Progreso
-          </span>
-        </button>
-
-        {/* Item 3: Botón Central Flotante (+) */}
-        <div className="flex-1 flex items-center justify-center -mt-6">
-          <button
-            id="nav-btn-create-habit"
-            type="button"
-            onClick={openCreateMenu}
-            aria-label="Crear nuevo hábito"
-            className="w-13 h-13 rounded-full logro hover:brightness-95 active:scale-95 text-ink flex items-center justify-center shadow-lg shadow-[var(--accent-40)] transition-all duration-200 border-4 border-bg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-bg"
-          >
-            <Plus size={26} strokeWidth={2.6} className="transition-transform duration-200 group-hover:rotate-90" />
-          </button>
-        </div>
-
-        {/* Item 4: Calendario */}
-        <button
-          id="nav-tab-calendario"
-          type="button"
-          onClick={() => navigateToTab('calendario')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
-            activeTab === 'calendario' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
-          }`}
-        >
-          <div className={`relative p-1 rounded-xl transition-all duration-200 ${
-            activeTab === 'calendario' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
-          }`}>
-            <Calendar size={20} strokeWidth={activeTab === 'calendario' ? 2.3 : 1.9} />
-            {activeTab === 'calendario' && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--accent)] rounded-full" />
-            )}
-          </div>
-          <span className="text-[11px] font-medium tracking-tight mt-1 font-sans">
-            Calendario
           </span>
         </button>
 

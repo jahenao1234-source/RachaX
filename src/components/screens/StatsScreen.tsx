@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
-import { TrendingUp, Clock, ChevronRight, Plus } from 'lucide-react';
+import { TrendingUp, Clock, ChevronRight, Plus, Calendar } from 'lucide-react';
 import {
   fuerzaSerieHabito,
   serieFuerzaTotal,
@@ -14,7 +14,7 @@ import { HabitIcon } from '../common/HabitIcon';
 
 
 export const StatsScreen: React.FC = () => {
-  const { habitosActivos: habitos, registros, diasCongelados, rachaGlobal, openHabitDetail, openCreateMenu, ordenMomentos } = useHabitStore();
+  const { habitosActivos: habitos, registros, diasCongelados, rachaGlobal, openHabitDetail, openCreateMenu, ordenMomentos, navigateToTab } = useHabitStore();
 
   const todayStr = getTodayString();
   const yesterdayStr = subtractDays(todayStr, 1);
@@ -217,19 +217,28 @@ export const StatsScreen: React.FC = () => {
   return (
     <div id="screen-stats" className="pb-28">
       
-      <header className="mb-[26px]">
-        <h1 className="font-heading font-bold text-[44px] leading-none m-0 text-text mb-1.5">Progreso</h1>
-        {isRecent ? (
-          <p className="text-[13px] text-text-muted">
-            {daysSinceStart === 0 ? (
-              'Empezaste hoy · sin contar hoy'
-            ) : (
-              `Llevas ${daysSinceStart} ${daysSinceStart === 1 ? 'día' : 'días'} y ${totalVeces} ${totalVeces === 1 ? 'vez cumplida' : 'veces cumplidas'} · sin contar hoy`
-            )}
-          </p>
-        ) : (
-          <p className="text-[13px] text-text-muted">Desde el {startDay} de {startMonth} · sin contar hoy</p>
-        )}
+      <header className="mb-[26px] flex justify-between items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="font-heading font-bold text-[44px] leading-none m-0 text-text mb-1.5">Progreso</h1>
+          {isRecent ? (
+            <p className="text-[13px] text-text-muted">
+              {daysSinceStart === 0 ? (
+                'Empezaste hoy · sin contar hoy'
+              ) : (
+                `Llevas ${daysSinceStart} ${daysSinceStart === 1 ? 'día' : 'días'} y ${totalVeces} ${totalVeces === 1 ? 'vez cumplida' : 'veces cumplidas'} · sin contar hoy`
+              )}
+            </p>
+          ) : (
+            <p className="text-[13px] text-text-muted">Desde el {startDay} de {startMonth} · sin contar hoy</p>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => navigateToTab('calendario')}
+          className="h-[44px] px-3.5 rounded-[12px] bg-surface-raised border border-line-strong text-[14px] font-bold flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap shrink-0"
+        >
+          <Calendar size={18} /> Ver calendario
+        </button>
       </header>
 
       {/* TARJETA FUERZA */}

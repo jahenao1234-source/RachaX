@@ -717,3 +717,124 @@ html:not(.dark) .hoyd .hoyd-wk li.ok { background: var(--ambar-text); }
 .hoyd .hoyd-wk li.como { background: var(--lila-text); }
 .hoyd .hoyd-dia.all, .hoyd .hoyd-ok { background: var(--ambar); color: var(--ink); }
 html:not(.dark) .hoyd .hoyd-dia.all, html:not(.dark) .hoyd .hoyd-ok { background: var(--ambar-text); color: #fff; }
+
+/* ---- Tareas (pestaña, celular): design/maqueta-tareas.html. Todo dentro de .tareas ---- */
+.tareas .num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;font-size:1.08em}
+.tareas .tcab{display:flex;align-items:flex-end;gap:12px;margin:18px 0 14px}
+.tareas .tnueva{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tareas .tcard{padding:0;margin-bottom:10px;overflow:hidden}
+.tareas .thh{margin:0;font:inherit}
+.tareas .thead{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 12px 10px 14px;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.tareas .tico{width:38px;height:38px;border-radius:11px;background:var(--surface-raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none}
+.tareas .tico.btn{width:44px;height:44px}
+.tareas .tico.lg{width:48px;height:48px;border-radius:13px}
+.tareas .tico.ok{background:var(--ambar);color:var(--ink)}
+.tareas .tmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.tareas .tname{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tareas .tname2{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tareas .tchev{color:var(--text-muted);display:flex}
+.tareas .tavance{display:flex;align-items:center;gap:8px}
+.tareas .tavance i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;max-width:160px}
+.tareas .tavance i b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+html:not(.dark) .tareas .tavance i b{background:var(--ambar-text)}
+.tareas .tavance>span{font-size:13px;color:var(--text-muted);white-space:nowrap}
+.tareas .tavance.sm{margin-top:2px}
+.tareas .tavance.sm i{max-width:none}
+.tareas .tsig{border-top:1px solid var(--line);padding:4px 12px 6px 14px}
+.tareas .tfila{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 0}
+.tareas .tchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--text-muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative;cursor:pointer}
+.tareas .tchk::after{content:"";position:absolute;inset:-9px}
+.tareas .tchk.on{border:none;background:var(--ambar)}
+html:not(.dark) .tareas .tchk.on{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.tareas .ttxt{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.tareas .tnom{font-size:15px;font-weight:600}
+.tareas .tpaso.done>.tfila .tnom{color:var(--text-muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.tareas .tsub{font-size:13px;color:var(--text-muted)}
+.tareas .tsigchip{display:inline-block;padding:1px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700}
+.tareas .tpaso.sig>.tfila{background:var(--surface-raised);border-radius:10px;margin:0 -8px;padding:6px 8px}
+.tareas .tpadre{width:26px;flex-shrink:0}
+.tareas .tdia{min-height:32px;display:inline-flex;align-items:center;gap:5px;padding:0 9px;border-radius:8px;border:none;background:var(--surface-raised);color:var(--text);font:inherit;font-size:12px;font-weight:700;flex-shrink:0;position:relative;white-space:nowrap}
+.tareas .tdia::after{content:"";position:absolute;inset:-6px -2px}
+.tareas .tdia.hoy{background:transparent;outline:1.5px dashed var(--text);outline-offset:-1.5px}
+.tareas .tdia.vacio{width:44px;padding:0;justify-content:center;background:transparent;color:var(--text-muted)}
+.tareas .tdia.vacio::after{inset:-6px 0}
+.tareas .tpaso.sig>.tfila .tdia:not(.vacio):not(.hoy){background:var(--surface)}
+.tareas .tarbol{list-style:none;margin:0;padding:4px 12px 4px 14px;border-top:1px solid var(--line)}
+.tareas .tarbol.tsubl{padding:4px 0 4px 22px;border-top:none;margin-left:12px;border-left:1px solid var(--line)}
+.tareas .tpaso+.tpaso{border-top:1px solid var(--line)}
+.tareas .tarbol.tsubl .tpaso+.tpaso{border-top:none}
+.tareas .tagregar{display:flex;align-items:center;gap:8px;width:100%;min-height:48px;padding:0 14px;border:none;border-top:1px solid var(--line);background:none;color:var(--text-muted);font:inherit;font-size:15px;font-weight:600;text-align:left}
+.tareas .tacciones{display:flex;align-items:center;gap:8px;padding:0 12px 12px 14px}
+.tareas .tcard .tpaso.drag>.tfila{transform:none;margin-left:14px;padding:6px 8px;border-radius:10px}
+.tareas .tacciones.fin{justify-content:space-between;padding-top:10px;border-top:1px solid var(--line)}
+.tareas .tbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tareas .tbtnq{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:var(--text-muted);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tareas .tbtnq.sm{padding:0 8px}
+.tareas .tbtnq.ico{width:44px;padding:0;justify-content:center}
+.tareas .btnp.sm{min-height:44px;font-size:15px;padding:0 18px}
+.tareas .btnp[disabled]{background:var(--surface-raised);color:var(--text-muted)}
+.tareas .tterm{margin-top:18px}
+.tareas .tterm-h{margin:0}
+.tareas .tterm-h button{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px}
+.tareas .tcnt{font-size:15px;color:var(--text-muted);margin-left:4px}
+.tareas .ttlist{list-style:none;margin:6px 0 0;padding:0}
+.tareas .ttrow{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 0;border-top:1px solid var(--line)}
+.tareas .tok{display:inline-flex;align-items:center;gap:3px;color:var(--ambar-text);font-weight:700}
+.tareas .tdel{width:44px;height:44px;border-radius:12px;border:none;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tareas .ttoast{position:absolute;left:16px;right:16px;bottom:96px;display:flex;align-items:center;gap:12px;min-height:52px;padding:4px 6px 4px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;z-index:4}
+.tareas .ttoast span{flex:1}
+.tareas .ttoast button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font:inherit;font-weight:700;text-decoration:underline}
+.tareas .tvacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:60px 12px 20px}
+.tareas .tvico{display:flex;color:var(--text-muted);margin-bottom:4px}
+.tareas .btnp{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:none;border-radius:14px;background:var(--ambar);color:var(--ink);font:inherit;font-size:16px;font-weight:700}
+.tareas .tfinbody{padding:2px 14px 12px;border-top:1px solid var(--line)}
+.tareas .tfintit{margin:10px 0 2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--ambar-text)}
+.tareas .tfinbody .tbtnq{margin-top:4px;margin-left:-12px}
+.tareas .teh{display:flex;align-items:center;gap:10px;padding:12px}
+.tareas .tedit{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:15px;font-weight:600}
+.tareas .tnamein{font-size:17px;font-weight:700}
+.tareas .tedit::placeholder{color:var(--text-muted);font-weight:500}
+.tareas .tmover{width:44px;height:44px;border-radius:10px;border:none;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tareas .tediting .tarbol .tfila{gap:2px}
+.tareas .tediting .tedit{margin-right:4px}
+.tareas .tarea-txt{display:flex;align-items:center;padding:10px 12px;line-height:1.3;white-space:normal;word-break:break-word}
+.tareas .tagrega-in{display:flex;align-items:center;gap:8px;min-height:52px;padding:0 14px;border-top:1px solid var(--line);color:var(--text-muted)}
+.tareas .tmenu{display:flex;flex-direction:column}
+.tareas .tmenu button{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.tareas .tmenu button:first-child{border-top:none}
+.tareas .tmenu button[disabled]{color:var(--text-muted)}
+.tareas .tmenu button svg{color:var(--text-muted)}
+.tareas .tdelq{padding-left:0}
+.tareas .tsheet{padding:0 20px 22px}
+.tareas .tsheet .grab{margin-bottom:12px}
+.tareas .tsheet-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.tareas .closeb{width:44px;height:44px;border-radius:999px;border:none;background:var(--surface-raised);color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tareas .topt{display:grid;grid-template-columns:1fr auto 22px;align-items:center;gap:10px;width:100%;min-height:56px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.tareas .topt:first-child{border-top:none}
+.tareas .topt.on svg{color:var(--ambar-text)}
+.tareas .tsem-l{margin:14px 0 8px;font-size:13px;font-weight:600;color:var(--text-muted)}
+.tareas .tsem{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tareas .tsem button{width:100%;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);font:inherit;font-size:12px;color:var(--text-muted)}
+.tareas .tsem b{font-size:18px;color:var(--text)}
+.tareas .tquitar{width:100%;min-height:48px;margin-top:14px;border:none;border-radius:12px;background:transparent;color:var(--text-muted);font:inherit;font-size:15px;font-weight:700}
+.tareas .card{background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.tareas .tchk.on,.tareas .tico.ok,.tareas .btnp:not([disabled]){background-image:var(--logro)}
+.tareas .tpaso.drag{position:relative;z-index:5}
+.tareas .tpaso.drag>.tfila{background:var(--surface-raised);box-shadow:0 8px 24px rgba(0,0,0,.35);border-radius:10px}
+.tareas .tlinea{height:0;border-top:2px solid var(--text);margin:-1px 0;position:relative;z-index:4}
+.tareas .tsoltar{margin:2px 0 6px 34px;padding:8px 12px;border-radius:10px;border:1.5px dashed var(--line-strong);color:var(--text-muted);font-size:13px;font-weight:600}
+.tareas .tnuevo-in{display:flex;align-items:center;gap:8px;min-height:48px;padding:4px 0 4px 34px}
+.tareas .tinput{flex:1;min-width:0;min-height:44px;border:none;background:transparent;color:var(--text);font:inherit;font-size:15px}
+.tareas .tinput::placeholder{color:var(--text-muted)}
+.tareas .tinput-on{border-radius:8px;box-shadow:inset 0 -1.5px 0 var(--text);padding:0 4px}
+.tareas .ticonos{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:0 12px 10px}
+.tareas .ticonos button{height:44px;border-radius:10px;border:1px solid transparent;background:var(--surface-raised);color:var(--text);display:flex;align-items:center;justify-content:center}
+.tareas .ticonos button[aria-pressed="true"]{border-color:var(--text)}
+.tareas textarea.tedit{resize:none;overflow:hidden;padding:11px 12px;line-height:1.3;display:block}
+.tareas .tscrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70}
+html:not(.dark) .tareas .tscrim{background:rgba(15,17,19,.35)}
+.tareas .tsheet{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;background:var(--bg);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:71}
+.tareas .tgrab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 12px}
+.tareas .ttoast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;width:calc(100% - 32px);max-width:398px;z-index:60}
+@media (min-width:1024px){.tareas .ttoast{bottom:24px}}
+

@@ -12,8 +12,8 @@ import { CreateHabitScreen } from '../screens/CreateHabitScreen';
 import { HabitDetailScreen } from '../screens/HabitDetailScreen';
 import { ManageHabitsModal } from '../screens/ManageHabitsModal';
 import { FocusModeScreen } from '../screens/FocusModeScreen';
+import { TasksScreen } from '../screens/TasksScreen';
 import { RutinaEditorModal } from '../screens/RutinaEditorModal';
-import { TareaEditorModal } from '../screens/TareaEditorModal';
 import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
@@ -53,6 +53,8 @@ export const AppShell: React.FC = () => {
     switch (screenToRender) {
       case 'hoy':
         return <TodayScreen />;
+      case 'tareas':
+        return <TasksScreen />;
       case 'stats':
         return <StatsScreen />;
       case 'calendario':
@@ -131,7 +133,6 @@ export const AppShell: React.FC = () => {
         <FocusModeScreen />
         <CreateMenu />
         <RutinaEditorModal />
-        <TareaEditorModal />
         <CuentaFlow />
         {estado === 'dentro' && supabaseListo && <NubeSync onNubeLista={() => setNubeLista(true)} />}
         {estado === 'dentro' && nubeLista && <OnboardingModal />}

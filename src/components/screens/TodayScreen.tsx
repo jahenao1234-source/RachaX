@@ -234,6 +234,12 @@ const renderFilaHabito = ({
           )}
         </div>
         {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
+        {/* Sin reto, "Empezar" va en la misma línea (con reto baja junto a la barra del reto) */}
+        {isNext && !isHecho && !habito.reto && !inRutina && (
+          <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} aria-label={`Empezar ${habito.nombre} en modo Foco`} className="h-[44px] px-3 rounded-[12px] border bg-transparent text-[14px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform" style={{ borderColor: minfo.varColor, color: minfo.varColor }}>
+            <Play size={12} className="fill-current" /> Empezar
+          </button>
+        )}
         {habito.metaDiaria && !isHecho ? (
            <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="relative after:absolute after:-inset-[6px] after:content-[''] h-[32px] px-3 rounded-[10px] border border-text-muted bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
         ) : (
@@ -242,7 +248,7 @@ const renderFilaHabito = ({
            </button>
         )}
       </div>
-      {(habito.reto || (isNext && !isHecho)) && (
+      {habito.reto && (
         <div className="flex flex-wrap items-center gap-2 mt-0.5 ml-0">
           {habito.reto && (
             <div className="flex-1 flex items-center gap-2" role="progressbar" aria-valuenow={progressReto} aria-valuemin={0} aria-valuemax={habito.reto.meta} aria-valuetext={`${progressReto} de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}`} aria-label={`Reto de ${habito.nombre}`}>
@@ -254,8 +260,8 @@ const renderFilaHabito = ({
               </span>
             </div>
           )}
-          {isNext && !isHecho && (
-            <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[44px] px-3.5 rounded-[12px] border bg-transparent text-[14px] font-bold flex items-center gap-1.5 shrink-0 ml-auto active:scale-95 transition-transform`} style={{ borderColor: minfo.varColor, color: minfo.varColor }}>
+          {isNext && !isHecho && !inRutina && (
+            <button type="button" aria-label={`Empezar ${habito.nombre} en modo Foco`} onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[44px] px-3.5 rounded-[12px] border bg-transparent text-[14px] font-bold flex items-center gap-1.5 shrink-0 ml-auto active:scale-95 transition-transform`} style={{ borderColor: minfo.varColor, color: minfo.varColor }}>
               <Play size={12} className="fill-current" /> Empezar
             </button>
           )}
@@ -317,16 +323,13 @@ const renderRutina = ({ r, mom, minfo, desk, isNextInside, openRutinaEditor, ope
   );
 }
 
-const renderTareasBox = ({ th, toggleSubtarea, desk, openTareaEditor }: any) => {
+const renderTareasBox = ({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab }: any) => {
   if (th.modo === 'nada') return null;
   return (
     <section aria-labelledby="tareas-hoy-titulo" className={`bg-surface border border-line rounded-[18px] p-3.5 ${!desk ? 'mt-4' : ''}`}>
       <div className="flex flex-wrap items-center justify-between min-h-[44px]">
         <h2 id="tareas-hoy-titulo" className="m-0 font-heading font-bold text-[22px]">Tareas de hoy</h2>
-        <button type="button" onClick={() => {
-          const el = document.getElementById('tareas-lista');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }} className="flex items-center gap-1 min-h-[44px] text-[15px] font-semibold text-ambar-text hover:underline">
+        <button type="button" onClick={() => navigateToTab('tareas')} className="flex items-center gap-1 min-h-[44px] text-[15px] font-semibold text-ambar-text hover:underline">
           Ver tareas <ChevronRight size={16} strokeWidth={2.5} />
         </button>
       </div>
@@ -802,69 +805,6 @@ export const TodayScreen: React.FC = () => {
     });
   };
 
-  // Lista completa de tareas (se muda a la pestaña Tareas cuando exista)
-  const listaTareas = (
-    <>
-        {tareas.length > 0 && (
-          <div className="mt-6 space-y-4" id="tareas-lista">
-            <section className="space-y-2">
-                <div className="flex items-center justify-between px-1">
-                  <div className="flex items-center gap-2">
-                    <ListChecks size={15} className="text-accent-text" />
-                    <h2 className="text-[20px] font-bold font-heading text-text">Tareas</h2>
-                  </div>
-                  <button type="button" onClick={() => openTareaEditor(null)} className="text-[13px] font-semibold text-accent-text hover:underline">+ Nueva</button>
-                </div>
-                <div className="space-y-2.5">
-                  {tareas.map((tarea) => {
-                    const { total, hechas } = contarHojasSubtareas(tarea.subtareas);
-                    const abierta = expandedTarea === tarea.id;
-                    return (
-                      <div key={tarea.id} className="rounded-[14px] bg-surface border border-line overflow-hidden">
-                        <div className="p-3 flex items-center justify-between">
-                          <button type="button" onClick={() => setExpandedTarea(abierta ? null : tarea.id)} className="flex items-center gap-3 min-w-0 flex-1 pr-2 text-left">
-                            <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center shrink-0" style={{ backgroundColor: `${tarea.color}20`, color: tarea.color }}>
-                              <HabitIcon name={tarea.icono} size={19} />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
-                                <h4 className={`text-[15px] font-semibold font-heading truncate ${tarea.completada ? 'text-text-muted line-through decoration-text-muted' : 'text-text'}`}>{tarea.nombre}</h4>
-                              </div>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-[13px] font-medium text-accent-text">{hechas}/{total}</span>
-                                <ChevronDown size={14} className={`text-text-muted transition-transform ${abierta ? 'rotate-180' : ''}`} />
-                              </div>
-                            </div>
-                          </button>
-                          <div className="flex items-center gap-1.5 shrink-0 pl-1">
-                            <button type="button" onClick={() => openTareaEditor(tarea)} aria-label="Editar tarea" className="w-[32px] h-[32px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center"><Pencil size={14} /></button>
-                            <button type="button" onClick={() => openFocusMode({ tipo: 'tarea', tareaId: tarea.id })} aria-label="Enfocar tarea" className="w-[32px] h-[32px] rounded-[10px] bg-surface-raised text-text flex items-center justify-center"><Play size={14} className="fill-text" /></button>
-                          </div>
-                        </div>
-                        {abierta && (
-                          <div className="px-3 pb-3 space-y-1 animate-fadeIn border-t border-line pt-2">
-                            {tarea.subtareas.map((s) => (
-                              <SubtareaTreeNode
-                                key={s.id}
-                                sub={s}
-                                tareaId={tarea.id}
-                                color={tarea.color}
-                                depth={0}
-                                onToggle={toggleSubtarea}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-          </div>
-        )}
-      </>
-  );
-
   const desktopView = desk && (
     <div id="screen-today-desktop" className="hoyd pb-8 animate-fadeIn text-text font-body h-full flex flex-col">
       {/* Header Desktop */}
@@ -971,12 +911,11 @@ export const TodayScreen: React.FC = () => {
               );
             })}
           </div>
-          {listaTareas}
         </div>
 
         {/* Right Column */}
         <div className="flex flex-col gap-4">
-          {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor })}
+          {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
 
           <EstaSemanaDesk
             habitosActivos={habitosActivos}
@@ -1182,7 +1121,7 @@ export const TodayScreen: React.FC = () => {
         })}
       </div>
 
-      {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor })}
+      {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
 
       {proximaInsignia && (
         <div className="mt-4 flex items-center gap-3">
@@ -1196,7 +1135,6 @@ export const TodayScreen: React.FC = () => {
         </div>
       )}
 
-      {listaTareas}
     </div>
   );
 

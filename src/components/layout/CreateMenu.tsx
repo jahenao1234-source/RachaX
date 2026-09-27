@@ -3,7 +3,7 @@ import { X, Plus, ListChecks, ListTodo } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 
 export const CreateMenu: React.FC = () => {
-  const { isCreateMenuOpen, closeCreateMenu, openCreateModal, openRutinaEditor, openTareaEditor } = useHabitStore();
+  const { isCreateMenuOpen, closeCreateMenu, openCreateModal, openRutinaEditor, openTareaEditor, navigateToTab } = useHabitStore();
   if (!isCreateMenuOpen) return null;
   return (
     <div className="fixed inset-0 z-[55] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm animate-fadeIn" onClick={closeCreateMenu}>
@@ -21,7 +21,7 @@ export const CreateMenu: React.FC = () => {
           </div>
         </button>
         {/* "Nueva rutina" retirada el 27 sep 2026: las rutinas se rediseñan desde cero */}
-        <button type="button" onClick={() => { closeCreateMenu(); openTareaEditor(null); }}
+        <button type="button" onClick={() => { closeCreateMenu(); navigateToTab('tareas'); openTareaEditor(null); }}
           className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
           <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0"><ListTodo size={20} /></div>
           <div>
