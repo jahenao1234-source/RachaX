@@ -164,7 +164,7 @@
     --manana-tint: #FFF1DB;
     
     --lila-strong: #4F5BD5;
-    --coral-strong: #D9492A;
+    --coral-strong: #B8381C;
     --danger: #C62828;
 
     --lila-tint: #ECEEFF;
@@ -705,3 +705,7 @@ html:not(.dark) .onb .otp.bad .otpd, html:not(.dark) .onb .input.bad { border-co
 .onb .nsopt.on .rdot { border:5px solid var(--text); }
 .onb .nsopt:focus-within { outline:2px solid var(--text); outline-offset:2px; }
 .onb .btnp.danger { background:var(--coral); background-image:none; color:var(--ink); }
+
+/* Hoy: contorno de la fila que "Sigue" (1.5px en oscuro, 1px en claro) */
+.hoyc-next { outline-width: 1.5px; }
+html:not(.dark) .hoyc-next { outline-width: 1px; }

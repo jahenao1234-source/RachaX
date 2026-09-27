@@ -3,7 +3,8 @@ import { Reorder, useDragControls } from 'motion/react';
 import { X, Check, Trash2, ListChecks, Plus, GripVertical } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
-import { COLORES_HABITO, Habito } from '../../types';
+import { COLORES_HABITO, Habito, MomentoDia, MOMENTOS } from '../../types';
+import { momentoDeRutina, rutinaQueTieneHabito } from '../../utils/hoyUtils';
 
 const RUTINA_ICONOS = ['Sunrise', 'Sun', 'Moon', 'Zap', 'Coffee', 'Dumbbell', 'BookOpen', 'Sparkles', 'ListChecks', 'Bed'];
 
@@ -29,13 +30,14 @@ const HabitoOrdenRow: React.FC<{ habito: Habito; orden: number; onRemove: () => 
 };
 
 export const RutinaEditorModal: React.FC = () => {
-  const { isRutinaEditorOpen, closeRutinaEditor, rutinaBeingEdited, crearRutina, editarRutina, eliminarRutina, habitosActivos } = useHabitStore();
+  const { isRutinaEditorOpen, closeRutinaEditor, rutinaBeingEdited, crearRutina, editarRutina, eliminarRutina, habitosActivos, rutinas } = useHabitStore();
   const isEditing = Boolean(rutinaBeingEdited);
 
   const [nombre, setNombre] = useState('');
   const [color, setColor] = useState(COLORES_HABITO[0].hex);
   const [icono, setIcono] = useState('ListChecks');
   const [seleccion, setSeleccion] = useState<string[]>([]);
+  const [momento, setMomento] = useState<MomentoDia>('manana');
 
   useEffect(() => {
     if (isRutinaEditorOpen) {
@@ -43,13 +45,37 @@ export const RutinaEditorModal: React.FC = () => {
       setColor(rutinaBeingEdited?.color || COLORES_HABITO[0].hex);
       setIcono(rutinaBeingEdited?.icono || 'ListChecks');
       setSeleccion(rutinaBeingEdited?.habitoIds || []);
+      
+      if (rutinaBeingEdited) {
+        setMomento(momentoDeRutina(rutinaBeingEdited, habitosActivos));
+      } else {
+        setMomento('manana'); // al elegir el primer hábito toma su momento
+      }
+    } else {
+      // Reset states
+      setNombre('');
+      setColor(COLORES_HABITO[0].hex);
+      setIcono('ListChecks');
+      setSeleccion([]);
+      setMomento('manana');
     }
+    // Solo al abrir o cambiar de rutina: si los hábitos cambian con el editor abierto no se pierde lo que se está llenando
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRutinaEditorOpen, rutinaBeingEdited]);
 
   if (!isRutinaEditorOpen) return null;
 
   const toggleHabito = (id: string) => {
-    setSeleccion((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    setSeleccion((prev) => {
+      const isSelecting = !prev.includes(id);
+      const next = isSelecting ? [...prev, id] : prev.filter((x) => x !== id);
+      
+      if (!isEditing && isSelecting && prev.length === 0) {
+        const h = habitosActivos.find(x => x.id === id);
+        if (h && h.momento) setMomento(h.momento);
+      }
+      return next;
+    });
   };
 
   const puedeGuardar = nombre.trim().length > 0 && seleccion.length > 0;
@@ -58,9 +84,9 @@ export const RutinaEditorModal: React.FC = () => {
     if (!puedeGuardar) return;
     const habitoIds = seleccion.filter((id) => habitosActivos.some((h) => h.id === id));
     if (isEditing && rutinaBeingEdited) {
-      editarRutina(rutinaBeingEdited.id, { nombre: nombre.trim(), color, icono, habitoIds });
+      editarRutina(rutinaBeingEdited.id, { nombre: nombre.trim(), color, icono, habitoIds, momento });
     } else {
-      crearRutina({ nombre: nombre.trim(), color, icono, habitoIds });
+      crearRutina({ nombre: nombre.trim(), color, icono, habitoIds, momento });
     }
     closeRutinaEditor();
   };
@@ -108,6 +134,26 @@ export const RutinaEditorModal: React.FC = () => {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-text-muted">¿En qué momento del día?</label>
+            <div className="flex gap-2 w-full">
+              {MOMENTOS.map(m => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setMomento(m.id)}
+                  className={`flex-1 h-11 rounded-[12px] border flex items-center justify-center text-[13px] transition-all ${
+                    momento === m.id
+                      ? 'bg-surface-raised border-text text-text font-bold'
+                      : 'bg-surface border-line text-text-muted hover:text-text hover:border-line-strong font-semibold'
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-3">
             <label className="text-xs font-medium text-text-muted">Hábitos de esta rutina ({seleccion.length})</label>
 
@@ -130,16 +176,27 @@ export const RutinaEditorModal: React.FC = () => {
               habitosActivos.filter((h) => !seleccion.includes(h.id)).length > 0 && (
                 <div className="space-y-2">
                   <p className="text-[11px] text-text-muted">Añadir hábitos</p>
-                  {habitosActivos.filter((h) => !seleccion.includes(h.id)).map((h) => (
-                    <button key={h.id} type="button" onClick={() => toggleHabito(h.id)}
-                      className="w-full p-3 rounded-[14px] border bg-bg border-line hover:border-line-strong flex items-center gap-3 text-left transition-all">
-                      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: `${h.color}20`, color: h.color, border: `1px solid ${h.color}40` }}>
-                        <HabitIcon name={h.icono} size={16} />
-                      </div>
-                      <span className="text-xs font-semibold font-heading text-text truncate flex-1">{h.nombre}</span>
-                      <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 border-2 border-line-strong"><Plus size={12} className="text-text-muted" /></div>
-                    </button>
-                  ))}
+                  {habitosActivos.filter((h) => !seleccion.includes(h.id)).map((h) => {
+                    // Check if it belongs to another routine
+                    const otraRutina = rutinaQueTieneHabito(h.id, rutinas, rutinaBeingEdited?.id);
+                    const disabled = !!otraRutina;
+
+                    return (
+                      <button key={h.id} type="button" onClick={() => { if (!disabled) toggleHabito(h.id); }} disabled={disabled}
+                        className={`w-full p-3 rounded-[14px] border border-line flex items-center gap-3 text-left transition-all ${disabled ? 'bg-surface cursor-not-allowed' : 'bg-bg hover:border-line-strong'}`}>
+                        <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 ${disabled ? 'opacity-50' : ''}`} style={{ backgroundColor: `${h.color}20`, color: h.color, border: `1px solid ${h.color}40` }}>
+                          <HabitIcon name={h.icono} size={16} />
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                          <span className={`text-xs font-semibold font-heading truncate ${disabled ? 'text-text-muted' : 'text-text'}`}>{h.nombre}</span>
+                          {disabled && (
+                            <span className="text-[13px] text-text-muted truncate mt-0.5">Ya está en {otraRutina.nombre}</span>
+                          )}
+                        </div>
+                        {!disabled && <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 border-2 border-line-strong"><Plus size={12} className="text-text-muted" /></div>}
+                      </button>
+                    );
+                  })}
                 </div>
               )
             )}

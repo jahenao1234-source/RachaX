@@ -22,6 +22,7 @@ import {
   puntosParaNivel,
   ETAPAS
 } from '../../utils/habitUtils';
+import { rutinasDeHoy, idsEnRutinasDeHoy, tareasDeHoy } from '../../utils/hoyUtils';
 import { getLunesActual } from '../../utils/retoSemanal';
 
 const SubtareaTreeNode: React.FC<{
@@ -222,8 +223,7 @@ export const TodayScreen: React.FC = () => {
     return cumplidos;
   }, [hoy, registros, habitosActivos, diasCongelados]);
 
-  const habitosPendientes = habitosDeHoy.filter(h => !esHabitoCompletado(h.id));
-
+  // Constancia últimos 30 días (sin usar habitosPendientes aquí)
   // Verificar si hay algún registro completado en toda la app para mostrar el obtip
   const hayRegistrosCompletados = useMemo(() => registros.some(r => r.completado), [registros]);
   // El aviso "Tu primer día" se va con el primer hábito marcado y no vuelve, aunque se desmarque
@@ -236,6 +236,21 @@ export const TodayScreen: React.FC = () => {
       try { localStorage.setItem('racha_primer_dia', 'visto'); } catch {}
     }
   }, [hayRegistrosCompletados, primerDiaVisto]);
+
+  const rdh = useMemo(() => rutinasDeHoy(rutinas, habitosDeHoy, habitosActivos), [rutinas, habitosDeHoy, habitosActivos]);
+  const enRutina = useMemo(() => idsEnRutinasDeHoy(rdh), [rdh]);
+
+  const habitosConMomentoEfectivo = useMemo(() => {
+    return habitosDeHoy.map(h => {
+      if (enRutina.has(h.id)) {
+        const r = rdh.find(rut => rut.habitos.some(x => x.id === h.id));
+        if (r) return { ...h, momentoEfectivo: r.momento } as Habito & { momentoEfectivo: string };
+      }
+      return { ...h, momentoEfectivo: h.momento || 'flexible' } as Habito & { momentoEfectivo: string };
+    });
+  }, [habitosDeHoy, enRutina, rdh]);
+
+  const habitosPendientes = habitosConMomentoEfectivo.filter(h => !esHabitoCompletado(h.id));
 
   // Determinar la fila siguiente
   const siguienteFila = useMemo(() => {
@@ -255,24 +270,42 @@ export const TodayScreen: React.FC = () => {
     orderWithoutFlexible.push('flexible');
 
     for (const mom of orderWithoutFlexible) {
-      const pendingInMom = habitosPendientes.filter(h => (h.momento || 'flexible') === mom);
+      const pendingInMom = habitosPendientes.filter(h => h.momentoEfectivo === mom);
       if (pendingInMom.length > 0) {
-        pendingInMom.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
-        return pendingInMom[0];
+        // En vez de ordenar sólo por orden, hay que respetar el orden de la rutina
+        // Si hay una rutina de este momento con hábitos pendientes, el primero de esa rutina va primero.
+        // Sino, los sueltos ordenados.
+        const rdhMom = rdh.filter(r => r.momento === mom);
+        for (const r of rdhMom) {
+          const pend = r.habitos.find(h => !esHabitoCompletado(h.id));
+          if (pend) return pend;
+        }
+        const loose = pendingInMom.filter(h => !enRutina.has(h.id));
+        if (loose.length > 0) {
+          loose.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+          return loose[0];
+        }
       }
     }
     return null;
-  }, [habitosPendientes, ordenMomentos, currentMomento]);
+  }, [habitosPendientes, ordenMomentos, currentMomento, rdh, enRutina, esHabitoCompletado]);
 
   const habitosOrdenados = useMemo(() => {
     const list: Habito[] = [];
     for (const mom of ordenMomentos) {
-      const inMom = habitosDeHoy.filter(h => (h.momento || 'flexible') === mom);
-      inMom.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
-      list.push(...inMom);
+      const inMom = habitosConMomentoEfectivo.filter(h => h.momentoEfectivo === mom);
+      // Primero de rutinas, en orden de la rutina
+      const rdhMom = rdh.filter(r => r.momento === mom);
+      for (const r of rdhMom) {
+        list.push(...r.habitos);
+      }
+      // Luego sueltos
+      const loose = inMom.filter(h => !enRutina.has(h.id));
+      loose.sort((a,b) => (a.orden ?? 0) - (b.orden ?? 0));
+      list.push(...loose);
     }
     return list;
-  }, [habitosDeHoy, ordenMomentos]);
+  }, [habitosConMomentoEfectivo, ordenMomentos, rdh, enRutina]);
 
   const getMomentoColorInfo = (momento?: string) => {
     switch (momento) {
@@ -321,6 +354,8 @@ export const TodayScreen: React.FC = () => {
     }
     setIsRetoSheetOpen(false);
   };
+
+  const th = tareasDeHoy(tareas, hoy);
 
   return (
     <div id="screen-today" className="pb-28 animate-fadeIn text-text font-body pt-2">
@@ -495,13 +530,13 @@ export const TodayScreen: React.FC = () => {
       <div className="mt-4.5 flex justify-between items-baseline mb-3">
         <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
         <span className="text-[13px] text-text-muted">
-          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar-text hover:underline">Gestionar</button>
+          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="inline-flex min-h-[44px] items-center font-semibold text-ambar-text hover:underline">Gestionar</button>
         </span>
       </div>
 
       <div className="flex flex-col gap-4">
         {ordenMomentos.map(mom => {
-          const inMom = habitosOrdenados.filter(h => (h.momento || 'flexible') === mom);
+          const inMom = habitosConMomentoEfectivo.filter(h => h.momentoEfectivo === mom);
           if (inMom.length === 0) return null;
           
           const hechos = inMom.filter(h => esHabitoCompletado(h.id)).length;
@@ -511,39 +546,178 @@ export const TodayScreen: React.FC = () => {
           
           return (
             <section key={mom} className="flex flex-col gap-2">
-              <div 
-                className="flex items-center gap-2.5 px-0.5 cursor-pointer select-none" 
-                onClick={() => togglePlegado(mom)}
-              >
-                <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center shrink-0 ${minfo.iconBg} ${minfo.iconColor}`}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    {getMomentoIcon(mom)}
-                  </svg>
-                </div>
-                <div className="flex-1 flex items-center">
-                  <span className="font-heading font-bold text-[17px]">{getMomentoTitle(mom)}</span>
-                  {currentMomento === mom && (
-                    <span className="font-body font-semibold text-[12px] text-lila ml-1">ahora</span>
-                  )}
-                </div>
-                <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>
-                <div className="w-[44px] h-[5px] rounded-[9px] bg-track overflow-hidden shrink-0">
-                  <div className={`h-full rounded-[9px] ${minfo.bg}`} style={{ width: `${(hechos/total)*100}%` }}></div>
-                </div>
-                <ChevronDown size={16} className={`text-text-muted transition-transform ${isPlegado ? 'rotate-180' : ''}`} />
-              </div>
+              <h3 className="m-0">
+                <button 
+                  className="w-full flex items-center gap-2.5 px-0.5 cursor-pointer select-none" 
+                  onClick={() => togglePlegado(mom)}
+                  aria-expanded={!isPlegado}
+                >
+                  <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center shrink-0 ${minfo.iconBg} ${minfo.iconColor}`}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      {getMomentoIcon(mom)}
+                    </svg>
+                  </div>
+                  <div className="flex-1 flex items-center">
+                    <span className="font-heading font-bold text-[17px]">{getMomentoTitle(mom)}</span>
+                    {currentMomento === mom && (
+                      <>
+                        <span className="sr-only">, </span>
+                        <span className="font-body font-bold text-[12px] bg-surface-raised text-text px-[7px] rounded-[6px] ml-2">ahora</span>
+                      </>
+                    )}
+                  </div>
+                  <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>
+                  <div className="w-[44px] h-[5px] rounded-[9px] bg-track overflow-hidden shrink-0">
+                    <div className={`h-full rounded-[9px] ${minfo.bg}`} style={{ width: `${(hechos/total)*100}%` }}></div>
+                  </div>
+                  <ChevronDown size={16} className={`text-text-muted transition-transform ${isPlegado ? 'rotate-180' : ''}`} />
+                </button>
+              </h3>
 
               {!isPlegado && (
                 <div className="flex flex-col gap-2">
-                  {inMom.map(habito => {
+                  {/* Rutinas de este momento */}
+                  {rdh.filter(r => r.momento === mom).map(r => {
+                    const rHechos = r.habitos.filter(h => esHabitoCompletado(h.id)).length;
+                    const rTotal = r.habitos.length;
+                    const completa = rHechos === rTotal;
+                    const nextFilaInside = siguienteFila && r.habitos.some(h => h.id === siguienteFila.id);
+                    const groupBorder = nextFilaInside ? `1.5px solid ${minfo.varColor}` : `1px solid var(--line)`;
+
+                    return (
+                      <div key={r.rutina.id} className="bg-surface rounded-[16px] overflow-hidden" style={{ border: groupBorder }} role="group" aria-labelledby={`rutina-${r.rutina.id}`}>
+                        <div className="flex items-center gap-3 p-3">
+                          {/* Tocar el nombre abre el editor de la rutina (igual que tocar un hábito abre su detalle) */}
+                          <h4 id={`rutina-${r.rutina.id}`} className="m-0 flex-1 min-w-0 font-normal">
+                            <button type="button" onClick={() => openRutinaEditor(r.rutina)} className="w-full min-h-[44px] flex items-center gap-3 text-left rounded-[10px]">
+                              <span className="w-[34px] h-[34px] rounded-[10px] bg-surface-raised flex items-center justify-center text-text shrink-0" aria-hidden="true">
+                                <HabitIcon name={r.rutina.icono} size={18} />
+                              </span>
+                              <span className="flex-1 min-w-0 flex flex-col">
+                                <span className="font-heading font-bold text-[18px] truncate text-text"><span className="sr-only">Editar la rutina </span>{r.rutina.nombre}</span>
+                                <span className={`text-[13px] font-semibold mt-0.5 ${completa ? 'text-ambar-text font-bold' : 'text-text-muted'}`} aria-live="polite">
+                                  {completa ? 'Rutina completa' : `Rutina · ${rHechos} de ${rTotal}`}
+                                </span>
+                              </span>
+                            </button>
+                          </h4>
+                          {!completa && (
+                            <button
+                              type="button"
+                              onClick={() => openFocusMode({ tipo: 'rutina', nombre: r.rutina.nombre, habitoIds: r.habitos.map(h => h.id) })}
+                              aria-label={`Empezar la rutina ${r.rutina.nombre} en modo Foco`}
+                              className={`h-[44px] px-3 rounded-[12px] text-[14px] whitespace-nowrap flex items-center justify-center shrink-0 active:scale-95 transition-transform ${
+                                currentMomento === mom || nextFilaInside
+                                  ? 'bg-transparent border-[1.5px] font-bold'
+                                  : 'bg-transparent text-text-muted font-bold'
+                              }`}
+                              style={currentMomento === mom || nextFilaInside ? { borderColor: minfo.varColor, color: minfo.varColor } : undefined}
+                            >
+                              <Play size={12} className="fill-current mr-1.5" />
+                              Empezar rutina
+                            </button>
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          {r.habitos.map((habito, index) => {
+                            const isHecho = esHabitoCompletado(habito.id);
+                            const isNext = siguienteFila?.id === habito.id;
+                            
+                            let rowClass = "flex flex-col gap-2 p-2.5 bg-transparent cursor-pointer active:scale-[0.99] transition-transform";
+                            if (isNext) rowClass += ` ${minfo.iconBg}`;
+                            if (index > 0) rowClass += " border-t border-line";
+
+                            const progressReto = habito.reto ? contarProgresoReto(habito, registros) : 0;
+                            let anchorText = '';
+                            if (habito.anclaje) {
+                              anchorText = habito.tipo === 'negativo' ? `evitar · cuando ${habito.anclaje}` : `después de ${habito.anclaje}`;
+                            } else {
+                              if (habito.tipo === 'negativo') anchorText = 'evitar';
+                              else if (habito.frecuencia === 'semanal') anchorText = `${contarCompletadosSemana(habito.id, hoy, registros)} de ${habito.vecesPorSemana} esta semana`;
+                              else if (habito.metaDiaria) anchorText = `${valorDe(habito.id)} de ${habito.metaDiaria}`;
+                            }
+
+                            return (
+                              <div key={habito.id} id={`habito-${habito.id}`} onClick={() => openHabitDetail(habito.id)} className={rowClass}>
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-[38px] h-[38px] rounded-[11px] ${isNext && !isHecho ? minfo.bg + ' text-ink' : minfo.iconBg + ' ' + minfo.iconColor} flex items-center justify-center shrink-0`} aria-hidden="true">
+                                    <HabitIcon name={habito.icono} size={19} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-x-2 min-w-0">
+                                      <p className={`m-0 min-w-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
+                                        {habito.nombre}
+                                      </p>
+                                      {isNext && !isHecho && (
+                                        <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${minfo.bg} text-ink text-[11px] font-bold shrink-0`}>
+                                          Sigue
+                                        </span>
+                                      )}
+                                    </div>
+                                    
+                                    {isHecho ? (
+                                      <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">
+                                        +10 ganados
+                                      </p>
+                                    ) : anchorText ? (
+                                      <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
+                                        {anchorText}
+                                      </p>
+                                    ) : null}
+                                    
+                                    {habito.metaDiaria && !isHecho && (
+                                      habito.metaDiaria > 12 ? (
+                                        <div className="mt-1.5 h-1.5 max-w-[130px] rounded-full overflow-hidden shadow-[inset_0_0_0_1px_var(--text-muted)]" aria-hidden="true">
+                                          <div className="h-full rounded-full bg-text" style={{ width: `${Math.min(100, (valorDe(habito.id) / habito.metaDiaria) * 100)}%` }} />
+                                        </div>
+                                      ) : (
+                                        <div className="mt-1.5 flex gap-[3px] max-w-[130px]" aria-hidden="true">
+                                          {Array.from({length: habito.metaDiaria}).map((_, i) => (
+                                            <span key={i} className={`flex-1 h-1.5 rounded-[2px] ${i < valorDe(habito.id) ? 'bg-text' : 'shadow-[inset_0_0_0_1px_var(--text-muted)]'}`}></span>
+                                          ))}
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+
+                                  {!habito.metaDiaria && !isHecho && <span className="text-[13px] text-text-muted font-number">+10</span>}
+                                  
+                                  {habito.metaDiaria && !isHecho ? (
+                                     <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="relative after:absolute after:-inset-[6px] after:content-[''] h-[32px] px-3 rounded-[10px] border border-text-muted bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
+                                  ) : (
+                                     <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`relative after:absolute after:-inset-[6px] after:content-[''] w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'logro border-none' : `bg-transparent border-2 border-text-muted`}`}>
+                                        {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
+                                     </button>
+                                  )}
+                                </div>
+                                
+                                {habito.reto && (
+                                  <div className="flex items-center gap-2 mt-0.5 ml-0" role="progressbar" aria-valuenow={progressReto} aria-valuemin={0} aria-valuemax={habito.reto.meta} aria-valuetext={`${progressReto} de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}`} aria-label={`Reto de ${habito.nombre}`}>
+                                    <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
+                                      <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((progressReto / habito.reto.meta) * 100))}%` }} />
+                                    </div>
+                                    <span className="text-[12px] text-text-muted font-number whitespace-nowrap">
+                                      {progressReto === 0 ? `Reto de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}` : `Reto · ${progressReto} de ${habito.reto.meta}`}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Hábitos sueltos */}
+                  {inMom.filter(h => !enRutina.has(h.id)).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0)).map(habito => {
                     const hInfo = getMomentoColorInfo(habito.momento);
                     const isNegativo = habito.tipo === 'negativo';
                     const isHecho = esHabitoCompletado(habito.id);
                     const isNext = siguienteFila?.id === habito.id;
-
                     let rowClass = "flex flex-col gap-2 p-2.5 rounded-[14px] bg-surface cursor-pointer active:scale-[0.99] transition-transform";
                     if (isNext) {
-                      rowClass = `flex flex-col gap-2 p-2.5 rounded-[14px] ${hInfo.iconBg} outline outline-[1.5px] outline-offset-[-1.5px] cursor-pointer active:scale-[0.99] transition-transform`;
+                      rowClass = `flex flex-col gap-2 p-2.5 rounded-[14px] ${hInfo.iconBg} outline hoyc-next outline-offset-[-1.5px] cursor-pointer active:scale-[0.99] transition-transform`;
                     }
                     
                     const progressReto = habito.reto ? contarProgresoReto(habito, registros) : 0;
@@ -560,32 +734,32 @@ export const TodayScreen: React.FC = () => {
                     return (
                       <div key={habito.id} id={`habito-${habito.id}`} onClick={() => openHabitDetail(habito.id)} className={rowClass} style={isNext ? { outlineColor: hInfo.varColor } : undefined}>
                         <div className="flex items-center gap-3">
-                          <div title={habito.momento || 'Todo el día'} className={`w-[38px] h-[38px] rounded-[11px] ${isNext ? hInfo.bg + ' text-ink' : hInfo.iconBg + ' ' + hInfo.iconColor} flex items-center justify-center shrink-0`}>
+                          <div title={habito.momentoEfectivo || 'Todo el día'} className={`w-[38px] h-[38px] rounded-[11px] ${isNext ? hInfo.bg + ' text-ink' : hInfo.iconBg + ' ' + hInfo.iconColor} flex items-center justify-center shrink-0`}>
                              <HabitIcon name={habito.icono} size={19} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className={`m-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
-                              {habito.nombre}
-                            </p>
+                            <div className="flex items-center gap-x-2 min-w-0">
+                              <p className={`m-0 min-w-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
+                                {habito.nombre}
+                              </p>
+                              {isNext && !isHecho && (
+                                <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold shrink-0`}>
+                                  Sigue
+                                </span>
+                              )}
+                            </div>
                             
                             {isHecho ? (
                               <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">
                                 +10 ganados
                               </p>
-                            ) : isNext ? (
-                              <div className="m-0 mt-[1px] text-[13px] text-lila-text opacity-80 flex items-center gap-1.5 truncate">
-                                <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${hInfo.bg} text-ink text-[11px] font-bold shrink-0`}>
-                                  Sigue
-                                </span>
-                                {anchorText && <span className="truncate">{anchorText}</span>}
-                              </div>
                             ) : anchorText ? (
                               <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">
                                 {anchorText}
                               </p>
                             ) : null}
                             
-                            {/* Conteo de hoy: también en el hábito que "Sigue". El texto "X de N" ya lo dice. */}
+                            {/* Conteo de hoy */}
                             {habito.metaDiaria && !isHecho && (
                               habito.metaDiaria > 12 ? (
                                 <div className="mt-1.5 h-1.5 max-w-[130px] rounded-full overflow-hidden shadow-[inset_0_0_0_1px_var(--text-muted)]" aria-hidden="true">
@@ -603,31 +777,34 @@ export const TodayScreen: React.FC = () => {
 
                           {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
                           
-                          {isNext && (
-                             <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[32px] px-2.5 rounded-[10px] border bg-transparent ${hInfo.iconColor} text-[13px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform`} style={{ borderColor: hInfo.varColor }}>
-                               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> Empezar
-                             </button>
-                          )}
-
                           {habito.metaDiaria && !isHecho ? (
-                             <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="h-[32px] px-3 rounded-[10px] border border-line-strong bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
+                             <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="relative after:absolute after:-inset-[6px] after:content-[''] h-[32px] px-3 rounded-[10px] border border-text-muted bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
                           ) : (
-                             <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'logro border-none' : `bg-transparent border-2 ${isNext ? '' : 'border-line-strong'}`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
+                             <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`relative after:absolute after:-inset-[6px] after:content-[''] w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'logro border-none' : `bg-transparent border-2 border-text-muted`}`} style={isNext && !isHecho ? { borderColor: hInfo.varColor } : undefined}>
                                 {isHecho && <Check size={18} strokeWidth={3} className="text-ink" />}
                              </button>
                           )}
                         </div>
 
-                        {habito.reto && (
-                          <div className="flex items-center gap-2 mt-0.5" role="progressbar" aria-valuenow={progressReto} aria-valuemin={0} aria-valuemax={habito.reto.meta} aria-valuetext={`${progressReto} de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}`} aria-label={`Reto de ${habito.nombre}`}>
-                            <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
-                              <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((progressReto / habito.reto.meta) * 100))}%` }} />
-                            </div>
-                            <span className="text-[12px] text-text-muted font-number whitespace-nowrap">
-                              {progressReto === 0 
-                                ? `Reto de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}` 
-                                : `Reto · ${progressReto} de ${habito.reto.meta}`}
-                            </span>
+                        {(habito.reto || (isNext && !isHecho)) && (
+                          <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                            {habito.reto && (
+                              <div className="flex-1 flex items-center gap-2" role="progressbar" aria-valuenow={progressReto} aria-valuemin={0} aria-valuemax={habito.reto.meta} aria-valuetext={`${progressReto} de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}`} aria-label={`Reto de ${habito.nombre}`}>
+                                <div className="flex-1 h-1.5 rounded-full bg-track-empty overflow-hidden">
+                                  <div className="h-full rounded-full bg-ambar-text transition-all" style={{ width: `${Math.min(100, Math.round((progressReto / habito.reto.meta) * 100))}%` }} />
+                                </div>
+                                <span className="text-[12px] text-text-muted font-number whitespace-nowrap">
+                                  {progressReto === 0 
+                                    ? `Reto de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}` 
+                                    : `Reto · ${progressReto} de ${habito.reto.meta}`}
+                                </span>
+                              </div>
+                            )}
+                            {isNext && !isHecho && (
+                              <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[44px] px-3.5 rounded-[12px] border bg-transparent text-[14px] font-bold flex items-center gap-1.5 shrink-0 ml-auto active:scale-95 transition-transform`} style={{ borderColor: hInfo.varColor, color: hInfo.varColor }}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> Empezar
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -639,6 +816,62 @@ export const TodayScreen: React.FC = () => {
           );
         })}
       </div>
+
+      {/* Tareas de hoy */}
+      {th.modo !== 'nada' && (
+        <section aria-labelledby="tareas-hoy-titulo" className="mt-4 bg-surface border border-line rounded-[18px] p-3.5">
+          <div className="flex flex-wrap items-center justify-between min-h-[44px]">
+            <h2 id="tareas-hoy-titulo" className="m-0 font-heading font-bold text-[22px]">Tareas de hoy</h2>
+            <button type="button" onClick={() => {
+              const el = document.getElementById('tareas-lista');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }} className="flex items-center gap-1 min-h-[44px] text-[15px] font-semibold text-ambar-text hover:underline">
+              Ver tareas <ChevronRight size={16} strokeWidth={2.5} />
+            </button>
+          </div>
+          
+          {th.modo === 'hoy' ? (
+            <p className="m-0 mt-1 text-[13px] font-semibold text-text-muted" aria-live="polite">
+              {th.pasos.every(p => p.paso.hecha) ? (
+                <span className="text-ambar-text font-bold">Hiciste los {th.pasos.length} pasos de hoy</span>
+              ) : (
+                `${th.pasos.filter(p => p.paso.hecha).length} de ${th.pasos.length} pasos`
+              )}
+            </p>
+          ) : (
+            <p className="m-0 mt-1 text-[13px] font-medium text-text-muted">Hoy no tienes pasos asignados. Estos son los que siguen.</p>
+          )}
+
+          <ul className="mt-3 m-0 p-0 list-none flex flex-col">
+            {th.pasos.map((p, i) => (
+              <li key={p.paso.id} className={`flex items-start gap-3 py-2 min-h-[52px] ${i > 0 ? 'border-t border-line' : ''}`}>
+                <button
+                  type="button"
+                  onClick={() => toggleSubtarea(p.tareaId, p.paso.id)}
+                  aria-pressed={p.paso.hecha}
+                  aria-label={`Marcar ${p.paso.texto}, de ${p.tareaNombre}`}
+                  className="relative shrink-0 w-[26px] h-[26px] rounded-[8px] flex items-center justify-center mt-1 transition-transform active:scale-95 after:content-[''] after:absolute after:-inset-2"
+                  style={{
+                    backgroundColor: p.paso.hecha ? 'var(--ambar)' : 'transparent',
+                    border: p.paso.hecha ? 'none' : '2px solid var(--text-muted)',
+                    backgroundImage: p.paso.hecha ? 'var(--logro)' : 'none'
+                  }}
+                >
+                  {p.paso.hecha && <Check size={15} strokeWidth={3} className="text-ink" />}
+                </button>
+                <div className="flex-1 min-w-0">
+                  <p className={`m-0 text-[15px] font-semibold ${p.paso.hecha ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
+                    {p.paso.texto}
+                  </p>
+                  <p className="m-0 mt-0.5 text-[13px] text-text-muted">
+                    {p.tareaNombre}{!p.paso.hecha && p.atraso ? ` · ${p.atraso}` : ''}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* 8. Progreso insignia */}
       {proximaInsignia && (
@@ -653,43 +886,10 @@ export const TodayScreen: React.FC = () => {
         </div>
       )}
 
-      {/* 9. Rutinas y Tareas restilizadas */}
-      {(rutinas.length > 0 || tareas.length > 0) && (
-        <div className="mt-6 space-y-4">
-          {rutinas.length > 0 && (
-            <section className="space-y-2">
-              <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2">
-                  <Zap size={15} className="text-accent-text" />
-                  <h2 className="text-[20px] font-bold font-heading text-text">Rutinas</h2>
-                </div>
-                <button type="button" onClick={() => openRutinaEditor(null)} className="text-[13px] font-semibold text-accent-text hover:underline">
-                  + Nueva
-                </button>
-              </div>
-              <div className="flex items-stretch gap-2.5 overflow-x-auto no-scrollbar pb-1">
-                {rutinas.map((rutina) => (
-                  <div key={rutina.id} className="relative shrink-0 w-[150px]">
-                    <button type="button" onClick={() => openFocusMode({ tipo: 'rutina', nombre: rutina.nombre, habitoIds: rutina.habitoIds })}
-                      className="w-full h-full rounded-[14px] bg-surface border border-line p-3 text-left active:scale-[0.98] transition-all">
-                      <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center mb-2" style={{ backgroundColor: `${rutina.color}20`, color: rutina.color, border: `1px solid ${rutina.color}40` }}>
-                        <HabitIcon name={rutina.icono} size={19} />
-                      </div>
-                      <p className="text-[15px] font-bold font-heading text-text truncate pr-5">{rutina.nombre}</p>
-                      <p className="text-[13px] text-text-muted mt-0.5">{rutina.habitoIds.length} hábitos</p>
-                    </button>
-                    <button type="button" onClick={() => openRutinaEditor(rutina)} aria-label="Editar rutina"
-                      className="absolute top-2 right-2 w-[28px] h-[28px] rounded-md bg-surface-raised text-text-muted flex items-center justify-center">
-                      <Pencil size={14} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {tareas.length > 0 && (
-            <section className="space-y-2">
+      {/* 9. Tareas completas (antigua sección rutinas/tareas) */}
+      {tareas.length > 0 && (
+        <div className="mt-6 space-y-4" id="tareas-lista">
+          <section className="space-y-2">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
                   <ListChecks size={15} className="text-accent-text" />
@@ -742,7 +942,6 @@ export const TodayScreen: React.FC = () => {
                 })}
               </div>
             </section>
-          )}
         </div>
       )}
 
