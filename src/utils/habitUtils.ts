@@ -349,10 +349,12 @@ export function esTareaCompletada(subtareas?: Subtarea[]): boolean {
  * - Padre: propaga el nuevo estado a todos sus descendientes
  * - Recalcula hacia arriba el estado 'hecha' de todos los ancestros
  */
-export function toggleSubtareaEnArbol(subtareas: Subtarea[], targetId: string): Subtarea[] {
+export function toggleSubtareaEnArbol(subtareas: Subtarea[], targetId: string, hoy: string = getTodayString()): Subtarea[] {
+  // Guarda el día en que se hizo cada paso (hechaEn); si ya estaba hecho conserva su día
+  const conDia = (sub: Subtarea, valor: boolean): Subtarea => ({ ...sub, hecha: valor, hechaEn: valor ? (sub.hecha && sub.hechaEn ? sub.hechaEn : hoy) : undefined });
   const setAllDescendants = (sub: Subtarea, valor: boolean): Subtarea => {
     const hijos = sub.subtareas ? sub.subtareas.map((h) => setAllDescendants(h, valor)) : undefined;
-    return { ...sub, hecha: valor, subtareas: hijos };
+    return { ...conDia(sub, valor), subtareas: hijos };
   };
 
   const traverse = (list: Subtarea[]): Subtarea[] => {
@@ -360,7 +362,7 @@ export function toggleSubtareaEnArbol(subtareas: Subtarea[], targetId: string): 
       if (node.id === targetId) {
         const tieneHijos = Boolean(node.subtareas && node.subtareas.length > 0);
         if (!tieneHijos) {
-          return { ...node, hecha: !node.hecha };
+          return conDia(node, !node.hecha);
         } else {
           const nuevoEstado = !node.hecha;
           return setAllDescendants(node, nuevoEstado);
@@ -370,9 +372,8 @@ export function toggleSubtareaEnArbol(subtareas: Subtarea[], targetId: string): 
         const nuevosHijos = traverse(node.subtareas);
         const hijosHechos = nuevosHijos.every((h) => h.hecha);
         return {
-          ...node,
+          ...conDia(node, hijosHechos),
           subtareas: nuevosHijos,
-          hecha: hijosHechos,
         };
       }
       return node;

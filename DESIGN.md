@@ -30,7 +30,7 @@ colors:
   text-light: "#15181B"
   text-muted-light: "#5D6570"
   lila-strong-light: "#4F5BD5"
-  coral-strong-light: "#D9492A"
+  coral-strong-light: "#B8381C"
   ambar-strong-light: "#A56200"
   ambar-tint-light: "#FFF1DB"
   lila-tint-light: "#ECEEFF"
@@ -212,7 +212,7 @@ components:
 
 # Design System: Racha
 
-<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día), design/maqueta-onboarding.html (onboarding, 2026-09-25), design/maqueta-cuenta.html (tu cuenta, 2026-09-25), design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro) y design/maqueta-crear.html (Crear / editar hábito v5 con reto, 2026-09-22) y design/maqueta-detalle.html (Detalle del hábito v2, 2026-09-22) y design/maqueta-calendario.html (Calendario v2, 2026-09-22) y design/maqueta-progreso.html (Progreso v1 y Tu mes del Calendario con %, 2026-09-22) y design/maqueta-perfil.html (Perfil v2, 2026-09-23). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
+<!-- Diseño aprobado el 2026-09-21. Maquetas aprobadas (referencia visual exacta): design/maqueta-hoy.html (Hoy v2: grupos por momento y tarjeta Tu día), design/maqueta-onboarding.html (onboarding, 2026-09-25), design/maqueta-cuenta.html (tu cuenta, 2026-09-25), design/maqueta-gestionar.html (Gestionar hábitos, oscuro y claro) y design/maqueta-crear.html (Crear / editar hábito v5 con reto, 2026-09-22) y design/maqueta-detalle.html (Detalle del hábito v2, 2026-09-22) y design/maqueta-calendario.html (Calendario v2, 2026-09-22) y design/maqueta-progreso.html (Progreso v1 y Tu mes del Calendario con %, 2026-09-22) y design/maqueta-perfil.html (Perfil v2, 2026-09-23) y design/maqueta-hoy-completo.html (Hoy completo: rutinas dentro de su momento, Tareas de hoy y Hoy en escritorio, 2026-09-27). El código todavía usa el diseño anterior: al migrar una pantalla, esta es la fuente de verdad. Cuando todo esté migrado, re-ejecutar /impeccable document para capturar los tokens reales y generar .impeccable/design.json. -->
 
 ## Overview
 
@@ -319,9 +319,9 @@ Por defecto la app sigue el modo del sistema del teléfono ("Automático"); en P
 
 Diseño móvil primero, ancho de referencia 390px, margen lateral de 20px (gutter). Entre bloques de la pantalla 14–16px; dentro de listas 8px entre filas. La barra de navegación inferior mide 82px y queda fija; el contenido nunca queda tapado por ella.
 
-Orden de la pantalla Hoy (de arriba a abajo, idéntico a design/maqueta-hoy.html): nivel y barra de puntos → fecha con el chip de comodines a la derecha y "Misiones de hoy: X de Y" → últimos 7 días con constancia del mes → tarjeta "Tu día" → título "Misiones" → grupos por momento del día en el orden guardado por el usuario (por defecto Mañana, Tarde, Noche, Todo el día), cada uno con sus hábitos pendientes y cumplidos → progreso de la próxima insignia → Rutinas y Tareas. Entre grupos 16px; entre filas de un grupo 8px. El logo vive solo en la barra superior global de la app, nunca repetido dentro de la pantalla.
+Orden de la pantalla Hoy (de arriba a abajo, idéntico a design/maqueta-hoy.html): nivel y barra de puntos → fecha con el chip de comodines a la derecha y "Misiones de hoy: X de Y" → últimos 7 días con constancia del mes → tarjeta "Tu día" → título "Misiones" → grupos por momento del día en el orden guardado por el usuario (por defecto Mañana, Tarde, Noche, Todo el día), cada uno con sus rutinas (primero) y sus hábitos sueltos, pendientes y cumplidos → recuadro "Tareas de hoy" → progreso de la próxima insignia. Mientras no exista la pestaña Tareas, la lista completa de tareas sigue al final de Hoy (debajo de la insignia) y la antigua sección "Rutinas" desaparece. Entre grupos 16px; entre filas de un grupo 8px. El logo vive solo en la barra superior global de la app, nunca repetido dentro de la pantalla.
 
-Escritorio (≥1024px, pendiente de diseñar): tres columnas; menú lateral a la izquierda, Hoy al centro y un panel fijo a la derecha con el calendario de constancia del mes, la tarea en curso y la próxima insignia. No estirar la columna móvil.
+Escritorio (≥1024px, design/maqueta-hoy-completo.html marcos 5 a 7): menú lateral a la izquierda y el contenido centrado con ancho máximo de 1120px, en dos columnas: Misiones (flexible) y una columna derecha de 340px (280px si la pantalla mide menos de 1280px). Ver "Hoy en escritorio". No estirar la columna móvil.
 
 ## Elevation & Depth
 
@@ -352,8 +352,8 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 ### Cards / Containers
 - **Fila de hábito** (habit-row): surface, esquinas 14px, padding 10px 12px. Contiene a la izquierda un **cuadrito de ícono** (icon-tile, 38px, fondo tinte del momento, ícono lucide en el color del momento), al centro nombre (body strong) y metadato (label, text-muted), y a la derecha puntos "+10" en text-muted y el check. El metadato muestra el anclaje si existe ("después de cenar"; en hábitos a evitar "evitar · cuando me siente a trabajar"). Si el hábito tiene reto, debajo va la barra del reto (ver Reto).
 - **Tarjeta "Tu día"** (today-card): surface con borde line, esquinas 18px, padding 14px, 10px entre líneas. Línea 1: "Tu día" en headline a la izquierda y "+N pts hoy" en Barlow Condensed ámbar a la derecha. Línea 2: una barra de segmentos, uno por cada hábito programado hoy (flex, 12px de alto, 4px de separación, esquinas 4px), en el mismo orden que la lista; cumplido = ámbar, pendiente = track. Línea 3: "X de Y · te quedan Z" en label text-muted a la izquierda y el enlace "Siguiente: [hábito] ↓" en lila (label, 700) a la derecha, que desplaza suavemente la pantalla hasta la fila siguiente y la resalta un instante. Con todo cumplido, la línea 3 muestra un mensaje breve de día completo y la barra queda toda en ámbar.
-- **Grupo por momento**: encabezado con cuadrito de 26px (group-icon, fondo tinte del momento, ícono del momento en su color: amanecer para Mañana, sol para Tarde, luna para Noche, reloj para Todo el día), nombre en Barlow Condensed 17px, la palabra "ahora" en lila 12px junto al grupo del momento actual del día, contador "X/Y" en label, mini barra de 44×5px (relleno en el color del momento) y chevron para plegar. Plegar es por grupo y se recuerda. Un grupo sin hábitos hoy no se muestra.
-- **Fila siguiente** (next-row): el primer hábito pendiente del momento actual (si no hay, del siguiente momento; al final los de Todo el día) se resalta dentro de su grupo: fondo tinte del momento, contorno de 1.5px en el color del momento, cuadrito de ícono relleno con el color del momento e ícono en ink, etiqueta "Sigue" (11px, 700, fondo del color del momento, texto ink, esquinas 6px) junto al nombre, botón "2 min" y el check con borde del color del momento. Solo hay una fila siguiente en toda la pantalla.
+- **Grupo por momento**: encabezado con cuadrito de 26px (group-icon, fondo tinte del momento, ícono del momento en su color: amanecer para Mañana, sol para Tarde, luna para Noche, reloj para Todo el día), nombre en Barlow Condensed 17px, la etiqueta "ahora" (12px, 700, fondo surface-raised, texto text, esquinas 6px) junto al nombre del grupo del momento actual, contador "X/Y" en label, mini barra de 44×5px (relleno en el color del momento) y chevron para plegar. Plegar es por grupo y se recuerda. Un grupo sin hábitos hoy no se muestra.
+- **Fila siguiente** (next-row): el primer hábito pendiente del momento actual (si no hay, del siguiente momento; al final los de Todo el día) se resalta dentro de su grupo: fondo tinte del momento, contorno de 1.5px en el color del momento, cuadrito de ícono relleno con el color del momento e ícono en ink, etiqueta "Sigue" (11px, 700, fondo del color del momento, texto ink, esquinas 6px) en la misma línea del nombre, y el check con borde del color del momento (en claro, su variante -strong-light). El anclaje va completo en la segunda línea. En el celular el botón "Empezar" va en una línea de abajo, a la derecha, junto a la barra del reto si la hay (así el nombre y el anclaje no se cortan). En modo claro el contorno de la fila es de 1px. Si la fila siguiente está dentro de una rutina, no lleva contorno ni "Empezar" propios (ver Rutinas en Hoy). Solo hay una fila siguiente en toda la pantalla.
 
 ### Inputs / Fields
 - **Style:** surface con borde line, esquinas 12px, texto body, placeholder text-muted.
@@ -362,10 +362,11 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 
 ### Navigation
 - **Barra inferior (móvil):** fondo bg con línea superior en line, 82px. Cuatro destinos (Hoy, Progreso, Calendario, Perfil; la pestaña se llama "Progreso", nunca "Estadísticas") con ícono lucide de 22px y etiqueta micro; activo en text, inactivos en text-muted. Botón Crear al centro.
-- **Menú lateral (escritorio):** pendiente de diseñar, mismos destinos y estados.
+- **Menú lateral (escritorio):** 240px, fondo surface con línea derecha en line. Arriba el logo y "Racha"; el botón ámbar "Crear" (46px, ícono +); los destinos en filas de 44px (ícono de 20px + nombre de 15px, 600; activo con fondo surface-raised, texto text e ícono en ambar-text; inactivos en text-muted); abajo, separado por una línea, el bloque de Perfil (avatar de 36px con la inicial, el nombre y "Nivel N · Perfil"), que abre Perfil. De 1024 a 1279px el menú mide 76px y muestra solo íconos (con title y aria-label). Destinos definitivos (maqueta aprobada): Hoy · Tareas · Tu semana · Progreso · Calendario. **Mientras no existan las pantallas Tareas y Tu semana, el menú conserva sus destinos actuales.**
+- **Barra inferior definitiva (aprobada, se implementa con la pantalla Tareas):** Hoy · Tareas · + · Progreso · Perfil. El Calendario pasa a ser una pestaña dentro de Progreso.
 
 ### Check de hábito
-- **Sin marcar** (check-toggle): círculo de 32px, borde 2px line-strong, fondo transparente.
+- **Sin marcar** (check-toggle): círculo de 32px, borde 2px text-muted (line-strong no llega a 3:1), fondo transparente, zona táctil de 44px. Lo mismo para el "+1" (borde 1px text-muted).
 - **Marcado** (check-toggle-done): círculo ámbar con ✓ en ink. Al marcar: relleno con escala 0.9→1 en 180ms, sin rebote. Suma los puntos con un "+10" breve junto al nivel.
 
 ### Últimos 7 días
@@ -376,6 +377,30 @@ Pastilla "Nivel N" (level-pill) + barra de 8px (track con relleno lila) + "680 /
 
 ### Hábito cumplido
 Un hábito completado NO desaparece ni cambia de posición: se queda en su lugar dentro de Misiones para que el usuario vea lo que ya logró. Estado cumplido: check ámbar relleno con ✓ en ink, nombre tachado en text-muted (tachado de 1.5px en text-muted), metadato reemplazado por "+10 ganados" en ámbar, y el cuadrito de ícono conserva su color de momento. Al marcar, el check se rellena con escala 0.9→1 en 180ms (sin rebote). Tocar el check otra vez lo desmarca.
+
+
+### Rutinas en Hoy
+Aprobado el 27 sep (design/maqueta-hoy-completo.html). Una rutina es un grupo de hábitos que se hacen seguidos.
+- **Dónde va:** dentro de su momento del día (Mañana, Tarde, Noche o Todo el día), antes de los hábitos sueltos de ese momento. La rutina tiene su propio momento, que se elige en el editor de rutinas. Las rutinas guardadas antes, sin momento, toman el momento que más se repite entre sus hábitos (en empate, el más temprano).
+- **Contenedor:** surface con borde line de 1px, esquinas 16px. Encabezado: cuadrito de 34px (surface-raised, ícono de la rutina en text), nombre de la rutina en Barlow Condensed 18px (h4) y debajo "Rutina · X de Y" en label text-muted; completa: **"Rutina completa"** en ambar-text, 700. A la derecha, el botón **"Empezar rutina"** (ícono de play), que abre el modo Foco con los hábitos de la rutina.
+- **Dos pesos del botón:** fuerte (44px, transparente, borde de 1.5px y texto en el color del momento) cuando la rutina es del momento "ahora" o cuando la fila siguiente está dentro de ella; discreto (44px, sin borde, texto text-muted) en los demás casos, para no competir con lo que "Sigue". Sin botón cuando la rutina está completa.
+- **Hábitos adentro:** filas planas (sin esquinas ni fondo propio) separadas por una línea de 1px en line; se marcan ahí mismo, igual que cualquier fila de Hoy (check, "+1", "+10 ganados", tachado al cumplir).
+- **Si lo que sigue está adentro:** el contenedor lleva borde de 1.5px en el color del momento; la fila siguiente lleva fondo tinte del momento, sin contorno propio y sin su propio "Empezar" (el de la rutina lo reemplaza).
+- **Reglas:** un hábito que está en una rutina aparece SOLO dentro de ella, nunca también suelto. Un hábito no puede estar en dos rutinas (el editor lo avisa: "Ya está en {rutina}"). Solo se muestran los hábitos de la rutina que tocan hoy; una rutina sin hábitos para hoy no se muestra. El conteo del grupo del momento y la tarjeta Tu día cuentan cada hábito una sola vez.
+
+### Tareas de hoy
+Aprobado el 27 sep (design/maqueta-hoy-completo.html). Recuadro en Hoy (en el celular después de Misiones; en escritorio arriba de la columna derecha).
+- **Tarjeta:** surface con borde line, esquinas 18px. Encabezado: **"Tareas de hoy"** (headline 22px) y a la derecha el enlace **"Ver tareas ›"** (ambar-text, 600, 44px de alto). Debajo, **"X de Y pasos"** (label, text-muted, 600); al hacer todos: **"Hiciste los N pasos de hoy"** (ambar-text, 700). Esa línea es aria-live="polite".
+- **Qué pasos muestra:** los pasos (subtareas) asignados a hoy, todos, incluidos los atrasados sin hacer, que dicen al lado de la tarea **"· de ayer"** o **"· del {día}"** (martes, miércoles…), en text-muted, sin rojo. Si hoy no hay ninguno asignado, en vez del conteo sale la nota **"Hoy no tienes pasos asignados. Estos son los que siguen."** (label, text-muted) y el siguiente paso pendiente de cada tarea abierta (el primer paso sin hacer del árbol, en el orden de las tareas), máximo 3. Si no hay tareas abiertas, el recuadro no se muestra.
+- **Fila de paso:** check cuadrado de 26px con esquinas 8px y borde 2px text-muted (hecho: relleno ámbar con ✓ en ink), zona táctil de 44px, aria-label "Marcar {paso}, de {tarea}". Al lado, el paso (15px, 600) y debajo el nombre de la tarea (13px, text-muted). Filas de 52px separadas por una línea en line. Un paso hecho se queda en su sitio, tachado en text-muted. Marcar un paso no da puntos.
+- **Estable bajo el dedo:** un paso marcado hoy sigue en la lista hasta mañana (no salta otro a su lugar).
+
+### Hoy en escritorio
+Aprobado el 27 sep (design/maqueta-hoy-completo.html, marcos 5 a 7).
+- **Encabezado:** tu llama a 72px (56px en pantallas de menos de 1280px), "Buenas tardes, {nombre}" (16px, 600), la fecha en Barlow Condensed 48px ("Jueves 24") con "+N pts hoy" en ambar-text a su lado, y debajo los segmentos del día con "X de Y · te quedan Z". A la derecha: el chip de comodines y el botón "Modo Foco" (44px, surface-raised con borde line-strong).
+- **Misiones:** igual que en el celular (grupos por momento con encabezado "Mañana · 1 de 3", rutinas y filas), en filas de 64px. Cada fila muestra además **la semana de ese hábito en 7 puntos** de 9px sin letras (L a D): cumplido ámbar, sin cumplir text-muted al 45%, comodín lila-text, hoy con anillo de 1.5px en text, días que no han llegado solo con contorno line-strong. El ol lleva aria-label "{hábito}: esta semana" y cada punto su día y estado.
+- **Columna derecha (de arriba a abajo):** Tareas de hoy → "Esta semana" (enlace "Calendario", los 7 días con su número, leyenda Todo cumplido · A medias · Comodín y "Cumpliste X de Y veces lo que te tocaba. Un día a medias no borra los demás.") → la fila del reto de la semana → "Lo próximo" (la próxima insignia con su barra y las cajas sorpresa por abrir). Los días que no han llegado llevan borde discontinuo de 1px en line-strong, sin opacidad.
+- Las hojas en escritorio siguen la regla aprobada: panel a la derecha para consultar (detalle del hábito, día del calendario, Gestionar) y ventana centrada para decidir o llenar (Crear/Editar, confirmaciones).
 
 ### Barra de agua y metas numéricas
 Hábitos con meta diaria (ej. 8 vasos) muestran segmentos de 16×6px (llenos en text, vacíos en track-empty) y un botón secundario "+1".

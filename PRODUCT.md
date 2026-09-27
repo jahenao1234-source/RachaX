@@ -58,7 +58,8 @@ Frase de posicionamiento: "Huella te ayuda a organizar tu vida. Racha te ayuda a
 - Fase 0 (requisito para vender): cuentas y datos en la nube con sincronización, acceso solo para compradores conectado al pago, recordatorios push.
 - Fase 1 (lanzamiento): modo rescate y métrica de constancia, versión mínima de cada hábito, diagnóstico inicial con rueda de la vida (máximo 3 hábitos), arranque de 60 segundos y cierre del día, arranque de 2 minutos en modo Foco, centro de tutoriales, Academia del método, modo claro.
 - En curso (rediseño, 2026-09): **reto por hábito** (7, 30 o 66 días cumplidos; con frecuencia semanal, 4, 8 o 12 semanas). Cuenta días cumplidos, la barra nunca baja y el hábito sigue al terminar. Se adelantó de la Fase 2 por decisión del dueño.
-- Fase 2: IA con créditos ("Divídelo por mí", coach de rescate, resumen semanal), revisión semanal, programas guiados, "¿para qué lo hago?", tareas con día asignado.
+- En curso (versión de escritorio y nueva organización, desde el 26 sep 2026): el celular sirve para **registrar** y el computador para **gestionar, planear y entender**. Las rutinas van dentro de Hoy en su momento del día; las tareas tienen su propia pestaña y Hoy muestra "Tareas de hoy" (pasos asignados a hoy, o el siguiente paso de cada tarea). Los pasos de una tarea pueden tener día (se asignan desde Tareas y Tu semana), así que "tareas con día asignado" se adelantó de la Fase 2. En escritorio se suman Tu semana (repaso, Rescate y planear), el informe completo, Foco con pomodoro y Tu mes en PDF.
+- Fase 2: IA con créditos ("Divídelo por mí", coach de rescate, resumen semanal), programas guiados, "¿para qué lo hago?", botón "agregar a mi calendario".
 
 **Por decidir:** proveedor de base de datos y autenticación, plataforma de cobro, precio final (hipótesis: USD 19–24 pago único de lanzamiento), dominio y hosting.
 

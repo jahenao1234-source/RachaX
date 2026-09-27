@@ -643,6 +643,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const eliminarHabito = (id: string) => {
     setHabitos((prev) => prev.filter((h) => h.id !== id));
     setRegistros((prev) => prev.filter((r) => r.habitoId !== id));
+    setRutinas((prev) => prev.some((r) => r.habitoIds.includes(id))
+      ? prev.map((r) => (r.habitoIds.includes(id) ? { ...r, habitoIds: r.habitoIds.filter((hid) => hid !== id) } : r))
+      : prev);
   };
 
   // Action: Toggle Completado

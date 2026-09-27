@@ -212,6 +212,8 @@ export interface Rutina {
   color: string;
   habitoIds: string[];
   creadoEn: string;
+  /** Momento del día donde se muestra en Hoy. Las rutinas viejas no lo tienen: usar momentoDeRutina(). */
+  momento?: MomentoDia;
 }
 
 export interface Subtarea {
@@ -219,6 +221,10 @@ export interface Subtarea {
   texto: string;
   hecha: boolean;
   subtareas?: Subtarea[];
+  /** Día asignado al paso ('YYYY-MM-DD'), desde Tareas o Tu semana. */
+  fecha?: string;
+  /** Día en que se marcó como hecho ('YYYY-MM-DD'). Se borra al desmarcar. */
+  hechaEn?: string;
 }
 export interface Tarea {
   id: string;
