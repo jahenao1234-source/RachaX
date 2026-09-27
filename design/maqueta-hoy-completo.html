@@ -401,16 +401,16 @@ nav a.on{color:var(--text)}
 .mbottom{display:flex;align-items:center;gap:10px}
 .mbottom .retobar{flex:1;margin-top:0}
 .rutlist .mrow.next,.light .rutlist .mrow.next{box-shadow:none}
-/* semana en puntos */
-.dkwk{gap:5px;align-items:center}
-.dkwk li,.w1024 .dkwk li{width:9px;height:9px;border-radius:99px;font-size:0;box-shadow:none;border:none;opacity:1;background:var(--track-empty)}
-.dkwk li span{display:none}
-.dkwk li.ok,.light .dkwk li.ok{background:var(--ambar)}
-.light .dkwk li.ok{background:var(--ambar-text)}
-.dkwk li.como{background:var(--lila-text);box-shadow:none}
-.dkwk li.hoy{background:transparent;box-shadow:0 0 0 1.5px var(--text)}
-.dkwk li.fut{background:transparent;border:none;box-shadow:inset 0 0 0 1px var(--line-strong)}
-.dkwk li.gris{background:var(--muted);opacity:.45}
+/* semana en barritas, como Tu día */
+.desk .dkwk{gap:3px;align-items:center;width:136px}
+.desk .dkwk li,.desk .dkwk li.hoy,.desk .dkwk li.fut,.desk .dkwk li.gris{flex:1;width:auto;height:10px;border-radius:4px;font-size:0;box-shadow:none;border:none;opacity:1;background:var(--track-empty)}
+.desk .dkwk li span{display:none}
+.desk .dkwk li.ok{background:var(--ambar)}
+.light .desk .dkwk li.ok{background:var(--ambar-text)}
+.desk .dkwk li.como{background:var(--lila-text);box-shadow:none;border:none}
+.desk.w1024 .dkwk{width:112px}
+.dklvl{max-width:520px;margin-bottom:2px}
+.dklvl .lvlstrip{min-height:32px}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .light{--coral-text:#B8381C}
 .light .desk{--coral-text:#B8381C}
@@ -1174,7 +1174,12 @@ body{flex-direction:column;align-items:center}.rowm{display:flex;gap:40px;align-
       <header class="dkhead">
         <span class="dkhart" aria-hidden="true"><svg width="72" height="72" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m16bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e15k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e15o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e15m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e15c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m16cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m16cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e15o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e15m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e15c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e15k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e15k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e15k)"/></g></svg></span>
         <div style="flex:1;min-width:0">
-          <p class="dksaludo">Buenas tardes, Johnatan</p>
+          <div class="dklvl">
+      <a class="lvlstrip" href="#" aria-label="Nivel 11: 130 de 600 puntos para el nivel 12. Ver tu llama">
+        <span class="cond lvlname">Nivel 11</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:22%"></b></i>
+        <span class="lvlnums">130 / 600</span>
+      </a></div><p class="dksaludo">Buenas tardes, Johnatan</p>
           <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><h1 class="cond dkh1">Jueves 24</h1><span class="cond" style="font-size:20px;color:var(--ambar-text)">+20 pts hoy</span></div>
           <div class="dkhprog">
             <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
@@ -1365,7 +1370,12 @@ body{flex-direction:column;align-items:center}.rowm{display:flex;gap:40px;align-
       <header class="dkhead">
         <span class="dkhart" aria-hidden="true"><svg width="72" height="72" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m20bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e19k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e19o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e19m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e19c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m20cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m20cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e19o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e19m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e19c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e19k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e19k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e19k)"/></g></svg></span>
         <div style="flex:1;min-width:0">
-          <p class="dksaludo">Buenas tardes, Johnatan</p>
+          <div class="dklvl">
+      <a class="lvlstrip" href="#" aria-label="Nivel 11: 130 de 600 puntos para el nivel 12. Ver tu llama">
+        <span class="cond lvlname">Nivel 11</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:22%"></b></i>
+        <span class="lvlnums">130 / 600</span>
+      </a></div><p class="dksaludo">Buenas tardes, Johnatan</p>
           <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><h1 class="cond dkh1">Jueves 24</h1><span class="cond" style="font-size:20px;color:var(--ambar-text)">+20 pts hoy</span></div>
           <div class="dkhprog">
             <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
@@ -1556,7 +1566,12 @@ body{flex-direction:column;align-items:center}.rowm{display:flex;gap:40px;align-
       <header class="dkhead">
         <span class="dkhart" aria-hidden="true"><svg width="56" height="56" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m24bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e23k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e23o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e23m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e23c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m24cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m24cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e23o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e23m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e23c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e23k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e23k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e23k)"/></g></svg></span>
         <div style="flex:1;min-width:0">
-          <p class="dksaludo">Buenas tardes, Johnatan</p>
+          <div class="dklvl">
+      <a class="lvlstrip" href="#" aria-label="Nivel 11: 130 de 600 puntos para el nivel 12. Ver tu llama">
+        <span class="cond lvlname">Nivel 11</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:22%"></b></i>
+        <span class="lvlnums">130 / 600</span>
+      </a></div><p class="dksaludo">Buenas tardes, Johnatan</p>
           <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><h1 class="cond dkh1">Jueves 24</h1><span class="cond" style="font-size:20px;color:var(--ambar-text)">+20 pts hoy</span></div>
           <div class="dkhprog">
             <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>

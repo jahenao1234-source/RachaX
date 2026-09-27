@@ -67,14 +67,12 @@ export const AppShell: React.FC = () => {
   const habitoRecienCreado = habitoRecienCreadoId ? habitos.find((h) => h.id === habitoRecienCreadoId) || null : null;
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col justify-center items-center py-0 sm:py-6 lg:py-8 px-0 sm:px-4 lg:px-6">
+    <div className="min-h-screen bg-bg flex flex-col justify-center items-center py-0 sm:py-6 lg:py-0 px-0 sm:px-4 lg:px-0">
       {/* App Container: Phone format on mobile/tablet, wide workstation on desktop */}
       <main
         id="app-shell-main"
-        className="w-full max-w-[430px] min-h-screen sm:min-h-[850px] sm:max-h-[920px] lg:max-w-[1200px] lg:h-[880px] lg:min-h-[860px] lg:max-h-[92vh] bg-bg sm:border sm:border-line sm:rounded-[36px] lg:rounded-[28px] relative flex flex-col lg:flex-row overflow-hidden sm:shadow-2xl sm:shadow-black/90"
+        className="w-full max-w-[430px] min-h-screen sm:min-h-[850px] sm:max-h-[920px] lg:max-w-none lg:h-screen lg:max-h-none lg:min-h-screen bg-bg sm:border lg:border-none sm:border-line sm:rounded-[36px] lg:rounded-none relative flex flex-col lg:flex-row overflow-hidden sm:shadow-2xl lg:shadow-none sm:shadow-black/90"
       >
-        {/* Ambient Top Glow */}
-        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-72 lg:w-[600px] h-36 bg-[var(--accent-15)] rounded-full blur-3xl pointer-events-none" />
 
         {/* Desktop Side Navigation (visible only on lg) */}
         <SideNav />
@@ -107,8 +105,14 @@ export const AppShell: React.FC = () => {
           </header>
 
           {/* Scrollable Screen Content */}
-          <div className="flex-1 overflow-y-auto px-5 sm:px-6 lg:px-8 pt-3 lg:pt-6 pb-24 lg:pb-8 relative z-10 custom-scrollbar">
-            <div className="w-full max-w-[760px] mx-auto">
+          <div className={`flex-1 overflow-y-auto relative z-10 custom-scrollbar ${
+            (activeTab === 'hoy' || activeTab === 'crear')
+              ? 'px-5 sm:px-6 lg:px-[22px] xl:px-[32px] pt-3 lg:pt-[18px] xl:pt-[24px] pb-24 lg:pb-8' 
+              : 'px-5 sm:px-6 lg:px-8 pt-3 lg:pt-6 pb-24 lg:pb-8'
+          }`}>
+            <div className={`w-full mx-auto ${
+              (activeTab === 'hoy' || activeTab === 'crear') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
+            }`}>
               {renderActiveScreen()}
             </div>
           </div>

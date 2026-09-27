@@ -20,14 +20,7 @@ export const CreateMenu: React.FC = () => {
             <p className="text-[11px] text-text-muted">Algo recurrente que quieres cumplir</p>
           </div>
         </button>
-        <button type="button" onClick={() => { closeCreateMenu(); openRutinaEditor(null); }}
-          className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
-          <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0"><ListChecks size={20} /></div>
-          <div>
-            <p className="text-sm font-bold font-heading text-text">Nueva rutina</p>
-            <p className="text-[11px] text-text-muted">Agrupa hábitos para correrlos en enfoque</p>
-          </div>
-        </button>
+        {/* "Nueva rutina" retirada el 27 sep 2026: las rutinas se rediseñan desde cero */}
         <button type="button" onClick={() => { closeCreateMenu(); openTareaEditor(null); }}
           className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
           <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0"><ListTodo size={20} /></div>

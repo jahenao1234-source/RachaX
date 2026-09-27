@@ -709,3 +709,11 @@ html:not(.dark) .onb .otp.bad .otpd, html:not(.dark) .onb .input.bad { border-co
 /* Hoy: contorno de la fila que "Sigue" (1.5px en oscuro, 1px en claro) */
 .hoyc-next { outline-width: 1.5px; }
 html:not(.dark) .hoyc-next { outline-width: 1px; }
+
+/* Hoy en escritorio: semana de cada hábito en barritas y días de "Esta semana" */
+.hoyd .hoyd-wk li { flex: 1; height: 10px; border-radius: 4px; background: var(--track-empty); }
+.hoyd .hoyd-wk li.ok { background: var(--ambar); }
+html:not(.dark) .hoyd .hoyd-wk li.ok { background: var(--ambar-text); }
+.hoyd .hoyd-wk li.como { background: var(--lila-text); }
+.hoyd .hoyd-dia.all, .hoyd .hoyd-ok { background: var(--ambar); color: var(--ink); }
+html:not(.dark) .hoyd .hoyd-dia.all, html:not(.dark) .hoyd .hoyd-ok { background: var(--ambar-text); color: #fff; }
