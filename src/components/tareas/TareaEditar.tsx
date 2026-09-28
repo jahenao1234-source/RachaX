@@ -1,33 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
 import { nuevoIdPaso } from '../../utils/tareasUtils';
+import { useArrastrePasos } from './arrastrePasos';
 
 export const TAREA_ICONOS = ['ListChecks', 'BookOpen', 'GraduationCap', 'Briefcase', 'Code', 'Home', 'Target', 'Lightbulb'];
-
-type Pos = 'antes' | 'despues' | 'dentro';
-interface Arrastre { id: string; dy: number; destino: { id: string; pos: Pos } | null }
-
-/** Ubica cada paso: su padre y su lugar entre sus hermanos. */
-const ubicar = (lista: Subtarea[], padreId: string | null = null, mapa = new Map<string, { padreId: string | null; hermanos: string[] }>()) => {
-  const hermanos = lista.map((s) => s.id);
-  for (const s of lista) {
-    mapa.set(s.id, { padreId, hermanos });
-    if (s.subtareas) ubicar(s.subtareas, s.id, mapa);
-  }
-  return mapa;
-};
-/** Orden de arriba a abajo, sin el paso que se arrastra ni lo que tiene adentro. */
-const ordenPlano = (lista: Subtarea[], sin: string, res: string[] = []) => {
-  for (const s of lista) {
-    if (s.id === sin) continue;
-    res.push(s.id);
-    if (s.subtareas) ordenPlano(s.subtareas, sin, res);
-  }
-  return res;
-};
 
 const autoAlto = (el: HTMLTextAreaElement | null) => {
   if (!el) return;
@@ -42,10 +21,11 @@ const autoAlto = (el: HTMLTextAreaElement | null) => {
  */
 export const TareaEditar: React.FC<{
   tarea: Tarea | null;
-  onListo: () => void;
+  /** Al crear una tarea nueva recibe su id. */
+  onListo: (idNueva?: string) => void;
   onBorrar?: (t: Tarea) => void;
 }> = ({ tarea, onListo, onBorrar }) => {
-  const { crearTarea, editarTarea, editarTextoPaso, agregarPasoTarea, borrarPasoTarea, moverPasoTarea } = useHabitStore();
+  const { crearTarea, editarTarea, editarTextoPaso, agregarPasoTarea, borrarPasoTarea } = useHabitStore();
   const esNueva = !tarea;
   const [nombre, setNombre] = useState(tarea ? tarea.nombre : '');
   const [icono, setIcono] = useState(tarea ? tarea.icono : 'ListChecks');
@@ -54,8 +34,6 @@ export const TareaEditar: React.FC<{
   const [textoNuevo, setTextoNuevo] = useState('');
   const [dentroDe, setDentroDe] = useState<string | null>(null);
   const [textoDentro, setTextoDentro] = useState('');
-  const [arrastre, setArrastre] = useState<Arrastre | null>(null);
-  const inicio = useRef<{ x: number; y: number; id: string; timer: number | null; activo: boolean; caja: HTMLElement; scroll0: number; ux: number; uy: number; auto: number | null } | null>(null);
 
   const guardarCabecera = (nuevoIcono = icono) => {
     if (!tarea) return;
@@ -63,99 +41,19 @@ export const TareaEditar: React.FC<{
     editarTarea(tarea.id, { nombre: limpio || tarea.nombre, icono: nuevoIcono });
   };
 
-  // ---------- Arrastrar (mantener presionado ⋮⋮) ----------
-  const cancelar = () => {
-    if (inicio.current?.timer) window.clearTimeout(inicio.current.timer);
-    if (inicio.current?.auto) window.clearInterval(inicio.current.auto);
-    inicio.current = null;
-    setArrastre(null);
-  };
-  const alBajar = (e: React.PointerEvent<HTMLSpanElement>, id: string) => {
-    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* sin captura el arrastre igual funciona */ }
-    const timer = window.setTimeout(() => {
-      if (!inicio.current) return;
-      inicio.current.activo = true;
-      setArrastre({ id, dy: 0, destino: null });
-      navigator.vibrate?.(10);
-    }, 350);
-    // La caja que se desplaza (en la app, el contenedor con overflow-y-auto)
-    let caja: HTMLElement | null = e.currentTarget.parentElement;
-    while (caja && !(caja.scrollHeight > caja.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(caja).overflowY))) caja = caja.parentElement;
-    if (!caja) caja = document.scrollingElement as HTMLElement;
-    inicio.current = { x: e.clientX, y: e.clientY, id, timer, activo: false, caja, scroll0: caja.scrollTop, ux: e.clientX, uy: e.clientY, auto: null };
-  };
-  const alMover = (e: React.PointerEvent<HTMLSpanElement>) => {
-    const i = inicio.current;
-    if (!i || !tarea) return;
-    if (!i.activo) {
-      if (Math.abs(e.clientY - i.y) > 10) cancelar();
-      return;
-    }
-    i.ux = e.clientX; i.uy = e.clientY;
-    // Cerca del borde de arriba o de abajo, la pantalla se desplaza sola
-    const borde = e.clientY < 90 ? -1 : e.clientY > window.innerHeight - 130 ? 1 : 0;
-    if (borde && !i.auto) {
-      i.auto = window.setInterval(() => {
-        const j = inicio.current;
-        if (!j) return;
-        const dir = j.uy < 90 ? -1 : j.uy > window.innerHeight - 130 ? 1 : 0;
-        if (!dir) { window.clearInterval(j.auto as number); j.auto = null; return; }
-        j.caja.scrollTop += dir * 10;
-        calcular(j.ux, j.uy);
-      }, 16);
-    }
-    calcular(e.clientX, e.clientY);
-  };
-  const calcular = (cx: number, cy: number) => {
-    const i = inicio.current;
-    if (!i || !tarea) return;
-    const dy = cy - i.y + (i.caja.scrollTop - i.scroll0);
-    const dx = cx - i.x;
-    let destino: Arrastre['destino'] = null;
-    const debajo = document.elementsFromPoint(cx, cy)
-      .map((el) => (el as HTMLElement).closest<HTMLElement>('[data-paso-row]'))
-      .find((el) => el && el.dataset.pasoRow !== i.id && !el.closest(`[data-paso-li="${i.id}"]`));
-    if (debajo) {
-      const id = debajo.dataset.pasoRow as string;
-      const r = debajo.getBoundingClientRect();
-      const pos: Pos = cy < r.top + r.height / 2 ? 'antes' : 'despues';
-      if (dx > 32) {
-        // Hacia la derecha: dentro del paso de arriba
-        const orden = ordenPlano(tarea.subtareas, i.id);
-        const arriba = pos === 'despues' ? id : orden[orden.indexOf(id) - 1];
-        destino = arriba ? { id: arriba, pos: 'dentro' } : null;
-      } else destino = { id, pos };
-    }
-    setArrastre({ id: i.id, dy, destino });
-  };
-  const alSoltar = () => {
-    const i = inicio.current;
-    const a = arrastre;
-    cancelar();
-    if (!i?.activo || !a?.destino || !tarea) return;
-    const mapa = ubicar(tarea.subtareas);
-    if (a.destino.pos === 'dentro') {
-      const hijos = (mapa.get(a.destino.id) && tarea.subtareas) ? hijosDe(tarea.subtareas, a.destino.id).filter((x) => x !== a.id) : [];
-      moverPasoTarea(tarea.id, a.id, { padreId: a.destino.id, indice: hijos.length });
-      return;
-    }
-    const u = mapa.get(a.destino.id);
-    if (!u) return;
-    const hermanos = u.hermanos.filter((x) => x !== a.id);
-    const idx = hermanos.indexOf(a.destino.id);
-    moverPasoTarea(tarea.id, a.id, { padreId: u.padreId, indice: a.destino.pos === 'antes' ? idx : idx + 1 });
-  };
+  // Arrastrar: mantener presionado ⋮⋮ (arrastrePasos.ts)
+  const { arrastre, asa, destinoEn, estilo } = useArrastrePasos(tarea);
 
   const renderPaso = (s: Subtarea): React.ReactNode => {
     const arrastrando = arrastre?.id === s.id;
-    const d = arrastre?.destino?.id === s.id ? arrastre.destino.pos : null;
+    const d = destinoEn(s.id);
     return (
       <li key={s.id} data-paso-li={s.id} className={`tpaso${arrastrando ? ' drag' : ''}`}
-        style={arrastrando ? { transform: `translateY(${arrastre?.dy ?? 0}px)` } : undefined}>
+        style={estilo(s.id)}>
         {d === 'antes' && <div className="tlinea" aria-hidden="true" />}
         <div className="tfila" data-paso-row={s.id}>
           <span className="tasam" aria-hidden="true" style={{ cursor: 'grab' }}
-            onPointerDown={(e) => alBajar(e, s.id)} onPointerMove={alMover} onPointerUp={alSoltar} onPointerCancel={cancelar}>
+            {...asa(s.id)}>
             <GripVertical size={18} />
           </span>
           <textarea className="tedit" rows={1} defaultValue={s.texto} aria-label="Texto del paso"
@@ -198,8 +96,8 @@ export const TareaEditar: React.FC<{
     if (!n) return;
     const pendiente = textoNuevo.trim();
     const todos = pendiente ? [...pasosNuevos, pendiente] : pasosNuevos;
-    crearTarea({ nombre: n, icono, color: '', subtareas: todos.map((texto) => ({ id: nuevoIdPaso(), texto, hecha: false })) });
-    onListo();
+    const id = crearTarea({ nombre: n, icono, color: '', subtareas: todos.map((texto) => ({ id: nuevoIdPaso(), texto, hecha: false })) });
+    onListo(id);
   };
 
   return (
@@ -248,7 +146,7 @@ export const TareaEditar: React.FC<{
 
       <div className="tacciones fin">
         {esNueva
-          ? <button type="button" className="tbtnq" onClick={onListo}>Cancelar</button>
+          ? <button type="button" className="tbtnq" onClick={() => onListo()}>Cancelar</button>
           : <button type="button" className="tbtnq tdelq" onClick={() => tarea && onBorrar?.(tarea)}><Trash2 size={15} /> Borrar tarea</button>}
         {esNueva
           ? <button type="button" className="btnp sm" disabled={!nombre.trim()} onClick={crear}>Crear tarea</button>
@@ -257,15 +155,3 @@ export const TareaEditar: React.FC<{
     </section>
   );
 };
-
-/** Ids de los hijos directos de un paso. */
-function hijosDe(lista: Subtarea[], id: string): string[] {
-  for (const s of lista) {
-    if (s.id === id) return (s.subtareas || []).map((x) => x.id);
-    if (s.subtareas) {
-      const r = hijosDe(s.subtareas, id);
-      if (r.length || s.subtareas.some((x) => x.id === id)) return r;
-    }
-  }
-  return [];
-}

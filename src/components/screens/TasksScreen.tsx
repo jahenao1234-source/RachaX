@@ -1,53 +1,23 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Calendar, CalendarPlus, Check, ChevronDown, ListChecks, Pencil, Play, Plus, RotateCcw, Trash2 } from 'lucide-react';
+import { Check, ChevronDown, ListChecks, Pencil, Play, Plus, RotateCcw } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
 import { getTodayString, obtenerHojasSubtareas } from '../../utils/habitUtils';
-import {
-  avanceTarea, siguientePaso, fechaTerminada, textoDiaCorto, textoDiaLargo, textoFechaLarga, resumenTareas,
-} from '../../utils/tareasUtils';
+import { siguientePaso, fechaTerminada, resumenTareas } from '../../utils/tareasUtils';
 import { HojaDiaPaso } from '../tareas/HojaDiaPaso';
 import { TareaEditar } from '../tareas/TareaEditar';
+import { Barra, Casilla, ChipDia, Terminadas } from '../tareas/piezas';
+import { ControlTareas, TareasEscritorio } from '../tareas/TareasEscritorio';
+import { useEsEscritorio } from './TodayScreen';
 
-/** Pestaña Tareas (celular). design/maqueta-tareas.html marcos 1 a 9 · DESIGN.md › Tareas. */
+/** Pestaña Tareas. design/maqueta-tareas.html (celular: marcos 1 a 9; escritorio: 10 a 13) · DESIGN.md › Tareas. */
 
 const SEGUNDOS_AVISO = 6000;
 
 interface HojaAbierta { tareaId: string; pasoId: string }
 interface Aviso { texto: string; deshacer: () => void }
-
-const Barra: React.FC<{ tarea: Tarea }> = ({ tarea }) => {
-  const { hechos, total } = avanceTarea(tarea);
-  return (
-    <div className="tavance">
-      <i aria-hidden="true"><b style={{ width: `${total ? Math.round((hechos / total) * 100) : 0}%` }} /></i>
-      <span><span className="num">{hechos} de {total}</span> pasos</span>
-    </div>
-  );
-};
-
-const Casilla: React.FC<{ paso: Subtarea; onToggle: () => void }> = ({ paso, onToggle }) => (
-  <span className={`tchk${paso.hecha ? ' on' : ''}`} role="checkbox" tabIndex={0} aria-checked={paso.hecha} aria-label={paso.texto}
-    onClick={onToggle}
-    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}>
-    {paso.hecha && <Check size={15} strokeWidth={3} />}
-  </span>
-);
-
-const ChipDia: React.FC<{ paso: Subtarea; hoy: string; onAbrir: () => void }> = ({ paso, hoy, onAbrir }) => {
-  if (paso.hecha) return null;
-  if (!paso.fecha) {
-    return <button type="button" className="tdia vacio" aria-label={`Ponerle día a ${paso.texto}`} onClick={onAbrir}><CalendarPlus size={17} /></button>;
-  }
-  const corto = textoDiaCorto(paso.fecha, hoy);
-  return (
-    <button type="button" className={`tdia${corto === 'hoy' ? ' hoy' : ''}`} aria-label={`Día de ${paso.texto}: ${textoDiaLargo(paso.fecha, hoy)}. Cambiar`} onClick={onAbrir}>
-      <Calendar size={13} />{corto}
-    </button>
-  );
-};
 
 export const TasksScreen: React.FC = () => {
   const {
@@ -55,6 +25,7 @@ export const TasksScreen: React.FC = () => {
     openFocusMode, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor,
   } = useHabitStore();
   const hoy = getTodayString();
+  const desk = useEsEscritorio();
 
   // Al entrar se abre la primera tarea con un paso para hoy (si no hay, todas plegadas)
   const [abierta, setAbierta] = useState<string | null>(() => {
@@ -198,9 +169,11 @@ export const TasksScreen: React.FC = () => {
   };
 
   const nada = abiertas.length === 0 && terminadas.length === 0 && !creando;
+  const ctl: ControlTareas = { hoy, marcar, borrar, abrirHoja: (tareaId, pasoId) => setHoja({ tareaId, pasoId }), recien, deshacerTerminar };
 
   return (
-    <div id="screen-tareas" className="tareas pb-28 animate-fadeIn text-text font-body">
+    <div id="screen-tareas" className="tareas pb-28 lg:pb-0 animate-fadeIn text-text font-body">
+      {desk ? <TareasEscritorio ctl={ctl} abiertas={abiertas} terminadas={terminadas} resumen={resumen} /> : (<>
       <div className="tcab">
         <div style={{ flex: 1, minWidth: 0 }}>
           <h1 className="font-heading font-bold m-0" style={{ fontSize: 40, lineHeight: 1 }}>Tareas</h1>
@@ -221,37 +194,11 @@ export const TasksScreen: React.FC = () => {
       ) : (
         <>
           {abiertas.map(tarjeta)}
-          {terminadas.length > 0 && (
-            <section className="tterm" aria-labelledby="tareas-terminadas">
-              <h2 className="tterm-h" id="tareas-terminadas">
-                <button type="button" aria-expanded={verTerminadas} onClick={() => setVerTerminadas((v) => !v)}>
-                  <span>Terminadas <span className="tcnt num">{terminadas.length}</span></span>
-                  <ChevronDown size={18} className={verTerminadas ? 'rotate-180' : ''} />
-                </button>
-              </h2>
-              {verTerminadas && (
-                <ul className="ttlist">
-                  {terminadas.map((t) => {
-                    const { total } = avanceTarea(t);
-                    const f = fechaTerminada(t);
-                    return (
-                      <li key={t.id} className="ttrow">
-                        <span className="tico" aria-hidden="true"><HabitIcon name={t.icono} size={18} /></span>
-                        <span className="tmain">
-                          <span className="tname2" title={t.nombre}>{t.nombre}</span>
-                          <span className="tsub"><span className="tok"><Check size={13} strokeWidth={3} /><span className="num">{total} de {total}</span></span>{f ? ` · el ${textoFechaLarga(f)}` : ''}</span>
-                        </span>
-                        <button type="button" className="tbtnq sm" aria-label={`Reabrir ${t.nombre}`} onClick={() => { reabrirTarea(t.id); setAbierta(t.id); }}><RotateCcw size={15} />Reabrir</button>
-                        <button type="button" className="tdel" aria-label={`Borrar ${t.nombre}`} onClick={() => borrar(t)}><Trash2 size={17} /></button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </section>
-          )}
+          <Terminadas terminadas={terminadas} abierto={verTerminadas} onAlternar={() => setVerTerminadas((v) => !v)}
+            onReabrir={(t) => { reabrirTarea(t.id); setAbierta(t.id); }} onBorrar={borrar} />
         </>
       )}
+      </>)}
 
       {hoja && tareaDeHoja && pasoDeHoja && (
         <HojaDiaPaso

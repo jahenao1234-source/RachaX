@@ -1,5 +1,5 @@
 import React from 'react';
-import { CalendarCheck, BarChart3, Calendar, Plus, Flame, User } from 'lucide-react';
+import { CalendarCheck, ListChecks, BarChart3, Calendar, Plus, Flame, User } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { TabRoute } from '../../types';
@@ -16,6 +16,7 @@ export const SideNav: React.FC = () => {
 
   const navItems: { id: TabRoute; label: string; icon: React.FC<{ className?: string; size?: number; strokeWidth?: number }> }[] = [
     { id: 'hoy', label: 'Hoy', icon: CalendarCheck },
+    { id: 'tareas', label: 'Tareas', icon: ListChecks },
     { id: 'stats', label: 'Progreso', icon: BarChart3 },
     { id: 'calendario', label: 'Calendario', icon: Calendar },
   ];

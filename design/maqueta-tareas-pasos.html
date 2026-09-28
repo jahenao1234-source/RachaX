@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta: Tareas, agregar pasos</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.saludo{margin:14px 0 0;font-size:16px;font-weight:600;color:var(--text)}
+.lvlbig{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none}
+.lvlbigart{display:flex;flex-shrink:0}
+.lvlbigcol .lvltrack2,.llamacard .lvltrack2{flex:none}
+.lvlbigcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.lvlbigtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cabtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.cabcomp{display:flex;align-items:center;gap:12px;margin-top:10px}
+.cabart{display:flex;flex-shrink:0;border-radius:12px}
+.cabart:focus-visible,.llamacard:focus-visible,.lvlbig:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.llamacard{display:flex;align-items:center;gap:14px;margin-top:14px;color:var(--text);text-decoration:none}
+.hrow{display:flex;flex-direction:column;align-items:stretch;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.hrow.next{border:1.5px solid var(--coral);background:color-mix(in srgb,var(--coral) 8%,var(--surface))}
+.hrowtop{display:flex;align-items:center;gap:10px}
+.hic{width:38px;height:38px;border-radius:11px;background:var(--coral);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hrow .name{display:block;font-size:15px;font-weight:600}
+.meta2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--lila-text);margin-top:2px}
+.sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.cnt{display:flex;gap:3px;margin-top:6px;max-width:130px}.cnt i{flex:1;height:6px;border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1px var(--muted)}.cnt i.on{background:var(--text)}
+.emp{min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--coral);background:transparent;color:var(--coral-text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.plus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font-size:14px;font-weight:700}
+.retobar{display:flex;align-items:center;gap:8px;margin-top:10px}.retobar i{flex:1;height:6px;border-radius:99px;background:var(--line-strong);overflow:hidden;display:block}.retobar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}.retobar span{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.desk{width:1440px;height:900px;display:flex;background:var(--bg);color:var(--text);border-radius:16px;overflow:hidden;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.5);font-family:'Barlow',system-ui,sans-serif;text-align:left}
+.desk.w1024{width:1024px;height:768px}
+.light .desk{--coral-text:#C23D20;--ambar-text:#9A5B00}
+.desk .sub{margin:0;font-size:13px;color:var(--muted);line-height:1.4}
+.desk h1,.desk h2,.desk h3{margin:0}
+.desk ol,.desk ul{list-style:none;margin:0;padding:0}
+.desk :focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.dkskip{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.dkskip:focus{width:auto;height:auto;clip-path:none;padding:8px 12px;background:var(--text);color:var(--bg);border-radius:8px;z-index:5}
+.dkside{width:240px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;padding:20px 14px;border-right:1px solid var(--line);background:var(--surface);position:relative}
+.dkside.mini{width:76px;align-items:center;padding:20px 10px}
+.dkbrand{display:flex;align-items:center;gap:10px;padding:0 8px 10px}
+.dklogo{width:30px;height:30px;border-radius:9px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center}
+.dkcrear{min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:15px;font-weight:700;margin:4px 0 10px}
+.dkside.mini .dkcrear{width:48px;height:48px;border-radius:14px}
+.desk nav.dknav{position:static;height:auto;padding:0;background:none;border:none;display:grid;gap:2px}
+.desk nav.dknav a{width:auto;flex-direction:row;justify-content:flex-start;min-height:44px;gap:12px;padding:0 12px;border-radius:10px;color:var(--muted);font-size:15px;font-weight:600}
+.desk nav.dknav a.on{background:var(--raised);color:var(--text)}
+.desk nav.dknav a.on svg{color:var(--ambar-text)}
+.dkside.mini nav.dknav a{width:48px;justify-content:center;padding:0}
+.dkme{margin-top:auto;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px;border-top:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkme b{display:block;font-size:14px}
+.dkavatar{width:36px;height:36px;border-radius:999px;background:var(--raised);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;flex-shrink:0}
+.dkmain{flex:1;min-width:0;overflow:hidden;padding:24px 32px}
+.w1024 .dkmain{padding:18px 22px}
+.dkhead{display:flex;align-items:center;gap:16px;max-width:1120px;margin:0 auto}
+.dkhart{display:flex;flex-shrink:0}
+.dksaludo{margin:0 0 2px;font-size:16px;font-weight:600}
+.dkh1{font-size:48px;line-height:1}
+.dkhprog{display:flex;align-items:center;gap:12px;margin-top:10px;max-width:520px}
+.dkhprog .segs{flex:1;margin:0}
+.dkhact{display:flex;align-items:center;gap:10px;align-self:flex-start;margin-top:6px}
+.dkchip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;white-space:nowrap}
+.dkbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:15px;font-weight:700;white-space:nowrap}
+.dkgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;max-width:1120px;margin:22px auto 0}
+.w1024 .dkgrid{grid-template-columns:minmax(0,1fr) 280px;gap:18px;margin-top:16px}
+.dkcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.dkrail{position:sticky;top:0;align-self:start}
+.dkcard{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.dkch h2,.dkmhead h2{font-size:22px}
+.dklink{display:inline-flex;align-items:center;min-height:32px;color:var(--ambar-text);font-weight:600;text-decoration:none;font-size:14px}
+.dkmhead{display:flex;align-items:baseline;justify-content:space-between}
+.dkgrp{display:grid;gap:8px}
+.dkgh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:4px 0 0}
+.dkahora{padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text);font-size:12px;font-weight:700}
+.dkgc{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600}
+.dkrow{display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 14px 8px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.dkrow:hover{background:var(--raised)}
+.dkrow.next{border:1.5px solid var(--coral-text)}
+.dkrbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:48px;padding:4px 6px;border:none;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.dkric{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dkric.sm{width:30px;height:30px;border-radius:9px}
+.dkrow:hover .dkric{background:var(--surface)}
+.dkrow.done .dkric{color:var(--muted)}
+.dkrmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dkrname{font-size:15px;font-weight:700}
+.dkrow.done .dkrname{color:var(--muted)}
+.dkrmeta{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.dkok{color:var(--ambar-text);font-weight:700}
+.dkcnt{display:flex;gap:3px;max-width:160px;margin-top:3px}
+.dkcnt i{flex:1;height:6px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--muted)}
+.dkcnt i.on{background:var(--ambar);box-shadow:none}
+.dkreto{display:flex;align-items:center;gap:8px;margin-top:4px;max-width:260px}
+.dkreto i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.dkreto i b{display:block;height:100%;background:var(--ambar)}
+.dkreto span{font-size:12px;color:var(--muted);white-space:nowrap}
+.dkwk{display:flex;gap:4px;flex-shrink:0}
+.dkwk li{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted)}
+.dkwk li.ok{background:var(--ambar);color:var(--ink)}
+.dkwk li.gris{background:var(--raised)}
+.dkwk li.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkwk li.hoy{box-shadow:inset 0 0 0 1.5px var(--text);color:var(--text)}
+.dkwk li.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.7}
+.light .dkwk li.ok{background:var(--ambar-text);color:#fff}
+.w1024 .dkwk li{width:20px;height:20px;font-size:10px}
+.dkchk{width:34px;height:34px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--ink);position:relative}
+.dkchk::after{content:"";position:absolute;inset:-5px}
+.dkchk.on{border:none;background:var(--logro,var(--ambar))}
+.dkplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.dkemp{min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;position:relative;flex-shrink:0}
+.dkemp::after{content:"";position:absolute;inset:-2px}
+.dkbar{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.dkbar b{display:block;height:100%;background:var(--ambar)}
+.dkbar.thin{height:5px;margin-top:6px}
+.light .dkbar b,.light .dkcnt i.on,.light .dkreto i b{background:var(--ambar-text)}
+.dkweek{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.dkday{position:relative;min-height:52px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:12px;color:var(--muted)}
+.dkday b{font-family:'Barlow Condensed',sans-serif;font-size:17px;color:var(--text)}
+.dkday.ok{background:var(--ambar);color:var(--ink)}
+.dkday.ok b{color:var(--ink)}
+.light .dkday.ok{background:var(--ambar-text);color:#fff}
+.light .dkday.ok b{color:#fff}
+.dkday.medio{background:var(--raised)}
+.dkmid{position:absolute;left:6px;right:6px;bottom:5px;height:4px;border-radius:2px;background:var(--ambar-text)}
+.dkday.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkday.como b{color:var(--comodin-text)}
+.dkday.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.dkday.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.75}
+.dkleg{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--muted)}
+.dkleg li{display:flex;align-items:center;gap:6px}
+.dkleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dkleg i.ok{background:var(--ambar)}
+.light .dkleg i.ok{background:var(--ambar-text)}
+.dkleg i.medio{background:var(--raised);position:relative}
+.dkleg i.medio b{position:absolute;left:2px;right:2px;bottom:2px;height:2px;border-radius:1px;background:var(--ambar-text)}
+.dkleg i.como{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkretocard{display:flex;align-items:center;gap:12px;min-height:76px}
+.dkretocard b{font-size:15px}
+.dkline{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none;font-size:14px}
+.dkline + .dkline{border-top:1px solid var(--line)}
+.desk .segs{display:flex;gap:4px}
+.desk .segs i{flex:1;height:10px;border-radius:5px;background:var(--track-empty)}
+.desk .segs i.on{background:var(--ambar)}
+.light .desk .segs i.on{background:var(--ambar-text)}
+.desk .sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.w1024 .dkh1{font-size:40px}
+.w1024 .dkrow{min-height:58px;gap:10px}
+.w1024 .dkcol{gap:10px}
+
+/* ---- celular ---- */
+.phone.tall{height:auto}
+.phone.tall .scroll{overflow:visible;flex:none}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px}
+.mhd h2{margin:0;font-size:22px}
+.glink{display:inline-flex;align-items:center;min-height:44px;color:var(--ambar-text);font-weight:600;text-decoration:none}
+.mgrp{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.mgh{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font:inherit;text-align:left;width:100%}
+.mgic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mgt{flex:1;font-size:17px;display:flex;align-items:center;gap:6px}
+.mahora{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text)}
+.mgc{font-size:13px;color:var(--muted)}
+.mgbar{width:44px;height:5px;border-radius:9px;background:var(--track-empty);overflow:hidden;flex-shrink:0;display:block}
+.mgbar b{display:block;height:100%;border-radius:9px}
+.mgchev{color:var(--muted);display:flex}
+.mrow{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;background:var(--surface)}
+.mrow.next{background:var(--mt);box-shadow:inset 0 0 0 1.5px var(--mc)}
+.mtop{display:flex;align-items:center;gap:10px}
+.mopen{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.mic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.mname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow.done .mname{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.mrow.done .mic{opacity:.7}
+.mmeta{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mmeta.mok{color:var(--ambar-text);font-weight:700}
+.mmeta.msig{color:var(--text)}
+.mpts{font-size:13px;color:var(--muted)}
+.memp{min-height:44px;padding:0 10px;border-radius:10px;border:1.5px solid;background:transparent;font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.mchk{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative}
+.mchk::after{content:"";position:absolute;inset:-6px}
+.mchk.on{border:none;background:var(--logro,var(--ambar))}
+.mplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.rut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.ruthead{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 12px}
+.rutic{width:34px;height:34px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rutmain{flex:1;min-width:0;display:flex;flex-direction:column}
+.rutname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;line-height:1.15}
+.rutmeta{font-size:13px;color:var(--muted)}
+.rutmeta.ok{color:var(--ambar-text);font-weight:700}
+.rutemp{min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid;background:transparent;font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.rutlist .mrow{border-radius:0;background:transparent;border-top:1px solid var(--line);padding:8px 10px 8px 12px}
+.rutlist .mrow.next{background:var(--mt)}
+.statelbl{margin:18px 2px 8px;font-size:13px;font-weight:600;color:var(--muted)}
+/* ---- Tareas de hoy ---- */
+.th{display:flex;flex-direction:column;gap:6px}
+.thhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.thhead h2{margin:0;font-size:22px;white-space:nowrap}
+.thcount{margin:-6px 0 2px;font-size:13px;color:var(--muted);font-weight:600}
+.thcount.ok{color:var(--ambar-text);font-weight:700}
+.thlink{white-space:nowrap;margin-left:auto;display:inline-flex;align-items:center;gap:2px;min-height:44px;color:var(--ambar-text);font-weight:600;font-size:14px;text-decoration:none}
+.thnote{margin:-4px 0 2px}
+.thlist{list-style:none;margin:0;padding:0}
+.thitem{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 0;border-top:1px solid var(--line)}
+.thitem:first-child{border-top:none}
+.thchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative}
+.thchk::after{content:"";position:absolute;inset:-9px}
+.thchk.on{border:none;background:var(--logro,var(--ambar))}
+.thtxt{flex:1;min-width:0;display:flex;flex-direction:column}
+.thname{font-size:15px;font-weight:600}
+.thtask{font-size:13px;color:var(--muted)}
+.thitem.done .thname{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+/* ---- escritorio ---- */
+.desk nav.dknav{justify-content:stretch;align-items:stretch}
+.desk.auto{height:auto;min-height:900px;overflow:visible}
+.desk.w1024.auto{min-height:768px}
+.desk.auto .dkmain{overflow:visible}
+.dkrut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.dkruthead{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 14px 8px 14px}
+.dkruthead .dkrname{font-family:'Barlow Condensed',sans-serif;font-size:19px}
+
+.dkrow.inrut{border:none;border-top:1px solid var(--line);border-radius:0;background:transparent;padding-left:14px}
+.dkrow.inrut:hover{background:var(--raised)}
+.dkrail .th .thhead h2{font-size:22px}
+.mbottom{display:flex;align-items:center;gap:10px}
+.mbottom .retobar{flex:1;margin-top:0}
+.rutlist .mrow.next,.light .rutlist .mrow.next{box-shadow:none}
+/* semana en barritas, como Tu día */
+.desk .dkwk{gap:3px;align-items:center;width:136px}
+.desk .dkwk li,.desk .dkwk li.hoy,.desk .dkwk li.fut,.desk .dkwk li.gris{flex:1;width:auto;height:10px;border-radius:4px;font-size:0;box-shadow:none;border:none;opacity:1;background:var(--track-empty)}
+.desk .dkwk li span{display:none}
+.desk .dkwk li.ok{background:var(--ambar)}
+.light .desk .dkwk li.ok{background:var(--ambar-text)}
+.desk .dkwk li.como{background:var(--lila-text);box-shadow:none;border:none}
+.desk.w1024 .dkwk{width:112px}
+.dklvl{max-width:520px;margin-bottom:2px}
+.dklvl .lvlstrip{min-height:32px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.light{--coral-text:#B8381C}
+.light .desk{--coral-text:#B8381C}
+.mgh3{margin:0;font:inherit}
+.mnamerow{display:flex;align-items:center;gap:6px;min-width:0}
+.mnamerow .sigue{flex-shrink:0;font-size:11px}
+.rutname{margin:0}
+.rut.rutnext{border:1.5px solid var(--mc)}
+.rutsoft{min-height:44px;padding:0 8px;border:none;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.light .mrow.next{box-shadow:inset 0 0 0 1px var(--mc)}
+.light .dkrow.next{border-width:1px}
+h4.dkrname{margin:0}
+.dkrow.done .dkrname{text-decoration:line-through;text-decoration-thickness:1.5px}
+.dkwk li.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+.dkday.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+
+/* ---- Tareas: celular ---- */
+.num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;font-size:1.08em}
+.tcab{display:flex;align-items:flex-end;gap:12px;margin:18px 0 14px}
+.tnueva{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tcard{padding:0;margin-bottom:10px;overflow:hidden}
+.thh{margin:0;font:inherit}
+.thead{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 12px 10px 14px;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.tico{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none}
+.tico.btn{width:44px;height:44px}
+.tico.lg{width:48px;height:48px;border-radius:13px}
+.tico.ok{background:var(--logro,var(--ambar));color:var(--ink)}
+.tmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.tname{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tname2{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tchev{color:var(--muted);display:flex}
+.tavance{display:flex;align-items:center;gap:8px}
+.tavance i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;max-width:160px}
+.tavance i b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .tavance i b{background:var(--ambar-text)}
+.tavance>span{font-size:13px;color:var(--muted);white-space:nowrap}
+.tavance.sm{margin-top:2px}
+.tavance.sm i{max-width:none}
+.tsig{border-top:1px solid var(--line);padding:4px 12px 6px 14px}
+.tfila{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 0}
+.tchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative;cursor:pointer}
+.tchk::after{content:"";position:absolute;inset:-9px}
+.tchk.on{border:none;background:var(--logro,var(--ambar))}
+.light .tchk.on{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.ttxt{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.tnom{font-size:15px;font-weight:600}
+.tpaso.done>.tfila .tnom{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.tsub{font-size:13px;color:var(--muted)}
+.tsigchip{display:inline-block;padding:1px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700}
+.tpaso.sig>.tfila{background:var(--raised);border-radius:10px;margin:0 -8px;padding:6px 8px}
+.tpadre{width:26px;flex-shrink:0}
+.tdia{min-height:32px;display:inline-flex;align-items:center;gap:5px;padding:0 9px;border-radius:8px;border:none;background:var(--raised);color:var(--text);font:inherit;font-size:12px;font-weight:700;flex-shrink:0;position:relative;white-space:nowrap}
+.tdia::after{content:"";position:absolute;inset:-6px -2px}
+.tdia.hoy{background:transparent;outline:1.5px dashed var(--text);outline-offset:-1.5px}
+.tdia.vacio{width:44px;padding:0;justify-content:center;background:transparent;color:var(--muted)}
+.tdia.vacio::after{inset:-6px 0}
+.tpaso.sig>.tfila .tdia:not(.vacio):not(.hoy){background:var(--surface)}
+.tarbol{list-style:none;margin:0;padding:4px 12px 4px 14px;border-top:1px solid var(--line)}
+.tarbol.tsubl{padding:4px 0 4px 22px;border-top:none;margin-left:12px;border-left:1px solid var(--line)}
+.tpaso+.tpaso{border-top:1px solid var(--line)}
+.tarbol.tsubl .tpaso+.tpaso{border-top:none}
+.tagregar{display:flex;align-items:center;gap:8px;width:100%;min-height:48px;padding:0 14px;border:none;border-top:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:15px;font-weight:600;text-align:left}
+.tacciones{display:flex;align-items:center;gap:8px;padding:0 12px 12px 14px}
+.tcard .tpaso.drag>.tfila{transform:none;margin-left:14px;padding:6px 8px;border-radius:10px}
+.tacciones.fin{justify-content:space-between;padding-top:10px;border-top:1px solid var(--line)}
+.tbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tbtnq{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tbtnq.sm{padding:0 8px}
+.tbtnq.ico{width:44px;padding:0;justify-content:center}
+.btnp.sm{min-height:44px;font-size:15px;padding:0 18px}
+.btnp[disabled]{background:var(--raised);color:var(--muted)}
+.tterm{margin-top:18px}
+.tterm-h{margin:0}
+.tterm-h button{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px}
+.tcnt{font-size:15px;color:var(--muted);margin-left:4px}
+.ttlist{list-style:none;margin:6px 0 0;padding:0}
+.ttrow{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 0;border-top:1px solid var(--line)}
+.tok{display:inline-flex;align-items:center;gap:3px;color:var(--ambar-text);font-weight:700}
+.tdel{width:44px;height:44px;border-radius:12px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ttoast{position:absolute;left:16px;right:16px;bottom:96px;display:flex;align-items:center;gap:12px;min-height:52px;padding:4px 6px 4px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;z-index:4}
+.ttoast span{flex:1}
+.ttoast button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font:inherit;font-weight:700;text-decoration:underline}
+.tvacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:60px 12px 20px}
+.tvico{display:flex;color:var(--muted);margin-bottom:4px}
+.btnp{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:none;border-radius:14px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:16px;font-weight:700}
+.tfinbody{padding:2px 14px 12px;border-top:1px solid var(--line)}
+.tfintit{margin:10px 0 2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--ambar-text)}
+.tfinbody .tbtnq{margin-top:4px;margin-left:-12px}
+.teh{display:flex;align-items:center;gap:10px;padding:12px}
+.tedit{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:15px;font-weight:600}
+.tnamein{font-size:17px;font-weight:700}
+.tedit::placeholder{color:var(--muted);font-weight:500}
+.tmover{width:44px;height:44px;border-radius:10px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tediting .tarbol .tfila{gap:2px}
+.tediting .tedit{margin-right:4px}
+.tarea-txt{display:flex;align-items:center;padding:10px 12px;line-height:1.3;white-space:normal;word-break:break-word}
+.tagrega-in{display:flex;align-items:center;gap:8px;min-height:52px;padding:0 14px;border-top:1px solid var(--line);color:var(--muted)}
+.tmenu{display:flex;flex-direction:column}
+.tmenu button{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.tmenu button:first-child{border-top:none}
+.tmenu button[disabled]{color:var(--muted)}
+.tmenu button svg{color:var(--muted)}
+.tdelq{padding-left:0}
+.tsheet{padding:0 20px 22px}
+.tsheet .grab{margin-bottom:12px}
+.tsheet-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.closeb{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topt{display:grid;grid-template-columns:1fr auto 22px;align-items:center;gap:10px;width:100%;min-height:56px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.topt:first-child{border-top:none}
+.topt.on svg{color:var(--ambar-text)}
+.tsem-l{margin:14px 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.tsem{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tsem button{width:100%;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);font:inherit;font-size:12px;color:var(--muted)}
+.tsem b{font-size:18px;color:var(--text)}
+.tquitar{width:100%;min-height:48px;margin-top:14px;border:none;border-radius:12px;background:transparent;color:var(--muted);font:inherit;font-size:15px;font-weight:700}
+/* ---- Tareas: escritorio ---- */
+.tdk{display:grid;grid-template-columns:340px minmax(0,1fr);gap:28px;max-width:1120px;margin:0 auto;align-items:start}
+.w1024 .tdk{grid-template-columns:280px minmax(0,1fr);gap:18px}
+.tdk-lh{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.tlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tli{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);color:inherit;font:inherit;text-align:left}
+.tli:hover{background:var(--raised)}
+.tli.on{background:var(--raised);border-color:var(--text)}
+.tli .tmain{gap:2px}
+.tli .tsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tdk-det{padding:20px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.tdk-dh{display:flex;align-items:center;gap:14px}
+.desk .tdk-ayuda{margin:14px 0 8px}
+.tdk-det .tarbol{padding:4px 0;border-top:1px solid var(--line)}
+.tdk-det .tarbol.tsubl{padding:4px 0 4px 22px;border-top:none}
+.tpista{margin:0 14px 8px;font-size:13px;color:var(--muted)}
+.tasam{width:28px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;margin-left:-6px;touch-action:none}
+.tediting .tarbol.tsubl .tsoltar,.tediting .tsoltar{margin-left:34px}
+.tdk-det .tfila{min-height:52px;border-radius:10px;padding:6px 4px;position:relative}
+.tdk-det .tpaso.sig>.tfila{margin:0;padding:6px 4px}
+.tdk-det .tpaso.hov>.tfila{background:var(--raised)}
+.tasa{width:28px;height:44px;margin:-6px 0;display:flex;align-items:center;justify-content:center;border:none;border-radius:8px;background:transparent;color:var(--muted);flex-shrink:0;cursor:grab;opacity:0}
+.tmas{width:44px;height:44px;margin:-6px 0;border-radius:10px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0}
+.tdk-det .tdia.vacio{opacity:0}
+.tdk-det .tpaso.hov>.tfila .tasa,.tdk-det .tpaso.hov>.tfila .tmas,.tdk-det .tpaso.hov>.tfila .tdia.vacio,.tdk-det .tpaso.drag>.tfila .tasa{opacity:1}
+.tdk-det .tfila:focus-within .tasa,.tdk-det .tfila:focus-within .tmas,.tdk-det .tfila:focus-within .tdia.vacio{opacity:1}
+.tpaso.drag>.tfila{background:var(--raised);box-shadow:0 8px 24px rgba(0,0,0,.35);transform:translateX(26px)}
+.tsoltar{margin:2px 0 6px 48px;padding:8px 12px;border-radius:10px;border:1.5px dashed var(--line-strong);color:var(--muted);font-size:13px;font-weight:600}
+.tdk-add{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px 0 36px;border-top:1px solid var(--line);color:var(--muted)}
+.tinput{flex:1;min-width:0;min-height:44px;border:none;background:transparent;color:var(--text);font:inherit;font-size:15px}
+.tinput::placeholder{color:var(--muted)}
+.tdk .tterm{margin-top:16px}
+.tnuevo{gap:10px;padding-left:32px!important}
+.tinput-on{border-radius:8px;box-shadow:inset 0 -1.5px 0 var(--text)}
+.tenter{font-size:12px;color:var(--muted);white-space:nowrap}
+.tnuevo .tchk{cursor:default}
+
+/* ---- Tareas ronda 3 ---- */
+.t3mas{width:40px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t3fle{width:44px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t3add{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:600;text-align:left}
+.t3ayuda{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:1px}
+.tmenu button{min-height:60px}
+.t3punto{width:8px;height:8px;border-radius:99px;background:var(--line-strong);flex-shrink:0;margin:0 9px}
+.tediting .tarbol .tfila{gap:6px}
+.t3lista{padding:4px 14px 12px;border-top:1px solid var(--line)}
+.t3lin{display:flex;align-items:center;gap:4px;min-height:48px;position:relative}
+.t3lin+.t3lin{border-top:1px solid var(--line)}
+.t3guia{position:absolute;left:12px;top:0;bottom:0;border-left:1px solid var(--line-strong)}
+.t3barra{position:absolute;left:0;right:0;bottom:250px;display:flex;gap:8px;padding:8px 12px;background:var(--raised);border-top:1px solid var(--line);z-index:6}
+.t3barra button{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.t3barra button.on{border-color:var(--text)}
+.t3barra .t3listo{margin-left:auto;border:none;background:transparent}
+.t3teclado{position:absolute;left:0;right:0;bottom:0;height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--surface);color:var(--muted);font-size:13px;z-index:6}
+.t3txtbtn{flex:1;min-width:0;display:flex;border:none;background:none;padding:0;color:inherit;font:inherit;text-align:left;min-height:44px;align-items:center}
+.t3tocado{background:var(--raised);border-radius:10px 10px 0 0;margin:0 -8px;padding:6px 8px}
+.t3acc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 -8px 6px;padding:4px 8px 10px;background:var(--raised);border-radius:0 0 10px 10px}
+.t3acc button{min-height:44px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:600}
+.t3acc button svg{color:var(--muted)}
+.t3acc .t3borrar{color:var(--muted)}
+body{flex-direction:column;align-items:center}.rowm{display:flex;gap:40px;align-items:flex-start;justify-content:center;flex-wrap:wrap}</style>
+</head>
+<body>
+<div class="rowm"><div class="col"><h2>1 · Casilla también en el paso grande: “Empacar la cocina” se marca sola al terminar sus pasos pequeños; tocarla marca o desmarca todos. Con la flecha pliegas o abres sus pasos pequeños; al terminarse se pliega sola (oscuro)</h2><div class="dark">
+  <div class="phone tall">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="tcab">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:40px;line-height:1">Tareas</h1>
+          <p class="sub" style="margin-top:6px;font-size:14px">3 abiertas · 2 para hoy · 1 de ayer</p>
+        </div>
+        <button class="tnueva"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Nueva tarea</button>
+      </div>
+      <section class="card tcard open" aria-labelledby="t3T1">
+        
+        <h2 class="thh" id="t3T1"><button class="thead" aria-expanded="true">
+          <span class="tico" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+          <span class="tmain"><span class="tname">Mudanza</span>
+          <div class="tavance"><i aria-hidden="true"><b style="width:50%"></b></i><span><span class="num">4 de 8</span> pasos</span></div></span>
+          <span class="tchev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></span>
+        </button></h2>
+        <div class="tacciones">
+          <button class="tbtn2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar en Foco</button>
+          <button class="tbtnq"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>Editar tarea</button>
+        </div>
+        
+          <ul class="tarbol">
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="Llamar a la empresa de trasteo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">Llamar a la empresa de trasteo</span></span></div>
+              
+            </li>
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="Empacar la cocina, con sus pasos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">Empacar la cocina</span><span class="tsub"><span class="num">2 de 2</span> pasos</span></span><button class="t3fle" aria-expanded="false" aria-label="Mostrar los pasos de Empacar la cocina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Empacar la habitación, con sus pasos"></span><span class="ttxt"><span class="tnom">Empacar la habitación</span><span class="tsub"><span class="num">1 de 3</span> pasos</span></span><button class="t3fle" aria-expanded="true" aria-label="Esconder los pasos de Empacar la habitación"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button></div>
+              <ul class="tarbol tsubl">
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="La ropa"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">La ropa</span></span></div>
+              
+            </li>
+            <li class="tpaso sig"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Los libros"></span><span class="ttxt"><span class="tnom">Los libros</span><span class="tsigchip">Sigue</span></span><button class="tdia hoy" aria-label="Día de Los libros: hoy, domingo 27. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>hoy</button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Los papeles importantes"></span><span class="ttxt"><span class="tnom">Los papeles importantes</span></span><button class="tdia" aria-label="Día de Los papeles importantes: mañana, lunes 28. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>mañana</button></div>
+              
+            </li>
+          </ul>
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Cambiar la dirección en el banco"></span><span class="ttxt"><span class="tnom">Cambiar la dirección en el banco</span></span><button class="tdia" aria-label="Día de Cambiar la dirección en el banco: viernes 2 de octubre. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>vie 2</button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Entregar las llaves del apartamento"></span><span class="ttxt"><span class="tnom">Entregar las llaves del apartamento</span></span><button class="tdia vacio" aria-label="Ponerle día a Entregar las llaves del apartamento"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button></div>
+              
+            </li>
+          </ul>
+        <button class="tagregar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar un paso</button>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>2 · cada paso con ⋯ y un renglón “Agregar dentro de…” en cada grupo, todo sin entrar a Editar (oscuro)</h2><div class="dark">
+  <div class="phone tall">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="tcab">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:40px;line-height:1">Tareas</h1>
+          <p class="sub" style="margin-top:6px;font-size:14px">3 abiertas · 2 para hoy · 1 de ayer</p>
+        </div>
+        <button class="tnueva"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Nueva tarea</button>
+      </div>
+      <section class="card tcard open" aria-labelledby="t3T2">
+        
+        <h2 class="thh" id="t3T2"><button class="thead" aria-expanded="true">
+          <span class="tico" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+          <span class="tmain"><span class="tname">Mudanza</span>
+          <div class="tavance"><i aria-hidden="true"><b style="width:50%"></b></i><span><span class="num">4 de 8</span> pasos</span></div></span>
+          <span class="tchev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></span>
+        </button></h2>
+        <div class="tacciones">
+          <button class="tbtn2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar en Foco</button>
+          <button class="tbtnq"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>Mover pasos</button>
+        </div>
+        
+          <ul class="tarbol">
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="Llamar a la empresa de trasteo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">Llamar a la empresa de trasteo</span></span><button class="t3mas" aria-label="Opciones de Llamar a la empresa de trasteo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="Empacar la cocina, con sus pasos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">Empacar la cocina</span><span class="tsub"><span class="num">2 de 2</span> pasos</span></span><button class="t3fle" aria-expanded="false" aria-label="Mostrar los pasos de Empacar la cocina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><button class="t3mas" aria-label="Opciones de Empacar la cocina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Empacar la habitación, con sus pasos"></span><span class="ttxt"><span class="tnom">Empacar la habitación</span><span class="tsub"><span class="num">1 de 3</span> pasos</span></span><button class="t3fle" aria-expanded="true" aria-label="Esconder los pasos de Empacar la habitación"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button><button class="t3mas" aria-label="Opciones de Empacar la habitación"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              <ul class="tarbol tsubl">
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="La ropa"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">La ropa</span></span><button class="t3mas" aria-label="Opciones de La ropa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso sig"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Los libros"></span><span class="ttxt"><span class="tnom">Los libros</span><span class="tsigchip">Sigue</span></span><button class="tdia hoy" aria-label="Día de Los libros: hoy, domingo 27. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>hoy</button><button class="t3mas" aria-label="Opciones de Los libros"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Los papeles importantes"></span><span class="ttxt"><span class="tnom">Los papeles importantes</span></span><button class="tdia" aria-label="Día de Los papeles importantes: mañana, lunes 28. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>mañana</button><button class="t3mas" aria-label="Opciones de Los papeles importantes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+          <li class="tpaso"><button class="t3add"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar dentro de “Empacar la habitación”</button></li></ul>
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Cambiar la dirección en el banco"></span><span class="ttxt"><span class="tnom">Cambiar la dirección en el banco</span></span><button class="tdia" aria-label="Día de Cambiar la dirección en el banco: viernes 2 de octubre. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>vie 2</button><button class="t3mas" aria-label="Opciones de Cambiar la dirección en el banco"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Entregar las llaves del apartamento"></span><span class="ttxt"><span class="tnom">Entregar las llaves del apartamento</span></span><button class="tdia vacio" aria-label="Ponerle día a Entregar las llaves del apartamento"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button><button class="t3mas" aria-label="Opciones de Entregar las llaves del apartamento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+          </ul>
+        <button class="tagregar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar un paso</button>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>3 · tocaste ⋯ en un paso (claro)</h2><div class="light">
+  <div class="phone tall">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="tcab">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:40px;line-height:1">Tareas</h1>
+          <p class="sub" style="margin-top:6px;font-size:14px">3 abiertas · 2 para hoy · 1 de ayer</p>
+        </div>
+        <button class="tnueva"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Nueva tarea</button>
+      </div>
+      <section class="card tcard open" aria-labelledby="t3T3">
+        
+        <h2 class="thh" id="t3T3"><button class="thead" aria-expanded="true">
+          <span class="tico" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+          <span class="tmain"><span class="tname">Mudanza</span>
+          <div class="tavance"><i aria-hidden="true"><b style="width:50%"></b></i><span><span class="num">4 de 8</span> pasos</span></div></span>
+          <span class="tchev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></span>
+        </button></h2>
+        <div class="tacciones">
+          <button class="tbtn2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar en Foco</button>
+          <button class="tbtnq"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>Mover pasos</button>
+        </div>
+        
+          <ul class="tarbol">
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="Llamar a la empresa de trasteo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">Llamar a la empresa de trasteo</span></span><button class="t3mas" aria-label="Opciones de Llamar a la empresa de trasteo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="Empacar la cocina, con sus pasos"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">Empacar la cocina</span><span class="tsub"><span class="num">2 de 2</span> pasos</span></span><button class="t3fle" aria-expanded="false" aria-label="Mostrar los pasos de Empacar la cocina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><button class="t3mas" aria-label="Opciones de Empacar la cocina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Empacar la habitación, con sus pasos"></span><span class="ttxt"><span class="tnom">Empacar la habitación</span><span class="tsub"><span class="num">1 de 3</span> pasos</span></span><button class="t3fle" aria-expanded="true" aria-label="Esconder los pasos de Empacar la habitación"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button><button class="t3mas" aria-label="Opciones de Empacar la habitación"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              <ul class="tarbol tsubl">
+            <li class="tpaso done"><div class="tfila"><span class="tchk on" role="checkbox" tabindex="0" aria-checked="true" aria-label="La ropa"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ttxt"><span class="tnom">La ropa</span></span><button class="t3mas" aria-label="Opciones de La ropa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso sig"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Los libros"></span><span class="ttxt"><span class="tnom">Los libros</span><span class="tsigchip">Sigue</span></span><button class="tdia hoy" aria-label="Día de Los libros: hoy, domingo 27. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>hoy</button><button class="t3mas" aria-label="Opciones de Los libros"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Los papeles importantes"></span><span class="ttxt"><span class="tnom">Los papeles importantes</span></span><button class="tdia" aria-label="Día de Los papeles importantes: mañana, lunes 28. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>mañana</button><button class="t3mas" aria-label="Opciones de Los papeles importantes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+          <li class="tpaso"><button class="t3add"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar dentro de “Empacar la habitación”</button></li></ul>
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Cambiar la dirección en el banco"></span><span class="ttxt"><span class="tnom">Cambiar la dirección en el banco</span></span><button class="tdia" aria-label="Día de Cambiar la dirección en el banco: viernes 2 de octubre. Cambiar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>vie 2</button><button class="t3mas" aria-label="Opciones de Cambiar la dirección en el banco"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="tchk" role="checkbox" tabindex="0" aria-checked="false" aria-label="Entregar las llaves del apartamento"></span><span class="ttxt"><span class="tnom">Entregar las llaves del apartamento</span></span><button class="tdia vacio" aria-label="Ponerle día a Entregar las llaves del apartamento"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button><button class="t3mas" aria-label="Opciones de Entregar las llaves del apartamento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+          </ul>
+        <button class="tagregar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar un paso</button>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="sheet tsheet" role="dialog" aria-modal="true" aria-labelledby="t3h">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="tsheet-h" style="margin-top:12px">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="t3h" style="margin:0;font-size:24px">Cambiar la dirección en el banco</h2><p class="sub" style="margin-top:4px">Mudanza</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <div class="tmenu">
+        <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg><span style="flex:1">Dividir en pasos más pequeños<span class="t3ayuda">Para partirlo en partes</span></span></button>
+        <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span style="flex:1">Cambiar el día<span class="t3ayuda">viernes 2 de octubre</span></span></button>
+        <button><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg><span style="flex:1">Cambiar el texto</span></button>
+        <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg><span style="flex:1">Borrar el paso</span></button>
+      </div>
+    </div>
+  </div></div></div>
+<div class="col"><h2>4 · Nueva tarea con pasos dentro de pasos (claro)</h2><div class="light">
+  <div class="phone tall">
+    
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="tcab">
+        <div style="flex:1;min-width:0">
+          <h1 class="cond" style="margin:0;font-size:40px;line-height:1">Tareas</h1>
+          <p class="sub" style="margin-top:6px;font-size:14px">3 abiertas · 2 para hoy · 1 de ayer</p>
+        </div>
+        <button class="tnueva"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Nueva tarea</button>
+      </div>
+      <section class="card tcard open tediting" aria-label="Nueva tarea">
+        <div class="teh">
+          <button class="tico btn" aria-label="Cambiar el ícono"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg></button>
+          <input class="tedit tnamein" value="Arreglar el carro" aria-label="Nombre de la tarea">
+        </div>
+        <p class="tpista">Toca ⋯ en un paso para dividirlo en pasos más pequeños.</p>
+        
+          <ul class="tarbol">
+            <li class="tpaso"><div class="tfila"><span class="t3punto" aria-hidden="true"></span><span class="ttxt"><span class="tnom">Llevarlo al taller</span></span><button class="tdia vacio" aria-label="Ponerle día a Llevarlo al taller"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button><button class="t3mas" aria-label="Opciones de Llevarlo al taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="t3punto" aria-hidden="true"></span><span class="ttxt"><span class="tnom">Conseguir los repuestos</span><span class="tsub"><span class="num">0 de 2</span> pasos</span></span><button class="t3fle" aria-expanded="true" aria-label="Esconder los pasos de Conseguir los repuestos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button><button class="t3mas" aria-label="Opciones de Conseguir los repuestos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              <ul class="tarbol tsubl">
+            <li class="tpaso"><div class="tfila"><span class="t3punto" aria-hidden="true"></span><span class="ttxt"><span class="tnom">Las pastillas de freno</span></span><button class="tdia vacio" aria-label="Ponerle día a Las pastillas de freno"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button><button class="t3mas" aria-label="Opciones de Las pastillas de freno"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="t3punto" aria-hidden="true"></span><span class="ttxt"><span class="tnom">El filtro de aceite</span></span><button class="tdia vacio" aria-label="Ponerle día a El filtro de aceite"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button><button class="t3mas" aria-label="Opciones de El filtro de aceite"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+          <li class="tpaso"><button class="t3add"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar dentro de “Conseguir los repuestos”</button></li></ul>
+            </li>
+            <li class="tpaso"><div class="tfila"><span class="t3punto" aria-hidden="true"></span><span class="ttxt"><span class="tnom">Pagar el arreglo</span></span><button class="tdia vacio" aria-label="Ponerle día a Pagar el arreglo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button><button class="t3mas" aria-label="Opciones de Pagar el arreglo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+              
+            </li>
+          </ul>
+        <div class="tagrega-in"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><input class="tinput" placeholder="Agregar un paso" aria-label="Agregar un paso"></div>
+        <div class="tacciones fin"><button class="tbtnq">Cancelar</button><button class="btnp sm">Crear tarea</button></div>
+      </section></div></div>
+    
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div></div>
+
+</body>
+</html>

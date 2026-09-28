@@ -838,3 +838,51 @@ html:not(.dark) .tareas .tscrim{background:rgba(15,17,19,.35)}
 .tareas .ttoast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;width:calc(100% - 32px);max-width:398px;z-index:60}
 @media (min-width:1024px){.tareas .ttoast{bottom:24px}}
 
+/* ---- Tareas (escritorio ≥1024px): design/maqueta-tareas.html marcos 10 a 13 ---- */
+.tareas .tdk{display:grid;grid-template-columns:340px minmax(0,1fr);gap:28px;align-items:start;padding-top:6px}
+@media (max-width:1279px){.tareas .tdk{grid-template-columns:280px minmax(0,1fr);gap:18px}}
+.tareas .tdk-lh{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.tareas .tlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tareas .tli{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tareas .tli:hover{background:var(--surface-raised)}
+.tareas .tli.on{background:var(--surface-raised);border-color:var(--text)}
+.tareas .tli .tmain{gap:2px}
+.tareas .tli .tsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tareas .tdk .tterm{margin-top:16px}
+.tareas .tdk-det{padding:20px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.tareas .tdk-nada{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tareas .tdk-dh{display:flex;align-items:center;gap:14px}
+.tareas .tdk-nom{font-size:34px;line-height:1.05;overflow-wrap:anywhere}
+.tareas .tdk-dh .tnamein{width:100%;font-size:20px}
+.tareas .tdk-ayuda{margin:14px 0 8px}
+.tareas .tdk-det .ticonos{padding:12px 0 0;max-width:440px}
+.tareas .tdk-det .tfinbody{padding:2px 0 4px;margin-top:14px}
+.tareas .tdk-det .tfinbody .tbtnq{margin-left:-12px}
+.tareas .tdk-det .tarbol{padding:4px 0;border-top:1px solid var(--line)}
+.tareas .tdk-det .tarbol.tsubl{padding:4px 0 4px 22px;border-top:none}
+.tareas .tdk-det .tfila{min-height:52px;border-radius:10px;padding:6px 4px;position:relative}
+.tareas .tdk-det .tpaso.sig>.tfila{margin:0;padding:6px 4px}
+.tareas .tdk-det .tfila:hover{background:var(--surface-raised)}
+.tareas .tdk-det .tnom{cursor:text}
+.tareas .tasa{width:28px;height:44px;margin:-6px 0;display:flex;align-items:center;justify-content:center;border:none;border-radius:8px;background:transparent;color:var(--text-muted);flex-shrink:0;cursor:grab;touch-action:none;user-select:none}
+.tareas .tpaso.drag .tasa{cursor:grabbing}
+.tareas .tmas{width:44px;height:44px;margin:-6px 0;border-radius:10px;border:none;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tareas .tasa:hover,.tareas .tmas:hover{color:var(--text)}
+@media (hover:hover){
+.tareas .tdk-det .tasa,.tareas .tdk-det .tmas,.tareas .tdk-det .tdia.vacio{opacity:0}
+.tareas .tdk-det .tfila:hover .tasa,.tareas .tdk-det .tfila:hover .tmas,.tareas .tdk-det .tfila:hover .tdia.vacio,
+.tareas .tdk-det .tfila:focus-within .tasa,.tareas .tdk-det .tfila:focus-within .tmas,.tareas .tdk-det .tfila:focus-within .tdia.vacio,
+.tareas .tdk-det .tpaso.drag>.tfila .tasa,.tareas .tdk-det .tmas.vis{opacity:1}
+}
+.tareas .tdk-det .tsoltar{margin-left:48px}
+.tareas .tdk-add{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px 0 36px;border-top:1px solid var(--line);color:var(--text-muted)}
+.tareas .tnuevo{gap:10px;padding-left:32px}
+.tareas .tnuevo .tchk{cursor:default}
+.tareas .tenter{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.tareas .tmenu-w{position:relative}
+.tareas .tpop{position:absolute;right:0;top:calc(100% + 6px);min-width:230px;padding:4px;border-radius:12px;background:var(--surface-raised);border:1px solid var(--line-strong);box-shadow:0 12px 32px rgba(0,0,0,.35);z-index:20}
+html:not(.dark) .tareas .tpop{box-shadow:0 12px 32px rgba(15,17,19,.14)}
+.tareas .tpop button{display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:0 12px;border:none;border-radius:8px;background:none;color:var(--text);font:inherit;font-size:15px;font-weight:600;text-align:left;cursor:pointer}
+.tareas .tpop button:hover,.tareas .tpop button:focus-visible{background:var(--surface)}
+.tareas .tpop button svg{color:var(--text-muted)}
+

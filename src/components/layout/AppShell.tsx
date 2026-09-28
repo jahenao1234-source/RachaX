@@ -108,12 +108,12 @@ export const AppShell: React.FC = () => {
 
           {/* Scrollable Screen Content */}
           <div className={`flex-1 overflow-y-auto relative z-10 custom-scrollbar ${
-            (activeTab === 'hoy' || activeTab === 'crear')
+            (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas')
               ? 'px-5 sm:px-6 lg:px-[22px] xl:px-[32px] pt-3 lg:pt-[18px] xl:pt-[24px] pb-24 lg:pb-8' 
               : 'px-5 sm:px-6 lg:px-8 pt-3 lg:pt-6 pb-24 lg:pb-8'
           }`}>
             <div className={`w-full mx-auto ${
-              (activeTab === 'hoy' || activeTab === 'crear') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
+              (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
             }`}>
               {renderActiveScreen()}
             </div>

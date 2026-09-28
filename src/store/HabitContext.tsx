@@ -75,7 +75,7 @@ interface HabitContextType {
 
   // Tareas
   tareas: Tarea[];
-  crearTarea: (nueva: Omit<Tarea, 'id' | 'creadoEn' | 'completada'>) => void;
+  crearTarea: (nueva: Omit<Tarea, 'id' | 'creadoEn' | 'completada'>) => string;
   editarTarea: (id: string, updates: Partial<Tarea>) => void;
   eliminarTarea: (id: string) => void;
   toggleSubtarea: (tareaId: string, subtareaId: string) => void;
@@ -1084,10 +1084,11 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const _tareaCompletada = (subs: Subtarea[]) => esTareaCompletada(subs);
 
-  const crearTarea = (nueva: Omit<Tarea, 'id' | 'creadoEn' | 'completada'>) => {
+  const crearTarea = (nueva: Omit<Tarea, 'id' | 'creadoEn' | 'completada'>): string => {
     const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `t_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const subtareas = nueva.subtareas || [];
     setTareas((prev) => [...prev, { ...nueva, id, subtareas, completada: _tareaCompletada(subtareas), creadoEn: new Date().toISOString() }]);
+    return id;
   };
   const editarTarea = (id: string, updates: Partial<Tarea>) => {
     setTareas((prev) => prev.map((t) => {
