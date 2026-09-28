@@ -11,6 +11,8 @@ import { TareaEditar } from '../tareas/TareaEditar';
 import { Barra, Casilla, ChipDia, Terminadas } from '../tareas/piezas';
 import { ControlTareas, TareasEscritorio } from '../tareas/TareasEscritorio';
 import { HojaOpcionesPaso } from '../tareas/HojaOpcionesPaso';
+import { HojaPegarLista } from '../tareas/HojaPegarLista';
+import { leerListaPegada, aSubtareas, ListaPegada, contarPegados } from '../../utils/pegarLista';
 import { useEsEscritorio } from './TodayScreen';
 
 /** Pestaña Tareas. design/maqueta-tareas.html (celular: marcos 1 a 9; escritorio: 10 a 13) · DESIGN.md › Tareas. */
@@ -18,13 +20,13 @@ import { useEsEscritorio } from './TodayScreen';
 const SEGUNDOS_AVISO = 6000;
 
 interface HojaAbierta { tareaId: string; pasoId: string }
-interface Aviso { texto: string; deshacer: () => void }
+interface Aviso { antes: string; texto: string; deshacer: () => void }
 
 export const TasksScreen: React.FC = () => {
   const {
     tareas, toggleSubtarea, ponerFechaPaso, reabrirTarea, eliminarTarea, restaurarTarea,
     openFocusMode, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor,
-    editarTextoPaso, agregarPasoTarea, borrarPasoTarea
+    editarTextoPaso, agregarPasoTarea, borrarPasoTarea, quitarPasosTarea
   } = useHabitStore();
   const hoy = getTodayString();
   const desk = useEsEscritorio();
@@ -81,7 +83,7 @@ export const TasksScreen: React.FC = () => {
     const indice = tareas.findIndex((x) => x.id === t.id);
     eliminarTarea(t.id);
     closeTareaEditor();
-    mostrarAviso({ texto: t.nombre, deshacer: () => restaurarTarea(t, indice) });
+    mostrarAviso({ antes: 'Borraste', texto: t.nombre, deshacer: () => restaurarTarea(t, indice) });
   };
 
   const abiertas = tareas.filter((t) => !t.completada || t.id === recien?.tareaId);
@@ -238,7 +240,9 @@ export const TasksScreen: React.FC = () => {
               <button type="button" className="tbtnq" onClick={() => openTareaEditor(t)}><Pencil size={15} />Mover pasos</button>
             </div>
             <ul className="tarbol">{t.subtareas.map((s) => renderPaso(t, s, sig?.id ?? null))}</ul>
-            <AgregarPaso tareaId={t.id} />
+            <AgregarPaso tareaId={t.id} onPegado={(tId, ids, n) => {
+              mostrarAviso({ antes: 'Agregaste', texto: `${n} ${n === 1 ? 'paso' : 'pasos'}`, deshacer: () => quitarPasosTarea(tId, ids) });
+            }} />
           </>
         ) : sig ? (
           <div className="tsig">
@@ -254,7 +258,11 @@ export const TasksScreen: React.FC = () => {
   };
 
   const nada = abiertas.length === 0 && terminadas.length === 0 && !creando;
-  const ctl: ControlTareas = { hoy, marcar, borrar, abrirHoja: (tareaId, pasoId) => setHoja({ tareaId, pasoId }), recien, deshacerTerminar };
+  const ctl: ControlTareas = {
+    hoy, marcar, borrar,
+    abrirHoja: (tareaId, pasoId) => setHoja({ tareaId, pasoId }), recien, deshacerTerminar,
+    avisar: (antes, texto, deshacer) => mostrarAviso({ antes, texto, deshacer })
+  };
 
   return (
     <div id="screen-tareas" className="tareas pb-28 lg:pb-0 animate-fadeIn text-text font-body">
@@ -323,7 +331,7 @@ export const TasksScreen: React.FC = () => {
       {aviso && createPortal(
         <div className="tareas">
           <div className="ttoast" role="status">
-            <span>Borraste <b>{aviso.texto}</b></span>
+            <span>{aviso.antes} <b>{aviso.texto}</b></span>
             <button type="button" onClick={() => { aviso.deshacer(); setAviso(null); }}>Deshacer</button>
           </div>
         </div>,
@@ -334,10 +342,31 @@ export const TasksScreen: React.FC = () => {
 };
 
 /** "Agregar un paso" al final de una tarea abierta: se vuelve un campo; Enter guarda y deja listo otro. */
-const AgregarPaso: React.FC<{ tareaId: string }> = ({ tareaId }) => {
-  const { agregarPasoTarea } = useHabitStore();
+const AgregarPaso: React.FC<{ tareaId: string; onPegado: (tId: string, ids: string[], n: number) => void }> = ({ tareaId, onPegado }) => {
+  const { agregarPasoTarea, agregarPasosPegados } = useHabitStore();
   const [activo, setActivo] = useState(false);
   const [texto, setTexto] = useState('');
+  const [pegado, setPegado] = useState<ListaPegada | null>(null);
+
+  if (pegado) {
+    return (
+      <HojaPegarLista
+        lista={pegado}
+        conNombre={false}
+        escritorio={false}
+        onAgregar={(pasos) => {
+          const arr = aSubtareas(pasos);
+          const ids = agregarPasosPegados(tareaId, arr);
+          setPegado(null);
+          setActivo(false);
+          setTexto('');
+          onPegado(tareaId, ids, contarPegados(pasos).total);
+        }}
+        onCancelar={() => setPegado(null)}
+      />
+    );
+  }
+
   if (!activo) {
     return <button type="button" className="tagregar" onClick={() => setActivo(true)}><Plus size={16} strokeWidth={2.4} />Agregar un paso</button>;
   }
@@ -347,6 +376,13 @@ const AgregarPaso: React.FC<{ tareaId: string }> = ({ tareaId }) => {
       <Plus size={16} strokeWidth={2.4} />
       <input className="tinput tinput-on" autoFocus value={texto} placeholder="Agregar un paso" aria-label="Agregar un paso"
         onChange={(e) => setTexto(e.target.value)}
+        onPaste={(e) => {
+          if (e.currentTarget.value.trim()) return;
+          const lista = leerListaPegada(e.clipboardData.getData('text'));
+          if (!lista) return;
+          e.preventDefault();
+          setPegado(lista);
+        }}
         onKeyDown={(e) => { if (e.key === 'Enter') guardar(); if (e.key === 'Escape') { setTexto(''); setActivo(false); } }}
         onBlur={() => { guardar(); setActivo(false); }} />
     </div>

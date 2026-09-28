@@ -6,6 +6,9 @@ import { Subtarea, Tarea } from '../../types';
 import { nuevoIdPaso, agregarPaso, editarTextoPaso as editarTextoPasoPuro, borrarPaso, buscarPaso } from '../../utils/tareasUtils';
 import { useArrastrePasos } from './arrastrePasos';
 import { HojaOpcionesPaso } from './HojaOpcionesPaso';
+import { HojaPegarLista } from './HojaPegarLista';
+import { leerListaPegada, aSubtareas, ListaPegada } from '../../utils/pegarLista';
+import { useEsEscritorio } from '../screens/TodayScreen';
 
 export const TAREA_ICONOS = ['ListChecks', 'BookOpen', 'GraduationCap', 'Briefcase', 'Code', 'Home', 'Target', 'Lightbulb'];
 
@@ -33,6 +36,8 @@ export const TareaEditar: React.FC<{
   const [verIconos, setVerIconos] = useState(false);
   const [arbol, setArbol] = useState<Subtarea[]>([]); // solo para Nueva tarea
   const [opciones, setOpciones] = useState<{ pasoId: string } | null>(null);
+  const [pegado, setPegado] = useState<ListaPegada | null>(null);
+  const desk = useEsEscritorio();
   const [editandoPaso, setEditandoPaso] = useState<string | null>(null);
   const [textoNuevo, setTextoNuevo] = useState('');
   const [dentroDe, setDentroDe] = useState<string | null>(null);
@@ -202,8 +207,19 @@ export const TareaEditar: React.FC<{
         <Plus size={16} strokeWidth={2.4} />
         <input className="tinput" value={textoNuevo} onChange={(e) => setTextoNuevo(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') agregarAbajo(); }} onBlur={() => { if (tarea) agregarAbajo(); }}
+          onPaste={(e) => {
+            if (!esNueva) return;
+            if (e.currentTarget.value.trim()) return;
+            const lista = leerListaPegada(e.clipboardData.getData('text'));
+            if (!lista) return;
+            e.preventDefault();
+            setPegado(lista);
+          }}
           placeholder={esNueva ? 'Escribe el primer paso, por pequeño que sea' : 'Agregar un paso'} aria-label="Agregar un paso" />
       </div>
+      {esNueva && arbol.length === 0 && (
+        <p className="tpista" style={{ marginTop: 10 }}>¿Tienes la lista en otro lado, como un chat con una IA? Cópiala y pégala aquí.</p>
+      )}
 
       <div className="tacciones fin">
         {esNueva
@@ -234,6 +250,21 @@ export const TareaEditar: React.FC<{
           />
         );
       })()}
+      
+      {pegado && esNueva && (
+        <HojaPegarLista
+          lista={pegado}
+          conNombre={!nombre.trim()}
+          escritorio={desk}
+          onAgregar={(pasos, nuevoNombre) => {
+            setArbol((a) => [...a, ...aSubtareas(pasos)]);
+            if (nuevoNombre && !nombre.trim()) setNombre(nuevoNombre);
+            setPegado(null);
+            setTextoNuevo('');
+          }}
+          onCancelar={() => setPegado(null)}
+        />
+      )}
     </section>
   );
 };

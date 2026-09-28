@@ -8,6 +8,8 @@ import { siguientePaso } from '../../utils/tareasUtils';
 import { Barra, Casilla, ChipDia, Terminadas } from './piezas';
 import { TAREA_ICONOS, TareaEditar } from './TareaEditar';
 import { DirTeclado, destinoConTeclado, useArrastrePasos } from './arrastrePasos';
+import { HojaPegarLista } from './HojaPegarLista';
+import { leerListaPegada, aSubtareas, ListaPegada, contarPegados } from '../../utils/pegarLista';
 
 /** Lo que TasksScreen comparte con el escritorio: marcar, borrar con "Deshacer", la hoja del día y la tarea recién terminada. */
 export interface ControlTareas {
@@ -17,6 +19,7 @@ export interface ControlTareas {
   abrirHoja: (tareaId: string, pasoId: string) => void;
   recien: { tareaId: string; pasoId: string } | null;
   deshacerTerminar: () => void;
+  avisar: (antes: string, texto: string, deshacer: () => void) => void;
 }
 
 const PISTA_VISTA = 'racha-tareas-pista-arrastre';
@@ -103,7 +106,7 @@ export const TareasEscritorio: React.FC<{
 
 /** La tarea abierta: todo se edita aquí mismo (sin pantalla aparte de Editar). */
 const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t, ctl }) => {
-  const { editarTarea, editarTextoPaso, agregarPasoTarea, borrarPasoTarea, moverPasoTarea, openFocusMode } = useHabitStore();
+  const { editarTarea, editarTextoPaso, agregarPasoTarea, borrarPasoTarea, moverPasoTarea, openFocusMode, agregarPasosPegados, quitarPasosTarea } = useHabitStore();
   const [pista, setPista] = useState(leerPista);
   // La pista se quita al soltar el primer arrastre (no al empezar: la lista se correría bajo el mouse)
   const arrastro = useRef(false);
@@ -123,6 +126,7 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
   const [enfocar, setEnfocar] = useState<string | null>(null);
   const [plegadoManual, setPlegadoManual] = useState<Record<string, boolean>>({});
   const [opcionesPaso, setOpcionesPaso] = useState<string | null>(null);
+  const [pegado, setPegado] = useState<ListaPegada | null>(null);
   
   const menuRef = useRef<HTMLDivElement>(null);
   const menuBtn = useRef<HTMLButtonElement>(null);
@@ -380,9 +384,33 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
         <Plus size={16} strokeWidth={2.4} />
         <input className="tinput" value={textoNuevo} placeholder="Agregar un paso" aria-label={`Agregar un paso a ${t.nombre}`}
           onChange={(e) => setTextoNuevo(e.target.value)}
+          onPaste={(e) => {
+            if (e.currentTarget.value.trim()) return;
+            const lista = leerListaPegada(e.clipboardData.getData('text'));
+            if (!lista) return;
+            e.preventDefault();
+            setPegado(lista);
+          }}
           onKeyDown={(e) => { if (e.key === 'Enter') agregarAbajo(); if (e.key === 'Escape') setTextoNuevo(''); }}
           onBlur={agregarAbajo} />
       </div>
+      {pegado && (
+        <HojaPegarLista
+          lista={pegado}
+          conNombre={false}
+          tareaNombre={t.nombre}
+          escritorio={true}
+          onAgregar={(pasos) => {
+            const arr = aSubtareas(pasos);
+            const ids = agregarPasosPegados(t.id, arr);
+            setPegado(null);
+            setTextoNuevo('');
+            const total = contarPegados(pasos).total;
+            ctl.avisar('Agregaste', `${total} ${total === 1 ? 'paso' : 'pasos'}`, () => quitarPasosTarea(t.id, ids));
+          }}
+          onCancelar={() => setPegado(null)}
+        />
+      )}
       <p className="sr-only" aria-live="polite">{anuncio}</p>
     </section>
   );

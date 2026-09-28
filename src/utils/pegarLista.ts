@@ -22,7 +22,10 @@ export interface ListaPegada {
 }
 
 type Tipo = 'titulo' | 'num' | 'letra' | 'vineta' | 'texto';
-interface Renglon { sangria: number; tipo: Tipo; rango: number; texto: string }
+interface Renglon { sangria: number; tipo: Tipo; rango: number; texto: string; negrita: boolean; charla: boolean }
+
+/** Frases de la IA que no son el nombre del plan ("¡Claro! Aquí tienes…", "Por supuesto:"). */
+const CHARLA = /^(¡|!|claro|aqu[ií]|por supuesto|perfecto|listo|genial|con gusto|te dejo|a continuaci[oó]n|sure|here|of course)/i;
 
 const limpiarTexto = (t: string) => t
   .replace(/\*\*(.+?)\*\*/g, '$1')
@@ -60,11 +63,13 @@ function leerRenglon(linea: string, numerosSueltos: boolean): Renglon | null {
     resto = resto.slice(casilla[0].length);
     if (tipo === 'texto') { tipo = 'vineta'; rango = 2; }
   }
+  const negrita = /^\*\*[^*].*\*\*:?$/.test(resto) || /^__.+__:?$/.test(resto);
+  const terminaEnDosPuntos = /:\s*$/.test(resto);
   // "Paso 1:" dejó los dos puntos al principio
   resto = resto.replace(/^[:.\-–—]\s*/, '');
   const texto = limpiarTexto(resto);
   if (!texto) return null;
-  return { sangria, tipo, rango, texto };
+  return { sangria, tipo, rango, texto, negrita, charla: CHARLA.test(texto) || terminaEnDosPuntos };
 }
 
 export function leerListaPegada(texto: string): ListaPegada | null {
@@ -85,8 +90,10 @@ export function leerListaPegada(texto: string): ListaPegada | null {
     desde = conMarca[0];
     const intro = renglones.slice(0, desde);
     if (intro.length) {
-      titulo = intro[0].texto;
-      fuera.push(...intro.slice(1).map((r) => r.texto));
+      // El nombre: el renglón en negrita; si no hay, el primero que no sea charla de la IA. Si ninguno sirve, sin nombre.
+      const elegido = intro.find((r) => r.negrita) || intro.find((r) => !r.charla) || null;
+      titulo = elegido ? elegido.texto : null;
+      fuera.push(...intro.filter((r) => r !== elegido).map((r) => r.texto));
     }
     // Cierre: renglones sueltos al final, sin sangría, después del último con marca
     let ultimo = conMarca[conMarca.length - 1];
