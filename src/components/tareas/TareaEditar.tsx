@@ -175,6 +175,14 @@ export const TareaEditar: React.FC<{
           <HabitIcon name={icono} size={19} />
         </button>
         <input className="tedit tnamein" value={nombre} onChange={(e) => setNombre(e.target.value)} onBlur={() => guardarCabecera()}
+          onPaste={(e) => {
+            // Si pegan una lista en el nombre de una tarea nueva, se abre igual "Pegaste una lista" (el título va al nombre)
+            if (!esNueva) return;
+            const lista = leerListaPegada(e.clipboardData.getData('text'));
+            if (!lista) return;
+            e.preventDefault();
+            setPegado(lista);
+          }}
           placeholder={esNueva ? '¿Qué quieres lograr?' : ''} aria-label="Nombre de la tarea" autoFocus={esNueva} maxLength={60} />
       </div>
       {verIconos && (
@@ -218,7 +226,7 @@ export const TareaEditar: React.FC<{
           placeholder={esNueva ? 'Escribe el primer paso, por pequeño que sea' : 'Agregar un paso'} aria-label="Agregar un paso" />
       </div>
       {esNueva && arbol.length === 0 && (
-        <p className="tpista" style={{ marginTop: 10 }}>¿Tienes la lista en otro lado, como un chat con una IA? Cópiala y pégala aquí.</p>
+        <p className="tpista">¿Tienes la lista en otro lado, como un chat con una IA? Cópiala y pégala aquí, en los pasos.</p>
       )}
 
       <div className="tacciones fin">
