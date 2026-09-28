@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Racha · Maqueta: Tu semana</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.saludo{margin:14px 0 0;font-size:16px;font-weight:600;color:var(--text)}
+.lvlbig{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none}
+.lvlbigart{display:flex;flex-shrink:0}
+.lvlbigcol .lvltrack2,.llamacard .lvltrack2{flex:none}
+.lvlbigcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.lvlbigtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cabtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.cabcomp{display:flex;align-items:center;gap:12px;margin-top:10px}
+.cabart{display:flex;flex-shrink:0;border-radius:12px}
+.cabart:focus-visible,.llamacard:focus-visible,.lvlbig:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.llamacard{display:flex;align-items:center;gap:14px;margin-top:14px;color:var(--text);text-decoration:none}
+.hrow{display:flex;flex-direction:column;align-items:stretch;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.hrow.next{border:1.5px solid var(--coral);background:color-mix(in srgb,var(--coral) 8%,var(--surface))}
+.hrowtop{display:flex;align-items:center;gap:10px}
+.hic{width:38px;height:38px;border-radius:11px;background:var(--coral);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hrow .name{display:block;font-size:15px;font-weight:600}
+.meta2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--lila-text);margin-top:2px}
+.sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.cnt{display:flex;gap:3px;margin-top:6px;max-width:130px}.cnt i{flex:1;height:6px;border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1px var(--muted)}.cnt i.on{background:var(--text)}
+.emp{min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--coral);background:transparent;color:var(--coral-text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.plus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font-size:14px;font-weight:700}
+.retobar{display:flex;align-items:center;gap:8px;margin-top:10px}.retobar i{flex:1;height:6px;border-radius:99px;background:var(--line-strong);overflow:hidden;display:block}.retobar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}.retobar span{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.desk{width:1440px;height:900px;display:flex;background:var(--bg);color:var(--text);border-radius:16px;overflow:hidden;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.5);font-family:'Barlow',system-ui,sans-serif;text-align:left}
+.desk.w1024{width:1024px;height:768px}
+.light .desk{--coral-text:#C23D20;--ambar-text:#9A5B00}
+.desk .sub{margin:0;font-size:13px;color:var(--muted);line-height:1.4}
+.desk h1,.desk h2,.desk h3{margin:0}
+.desk ol,.desk ul{list-style:none;margin:0;padding:0}
+.desk :focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.dkskip{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.dkskip:focus{width:auto;height:auto;clip-path:none;padding:8px 12px;background:var(--text);color:var(--bg);border-radius:8px;z-index:5}
+.dkside{width:240px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;padding:20px 14px;border-right:1px solid var(--line);background:var(--surface);position:relative}
+.dkside.mini{width:76px;align-items:center;padding:20px 10px}
+.dkbrand{display:flex;align-items:center;gap:10px;padding:0 8px 10px}
+.dklogo{width:30px;height:30px;border-radius:9px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center}
+.dkcrear{min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:15px;font-weight:700;margin:4px 0 10px}
+.dkside.mini .dkcrear{width:48px;height:48px;border-radius:14px}
+.desk nav.dknav{position:static;height:auto;padding:0;background:none;border:none;display:grid;gap:2px}
+.desk nav.dknav a{width:auto;flex-direction:row;justify-content:flex-start;min-height:44px;gap:12px;padding:0 12px;border-radius:10px;color:var(--muted);font-size:15px;font-weight:600}
+.desk nav.dknav a.on{background:var(--raised);color:var(--text)}
+.desk nav.dknav a.on svg{color:var(--ambar-text)}
+.dkside.mini nav.dknav a{width:48px;justify-content:center;padding:0}
+.dkme{margin-top:auto;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px;border-top:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkme b{display:block;font-size:14px}
+.dkavatar{width:36px;height:36px;border-radius:999px;background:var(--raised);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;flex-shrink:0}
+.dkmain{flex:1;min-width:0;overflow:hidden;padding:24px 32px}
+.w1024 .dkmain{padding:18px 22px}
+.dkhead{display:flex;align-items:center;gap:16px;max-width:1120px;margin:0 auto}
+.dkhart{display:flex;flex-shrink:0}
+.dksaludo{margin:0 0 2px;font-size:16px;font-weight:600}
+.dkh1{font-size:48px;line-height:1}
+.dkhprog{display:flex;align-items:center;gap:12px;margin-top:10px;max-width:520px}
+.dkhprog .segs{flex:1;margin:0}
+.dkhact{display:flex;align-items:center;gap:10px;align-self:flex-start;margin-top:6px}
+.dkchip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;white-space:nowrap}
+.dkbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:15px;font-weight:700;white-space:nowrap}
+.dkgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;max-width:1120px;margin:22px auto 0}
+.w1024 .dkgrid{grid-template-columns:minmax(0,1fr) 280px;gap:18px;margin-top:16px}
+.dkcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.dkrail{position:sticky;top:0;align-self:start}
+.dkcard{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.dkch h2,.dkmhead h2{font-size:22px}
+.dklink{display:inline-flex;align-items:center;min-height:32px;color:var(--ambar-text);font-weight:600;text-decoration:none;font-size:14px}
+.dkmhead{display:flex;align-items:baseline;justify-content:space-between}
+.dkgrp{display:grid;gap:8px}
+.dkgh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:4px 0 0}
+.dkahora{padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text);font-size:12px;font-weight:700}
+.dkgc{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600}
+.dkrow{display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 14px 8px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.dkrow:hover{background:var(--raised)}
+.dkrow.next{border:1.5px solid var(--coral-text)}
+.dkrbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:48px;padding:4px 6px;border:none;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.dkric{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dkric.sm{width:30px;height:30px;border-radius:9px}
+.dkrow:hover .dkric{background:var(--surface)}
+.dkrow.done .dkric{color:var(--muted)}
+.dkrmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dkrname{font-size:15px;font-weight:700}
+.dkrow.done .dkrname{color:var(--muted)}
+.dkrmeta{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.dkok{color:var(--ambar-text);font-weight:700}
+.dkcnt{display:flex;gap:3px;max-width:160px;margin-top:3px}
+.dkcnt i{flex:1;height:6px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--muted)}
+.dkcnt i.on{background:var(--ambar);box-shadow:none}
+.dkreto{display:flex;align-items:center;gap:8px;margin-top:4px;max-width:260px}
+.dkreto i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.dkreto i b{display:block;height:100%;background:var(--ambar)}
+.dkreto span{font-size:12px;color:var(--muted);white-space:nowrap}
+.dkwk{display:flex;gap:4px;flex-shrink:0}
+.dkwk li{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted)}
+.dkwk li.ok{background:var(--ambar);color:var(--ink)}
+.dkwk li.gris{background:var(--raised)}
+.dkwk li.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkwk li.hoy{box-shadow:inset 0 0 0 1.5px var(--text);color:var(--text)}
+.dkwk li.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.7}
+.light .dkwk li.ok{background:var(--ambar-text);color:#fff}
+.w1024 .dkwk li{width:20px;height:20px;font-size:10px}
+.dkchk{width:34px;height:34px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--ink);position:relative}
+.dkchk::after{content:"";position:absolute;inset:-5px}
+.dkchk.on{border:none;background:var(--logro,var(--ambar))}
+.dkplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.dkemp{min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;position:relative;flex-shrink:0}
+.dkemp::after{content:"";position:absolute;inset:-2px}
+.dkbar{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.dkbar b{display:block;height:100%;background:var(--ambar)}
+.dkbar.thin{height:5px;margin-top:6px}
+.light .dkbar b,.light .dkcnt i.on,.light .dkreto i b{background:var(--ambar-text)}
+.dkweek{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.dkday{position:relative;min-height:52px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:12px;color:var(--muted)}
+.dkday b{font-family:'Barlow Condensed',sans-serif;font-size:17px;color:var(--text)}
+.dkday.ok{background:var(--ambar);color:var(--ink)}
+.dkday.ok b{color:var(--ink)}
+.light .dkday.ok{background:var(--ambar-text);color:#fff}
+.light .dkday.ok b{color:#fff}
+.dkday.medio{background:var(--raised)}
+.dkmid{position:absolute;left:6px;right:6px;bottom:5px;height:4px;border-radius:2px;background:var(--ambar-text)}
+.dkday.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkday.como b{color:var(--comodin-text)}
+.dkday.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.dkday.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.75}
+.dkleg{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--muted)}
+.dkleg li{display:flex;align-items:center;gap:6px}
+.dkleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dkleg i.ok{background:var(--ambar)}
+.light .dkleg i.ok{background:var(--ambar-text)}
+.dkleg i.medio{background:var(--raised);position:relative}
+.dkleg i.medio b{position:absolute;left:2px;right:2px;bottom:2px;height:2px;border-radius:1px;background:var(--ambar-text)}
+.dkleg i.como{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkretocard{display:flex;align-items:center;gap:12px;min-height:76px}
+.dkretocard b{font-size:15px}
+.dkline{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none;font-size:14px}
+.dkline + .dkline{border-top:1px solid var(--line)}
+.desk .segs{display:flex;gap:4px}
+.desk .segs i{flex:1;height:10px;border-radius:5px;background:var(--track-empty)}
+.desk .segs i.on{background:var(--ambar)}
+.light .desk .segs i.on{background:var(--ambar-text)}
+.desk .sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.w1024 .dkh1{font-size:40px}
+.w1024 .dkrow{min-height:58px;gap:10px}
+.w1024 .dkcol{gap:10px}
+
+/* ---- celular ---- */
+.phone.tall{height:auto}
+.phone.tall .scroll{overflow:visible;flex:none}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px}
+.mhd h2{margin:0;font-size:22px}
+.glink{display:inline-flex;align-items:center;min-height:44px;color:var(--ambar-text);font-weight:600;text-decoration:none}
+.mgrp{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.mgh{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font:inherit;text-align:left;width:100%}
+.mgic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mgt{flex:1;font-size:17px;display:flex;align-items:center;gap:6px}
+.mahora{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text)}
+.mgc{font-size:13px;color:var(--muted)}
+.mgbar{width:44px;height:5px;border-radius:9px;background:var(--track-empty);overflow:hidden;flex-shrink:0;display:block}
+.mgbar b{display:block;height:100%;border-radius:9px}
+.mgchev{color:var(--muted);display:flex}
+.mrow{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;background:var(--surface)}
+.mrow.next{background:var(--mt);box-shadow:inset 0 0 0 1.5px var(--mc)}
+.mtop{display:flex;align-items:center;gap:10px}
+.mopen{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.mic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.mname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow.done .mname{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.mrow.done .mic{opacity:.7}
+.mmeta{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mmeta.mok{color:var(--ambar-text);font-weight:700}
+.mmeta.msig{color:var(--text)}
+.mpts{font-size:13px;color:var(--muted)}
+.memp{min-height:44px;padding:0 10px;border-radius:10px;border:1.5px solid;background:transparent;font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.mchk{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative}
+.mchk::after{content:"";position:absolute;inset:-6px}
+.mchk.on{border:none;background:var(--logro,var(--ambar))}
+.mplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.rut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.ruthead{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 12px}
+.rutic{width:34px;height:34px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rutmain{flex:1;min-width:0;display:flex;flex-direction:column}
+.rutname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;line-height:1.15}
+.rutmeta{font-size:13px;color:var(--muted)}
+.rutmeta.ok{color:var(--ambar-text);font-weight:700}
+.rutemp{min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid;background:transparent;font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.rutlist .mrow{border-radius:0;background:transparent;border-top:1px solid var(--line);padding:8px 10px 8px 12px}
+.rutlist .mrow.next{background:var(--mt)}
+.statelbl{margin:18px 2px 8px;font-size:13px;font-weight:600;color:var(--muted)}
+/* ---- Tareas de hoy ---- */
+.th{display:flex;flex-direction:column;gap:6px}
+.thhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.thhead h2{margin:0;font-size:22px;white-space:nowrap}
+.thcount{margin:-6px 0 2px;font-size:13px;color:var(--muted);font-weight:600}
+.thcount.ok{color:var(--ambar-text);font-weight:700}
+.thlink{white-space:nowrap;margin-left:auto;display:inline-flex;align-items:center;gap:2px;min-height:44px;color:var(--ambar-text);font-weight:600;font-size:14px;text-decoration:none}
+.thnote{margin:-4px 0 2px}
+.thlist{list-style:none;margin:0;padding:0}
+.thitem{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 0;border-top:1px solid var(--line)}
+.thitem:first-child{border-top:none}
+.thchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative}
+.thchk::after{content:"";position:absolute;inset:-9px}
+.thchk.on{border:none;background:var(--logro,var(--ambar))}
+.thtxt{flex:1;min-width:0;display:flex;flex-direction:column}
+.thname{font-size:15px;font-weight:600}
+.thtask{font-size:13px;color:var(--muted)}
+.thitem.done .thname{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+/* ---- escritorio ---- */
+.desk nav.dknav{justify-content:stretch;align-items:stretch}
+.desk.auto{height:auto;min-height:900px;overflow:visible}
+.desk.w1024.auto{min-height:768px}
+.desk.auto .dkmain{overflow:visible}
+.dkrut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.dkruthead{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 14px 8px 14px}
+.dkruthead .dkrname{font-family:'Barlow Condensed',sans-serif;font-size:19px}
+
+.dkrow.inrut{border:none;border-top:1px solid var(--line);border-radius:0;background:transparent;padding-left:14px}
+.dkrow.inrut:hover{background:var(--raised)}
+.dkrail .th .thhead h2{font-size:22px}
+.mbottom{display:flex;align-items:center;gap:10px}
+.mbottom .retobar{flex:1;margin-top:0}
+.rutlist .mrow.next,.light .rutlist .mrow.next{box-shadow:none}
+/* semana en barritas, como Tu día */
+.desk .dkwk{gap:3px;align-items:center;width:136px}
+.desk .dkwk li,.desk .dkwk li.hoy,.desk .dkwk li.fut,.desk .dkwk li.gris{flex:1;width:auto;height:10px;border-radius:4px;font-size:0;box-shadow:none;border:none;opacity:1;background:var(--track-empty)}
+.desk .dkwk li span{display:none}
+.desk .dkwk li.ok{background:var(--ambar)}
+.light .desk .dkwk li.ok{background:var(--ambar-text)}
+.desk .dkwk li.como{background:var(--lila-text);box-shadow:none;border:none}
+.desk.w1024 .dkwk{width:112px}
+.dklvl{max-width:520px;margin-bottom:2px}
+.dklvl .lvlstrip{min-height:32px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.light{--coral-text:#B8381C}
+.light .desk{--coral-text:#B8381C}
+.mgh3{margin:0;font:inherit}
+.mnamerow{display:flex;align-items:center;gap:6px;min-width:0}
+.mnamerow .sigue{flex-shrink:0;font-size:11px}
+.rutname{margin:0}
+.rut.rutnext{border:1.5px solid var(--mc)}
+.rutsoft{min-height:44px;padding:0 8px;border:none;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.light .mrow.next{box-shadow:inset 0 0 0 1px var(--mc)}
+.light .dkrow.next{border-width:1px}
+h4.dkrname{margin:0}
+.dkrow.done .dkrname{text-decoration:line-through;text-decoration-thickness:1.5px}
+.dkwk li.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+.dkday.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+
+/* ---- Tareas: celular ---- */
+.num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;font-size:1.08em}
+.tcab{display:flex;align-items:flex-end;gap:12px;margin:18px 0 14px}
+.tnueva{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tcard{padding:0;margin-bottom:10px;overflow:hidden}
+.thh{margin:0;font:inherit}
+.thead{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 12px 10px 14px;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.tico{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none}
+.tico.btn{width:44px;height:44px}
+.tico.lg{width:48px;height:48px;border-radius:13px}
+.tico.ok{background:var(--logro,var(--ambar));color:var(--ink)}
+.tmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.tname{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tname2{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tchev{color:var(--muted);display:flex}
+.tavance{display:flex;align-items:center;gap:8px}
+.tavance i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;max-width:160px}
+.tavance i b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .tavance i b{background:var(--ambar-text)}
+.tavance>span{font-size:13px;color:var(--muted);white-space:nowrap}
+.tavance.sm{margin-top:2px}
+.tavance.sm i{max-width:none}
+.tsig{border-top:1px solid var(--line);padding:4px 12px 6px 14px}
+.tfila{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 0}
+.tchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative;cursor:pointer}
+.tchk::after{content:"";position:absolute;inset:-9px}
+.tchk.on{border:none;background:var(--logro,var(--ambar))}
+.light .tchk.on{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.ttxt{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.tnom{font-size:15px;font-weight:600}
+.tpaso.done>.tfila .tnom{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.tsub{font-size:13px;color:var(--muted)}
+.tsigchip{display:inline-block;padding:1px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700}
+.tpaso.sig>.tfila{background:var(--raised);border-radius:10px;margin:0 -8px;padding:6px 8px}
+.tpadre{width:26px;flex-shrink:0}
+.tdia{min-height:32px;display:inline-flex;align-items:center;gap:5px;padding:0 9px;border-radius:8px;border:none;background:var(--raised);color:var(--text);font:inherit;font-size:12px;font-weight:700;flex-shrink:0;position:relative;white-space:nowrap}
+.tdia::after{content:"";position:absolute;inset:-6px -2px}
+.tdia.hoy{background:transparent;outline:1.5px dashed var(--text);outline-offset:-1.5px}
+.tdia.vacio{width:44px;padding:0;justify-content:center;background:transparent;color:var(--muted)}
+.tdia.vacio::after{inset:-6px 0}
+.tpaso.sig>.tfila .tdia:not(.vacio):not(.hoy){background:var(--surface)}
+.tarbol{list-style:none;margin:0;padding:4px 12px 4px 14px;border-top:1px solid var(--line)}
+.tarbol.tsubl{padding:4px 0 4px 22px;border-top:none;margin-left:12px;border-left:1px solid var(--line)}
+.tpaso+.tpaso{border-top:1px solid var(--line)}
+.tarbol.tsubl .tpaso+.tpaso{border-top:none}
+.tagregar{display:flex;align-items:center;gap:8px;width:100%;min-height:48px;padding:0 14px;border:none;border-top:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:15px;font-weight:600;text-align:left}
+.tacciones{display:flex;align-items:center;gap:8px;padding:0 12px 12px 14px}
+.tcard .tpaso.drag>.tfila{transform:none;margin-left:14px;padding:6px 8px;border-radius:10px}
+.tacciones.fin{justify-content:space-between;padding-top:10px;border-top:1px solid var(--line)}
+.tbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tbtnq{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tbtnq.sm{padding:0 8px}
+.tbtnq.ico{width:44px;padding:0;justify-content:center}
+.btnp.sm{min-height:44px;font-size:15px;padding:0 18px}
+.btnp[disabled]{background:var(--raised);color:var(--muted)}
+.tterm{margin-top:18px}
+.tterm-h{margin:0}
+.tterm-h button{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px}
+.tcnt{font-size:15px;color:var(--muted);margin-left:4px}
+.ttlist{list-style:none;margin:6px 0 0;padding:0}
+.ttrow{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 0;border-top:1px solid var(--line)}
+.tok{display:inline-flex;align-items:center;gap:3px;color:var(--ambar-text);font-weight:700}
+.tdel{width:44px;height:44px;border-radius:12px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ttoast{position:absolute;left:16px;right:16px;bottom:96px;display:flex;align-items:center;gap:12px;min-height:52px;padding:4px 6px 4px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;z-index:4}
+.ttoast span{flex:1}
+.ttoast button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font:inherit;font-weight:700;text-decoration:underline}
+.tvacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:60px 12px 20px}
+.tvico{display:flex;color:var(--muted);margin-bottom:4px}
+.btnp{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:none;border-radius:14px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:16px;font-weight:700}
+.tfinbody{padding:2px 14px 12px;border-top:1px solid var(--line)}
+.tfintit{margin:10px 0 2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--ambar-text)}
+.tfinbody .tbtnq{margin-top:4px;margin-left:-12px}
+.teh{display:flex;align-items:center;gap:10px;padding:12px}
+.tedit{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:15px;font-weight:600}
+.tnamein{font-size:17px;font-weight:700}
+.tedit::placeholder{color:var(--muted);font-weight:500}
+.tmover{width:44px;height:44px;border-radius:10px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tediting .tarbol .tfila{gap:2px}
+.tediting .tedit{margin-right:4px}
+.tarea-txt{display:flex;align-items:center;padding:10px 12px;line-height:1.3;white-space:normal;word-break:break-word}
+.tagrega-in{display:flex;align-items:center;gap:8px;min-height:52px;padding:0 14px;border-top:1px solid var(--line);color:var(--muted)}
+.tmenu{display:flex;flex-direction:column}
+.tmenu button{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.tmenu button:first-child{border-top:none}
+.tmenu button[disabled]{color:var(--muted)}
+.tmenu button svg{color:var(--muted)}
+.tdelq{padding-left:0}
+.tsheet{padding:0 20px 22px}
+.tsheet .grab{margin-bottom:12px}
+.tsheet-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.closeb{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topt{display:grid;grid-template-columns:1fr auto 22px;align-items:center;gap:10px;width:100%;min-height:56px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.topt:first-child{border-top:none}
+.topt.on svg{color:var(--ambar-text)}
+.tsem-l{margin:14px 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.tsem{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tsem button{width:100%;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);font:inherit;font-size:12px;color:var(--muted)}
+.tsem b{font-size:18px;color:var(--text)}
+.tquitar{width:100%;min-height:48px;margin-top:14px;border:none;border-radius:12px;background:transparent;color:var(--muted);font:inherit;font-size:15px;font-weight:700}
+/* ---- Tareas: escritorio ---- */
+.tdk{display:grid;grid-template-columns:340px minmax(0,1fr);gap:28px;max-width:1120px;margin:0 auto;align-items:start}
+.w1024 .tdk{grid-template-columns:280px minmax(0,1fr);gap:18px}
+.tdk-lh{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.tlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tli{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);color:inherit;font:inherit;text-align:left}
+.tli:hover{background:var(--raised)}
+.tli.on{background:var(--raised);border-color:var(--text)}
+.tli .tmain{gap:2px}
+.tli .tsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tdk-det{padding:20px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.tdk-dh{display:flex;align-items:center;gap:14px}
+.desk .tdk-ayuda{margin:14px 0 8px}
+.tdk-det .tarbol{padding:4px 0;border-top:1px solid var(--line)}
+.tdk-det .tarbol.tsubl{padding:4px 0 4px 22px;border-top:none}
+.tpista{margin:0 14px 8px;font-size:13px;color:var(--muted)}
+.tasam{width:28px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;margin-left:-6px;touch-action:none}
+.tediting .tarbol.tsubl .tsoltar,.tediting .tsoltar{margin-left:34px}
+.tdk-det .tfila{min-height:52px;border-radius:10px;padding:6px 4px;position:relative}
+.tdk-det .tpaso.sig>.tfila{margin:0;padding:6px 4px}
+.tdk-det .tpaso.hov>.tfila{background:var(--raised)}
+.tasa{width:28px;height:44px;margin:-6px 0;display:flex;align-items:center;justify-content:center;border:none;border-radius:8px;background:transparent;color:var(--muted);flex-shrink:0;cursor:grab;opacity:0}
+.tmas{width:44px;height:44px;margin:-6px 0;border-radius:10px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0}
+.tdk-det .tdia.vacio{opacity:0}
+.tdk-det .tpaso.hov>.tfila .tasa,.tdk-det .tpaso.hov>.tfila .tmas,.tdk-det .tpaso.hov>.tfila .tdia.vacio,.tdk-det .tpaso.drag>.tfila .tasa{opacity:1}
+.tdk-det .tfila:focus-within .tasa,.tdk-det .tfila:focus-within .tmas,.tdk-det .tfila:focus-within .tdia.vacio{opacity:1}
+.tpaso.drag>.tfila{background:var(--raised);box-shadow:0 8px 24px rgba(0,0,0,.35);transform:translateX(26px)}
+.tsoltar{margin:2px 0 6px 48px;padding:8px 12px;border-radius:10px;border:1.5px dashed var(--line-strong);color:var(--muted);font-size:13px;font-weight:600}
+.tdk-add{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px 0 36px;border-top:1px solid var(--line);color:var(--muted)}
+.tinput{flex:1;min-width:0;min-height:44px;border:none;background:transparent;color:var(--text);font:inherit;font-size:15px}
+.tinput::placeholder{color:var(--muted)}
+.tdk .tterm{margin-top:16px}
+.tnuevo{gap:10px;padding-left:32px!important}
+.tinput-on{border-radius:8px;box-shadow:inset 0 -1.5px 0 var(--text)}
+.tenter{font-size:12px;color:var(--muted);white-space:nowrap}
+.tnuevo .tchk{cursor:default}
+
+/* ---- Tareas ronda 3 ---- */
+.t3mas{width:40px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t3fle{width:44px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t3add{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:600;text-align:left}
+.t3ayuda{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:1px}
+.tmenu button{min-height:60px}
+.t3punto{width:8px;height:8px;border-radius:99px;background:var(--line-strong);flex-shrink:0;margin:0 9px}
+.tediting .tarbol .tfila{gap:6px}
+.t3lista{padding:4px 14px 12px;border-top:1px solid var(--line)}
+.t3lin{display:flex;align-items:center;gap:4px;min-height:48px;position:relative}
+.t3lin+.t3lin{border-top:1px solid var(--line)}
+.t3guia{position:absolute;left:12px;top:0;bottom:0;border-left:1px solid var(--line-strong)}
+.t3barra{position:absolute;left:0;right:0;bottom:250px;display:flex;gap:8px;padding:8px 12px;background:var(--raised);border-top:1px solid var(--line);z-index:6}
+.t3barra button{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.t3barra button.on{border-color:var(--text)}
+.t3barra .t3listo{margin-left:auto;border:none;background:transparent}
+.t3teclado{position:absolute;left:0;right:0;bottom:0;height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--surface);color:var(--muted);font-size:13px;z-index:6}
+.t3txtbtn{flex:1;min-width:0;display:flex;border:none;background:none;padding:0;color:inherit;font:inherit;text-align:left;min-height:44px;align-items:center}
+.t3tocado{background:var(--raised);border-radius:10px 10px 0 0;margin:0 -8px;padding:6px 8px}
+.t3acc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 -8px 6px;padding:4px 8px 10px;background:var(--raised);border-radius:0 0 10px 10px}
+.t3acc button{min-height:44px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:600}
+.t3acc button svg{color:var(--muted)}
+.t3acc .t3borrar{color:var(--muted)}
+
+/* ---- Tareas ronda 4: pegar una lista ---- */
+.t4sheet{padding-bottom:0}
+.t4lab{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:6px 0 6px}
+.t4sheet .tnamein{width:100%}
+.t4nota{margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.t4caja{max-height:300px;overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent)}
+.t4lista{list-style:none;margin:0;padding:0 0 20px}
+.t4li{display:flex;align-items:center;gap:8px;min-height:48px;font-size:15px;font-weight:600}
+.t4t{flex:1;min-width:0}
+.t4x{width:44px;height:44px;margin-right:-10px;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t4fuera{margin:10px 0 0;font-size:13px;color:var(--muted)}
+.t4li+.t4li{border-top:1px solid var(--line)}
+.t4li.sub{padding-left:26px;font-weight:500}
+.t4pie{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0 18px}
+.t4velo{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.t4dlg{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:520px;padding:22px 24px 6px;border-radius:20px;background:var(--sheet);box-shadow:0 24px 60px rgba(0,0,0,.45);z-index:6;text-align:left;color:var(--text);font-family:Barlow,system-ui,sans-serif}
+.t4dlg .t4caja{max-height:320px}
+
+/* ---- Celebración: día completo ---- */
+.dcsheet{max-height:94%}
+.dccerrar{display:flex;justify-content:flex-end;padding:6px 12px 0}
+.dcbody{padding:0 20px 22px;text-align:center}
+.dchero{display:flex;justify-content:center;margin-top:-18px}
+.dct{margin:6px 0 0;font-size:28px;line-height:1.05}
+.dcsub{margin:4px 0 0;font-size:17px;color:var(--ambar-text)}
+.dcs{margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--text)}
+.dcnums{display:flex;margin:18px 0 0;padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dcnums div{flex:1;padding:12px 4px;display:flex;flex-direction:column;gap:2px}
+.dcnums div+div{border-left:1px solid var(--line)}
+.dcnums dt{white-space:nowrap;font-size:13px;font-weight:600;color:var(--muted)}
+.dcnums dd{margin:0;font-size:13px;color:var(--muted)}
+.dcnums b{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1.1;color:var(--text);font-variant-numeric:tabular-nums}
+.dcnums b.dcpts{color:var(--ambar-text)}
+.dcmes{margin-top:14px;text-align:left}
+.dcmes p{display:flex;justify-content:space-between;margin:0 0 6px;font-size:13px;color:var(--muted)}
+.dcmes p b{color:var(--text);font-size:15px}
+.dctrk{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.dctrk b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .dctrk b{background:var(--ambar-text)}
+.dctambien{margin:12px 0 0;font-size:13px;color:var(--muted)}
+.dcbtn{margin-top:18px}
+.dcdlg{width:460px;top:90px}
+
+/* ---- Tu semana ---- */
+.tsw{max-width:1120px;margin:0 auto}
+.tshead{margin-bottom:16px}
+.tstop{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:stretch}
+.w1024 .tstop{grid-template-columns:1fr 1fr;gap:12px}
+.dkcard.tscomo,.dkcard.tsres{margin:0}
+.tsch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.tsch h2{font-size:22px;margin:0}
+.tsdias{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tsdias li{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 0;border-radius:10px}
+.tsdias li.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.tsdl{font-size:12px;font-weight:600;color:var(--muted)}
+.tsdias b.num{font-size:18px}
+.tsdias li.fut b.num{color:var(--muted)}
+.tsdias i{display:block;width:12px;height:44px;margin:4px 0 8px;border-radius:6px;background:var(--track-empty);position:relative;overflow:hidden}
+.tsdias i b{position:absolute;left:0;right:0;bottom:0;min-height:10px;background:var(--ambar);border-radius:6px}
+.light .tsdias i b{background:var(--ambar-text)}
+.tsdias li.como i{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.tsfrase{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.tsfrase b{color:var(--text)}
+.tsrh{display:flex;gap:12px;align-items:flex-start}
+.tsric{width:36px;height:36px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tsrt{margin:0;font-size:16px;font-weight:700}
+.tsres .sub{font-size:13px;margin-top:2px}
+.tsracc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.tsrb{display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;text-align:left}
+.tsrb svg{color:var(--muted);flex-shrink:0}
+.tsrb b{display:block;font-size:14px}
+.tsrb .sub{margin:0}
+.tsrq{grid-column:1/-1;min-height:44px;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:700}
+.tsplan{margin-top:22px}
+.tsplanh{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+.tsplanh h2{font-size:26px;margin:0}
+.tstabs{display:inline-flex;padding:4px;gap:4px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tstabs button{min-height:40px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700}
+.tstabs button span{font-weight:500;margin-left:6px;font-size:13px}
+.tstabs button.on{background:var(--raised);color:var(--text)}
+.tsplanb{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:start}
+.tsboard{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.tscol{min-height:180px;padding:10px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column}
+.tscol.pasado{background:transparent}
+.tscol.hoy{border-color:var(--text)}
+.tscol.soltar{border:1.5px dashed var(--text)}
+.tscolh{margin:0;display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:14px;font-weight:700}
+.tscolh b{font-size:17px}
+.tscol.pasado .tscolh{color:var(--muted)}
+.tshoy{padding:1px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700}
+.tshab{margin:2px 0 8px;font-size:12px;color:var(--muted)}
+.tspasos{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.tspaso{display:flex;gap:6px;align-items:flex-start;padding:7px 6px;border-radius:10px;background:var(--raised);font-size:13px}
+.tscol.pasado .tspaso{background:transparent;padding:4px 0}
+.tspaso .tchk{width:20px;height:20px;border-radius:6px;margin-top:1px}
+.tspaso .tchk::after{inset:-12px}
+.tspt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tspn{font-weight:600;line-height:1.25;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tspaso.done .tspn{color:var(--muted);text-decoration:line-through}
+.tspta{font-size:12px;color:var(--muted)}
+.tspta b{color:var(--text)}
+.tsdrop{margin-top:6px;padding:10px 8px;border-radius:10px;border:1.5px dashed var(--line-strong);color:var(--muted);font-size:12px;font-weight:600;text-align:center}
+.tssin{padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tssin.fila{margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.tssin.fila .sub{flex-basis:100%;margin:-2px 0 4px}
+.tssin.fila .tsgrupo{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tssin.fila .tsgrupo ul{display:flex;gap:6px;flex-wrap:wrap}
+.tssinh{margin:0;font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tscnt{font-size:15px;color:var(--muted)}
+.tssin .sub{margin:4px 0 8px}
+.tsgt{display:flex;align-items:center;gap:6px;margin:10px 0 4px;font-size:12px;font-weight:700;color:var(--muted)}
+.tsgrupo ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.tssp{display:flex;align-items:center;gap:6px;width:100%;min-height:40px;padding:6px 8px;border-radius:10px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:13px;font-weight:600;text-align:left;cursor:grab}
+.tssp svg{color:var(--muted);flex-shrink:0}
+.tssp.drag{opacity:.6;border-style:dashed}
+.tssin.fila .tssp{width:auto;min-height:36px}
+.tsboard.mini .tscol{min-height:150px;padding:8px 6px}
+/* celular */
+.card.tscomo,.card.tsres{margin-top:12px}
+.tsplan.cel .tstabs{display:flex;margin-bottom:12px}
+.tsplan.cel .tstabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52px}
+.tsplan.cel .tstabs button span{margin:0}
+.tsdiascel{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tsdcel{padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tsdcel.hoy{border-color:var(--text)}
+.tsdch{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.tsdch h3{margin:0;display:flex;align-items:center;gap:8px;font-size:15px}
+.tsponer{display:flex;align-items:center;gap:6px;width:100%;min-height:44px;margin-top:4px;padding:0;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:600}
+.tsdcel .tspaso{font-size:14px}
+
+/* ---- Cabecera compacta de Hoy (escritorio) ---- */
+.hc{display:flex;align-items:center;gap:16px;max-width:1120px;margin:0 auto;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.hcart{display:flex;flex-shrink:0}
+.hcmain{min-width:0}
+.hcsal{margin:0;font-size:14px;font-weight:600;color:var(--muted)}
+.hcfila{display:flex;align-items:baseline;gap:12px}
+.hch1{margin:0;font-size:40px;line-height:1}
+.hcpts{font-size:18px;color:var(--ambar-text)}
+.hcprog{flex:1;min-width:0;max-width:330px;margin-left:auto;display:grid;gap:8px}
+.hcl{display:grid;grid-template-columns:62px 1fr 70px;align-items:center;gap:10px;color:var(--text);text-decoration:none;min-height:24px}
+.hclab{font-size:13px;font-weight:700}
+.hcnum{font-size:13px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.hcsegs{margin:0;gap:4px}
+.hcsegs i{height:8px}
+.hclvl{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.hclvl b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.hc + .dkgrid{margin-top:18px}
+body{flex-direction:column;align-items:center}.rowm{display:flex;gap:40px;align-items:flex-start;justify-content:center;flex-wrap:wrap}</style>
+</head>
+<body>
+<div class="rowm"></div>
+<div class="col"><h2>1 · Ahora: la cabecera de Hoy en escritorio (oscuro)</h2><div class="dark">
+  <div class="desk auto">
+    
+    
+    <aside class="dkside">
+      <a href="#dk-main" class="dkskip">Saltar al contenido</a>
+      <div class="dkbrand"><span class="dklogo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:22px">Racha</span></div>
+      <button class="dkcrear" aria-label="Crear"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span>Crear</span></button>
+      <nav class="dknav" aria-label="Secciones">
+        <a href="#" class="on" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg><span>Hoy</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg><span>Tareas</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M7 15h10"/></svg><span>Tu semana</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg><span>Progreso</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendario</span></a>
+      </nav>
+      <a href="#" class="dkme" aria-label="Perfil: Johnatan, nivel 11">
+        <span class="dkavatar" aria-hidden="true">J</span>
+        <span style="flex:1;min-width:0"><b>Johnatan</b><span class="sub">Nivel 11 · Perfil</span></span>
+      </a>
+    </aside>
+    <main class="dkmain" id="dk-main">
+      <header class="dkhead">
+        <span class="dkhart" aria-hidden="true"><svg width="72" height="72" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m12bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e11k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e11o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e11m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e11c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m12cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m12cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e11o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e11m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e11c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e11k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e11k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e11k)"/></g></svg></span>
+        <div style="flex:1;min-width:0">
+          <div class="dklvl">
+      <a class="lvlstrip" href="#" aria-label="Nivel 11: 130 de 600 puntos para el nivel 12. Ver tu llama">
+        <span class="cond lvlname">Nivel 11</span>
+        <i class="lvltrack2" aria-hidden="true"><b style="width:22%"></b></i>
+        <span class="lvlnums">130 / 600</span>
+      </a></div><p class="dksaludo">Buenas tardes, Johnatan</p>
+          <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><h1 class="cond dkh1">Jueves 24</h1><span class="cond" style="font-size:20px;color:var(--ambar-text)">+20 pts hoy</span></div>
+          <div class="dkhprog">
+            <div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <span class="sub" style="white-space:nowrap">2 de 6 · te quedan 4</span>
+          </div>
+        </div>
+        <div class="dkhact">
+          <span class="dkchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>3 comodines</span>
+          <button class="dkbtn2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>Modo Foco</button>
+        </div>
+      </header>
+      <div class="dkgrid">
+        <div class="dkcol">
+          <div class="dkmhead"><h2 class="cond">Misiones</h2><span class="sub">+40 pts por ganar · <a href="#" class="dklink">Gestionar</a></span></div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg5">
+          <h3 class="dkgh" id="dkg5"><span style="color:var(--ambar-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span>Mañana<span class="dkgc"><span class="vh">, </span>1 de 3</span></h3>
+          
+          <div class="dkrut" role="group" aria-labelledby="rdH1">
+            <div class="dkruthead">
+              <span class="dkric" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span>
+              <span class="dkrmain"><h4 class="dkrname" id="rdH1">Mañana productiva</h4><span class="dkrmeta" aria-live="polite">Rutina · 1 de 3</span></span>
+              <button class="rutsoft" aria-label="Empezar la rutina Mañana productiva en modo Foco"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar rutina</button>
+            </div>
+            
+          <div class="dkrow inrut">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Beber agua</span>
+                <span class="dkrmeta">5 de 8</span>
+                <span class="dkcnt" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span>
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Beber agua: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkplus1" aria-label="Sumar uno a Beber agua. Llevas 5 de 8">+1</button>
+          </div>
+          <div class="dkrow inrut done">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Respirar 5 minutos</span>
+                <span class="dkrmeta"><b class="dkok">+10 ganados</b></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Respirar 5 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="gris" aria-label="martes 22, sin cumplir"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="ok" aria-label="jueves 24, cumplido"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk on" aria-label="Respirar 5 minutos" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+          <div class="dkrow inrut">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Tender la cama</span>
+                <span class="dkrmeta"></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Tender la cama: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk" aria-label="Tender la cama" aria-pressed="false"></button>
+          </div>
+          </div>
+          
+        </div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg6">
+          <h3 class="dkgh" id="dkg6"><span style="color:var(--coral-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>Tarde<span class="vh">, </span><span class="dkahora">ahora</span><span class="dkgc"><span class="vh">, </span>1 de 2</span></h3>
+          
+          
+          <div style="background:var(--coral-tint);border-color:var(--coral-text)" class="dkrow next">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--coral);color:var(--ink)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Leer 20 minutos</span>
+                <span class="dkrmeta"><span class="sigue" style="background:var(--coral)">Sigue</span>después de almorzar</span>
+                
+                <span class="dkreto" role="progressbar" aria-label="Reto de Leer 20 minutos" aria-valuemin="0" aria-valuemax="30" aria-valuenow="18" aria-valuetext="18 de 30 días"><i><b style="width:60%"></b></i><span>Reto · 18 de 30</span></span>
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Leer 20 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            <button class="dkemp" aria-label="Empezar Leer 20 minutos en modo Foco"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar</button>
+            <button class="dkchk" aria-label="Leer 20 minutos" aria-pressed="false"></button>
+          </div>
+          <div class="dkrow done">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--coral-tint);color:var(--coral-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Moverte 15 minutos</span>
+                <span class="dkrmeta"><b class="dkok">+10 ganados</b></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Moverte 15 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="gris" aria-label="martes 22, sin cumplir"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="ok" aria-label="jueves 24, cumplido"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk on" aria-label="Moverte 15 minutos" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+        </div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg7">
+          <h3 class="dkgh" id="dkg7"><span style="color:var(--lila-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche<span class="dkgc"><span class="vh">, </span>0 de 1</span></h3>
+          
+          
+          <div class="dkrow">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--lila-tint);color:var(--lila-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Soltar el celular antes de dormir</span>
+                <span class="dkrmeta">después de cenar</span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Soltar el celular antes de dormir: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk" aria-label="Soltar el celular antes de dormir" aria-pressed="false"></button>
+          </div>
+        </div>
+        </div>
+        <div class="dkcol dkrail">
+      <section class="dkcard th" aria-labelledby="thH2">
+        <div class="thhead">
+          <h2 class="cond" id="thH2">Tareas de hoy</h2>
+          <a href="#" class="thlink">Ver tareas<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <p class="thcount" aria-live="polite">1 de 4 pasos</p>
+        
+        <ul class="thlist">
+          
+          <li class="thitem done">
+            <button class="thchk on" aria-pressed="true" aria-label="Marcar Llamar a la empresa de trasteo, de Mudanza"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+            <span class="thtxt"><span class="thname">Llamar a la empresa de trasteo</span><span class="thtask">Mudanza</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Pagar la matrícula, de Curso de inglés"></button>
+            <span class="thtxt"><span class="thname">Pagar la matrícula</span><span class="thtask">Curso de inglés · de ayer</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Empacar la cocina, de Mudanza"></button>
+            <span class="thtxt"><span class="thname">Empacar la cocina</span><span class="thtask">Mudanza</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Buscar el certificado de ingresos, de Declaración de renta"></button>
+            <span class="thtxt"><span class="thname">Buscar el certificado de ingresos</span><span class="thtask">Declaración de renta</span></span>
+          </li>
+        </ul>
+      </section>
+          
+        <section class="dkcard" aria-labelledby="dksem4">
+          <div class="dkch"><h2 class="cond" id="dksem4">Esta semana</h2><a href="#" class="dklink">Calendario</a></div>
+          <ol class="dkweek" aria-label="Días de esta semana"><li class="dkday ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span><b aria-hidden="true">21</b></li><li class="dkday medio" aria-label="martes 22, a medias"><span aria-hidden="true">M</span><b aria-hidden="true">22</b><i class="dkmid" aria-hidden="true"></i></li><li class="dkday como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span><b aria-hidden="true">23</b></li><li class="dkday hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span><b aria-hidden="true">24</b></li><li class="dkday fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span><b aria-hidden="true">25</b></li><li class="dkday fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span><b aria-hidden="true">26</b></li><li class="dkday fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span><b aria-hidden="true">27</b></li></ol>
+          <ul class="dkleg" aria-hidden="true"><li><i class="ok"></i>Todo cumplido</li><li><i class="medio"><b></b></i>A medias</li><li><i class="como"></i>Comodín</li></ul>
+          <p class="sub" style="margin-top:8px">Cumpliste <b style="color:var(--text)">12 de 15</b> veces lo que te tocaba. Un día a medias no borra los demás.</p>
+        </section>
+          
+        <a href="#" class="dkcard dkretocard" aria-label="Tu reto de la semana: 5 de tus 6 hábitos el sábado. Premio: +50 puntos, un comodín y una caja sorpresa">
+          <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+          <span style="flex:1;min-width:0"><span class="sub" style="display:block">Reto de la semana</span><b>5 de tus 6 hábitos el sábado</b><span class="sub" style="display:block">Premio: +50 puntos, un comodín y una caja sorpresa</span></span>
+          <span style="color:var(--muted);display:flex" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+          <section class="dkcard" aria-label="Lo próximo que puedes ganar" style="padding:6px 14px">
+        <a href="#" class="dkline"><span class="dkric sm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span><span style="flex:1;min-width:0"><b>Constancia 250</b> · <span class="sub" style="display:inline">212 de 250</span><i class="dkbar thin" aria-hidden="true"><b style="width:85%"></b></i></span></a>
+        <a href="#" class="dkline"><span class="dkric sm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span><span style="flex:1;min-width:0"><b>2 cajas sorpresa</b> <span class="sub" style="display:inline">por abrir</span></span><span style="color:var(--muted);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></section>
+        </div>
+      </div>
+    </main>
+  </div></div></div>
+<div class="col"><h2>2 · Propuesta: cabecera compacta en una sola franja (oscuro)</h2><div class="dark">
+  <div class="desk auto">
+    
+    
+    <aside class="dkside">
+      <a href="#dk-main" class="dkskip">Saltar al contenido</a>
+      <div class="dkbrand"><span class="dklogo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:22px">Racha</span></div>
+      <button class="dkcrear" aria-label="Crear"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span>Crear</span></button>
+      <nav class="dknav" aria-label="Secciones">
+        <a href="#" class="on" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg><span>Hoy</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg><span>Tareas</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M7 15h10"/></svg><span>Tu semana</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg><span>Progreso</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendario</span></a>
+      </nav>
+      <a href="#" class="dkme" aria-label="Perfil: Johnatan, nivel 11">
+        <span class="dkavatar" aria-hidden="true">J</span>
+        <span style="flex:1;min-width:0"><b>Johnatan</b><span class="sub">Nivel 11 · Perfil</span></span>
+      </a>
+    </aside>
+    <main class="dkmain" id="dk-main">
+      
+      <header class="hc">
+        <span class="hcart" aria-hidden="true"><svg width="64" height="64" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m18bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e17k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e17o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e17m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e17c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m18cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m18cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e17o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e17m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e17c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e17k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e17k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e17k)"/></g></svg></span>
+        <div class="hcmain">
+          <p class="hcsal">Buenos días, Johnatan</p>
+          <div class="hcfila"><h1 class="cond hch1">Jueves 24</h1><span class="cond hcpts">+20 pts hoy</span></div>
+        </div>
+        <div class="hcprog">
+          <div class="hcl" aria-label="Tu día: 2 de 6 hábitos, te quedan 4"><span class="hclab">Tu día</span><span class="segs hcsegs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="hcnum">2 de 6</span></div>
+          <a href="#" class="hcl" aria-label="Nivel 12: 190 de 650 puntos. Ver tu llama"><span class="hclab">Nivel 12</span><i class="hclvl" aria-hidden="true"><b style="width:29%"></b></i><span class="hcnum">190 / 650</span></a>
+        </div>
+        <div class="dkhact">
+          <span class="dkchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>3 comodines</span>
+          <button class="dkbtn2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>Modo Foco</button>
+        </div>
+      </header>
+      <div class="dkgrid">
+        <div class="dkcol">
+          <div class="dkmhead"><h2 class="cond">Misiones</h2><span class="sub">+40 pts por ganar · <a href="#" class="dklink">Gestionar</a></span></div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg12">
+          <h3 class="dkgh" id="dkg12"><span style="color:var(--ambar-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span>Mañana<span class="dkgc"><span class="vh">, </span>1 de 3</span></h3>
+          
+          <div class="dkrut" role="group" aria-labelledby="rdH3">
+            <div class="dkruthead">
+              <span class="dkric" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span>
+              <span class="dkrmain"><h4 class="dkrname" id="rdH3">Mañana productiva</h4><span class="dkrmeta" aria-live="polite">Rutina · 1 de 3</span></span>
+              <button class="rutsoft" aria-label="Empezar la rutina Mañana productiva en modo Foco"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar rutina</button>
+            </div>
+            
+          <div class="dkrow inrut">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Beber agua</span>
+                <span class="dkrmeta">5 de 8</span>
+                <span class="dkcnt" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span>
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Beber agua: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkplus1" aria-label="Sumar uno a Beber agua. Llevas 5 de 8">+1</button>
+          </div>
+          <div class="dkrow inrut done">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Respirar 5 minutos</span>
+                <span class="dkrmeta"><b class="dkok">+10 ganados</b></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Respirar 5 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="gris" aria-label="martes 22, sin cumplir"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="ok" aria-label="jueves 24, cumplido"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk on" aria-label="Respirar 5 minutos" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+          <div class="dkrow inrut">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Tender la cama</span>
+                <span class="dkrmeta"></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Tender la cama: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk" aria-label="Tender la cama" aria-pressed="false"></button>
+          </div>
+          </div>
+          
+        </div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg13">
+          <h3 class="dkgh" id="dkg13"><span style="color:var(--coral-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>Tarde<span class="vh">, </span><span class="dkahora">ahora</span><span class="dkgc"><span class="vh">, </span>1 de 2</span></h3>
+          
+          
+          <div style="background:var(--coral-tint);border-color:var(--coral-text)" class="dkrow next">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--coral);color:var(--ink)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Leer 20 minutos</span>
+                <span class="dkrmeta"><span class="sigue" style="background:var(--coral)">Sigue</span>después de almorzar</span>
+                
+                <span class="dkreto" role="progressbar" aria-label="Reto de Leer 20 minutos" aria-valuemin="0" aria-valuemax="30" aria-valuenow="18" aria-valuetext="18 de 30 días"><i><b style="width:60%"></b></i><span>Reto · 18 de 30</span></span>
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Leer 20 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            <button class="dkemp" aria-label="Empezar Leer 20 minutos en modo Foco"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar</button>
+            <button class="dkchk" aria-label="Leer 20 minutos" aria-pressed="false"></button>
+          </div>
+          <div class="dkrow done">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--coral-tint);color:var(--coral-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Moverte 15 minutos</span>
+                <span class="dkrmeta"><b class="dkok">+10 ganados</b></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Moverte 15 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="gris" aria-label="martes 22, sin cumplir"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="ok" aria-label="jueves 24, cumplido"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk on" aria-label="Moverte 15 minutos" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+        </div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg14">
+          <h3 class="dkgh" id="dkg14"><span style="color:var(--lila-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche<span class="dkgc"><span class="vh">, </span>0 de 1</span></h3>
+          
+          
+          <div class="dkrow">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--lila-tint);color:var(--lila-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Soltar el celular antes de dormir</span>
+                <span class="dkrmeta">después de cenar</span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Soltar el celular antes de dormir: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk" aria-label="Soltar el celular antes de dormir" aria-pressed="false"></button>
+          </div>
+        </div>
+        </div>
+        <div class="dkcol dkrail">
+      <section class="dkcard th" aria-labelledby="thH4">
+        <div class="thhead">
+          <h2 class="cond" id="thH4">Tareas de hoy</h2>
+          <a href="#" class="thlink">Ver tareas<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <p class="thcount" aria-live="polite">1 de 4 pasos</p>
+        
+        <ul class="thlist">
+          
+          <li class="thitem done">
+            <button class="thchk on" aria-pressed="true" aria-label="Marcar Llamar a la empresa de trasteo, de Mudanza"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+            <span class="thtxt"><span class="thname">Llamar a la empresa de trasteo</span><span class="thtask">Mudanza</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Pagar la matrícula, de Curso de inglés"></button>
+            <span class="thtxt"><span class="thname">Pagar la matrícula</span><span class="thtask">Curso de inglés · de ayer</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Empacar la cocina, de Mudanza"></button>
+            <span class="thtxt"><span class="thname">Empacar la cocina</span><span class="thtask">Mudanza</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Buscar el certificado de ingresos, de Declaración de renta"></button>
+            <span class="thtxt"><span class="thname">Buscar el certificado de ingresos</span><span class="thtask">Declaración de renta</span></span>
+          </li>
+        </ul>
+      </section>
+          
+        <section class="dkcard" aria-labelledby="dksem11">
+          <div class="dkch"><h2 class="cond" id="dksem11">Esta semana</h2><a href="#" class="dklink">Calendario</a></div>
+          <ol class="dkweek" aria-label="Días de esta semana"><li class="dkday ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span><b aria-hidden="true">21</b></li><li class="dkday medio" aria-label="martes 22, a medias"><span aria-hidden="true">M</span><b aria-hidden="true">22</b><i class="dkmid" aria-hidden="true"></i></li><li class="dkday como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span><b aria-hidden="true">23</b></li><li class="dkday hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span><b aria-hidden="true">24</b></li><li class="dkday fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span><b aria-hidden="true">25</b></li><li class="dkday fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span><b aria-hidden="true">26</b></li><li class="dkday fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span><b aria-hidden="true">27</b></li></ol>
+          <ul class="dkleg" aria-hidden="true"><li><i class="ok"></i>Todo cumplido</li><li><i class="medio"><b></b></i>A medias</li><li><i class="como"></i>Comodín</li></ul>
+          <p class="sub" style="margin-top:8px">Cumpliste <b style="color:var(--text)">12 de 15</b> veces lo que te tocaba. Un día a medias no borra los demás.</p>
+        </section>
+          
+        <a href="#" class="dkcard dkretocard" aria-label="Tu reto de la semana: 5 de tus 6 hábitos el sábado. Premio: +50 puntos, un comodín y una caja sorpresa">
+          <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+          <span style="flex:1;min-width:0"><span class="sub" style="display:block">Reto de la semana</span><b>5 de tus 6 hábitos el sábado</b><span class="sub" style="display:block">Premio: +50 puntos, un comodín y una caja sorpresa</span></span>
+          <span style="color:var(--muted);display:flex" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+          <section class="dkcard" aria-label="Lo próximo que puedes ganar" style="padding:6px 14px">
+        <a href="#" class="dkline"><span class="dkric sm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span><span style="flex:1;min-width:0"><b>Constancia 250</b> · <span class="sub" style="display:inline">212 de 250</span><i class="dkbar thin" aria-hidden="true"><b style="width:85%"></b></i></span></a>
+        <a href="#" class="dkline"><span class="dkric sm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span><span style="flex:1;min-width:0"><b>2 cajas sorpresa</b> <span class="sub" style="display:inline">por abrir</span></span><span style="color:var(--muted);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></section>
+        </div>
+      </div>
+    </main>
+  </div></div></div>
+<div class="col"><h2>3 · Propuesta (claro)</h2><div class="light">
+  <div class="desk auto">
+    
+    
+    <aside class="dkside">
+      <a href="#dk-main" class="dkskip">Saltar al contenido</a>
+      <div class="dkbrand"><span class="dklogo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:22px">Racha</span></div>
+      <button class="dkcrear" aria-label="Crear"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span>Crear</span></button>
+      <nav class="dknav" aria-label="Secciones">
+        <a href="#" class="on" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg><span>Hoy</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg><span>Tareas</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M7 15h10"/></svg><span>Tu semana</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg><span>Progreso</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendario</span></a>
+      </nav>
+      <a href="#" class="dkme" aria-label="Perfil: Johnatan, nivel 11">
+        <span class="dkavatar" aria-hidden="true">J</span>
+        <span style="flex:1;min-width:0"><b>Johnatan</b><span class="sub">Nivel 11 · Perfil</span></span>
+      </a>
+    </aside>
+    <main class="dkmain" id="dk-main">
+      
+      <header class="hc">
+        <span class="hcart" aria-hidden="true"><svg width="64" height="64" viewBox="6 6 88 88" aria-hidden="true"><defs><radialGradient id="m24bg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="var(--hearth2)"/><stop offset="1" stop-color="var(--hearth)"/></radialGradient><radialGradient id="e23k" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#FF7A2F"/><stop offset="1" stop-color="#5A1E0E"/></radialGradient><linearGradient id="e23o" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8471C"/><stop offset="1" stop-color="#FFB547"/></linearGradient><linearGradient id="e23m" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FFD37F"/></linearGradient><linearGradient id="e23c" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><clipPath id="m24cl"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#m24cl)"><g transform="translate(24 30) scale(0.52)"><path d="M50 8C58 24 76 34 78 58C80 78 66 92 50 92C34 92 20 80 22 60C23 48 30 40 36 34C36 44 40 50 45 52C42 38 44 22 50 8Z" fill="url(#e23o)"/><path d="M50 30C56 42 68 50 68 64C68 78 60 86 50 86C40 86 32 78 33 66C34 58 38 53 42 50C43 58 46 62 49 63C47 52 47 42 50 30Z" fill="url(#e23m)"/><path d="M50 52C54 60 60 65 60 72C60 80 56 84 50 84C44 84 40 80 40 73C40 67 45 62 50 52Z" fill="url(#e23c)"/><ellipse cx="41" cy="58" rx="3" ry="8" fill="#fff" opacity=".28" transform="rotate(18 41 58)"/></g><ellipse cx="38" cy="80" rx="10" ry="6" fill="url(#e23k)"/><ellipse cx="60" cy="81" rx="12" ry="6.5" fill="url(#e23k)"/><ellipse cx="49" cy="84" rx="9" ry="5" fill="url(#e23k)"/></g></svg></span>
+        <div class="hcmain">
+          <p class="hcsal">Buenos días, Johnatan</p>
+          <div class="hcfila"><h1 class="cond hch1">Jueves 24</h1><span class="cond hcpts">+20 pts hoy</span></div>
+        </div>
+        <div class="hcprog">
+          <div class="hcl" aria-label="Tu día: 2 de 6 hábitos, te quedan 4"><span class="hclab">Tu día</span><span class="segs hcsegs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="hcnum">2 de 6</span></div>
+          <a href="#" class="hcl" aria-label="Nivel 12: 190 de 650 puntos. Ver tu llama"><span class="hclab">Nivel 12</span><i class="hclvl" aria-hidden="true"><b style="width:29%"></b></i><span class="hcnum">190 / 650</span></a>
+        </div>
+        <div class="dkhact">
+          <span class="dkchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>3 comodines</span>
+          <button class="dkbtn2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>Modo Foco</button>
+        </div>
+      </header>
+      <div class="dkgrid">
+        <div class="dkcol">
+          <div class="dkmhead"><h2 class="cond">Misiones</h2><span class="sub">+40 pts por ganar · <a href="#" class="dklink">Gestionar</a></span></div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg19">
+          <h3 class="dkgh" id="dkg19"><span style="color:var(--ambar-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span>Mañana<span class="dkgc"><span class="vh">, </span>1 de 3</span></h3>
+          
+          <div class="dkrut" role="group" aria-labelledby="rdH5">
+            <div class="dkruthead">
+              <span class="dkric" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span>
+              <span class="dkrmain"><h4 class="dkrname" id="rdH5">Mañana productiva</h4><span class="dkrmeta" aria-live="polite">Rutina · 1 de 3</span></span>
+              <button class="rutsoft" aria-label="Empezar la rutina Mañana productiva en modo Foco"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar rutina</button>
+            </div>
+            
+          <div class="dkrow inrut">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Beber agua</span>
+                <span class="dkrmeta">5 de 8</span>
+                <span class="dkcnt" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span>
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Beber agua: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkplus1" aria-label="Sumar uno a Beber agua. Llevas 5 de 8">+1</button>
+          </div>
+          <div class="dkrow inrut done">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Respirar 5 minutos</span>
+                <span class="dkrmeta"><b class="dkok">+10 ganados</b></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Respirar 5 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="gris" aria-label="martes 22, sin cumplir"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="ok" aria-label="jueves 24, cumplido"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk on" aria-label="Respirar 5 minutos" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+          <div class="dkrow inrut">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Tender la cama</span>
+                <span class="dkrmeta"></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Tender la cama: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk" aria-label="Tender la cama" aria-pressed="false"></button>
+          </div>
+          </div>
+          
+        </div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg20">
+          <h3 class="dkgh" id="dkg20"><span style="color:var(--coral-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>Tarde<span class="vh">, </span><span class="dkahora">ahora</span><span class="dkgc"><span class="vh">, </span>1 de 2</span></h3>
+          
+          
+          <div style="background:var(--coral-tint);border-color:var(--coral-text)" class="dkrow next">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--coral);color:var(--ink)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Leer 20 minutos</span>
+                <span class="dkrmeta"><span class="sigue" style="background:var(--coral)">Sigue</span>después de almorzar</span>
+                
+                <span class="dkreto" role="progressbar" aria-label="Reto de Leer 20 minutos" aria-valuemin="0" aria-valuemax="30" aria-valuenow="18" aria-valuetext="18 de 30 días"><i><b style="width:60%"></b></i><span>Reto · 18 de 30</span></span>
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Leer 20 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            <button class="dkemp" aria-label="Empezar Leer 20 minutos en modo Foco"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>Empezar</button>
+            <button class="dkchk" aria-label="Leer 20 minutos" aria-pressed="false"></button>
+          </div>
+          <div class="dkrow done">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--coral-tint);color:var(--coral-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Moverte 15 minutos</span>
+                <span class="dkrmeta"><b class="dkok">+10 ganados</b></span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Moverte 15 minutos: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="gris" aria-label="martes 22, sin cumplir"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="ok" aria-label="jueves 24, cumplido"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk on" aria-label="Moverte 15 minutos" aria-pressed="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+          </div>
+        </div>
+        <div class="dkgrp" role="group" aria-labelledby="dkg21">
+          <h3 class="dkgh" id="dkg21"><span style="color:var(--lila-text);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche<span class="dkgc"><span class="vh">, </span>0 de 1</span></h3>
+          
+          
+          <div class="dkrow">
+            <button class="dkrbtn">
+              <span class="dkric" style="background:var(--lila-tint);color:var(--lila-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+              <span class="dkrmain">
+                <span class="dkrname"><span class="vh">Ver </span>Soltar el celular antes de dormir</span>
+                <span class="dkrmeta">después de cenar</span>
+                
+                
+              </span>
+            </button>
+            <ol class="dkwk" aria-label="Soltar el celular antes de dormir: esta semana"><li class="ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span></li><li class="ok" aria-label="martes 22, cumplido"><span aria-hidden="true">M</span></li><li class="como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span></li><li class="hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span></li><li class="fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span></li><li class="fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span></li><li class="fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span></li></ol>
+            
+            <button class="dkchk" aria-label="Soltar el celular antes de dormir" aria-pressed="false"></button>
+          </div>
+        </div>
+        </div>
+        <div class="dkcol dkrail">
+      <section class="dkcard th" aria-labelledby="thH6">
+        <div class="thhead">
+          <h2 class="cond" id="thH6">Tareas de hoy</h2>
+          <a href="#" class="thlink">Ver tareas<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <p class="thcount" aria-live="polite">1 de 4 pasos</p>
+        
+        <ul class="thlist">
+          
+          <li class="thitem done">
+            <button class="thchk on" aria-pressed="true" aria-label="Marcar Llamar a la empresa de trasteo, de Mudanza"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+            <span class="thtxt"><span class="thname">Llamar a la empresa de trasteo</span><span class="thtask">Mudanza</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Pagar la matrícula, de Curso de inglés"></button>
+            <span class="thtxt"><span class="thname">Pagar la matrícula</span><span class="thtask">Curso de inglés · de ayer</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Empacar la cocina, de Mudanza"></button>
+            <span class="thtxt"><span class="thname">Empacar la cocina</span><span class="thtask">Mudanza</span></span>
+          </li>
+          <li class="thitem">
+            <button class="thchk" aria-pressed="false" aria-label="Marcar Buscar el certificado de ingresos, de Declaración de renta"></button>
+            <span class="thtxt"><span class="thname">Buscar el certificado de ingresos</span><span class="thtask">Declaración de renta</span></span>
+          </li>
+        </ul>
+      </section>
+          
+        <section class="dkcard" aria-labelledby="dksem18">
+          <div class="dkch"><h2 class="cond" id="dksem18">Esta semana</h2><a href="#" class="dklink">Calendario</a></div>
+          <ol class="dkweek" aria-label="Días de esta semana"><li class="dkday ok" aria-label="lunes 21, cumplido"><span aria-hidden="true">L</span><b aria-hidden="true">21</b></li><li class="dkday medio" aria-label="martes 22, a medias"><span aria-hidden="true">M</span><b aria-hidden="true">22</b><i class="dkmid" aria-hidden="true"></i></li><li class="dkday como" aria-label="miércoles 23, congelado con comodín"><span aria-hidden="true">M</span><b aria-hidden="true">23</b></li><li class="dkday hoy" aria-label="jueves 24, hoy"><span aria-hidden="true">J</span><b aria-hidden="true">24</b></li><li class="dkday fut" aria-label="viernes 25, todavía no llega"><span aria-hidden="true">V</span><b aria-hidden="true">25</b></li><li class="dkday fut" aria-label="sábado 26, todavía no llega"><span aria-hidden="true">S</span><b aria-hidden="true">26</b></li><li class="dkday fut" aria-label="domingo 27, todavía no llega"><span aria-hidden="true">D</span><b aria-hidden="true">27</b></li></ol>
+          <ul class="dkleg" aria-hidden="true"><li><i class="ok"></i>Todo cumplido</li><li><i class="medio"><b></b></i>A medias</li><li><i class="como"></i>Comodín</li></ul>
+          <p class="sub" style="margin-top:8px">Cumpliste <b style="color:var(--text)">12 de 15</b> veces lo que te tocaba. Un día a medias no borra los demás.</p>
+        </section>
+          
+        <a href="#" class="dkcard dkretocard" aria-label="Tu reto de la semana: 5 de tus 6 hábitos el sábado. Premio: +50 puntos, un comodín y una caja sorpresa">
+          <span class="dkric" style="background:var(--ambar-tint);color:var(--ambar-text)" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+          <span style="flex:1;min-width:0"><span class="sub" style="display:block">Reto de la semana</span><b>5 de tus 6 hábitos el sábado</b><span class="sub" style="display:block">Premio: +50 puntos, un comodín y una caja sorpresa</span></span>
+          <span style="color:var(--muted);display:flex" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+          <section class="dkcard" aria-label="Lo próximo que puedes ganar" style="padding:6px 14px">
+        <a href="#" class="dkline"><span class="dkric sm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/></svg></span><span style="flex:1;min-width:0"><b>Constancia 250</b> · <span class="sub" style="display:inline">212 de 250</span><i class="dkbar thin" aria-hidden="true"><b style="width:85%"></b></i></span></a>
+        <a href="#" class="dkline"><span class="dkric sm" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg></span><span style="flex:1;min-width:0"><b>2 cajas sorpresa</b> <span class="sub" style="display:inline">por abrir</span></span><span style="color:var(--muted);display:flex" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></a></section>
+        </div>
+      </div>
+    </main>
+  </div></div></div>
+</body>
+</html>

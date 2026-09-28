@@ -135,7 +135,7 @@ const renderFilaHabito = ({
             ) : (
               <>
                 {anchorText && <span className="truncate">{anchorText}</span>}
-                {isNext && <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${minfo.bg} text-ink text-[11px] font-bold shrink-0 ml-1`}>Sigue</span>}
+                {isNext && <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${minfo.bg} ${minfo.text} text-[11px] font-bold shrink-0 ml-1`}>Sigue</span>}
               </>
             )}
           </div>
@@ -807,40 +807,35 @@ export const TodayScreen: React.FC = () => {
 
   const desktopView = desk && (
     <div id="screen-today-desktop" className="hoyd pb-8 animate-fadeIn text-text font-body h-full flex flex-col">
-      {/* Header Desktop */}
-      <div className="flex justify-between items-start mb-6 mt-2">
-        <div className="flex gap-4 items-center">
-          <div className="shrink-0 flex items-center justify-center w-[56px] xl:w-[72px] h-[56px] xl:h-[72px]" aria-hidden="true">
-            <LlamaDe id={companeraId} size={window.innerWidth >= 1280 ? 72 : 56} sola />
-          </div>
-          <div className="flex-1 min-w-0">
-            <a className="lvlstrip max-w-[520px] !mt-0 mb-1.5" href="#" onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }} aria-label={`Nivel ${nivelActual}: ${progresoNivel.actual} de ${ptosMeta} puntos para el nivel ${nivelActual+1}. Ver tu llama`}>
-              <span className="cond lvlname" style={{ fontSize: '17px' }}>Nivel {nivelActual}</span>
-              <i className="lvltrack2" aria-hidden="true"><b style={{ width: `${progresoNivelPercent}%` }}></b></i>
-              <span className="sub lvlnums">{progresoNivel.actual} / {ptosMeta}</span>
-            </a>
-            <p className="saludo text-[16px] font-semibold m-0">{saludo}</p>
-            <div className="flex items-baseline gap-3 mt-1">
-              <h1 className="cond text-[40px] xl:text-[48px] leading-none m-0">{displayDate}</h1>
-              <span className="font-heading font-bold text-[20px] text-ambar-text">+{completedCount * (esDiaRegreso ? 20 : 10)} pts hoy</span>
-            </div>
-            <div className="flex items-center gap-3 mt-3">
-              <div className="flex gap-1 max-w-[520px] w-full" role="img" aria-label={`${completedCount} de ${totalToday} hábitos cumplidos hoy`}>
-                {habitosOrdenados.map(h => (
-                   <i key={h.id} className={`flex-1 h-2.5 rounded-[4px] ${esHabitoCompletado(h.id) ? 'fill-logro' : 'bg-track'}`}></i>
-                ))}
-              </div>
-              <span className="text-[13px] font-medium text-text-muted whitespace-nowrap">{completedCount} de {totalToday} · te quedan {totalToday - completedCount}</span>
-            </div>
-            {esDiaRegreso && (
-              <p className="bono mt-2 inline-flex">
-                <ShieldCheck size={16} strokeWidth={2.2} />
-                <span><b>Volviste.</b> Hoy cada hábito vale el doble: +20.</span>
-              </p>
-            )}
+      {/* Cabecera compacta (propuesta 28 sep, design/maqueta-hoy-cabecera.html): una sola franja */}
+      <div className="hc">
+        <div className="shrink-0 flex items-center justify-center w-[56px] xl:w-[64px] h-[56px] xl:h-[64px]" aria-hidden="true">
+          <LlamaDe id={companeraId} size={window.innerWidth >= 1280 ? 64 : 56} sola />
+        </div>
+        <div className="min-w-0">
+          <p className="hcsal">{saludo}</p>
+          <div className="flex items-baseline gap-3">
+            <h1 className="cond text-[36px] xl:text-[40px] leading-none m-0">{displayDate}</h1>
+            <span className="font-heading font-bold text-[18px] text-ambar-text whitespace-nowrap">+{completedCount * (esDiaRegreso ? 20 : 10)} pts hoy</span>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="hcprog">
+          <div className="hcl" role="img" aria-label={`Tu día: ${completedCount} de ${totalToday} hábitos, te quedan ${totalToday - completedCount}`}>
+            <span className="hclab">Tu día</span>
+            <span className="flex gap-1" aria-hidden="true">
+              {habitosOrdenados.map(h => (
+                <i key={h.id} className={`flex-1 h-2 rounded-[4px] ${esHabitoCompletado(h.id) ? 'fill-logro' : 'bg-track'}`}></i>
+              ))}
+            </span>
+            <span className="hcnum">{completedCount} de {totalToday}</span>
+          </div>
+          <a className="hcl" href="#" onClick={(e) => { e.preventDefault(); navigateToTab('perfil'); }} aria-label={`Nivel ${nivelActual}: ${progresoNivel.actual} de ${ptosMeta} puntos para el nivel ${nivelActual + 1}. Ver tu llama`}>
+            <span className="hclab">Nivel {nivelActual}</span>
+            <i className="hclvl" aria-hidden="true"><b style={{ width: `${progresoNivelPercent}%` }}></b></i>
+            <span className="hcnum">{progresoNivel.actual} / {ptosMeta}</span>
+          </a>
+        </div>
+        <div className="flex gap-3 shrink-0">
           <div className="h-[40px] px-3.5 rounded-full bg-surface border border-line flex items-center gap-1.5 text-[14px] font-semibold">
             <ShieldCheck size={16} className="text-lila-text" /> {comodines === 1 ? '1 comodín' : `${comodines ?? 0} comodines`}
           </div>
@@ -853,6 +848,13 @@ export const TodayScreen: React.FC = () => {
           </button>
         </div>
       </div>
+      {esDiaRegreso && (
+        <p className="bono mt-3 inline-flex self-start">
+          <ShieldCheck size={16} strokeWidth={2.2} />
+          <span><b>Volviste.</b> Hoy cada hábito vale el doble: +20.</span>
+        </p>
+      )}
+      <div className="h-[18px]" aria-hidden="true" />
 
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] xl:grid-cols-[minmax(0,1fr)_340px] gap-[18px] xl:gap-[24px]">
         {/* Left Column */}
@@ -863,10 +865,10 @@ export const TodayScreen: React.FC = () => {
               <span><b>Tu primer día.</b> Si ya lo hiciste hoy, márcalo y suma tus primeros 10 puntos.</span>
             </div>
           )}
-          <div className="flex justify-between items-baseline mb-1">
+          <div className="flex justify-between items-baseline -mb-2">
             <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
             <span className="text-[14px] text-text-muted font-medium">
-              +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar-text hover:underline min-h-[44px]">Gestionar</button>
+              +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar-text hover:underline min-h-[44px] -my-3">Gestionar</button>
             </span>
           </div>
 
@@ -1059,10 +1061,10 @@ export const TodayScreen: React.FC = () => {
           <span><b>Tu primer día.</b> Si ya lo hiciste hoy, márcalo y suma tus primeros 10 puntos.</span>
         </div>
       )}
-      <div className="mt-4.5 flex justify-between items-baseline mb-3">
+      <div className="mt-4.5 flex justify-between items-baseline mb-1">
         <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
         <span className="text-[13px] text-text-muted">
-          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="inline-flex min-h-[44px] items-center font-semibold text-ambar-text hover:underline">Gestionar</button>
+          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="inline-flex min-h-[44px] -my-3 items-center font-semibold text-ambar-text hover:underline">Gestionar</button>
         </span>
       </div>
 

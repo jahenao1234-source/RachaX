@@ -930,3 +930,13 @@ html:not(.dark) .tareas .t4dlg{box-shadow:0 24px 60px rgba(15,17,19,.18)}
 .tareas .t5ok,.tareas .btnp.t5ok:not([disabled]){background:var(--surface-raised);background-image:none;color:var(--text)}
 .tareas .t5nota{margin:8px 0 0;text-align:center;font-size:13px;color:var(--text-muted)}
 
+
+/* ---- Hoy en escritorio: cabecera compacta (design/maqueta-hoy-cabecera.html) ---- */
+.hoyd .hc{display:flex;align-items:center;gap:16px;padding:4px 0 16px;border-bottom:1px solid var(--line)}
+.hoyd .hcsal{margin:0 0 2px;font-size:14px;font-weight:600;color:var(--text-muted)}
+.hoyd .hcprog{flex:1;min-width:200px;max-width:340px;margin-left:auto;display:grid;gap:8px}
+.hoyd .hcl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;color:var(--text);text-decoration:none;min-height:24px}
+.hoyd .hclab{font-size:13px;font-weight:700;min-width:58px}
+.hoyd .hcnum{font-size:13px;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hoyd .hclvl{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.hoyd .hclvl b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}

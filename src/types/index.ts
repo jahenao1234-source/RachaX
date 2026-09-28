@@ -1,4 +1,4 @@
-export type TabRoute = 'hoy' | 'tareas' | 'stats' | 'calendario' | 'perfil' | 'crear';
+export type TabRoute = 'hoy' | 'tareas' | 'semana' | 'stats' | 'calendario' | 'perfil' | 'crear';
 
 export type FrecuenciaHabito = 'diario' | 'entreSemana' | 'personalizado' | 'semanal';
 
