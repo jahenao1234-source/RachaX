@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { BadgeIcon } from '../badges/BadgeIcon';
-import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target, Info, Focus, Gift } from 'lucide-react';
+import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target, Info, Focus, Gift, Clock, Repeat } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { HabitIcon } from '../common/HabitIcon';
@@ -26,6 +26,8 @@ import {
 } from '../../utils/habitUtils';
 import { idsEnRutinasDeHoy, tareasDeHoy, RutinaDeHoy } from '../../utils/hoyUtils';
 import { getLunesActual } from '../../utils/retoSemanal';
+import { compromisosDelDia, momentoDe, textoHora } from '../../utils/compromisosUtils';
+import { HojaCompromiso } from '../semana/HojaCompromiso';
 
 const SubtareaTreeNode: React.FC<{
   sub: Subtarea;
@@ -546,13 +548,18 @@ export const TodayScreen: React.FC = () => {
     nivelActual,
     progresoNivel,
     etapaLlama,
-    companera
+    companera,
+    compromisos
   } = useHabitStore();
 
   const desk = useEsEscritorio();
 
   const [isRetoSheetOpen, setIsRetoSheetOpen] = useState(false);
   const [isCajaSheetOpen, setIsCajaSheetOpen] = useState(false);
+  
+  // Estado para la hoja de compromisos en caso de querer editar uno desde Hoy
+  const [hojaCompromisoAbierta, setHojaCompromisoAbierta] = useState(false);
+  const [compromisoEditando, setCompromisoEditando] = useState<any>(undefined);
 
   // Mock variable for cajas
   const cajasPorAbrir = 0;
@@ -875,7 +882,8 @@ export const TodayScreen: React.FC = () => {
           <div className="flex flex-col gap-6">
             {ordenMomentos.map(mom => {
               const inMom = habitosConMomentoEfectivo.filter(h => h.momentoEfectivo === mom);
-              if (inMom.length === 0) return null;
+              // El momento también se muestra si hoy tiene compromisos en él
+              if (inMom.length === 0 && !compromisosDelDia(compromisos, hoy).some(c => (momentoDe(c) ?? 'flexible') === mom)) return null;
 
               const hechos = inMom.filter(h => esHabitoCompletado(h.id)).length;
               const total = inMom.length;
@@ -895,7 +903,7 @@ export const TodayScreen: React.FC = () => {
                         <><span className="sr-only">, </span><span className="font-body font-bold text-[12px] bg-surface-raised text-text px-[7px] rounded-[6px] ml-2">ahora</span></>
                       )}
                     </div>
-                    <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>
+                    {total > 0 && <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>}
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -905,6 +913,33 @@ export const TodayScreen: React.FC = () => {
                         r, mom, minfo, desk, isNextInside, openRutinaEditor, openFocusMode, currentMomento, esHabitoCompletado, renderHabitoFunc
                       });
                     })}
+                    
+                    {compromisosDelDia(compromisos, hoy).filter(c => (momentoDe(c) || 'cualquiera') === mom || (momentoDe(c) === null && mom === 'flexible')).map(c => {
+                      const yaPaso = c.hora ? (() => {
+                        const [hh, mm] = c.hora.split(':').map(Number);
+                        const n = new Date();
+                        return (hh < n.getHours() || (hh === n.getHours() && mm < n.getMinutes()));
+                      })() : false;
+                      
+                      return (
+                        <div key={`c-${c.id}`}
+                          className={`rounded-xl border border-line-strong p-3 flex flex-col gap-1.5 cursor-pointer hover:bg-surface-raised transition-colors ${yaPaso ? 'opacity-60' : ''}`}
+                          onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
+                          <div className="flex items-center gap-1.5 text-[15px] font-heading font-bold text-text">
+                            <Clock size={16} />
+                            {c.hora ? textoHora(c.hora) : 'Sin hora'}
+                          </div>
+                          <span className="text-[15px] font-bold leading-tight">{c.titulo}</span>
+                          {c.repetirSemanal && (
+                            <div className="flex items-center gap-1 text-[12px] text-text-muted mt-1">
+                              <Repeat size={14} />
+                              cada semana
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+
                     {inMom.filter(h => !enRutina.has(h.id)).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0)).map(habito => {
                       return renderHabitoFunc(habito, false);
                     })}
@@ -1071,7 +1106,8 @@ export const TodayScreen: React.FC = () => {
       <div className="flex flex-col gap-4">
         {ordenMomentos.map(mom => {
           const inMom = habitosConMomentoEfectivo.filter(h => h.momentoEfectivo === mom);
-          if (inMom.length === 0) return null;
+          // El momento también se muestra si hoy tiene compromisos en él
+              if (inMom.length === 0 && !compromisosDelDia(compromisos, hoy).some(c => (momentoDe(c) ?? 'flexible') === mom)) return null;
 
           const hechos = inMom.filter(h => esHabitoCompletado(h.id)).length;
           const total = inMom.length;
@@ -1097,9 +1133,9 @@ export const TodayScreen: React.FC = () => {
                       <><span className="sr-only">, </span><span className="font-body font-bold text-[12px] bg-surface-raised text-text px-[7px] rounded-[6px] ml-2">ahora</span></>
                     )}
                   </div>
-                  <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>
+                  {total > 0 && <span className="text-[13px] text-text-muted font-number">{hechos}/{total}</span>}
                   <div className="w-[44px] h-[5px] rounded-[9px] bg-track overflow-hidden shrink-0">
-                    <div className={`h-full rounded-[9px] ${minfo.bg}`} style={{ width: `${(hechos/total)*100}%` }}></div>
+                    <div className={`h-full rounded-[9px] ${minfo.bg}`} style={{ width: `${total ? (hechos / total) * 100 : 0}%` }}></div>
                   </div>
                   <ChevronDown size={16} className={`text-text-muted transition-transform ${isPlegado ? 'rotate-180' : ''}`} />
                 </button>
@@ -1113,6 +1149,33 @@ export const TodayScreen: React.FC = () => {
                       r, mom, minfo, desk, isNextInside, openRutinaEditor, openFocusMode, currentMomento, esHabitoCompletado, renderHabitoFunc
                     });
                   })}
+                  
+                  {compromisosDelDia(compromisos, hoy).filter(c => (momentoDe(c) || 'cualquiera') === mom || (momentoDe(c) === null && mom === 'flexible')).map(c => {
+                    const yaPaso = c.hora ? (() => {
+                      const [hh, mm] = c.hora.split(':').map(Number);
+                      const n = new Date();
+                      return (hh < n.getHours() || (hh === n.getHours() && mm < n.getMinutes()));
+                    })() : false;
+                    
+                    return (
+                      <div key={`c-${c.id}`}
+                        className={`rounded-xl border border-line-strong p-3 flex flex-col gap-1.5 cursor-pointer active:scale-[0.99] transition-transform ${yaPaso ? 'opacity-60' : ''}`}
+                        onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
+                        <div className="flex items-center gap-1.5 text-[15px] font-heading font-bold text-text">
+                          <Clock size={16} />
+                          {c.hora ? textoHora(c.hora) : 'Sin hora'}
+                        </div>
+                        <span className="text-[15px] font-bold leading-tight">{c.titulo}</span>
+                        {c.repetirSemanal && (
+                          <div className="flex items-center gap-1 text-[12px] text-text-muted mt-1">
+                            <Repeat size={14} />
+                            cada semana
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
                   {inMom.filter(h => !enRutina.has(h.id)).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0)).map(habito => {
                     return renderHabitoFunc(habito, false);
                   })}
@@ -1155,6 +1218,13 @@ export const TodayScreen: React.FC = () => {
       {isCajaSheetOpen && (
         <CajaSorpresaSheet onClose={() => setIsCajaSheetOpen(false)} />
       )}
+      <HojaCompromiso 
+        isOpen={hojaCompromisoAbierta}
+        onClose={() => setHojaCompromisoAbierta(false)}
+        compromiso={compromisoEditando}
+        fechas={[hoy]}
+        fechaInicial={hoy}
+      />
     </>
   );
 };

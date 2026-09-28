@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Check, ChevronDown, ListChecks, MoreHorizontal, Pencil, Play, Plus, RotateCcw } from 'lucide-react';
+import { CalendarRange, Check, ChevronDown, ChevronRight, ListChecks, MoreHorizontal, Pencil, Play, Plus, RotateCcw } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
@@ -25,7 +25,7 @@ interface Aviso { antes: string; texto: string; deshacer: () => void }
 export const TasksScreen: React.FC = () => {
   const {
     tareas, toggleSubtarea, ponerFechaPaso, reabrirTarea, eliminarTarea, restaurarTarea,
-    openFocusMode, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor,
+    openFocusMode, navigateToTab, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor,
     editarTextoPaso, agregarPasoTarea, borrarPasoTarea, quitarPasosTarea
   } = useHabitStore();
   const hoy = getTodayString();
@@ -274,6 +274,8 @@ export const TasksScreen: React.FC = () => {
         </div>
         {!nada && <button type="button" className="tnueva" onClick={() => openTareaEditor(null)}><Plus size={18} strokeWidth={2.4} />Nueva tarea</button>}
       </div>
+      {/* Entrada a Tu semana en el celular (DESIGN.md › Tu semana 2) */}
+      {!nada && <button type="button" className="tasemana" onClick={() => navigateToTab('semana')}><CalendarRange size={18} /><span>Planea tu semana</span><ChevronRight size={18} /></button>}
 
       {creando && <TareaEditar tarea={null} onListo={closeTareaEditor} />}
 

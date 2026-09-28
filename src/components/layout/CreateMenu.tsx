@@ -21,6 +21,16 @@ export const CreateMenu: React.FC = () => {
           </div>
         </button>
         {/* "Nueva rutina" retirada el 27 sep 2026: las rutinas se rediseñan desde cero */}
+        <button type="button" onClick={() => { closeCreateMenu(); navigateToTab('semana'); }}
+          className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
+          <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <p className="text-sm font-bold font-heading text-text">Nuevo compromiso</p>
+            <p className="text-[11px] text-text-muted">Un evento o plan fijo para esta semana</p>
+          </div>
+        </button>
         <button type="button" onClick={() => { closeCreateMenu(); navigateToTab('tareas'); openTareaEditor(null); }}
           className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
           <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0"><ListTodo size={20} /></div>
