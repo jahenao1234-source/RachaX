@@ -136,11 +136,12 @@ export const PlanSemana: React.FC<{
                         className={`step-card${elegido?.paso.id === p.paso.id ? ' elegido' : ''}${arrastre?.item.paso.id === p.paso.id ? ' fantasma' : ''}`}
                         {...(movible ? { ...asa(item), role: 'button', tabIndex: 0, 'aria-label': `${p.paso.texto}, de ${p.tareaNombre}. Mover a otro día`,
                           onKeyDown: (e: React.KeyboardEvent) => { if ((e.key === 'Enter' || e.key === ' ') && !(e.target as HTMLElement).closest('.tchk')) { e.preventDefault(); onElegirDia(p.tareaId, p.paso); } } } : {})}>
-                        <div className="step-top">
-                          <div className="shrink-0 pt-0.5"><Casilla paso={p.paso} onToggle={() => toggleSubtarea(p.tareaId, p.paso.id)} /></div>
-                          <span className="step-txt" title={p.paso.texto} style={p.paso.hecha ? { textDecoration: 'line-through', color: 'var(--text-muted)' } : undefined}>{p.paso.texto}</span>
+                        {/* El texto usa todo el ancho; la casilla va abajo, junto a la tarea */}
+                        <span className="step-txt" title={p.paso.texto} style={p.paso.hecha ? { textDecoration: 'line-through', color: 'var(--text-muted)' } : undefined}>{p.paso.texto}</span>
+                        <div className="step-pie">
+                          <Casilla paso={p.paso} onToggle={() => toggleSubtarea(p.tareaId, p.paso.id)} />
+                          <span className="step-task" title={p.tareaNombre}>{p.tareaNombre}{p.atraso ? ` · ${p.atraso}` : ''}</span>
                         </div>
-                        <span className="step-task">{p.tareaNombre}{p.atraso ? ` · ${p.atraso}` : ''}</span>
                       </div>
                     );
                   })}

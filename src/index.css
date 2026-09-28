@@ -1047,3 +1047,11 @@ html:not(.dark) .semana .tsdias i b{background:var(--ambar-text)}
 .semana .tchk.on{border:none;background:var(--ambar);background-image:var(--logro)}
 html:not(.dark) .semana .tchk.on{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
 .semana .board-col.sobre{border-color:transparent}
+
+/* Tu semana: tarjetas legibles (el texto usa todo el ancho y parte palabras con guion, no por letras) */
+.semana .step-card{padding:8px;gap:6px}
+.semana .step-txt{font-size:13px;line-height:1.3;-webkit-line-clamp:4;line-clamp:4;overflow-wrap:normal;word-break:normal;hyphens:auto;-webkit-hyphens:auto}
+.semana .step-pie{display:flex;align-items:center;gap:6px;min-width:0}
+.semana .step-pie .tchk{width:18px;height:18px;border-radius:6px;border-width:1.5px}
+.semana .step-pie .tchk::after{inset:-13px}
+.semana .step-task{flex:1;min-width:0}

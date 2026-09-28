@@ -225,6 +225,29 @@ export interface Subtarea {
   fecha?: string;
   /** Día en que se marcó como hecho ('YYYY-MM-DD'). Se borra al desmarcar. */
   hechaEn?: string;
+  /** Momento del día en Tu semana (solo si tiene fecha). Sin momento = "Cualquier momento". */
+  momento?: MomentoPlan;
+}
+
+/** Momentos en que se divide un día en Tu semana (los mismos de los hábitos, sin "flexible"). */
+export type MomentoPlan = 'manana' | 'tarde' | 'noche';
+
+/** Un compromiso de Tu semana: una reunión, una cita, una clase (design/maqueta-tu-semana-2.html). */
+export interface Compromiso {
+  id: string;
+  titulo: string;
+  /** Día ('YYYY-MM-DD'). Si se repite, es el primer día y se repite el mismo día de la semana. */
+  fecha: string;
+  /** Hora 'HH:MM' (24 h). Si hay hora, el momento sale de ella. */
+  hora?: string;
+  /** Momento cuando no hay hora exacta. Sin hora ni momento, va en "Cualquier momento". */
+  momento?: MomentoPlan;
+  repetirSemanal?: boolean;
+  /** Si se repite: días en que no aplica (se borró o se cambió "solo ese día"). */
+  excepciones?: string[];
+  /** Si se repite: último día en que aplica (al borrar "de aquí en adelante"). */
+  hasta?: string;
+  creadoEn: string;
 }
 export interface Tarea {
   id: string;

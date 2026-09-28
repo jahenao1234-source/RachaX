@@ -1,6 +1,14 @@
 import { tasaPeriodo } from '../utils/progresoUtils';
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode, useMemo } from 'react';
-import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea, COLOR_POR_MOMENTO, Premio, RetoSemanal } from '../types';
+import { TabRoute, Habito, Registro, MomentoDia, Rutina, FocusTarget, Tarea, Subtarea, COLOR_POR_MOMENTO, Premio, RetoSemanal, Compromiso, MomentoPlan } from '../types';
+import {
+  crearCompromiso as _crearCompromiso,
+  editarCompromiso as _editarCompromiso,
+  borrarCompromiso as _borrarCompromiso,
+  nuevoIdCompromiso,
+  Alcance,
+  CambiosCompromiso,
+} from '../utils/compromisosUtils';
 import {
   getTodayString,
   isHabitScheduledForDate,
@@ -39,6 +47,7 @@ const STORAGE_CONGELADOS_KEY = 'racha_dias_congelados';
 const STORAGE_COMODINES_MES_KEY = 'racha_comodines_mes';
 const STORAGE_RUTINAS_KEY = 'racha_rutinas';
 const STORAGE_TAREAS_KEY = 'racha_tareas';
+const STORAGE_COMPROMISOS_KEY = 'racha_compromisos';
 const STORAGE_PREMIOS_KEY = 'racha_premios';
 const STORAGE_CAJAS_KEY = 'racha_cajas';
 const STORAGE_RETO_SEMANAL_KEY = 'racha_reto_semanal';
@@ -81,7 +90,16 @@ interface HabitContextType {
   eliminarTarea: (id: string) => void;
   toggleSubtarea: (tareaId: string, subtareaId: string) => void;
   // Pestaña Tareas (utils/tareasUtils.ts): todas recalculan "completada"
-  ponerFechaPaso: (tareaId: string, pasoId: string, fecha?: string) => void;
+  /** momento: undefined deja el que tenía; null lo quita ("Cualquier momento"). */
+  ponerFechaPaso: (tareaId: string, pasoId: string, fecha?: string, momento?: MomentoPlan | null) => void;
+  // Compromisos de Tu semana (src/utils/compromisosUtils.ts)
+  compromisos: Compromiso[];
+  crearCompromiso: (datos: Omit<Compromiso, 'id' | 'creadoEn'>) => string;
+  /** alcance "uno" en uno que se repite: solo ese día (fechaDelDia). */
+  editarCompromiso: (id: string, cambios: CambiosCompromiso, alcance: Alcance, fechaDelDia: string) => void;
+  borrarCompromiso: (id: string, alcance: Alcance, fechaDelDia: string) => void;
+  /** "Deshacer": vuelve la lista de compromisos a como estaba. */
+  restaurarCompromisos: (lista: Compromiso[]) => void;
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
   editarTextoPaso: (tareaId: string, pasoId: string, texto: string) => void;
   borrarPasoTarea: (tareaId: string, pasoId: string) => void;
@@ -167,6 +185,7 @@ interface HabitContextType {
     registros: Registro[];
     rutinas?: Rutina[];
     tareas?: Tarea[];
+    compromisos?: Compromiso[];
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
@@ -254,6 +273,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [tareas, setTareas] = useState<Tarea[]>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_TAREAS_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
+  const [compromisos, setCompromisos] = useState<Compromiso[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_COMPROMISOS_KEY);
       if (stored) return JSON.parse(stored);
     } catch {}
     return [];
@@ -567,6 +593,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch {}
   }, [tareas]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_COMPROMISOS_KEY, JSON.stringify(compromisos));
+    } catch {}
+  }, [compromisos]);
+
   // Navigation helpers
   const openOnboarding = () => {
     setIsOnboardingOpen(true);
@@ -727,10 +759,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setRegistros([]);
     setRutinas([]);
     setTareas([]);
+    setCompromisos([]);
     localStorage.removeItem(STORAGE_HABITOS_KEY);
     localStorage.removeItem(STORAGE_REGISTROS_KEY);
     localStorage.removeItem(STORAGE_RUTINAS_KEY);
     localStorage.removeItem(STORAGE_TAREAS_KEY);
+    localStorage.removeItem(STORAGE_COMPROMISOS_KEY);
     localStorage.removeItem(STORAGE_ORDEN_MOMENTOS_KEY);
     localStorage.removeItem('racha_unlocked_badges');
     localStorage.removeItem('racha_secciones_momento');
@@ -777,6 +811,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       registros,
       rutinas,
       tareas,
+      compromisos,
       comodines,
       diasCongelados,
       ordenMomentos,
@@ -817,6 +852,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     registros: Registro[];
     rutinas?: Rutina[];
     tareas?: Tarea[];
+    compromisos?: Compromiso[];
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
@@ -862,6 +898,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setRegistros(datos.registros);
       if (Array.isArray(datos.rutinas)) setRutinas(datos.rutinas);
       if (Array.isArray(datos.tareas)) setTareas(datos.tareas);
+      if (Array.isArray(datos.compromisos)) setCompromisos(datos.compromisos);
       if (typeof datos.comodines === 'number') setComodines(Math.max(0, Math.min(COMODINES_MAX, datos.comodines)));
       if (Array.isArray(datos.diasCongelados)) setDiasCongelados(datos.diasCongelados);
       if (Array.isArray(datos.ordenMomentos)) setOrdenMomentos(datos.ordenMomentos);
@@ -1119,8 +1156,21 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return { ...t, subtareas, completada: _tareaCompletada(subtareas) };
     }));
   };
-  const ponerFechaPaso = (tareaId: string, pasoId: string, fecha?: string) =>
-    cambiarArbol(tareaId, (t) => _ponerFechaPaso(t.subtareas, pasoId, fecha));
+  const ponerFechaPaso = (tareaId: string, pasoId: string, fecha?: string, momento?: MomentoPlan | null) =>
+    cambiarArbol(tareaId, (t) => _ponerFechaPaso(t.subtareas, pasoId, fecha, momento));
+  // Compromisos: el id se genera afuera para devolverlo
+  const crearCompromiso = (datos: Omit<Compromiso, 'id' | 'creadoEn'>): string => {
+    const id = nuevoIdCompromiso();
+    setCompromisos((prev) => _crearCompromiso(prev, datos, id));
+    return id;
+  };
+  const editarCompromiso = (id: string, cambios: CambiosCompromiso, alcance: Alcance, fechaDelDia: string) => {
+    const idCopia = nuevoIdCompromiso();
+    setCompromisos((prev) => _editarCompromiso(prev, id, cambios, alcance, fechaDelDia, idCopia));
+  };
+  const borrarCompromiso = (id: string, alcance: Alcance, fechaDelDia: string) =>
+    setCompromisos((prev) => _borrarCompromiso(prev, id, alcance, fechaDelDia));
+  const restaurarCompromisos = (lista: Compromiso[]) => setCompromisos(lista);
   const agregarPasoTarea = (tareaId: string, padreId: string | null, texto: string): string | null => {
     if (!texto.trim()) return null;
     const id = nuevoIdPaso();
@@ -1340,6 +1390,11 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         agregarPasoTarea,
         editarTextoPaso,
         borrarPasoTarea,
+        compromisos,
+        crearCompromiso,
+        editarCompromiso,
+        borrarCompromiso,
+        restaurarCompromisos,
         agregarPasosPegados,
         quitarPasosTarea,
         moverPasoTarea,

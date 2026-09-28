@@ -1,4 +1,4 @@
-import { Subtarea, Tarea } from '../types';
+import { MomentoPlan, Subtarea, Tarea } from '../types';
 import { parseDateString, obtenerHojasSubtareas } from './habitUtils';
 
 /**
@@ -24,7 +24,7 @@ export function normalizarArbol(lista: Subtarea[]): Subtarea[] {
     const hijos = normalizarArbol(s.subtareas as Subtarea[]);
     const hecha = hijos.every((h) => h.hecha);
     const dias = hijos.map((h) => h.hechaEn).filter((d): d is string => Boolean(d)).sort();
-    const { fecha: _fecha, ...resto } = s;
+    const { fecha: _fecha, momento: _momento, ...resto } = s;
     return { ...resto, subtareas: hijos, hecha, hechaEn: hecha ? dias[dias.length - 1] : undefined };
   });
 }
@@ -44,12 +44,17 @@ export function buscarPaso(lista: Subtarea[], id: string): Subtarea | undefined 
 const mapear = (lista: Subtarea[], id: string, fn: (s: Subtarea) => Subtarea): Subtarea[] =>
   lista.map((s) => (s.id === id ? fn(s) : s.subtareas ? { ...s, subtareas: mapear(s.subtareas, id, fn) } : s));
 
-/** Pone (o quita, con fecha undefined) el día de un paso. Solo aplica a pasos sin pasos adentro. */
-export function ponerFechaPaso(lista: Subtarea[], id: string, fecha?: string): Subtarea[] {
+/**
+ * Pone (o quita, con fecha undefined) el día de un paso. Solo aplica a pasos sin pasos adentro.
+ * momento: undefined deja el que tenía; null lo quita; o el nuevo. Sin fecha, el momento también se quita.
+ */
+export function ponerFechaPaso(lista: Subtarea[], id: string, fecha?: string, momento?: MomentoPlan | null): Subtarea[] {
   return normalizarArbol(mapear(lista, id, (s) => {
     if (tieneHijos(s)) return s;
-    const { fecha: _f, ...resto } = s;
-    return fecha ? { ...resto, fecha } : resto;
+    const { fecha: _f, momento: momentoAntes, ...resto } = s;
+    if (!fecha) return resto;
+    const m = momento === undefined ? momentoAntes : momento ?? undefined;
+    return m ? { ...resto, fecha, momento: m } : { ...resto, fecha };
   }));
 }
 

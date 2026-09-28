@@ -1,4 +1,5 @@
-import { Habito, Registro, Subtarea, Tarea } from '../types';
+import { Compromiso, Habito, MomentoPlan, Registro, Subtarea, Tarea } from '../types';
+import { compromisosDelDia, momentoDe } from './compromisosUtils';
 import { getSemanaDates, isHabitScheduledForDate, parseDateString, formatDateToString } from './habitUtils';
 import { textoAtraso } from './hoyUtils';
 
@@ -142,4 +143,39 @@ export function pasosSinDia(tareas: Tarea[]): GrupoSinDia[] {
     .filter((t) => !t.completada)
     .map((t) => ({ tareaId: t.id, tareaNombre: t.nombre, tareaIcono: t.icono, pasos: hojas(t.subtareas || []).filter((s) => !s.hecha && !s.fecha) }))
     .filter((g) => g.pasos.length > 0);
+}
+
+// ---------- Tu semana 2: el día repartido por momentos (design/maqueta-tu-semana-2.html) ----------
+
+export type Franja = 'cualquiera' | MomentoPlan;
+export const FRANJAS: Franja[] = ['cualquiera', 'manana', 'tarde', 'noche'];
+export type ItemFranja = { tipo: 'paso'; dato: PasoDelDia } | { tipo: 'compromiso'; dato: Compromiso };
+export interface DiaPorMomentos { fecha: string; franjas: Record<Franja, ItemFranja[]>; habitos: Record<Franja, number>; pasos: number; compromisos: number; lleno: boolean }
+
+/**
+ * Un día de Tu semana: pasos (con su momento, o "cualquiera") y compromisos (por su hora o momento),
+ * y cuántos hábitos tocan en cada momento (los "flexible" van en "cualquiera"). Lleno = 4 o más pasos sin hacer y compromisos.
+ */
+export function diaPorMomentos(tareas: Tarea[], compromisos: Compromiso[], habitos: Habito[], fecha: string, hoy: string): DiaPorMomentos {
+  const franjas: Record<Franja, ItemFranja[]> = { cualquiera: [], manana: [], tarde: [], noche: [] };
+  for (const p of pasosDelDia(tareas, fecha, hoy)) franjas[p.paso.momento ?? 'cualquiera'].push({ tipo: 'paso', dato: p });
+  const delDia = compromisosDelDia(compromisos, fecha);
+  for (const c of delDia) franjas[momentoDe(c) ?? 'cualquiera'].push({ tipo: 'compromiso', dato: c });
+  const habitosPor: Record<Franja, number> = { cualquiera: 0, manana: 0, tarde: 0, noche: 0 };
+  for (const h of activos(habitos)) {
+    if (!isHabitScheduledForDate(h, fecha)) continue;
+    const m = h.momento === 'manana' || h.momento === 'tarde' || h.momento === 'noche' ? h.momento : 'cualquiera';
+    habitosPor[m]++;
+  }
+  const pasos = Object.values(franjas).flat().filter((i) => i.tipo === 'paso' && !i.dato.paso.hecha).length;
+  return { fecha, franjas, habitos: habitosPor, pasos, compromisos: delDia.length, lleno: pasos + delDia.length >= 4 };
+}
+
+/** "3 pasos · 1 compromiso" / "Libre" */
+export function textoCargaDia(d: Pick<DiaPorMomentos, 'pasos' | 'compromisos'>): string {
+  const partes = [
+    d.pasos ? `${d.pasos} ${d.pasos === 1 ? 'paso' : 'pasos'}` : '',
+    d.compromisos ? `${d.compromisos} ${d.compromisos === 1 ? 'compromiso' : 'compromisos'}` : '',
+  ].filter(Boolean);
+  return partes.join(' · ') || 'Libre';
 }
