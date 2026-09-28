@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GripVertical, ListChecks, MoreHorizontal, Pencil, Play, Plus, RotateCcw, Trash2 } from 'lucide-react';
+import { Calendar, ChevronDown, GripVertical, Split, ListChecks, MoreHorizontal, Pencil, Play, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
@@ -121,8 +121,23 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
   const [textoNuevo, setTextoNuevo] = useState('');
   const [anuncio, setAnuncio] = useState('');
   const [enfocar, setEnfocar] = useState<string | null>(null);
+  const [plegadoManual, setPlegadoManual] = useState<Record<string, boolean>>({});
+  const [opcionesPaso, setOpcionesPaso] = useState<string | null>(null);
+  
   const menuRef = useRef<HTMLDivElement>(null);
   const menuBtn = useRef<HTMLButtonElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!opcionesPaso) return;
+    const fuera = (e: PointerEvent) => {
+      if (!(e.target as Element).closest('.paso-opciones')) setOpcionesPaso(null);
+    };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpcionesPaso(null); };
+    document.addEventListener('pointerdown', fuera);
+    document.addEventListener('keydown', esc);
+    return () => { document.removeEventListener('pointerdown', fuera); document.removeEventListener('keydown', esc); };
+  }, [opcionesPaso]);
 
   // El menú "···" se cierra al tocar fuera o con Escape
   useEffect(() => {
@@ -186,6 +201,7 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
     const hojas = esPadre ? obtenerHojasSubtareas(hijos).filter((h) => h.texto?.trim()) : [];
     const d = destinoEn(s.id);
     const cls = `tpaso${s.hecha ? ' done' : ''}${esSig ? ' sig' : ''}${arrastre?.id === s.id ? ' drag' : ''}`;
+    const plegado = plegadoManual[s.id] ?? s.hecha;
     return (
       <li key={s.id} data-paso-li={s.id} className={cls} style={estilo(s.id)}>
         {d === 'antes' && <div className="tlinea" aria-hidden="true" />}
@@ -195,7 +211,7 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
             {...asa(s.id)} onKeyDown={(e) => moverConTeclado(e, s)}>
             <GripVertical size={16} />
           </button>
-          {esPadre ? <span className="tpadre" aria-hidden="true" /> : <Casilla paso={s} onToggle={() => ctl.marcar(t, s)} />}
+          <Casilla paso={s} onToggle={() => ctl.marcar(t, s)} />
           {editando === s.id ? (
             <>
               <input className="tinput tinput-on" autoFocus defaultValue={s.texto} aria-label="Texto del paso"
@@ -218,19 +234,67 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
                 {esSig && <span className="tsigchip">Sigue</span>}
               </span>
               {!esPadre && <ChipDia paso={s} hoy={ctl.hoy} onAbrir={() => ctl.abrirHoja(t.id, s.id)} />}
-              <button type="button" className="tmas" aria-label={`Agregar un paso dentro de ${s.texto}`}
-                onClick={() => { setDentroDe(s.id); setTextoDentro(''); }}>
-                <Plus size={16} />
-              </button>
+              {esPadre && (
+                <button type="button" className="t3fle" aria-expanded={!plegado} aria-label={plegado ? `Mostrar los pasos de ${s.texto}` : `Esconder los pasos de ${s.texto}`} onClick={() => setPlegadoManual(p => ({ ...p, [s.id]: !plegado }))}>
+                  {plegado ? <ChevronDown size={18} /> : <ChevronDown size={18} style={{ transform: 'rotate(180deg)' }} />}
+                </button>
+              )}
+              <div className="tmenu-w paso-opciones" style={{ display: 'inline-flex' }}>
+                <button type="button" className="tmas" aria-label={`Opciones de ${s.texto}`} aria-haspopup="menu" aria-expanded={opcionesPaso === s.id}
+                  onClick={() => setOpcionesPaso(opcionesPaso === s.id ? null : s.id)}>
+                  <MoreHorizontal size={16} />
+                </button>
+                {opcionesPaso === s.id && (
+                  <div className="tpop" role="menu" aria-label={`Opciones de ${s.texto}`}>
+                    <button type="button" role="menuitem" onClick={() => { setOpcionesPaso(null); setPlegadoManual((m) => ({ ...m, [s.id]: false })); setDentroDe(s.id); setTextoDentro(''); }}>
+                      <Split size={16} />Dividir en pasos más pequeños
+                    </button>
+                    {!esPadre && (
+                      <button type="button" role="menuitem" onClick={() => { setOpcionesPaso(null); ctl.abrirHoja(t.id, s.id); }}>
+                        <Calendar size={16} />Cambiar el día
+                      </button>
+                    )}
+                    <button type="button" role="menuitem" onClick={() => { setOpcionesPaso(null); setEditando(s.id); }}>
+                      <Pencil size={16} />Cambiar el texto
+                    </button>
+                    <button type="button" role="menuitem" onClick={() => { setOpcionesPaso(null); borrarPasoTarea(t.id, s.id); setEditando(null); }}>
+                      <Trash2 size={16} />Borrar el paso
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
         {d === 'dentro' && <div className="tsoltar" aria-hidden="true">Suelta aquí para meterlo dentro de este paso</div>}
-        {esPadre && <ul className="tarbol tsubl">{hijos.map(renderPaso)}</ul>}
-        {dentroDe === s.id && (
+        {esPadre && !plegado && (
+          <ul className="tarbol tsubl">
+            {hijos.map(renderPaso)}
+            <li className="tpaso">
+              {dentroDe === s.id ? (
+                <div className="tfila tnuevo" style={{ paddingLeft: '8px' }}>
+                  <span className="tchk" aria-hidden="true" />
+                  <input className="tinput tinput-on" autoFocus placeholder="Escribe un paso más pequeño" aria-label={`Nuevo paso dentro de ${s.texto}`}
+                    value={textoDentro} onChange={(e) => setTextoDentro(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') guardarDentro(s);
+                      if (e.key === 'Escape') { setTextoDentro(''); setDentroDe(null); }
+                    }}
+                    onBlur={() => { guardarDentro(s); setDentroDe(null); }} />
+                  <span className="tenter" aria-hidden="true">Enter para guardar</span>
+                </div>
+              ) : (
+                <button type="button" className="t3add" onClick={() => { setDentroDe(s.id); setTextoDentro(''); }}>
+                  <Plus size={15} />Agregar dentro de “{s.texto}”
+                </button>
+              )}
+            </li>
+          </ul>
+        )}
+        {!esPadre && dentroDe === s.id && (
           <ul className="tarbol tsubl">
             <li className="tpaso">
-              <div className="tfila tnuevo">
+              <div className="tfila tnuevo" style={{ paddingLeft: '8px' }}>
                 <span className="tchk" aria-hidden="true" />
                 <input className="tinput tinput-on" autoFocus placeholder="Escribe un paso más pequeño" aria-label={`Nuevo paso dentro de ${s.texto}`}
                   value={textoDentro} onChange={(e) => setTextoDentro(e.target.value)}

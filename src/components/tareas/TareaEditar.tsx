@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { GripVertical, Plus, Trash2, MoreHorizontal } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
-import { nuevoIdPaso } from '../../utils/tareasUtils';
+import { nuevoIdPaso, agregarPaso, editarTextoPaso as editarTextoPasoPuro, borrarPaso, buscarPaso } from '../../utils/tareasUtils';
 import { useArrastrePasos } from './arrastrePasos';
+import { HojaOpcionesPaso } from './HojaOpcionesPaso';
 
 export const TAREA_ICONOS = ['ListChecks', 'BookOpen', 'GraduationCap', 'Briefcase', 'Code', 'Home', 'Target', 'Lightbulb'];
 
@@ -30,7 +31,9 @@ export const TareaEditar: React.FC<{
   const [nombre, setNombre] = useState(tarea ? tarea.nombre : '');
   const [icono, setIcono] = useState(tarea ? tarea.icono : 'ListChecks');
   const [verIconos, setVerIconos] = useState(false);
-  const [pasosNuevos, setPasosNuevos] = useState<string[]>([]); // solo para Nueva tarea
+  const [arbol, setArbol] = useState<Subtarea[]>([]); // solo para Nueva tarea
+  const [opciones, setOpciones] = useState<{ pasoId: string } | null>(null);
+  const [editandoPaso, setEditandoPaso] = useState<string | null>(null);
   const [textoNuevo, setTextoNuevo] = useState('');
   const [dentroDe, setDentroDe] = useState<string | null>(null);
   const [textoDentro, setTextoDentro] = useState('');
@@ -87,7 +90,7 @@ export const TareaEditar: React.FC<{
     const t = textoNuevo.trim();
     if (!t) return;
     if (tarea) agregarPasoTarea(tarea.id, null, t);
-    else setPasosNuevos((p) => [...p, t]);
+    else setArbol((a) => agregarPaso(a, null, t).arbol);
     setTextoNuevo('');
   };
 
@@ -95,9 +98,69 @@ export const TareaEditar: React.FC<{
     const n = nombre.trim();
     if (!n) return;
     const pendiente = textoNuevo.trim();
-    const todos = pendiente ? [...pasosNuevos, pendiente] : pasosNuevos;
-    const id = crearTarea({ nombre: n, icono, color: '', subtareas: todos.map((texto) => ({ id: nuevoIdPaso(), texto, hecha: false })) });
+    const finalArbol = pendiente ? agregarPaso(arbol, null, pendiente).arbol : arbol;
+    const id = crearTarea({ nombre: n, icono, color: '', subtareas: finalArbol });
     onListo(id);
+  };
+
+  const renderPasoNuevo = (s: Subtarea): React.ReactNode => {
+    const hijos = s.subtareas || [];
+    return (
+      <li key={s.id} className="tpaso">
+        <div className="tfila">
+          <span className="t3punto" aria-hidden="true" />
+          <span className="ttxt">
+            {editandoPaso === s.id ? (
+              <input className="tinput tinput-on" autoFocus defaultValue={s.texto} aria-label="Texto del paso"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (e.currentTarget.value.trim() && e.currentTarget.value.trim() !== s.texto) {
+                      setArbol((a) => editarTextoPasoPuro(a, s.id, e.currentTarget.value.trim()));
+                    }
+                    setEditandoPaso(null);
+                  }
+                  if (e.key === 'Escape') setEditandoPaso(null);
+                }}
+                onBlur={(e) => {
+                  if (e.target.value.trim() && e.target.value.trim() !== s.texto) {
+                    setArbol((a) => editarTextoPasoPuro(a, s.id, e.target.value.trim()));
+                  }
+                  setEditandoPaso(null);
+                }}
+              />
+            ) : (
+              <span className="tnom">{s.texto}</span>
+            )}
+          </span>
+          <button type="button" className="t3mas" aria-label={`Opciones de ${s.texto}`} onClick={() => setOpciones({ pasoId: s.id })}>
+            <MoreHorizontal size={18} />
+          </button>
+        </div>
+        {(hijos.length > 0 || dentroDe === s.id) && (
+          <ul className="tarbol tsubl">
+            {hijos.map((h) => renderPasoNuevo(h))}
+            <li className="tpaso">
+              {dentroDe === s.id ? (
+                <div className="tagrega-in" style={{ borderTop: 'none', padding: '0 0 0 10px' }}>
+                  <Plus size={16} strokeWidth={2.4} />
+                  <input className="tinput tinput-on" autoFocus placeholder="Escribe un paso más pequeño" aria-label={`Nuevo paso dentro de ${s.texto}`}
+                    value={textoDentro} onChange={(e) => setTextoDentro(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && textoDentro.trim()) { setArbol((a) => agregarPaso(a, s.id, textoDentro).arbol); setTextoDentro(''); }
+                      if (e.key === 'Escape') { setTextoDentro(''); setDentroDe(null); }
+                    }}
+                    onBlur={() => { if (textoDentro.trim()) setArbol((a) => agregarPaso(a, s.id, textoDentro).arbol); setDentroDe(null); }} />
+                </div>
+              ) : (
+                <button type="button" className="t3add" onClick={() => { setDentroDe(s.id); setTextoDentro(''); }}>
+                  <Plus size={15} />Agregar dentro de “{s.texto}”
+                </button>
+              )}
+            </li>
+          </ul>
+        )}
+      </li>
+    );
   };
 
   return (
@@ -126,15 +189,13 @@ export const TareaEditar: React.FC<{
           <ul className="tarbol">{tarea.subtareas.map(renderPaso)}</ul>
         </>
       )}
-      {esNueva && pasosNuevos.length > 0 && (
-        <ul className="tarbol">
-          {pasosNuevos.map((p, i) => (
-            <li key={i} className="tpaso"><div className="tfila">
-              <span className="ttxt"><span className="tnom">{p}</span></span>
-              <button type="button" className="tmover" aria-label={`Borrar el paso ${p}`} onClick={() => setPasosNuevos((l) => l.filter((_, j) => j !== i))}><Trash2 size={17} /></button>
-            </div></li>
-          ))}
-        </ul>
+      {esNueva && arbol.length > 0 && (
+        <>
+          <p className="tpista">Toca ⋯ en un paso para dividirlo en pasos más pequeños.</p>
+          <ul className="tarbol">
+            {arbol.map(renderPasoNuevo)}
+          </ul>
+        </>
       )}
 
       <div className="tagrega-in">
@@ -152,6 +213,27 @@ export const TareaEditar: React.FC<{
           ? <button type="button" className="btnp sm" disabled={!nombre.trim()} onClick={crear}>Crear tarea</button>
           : <button type="button" className="btnp sm" onClick={() => { guardarCabecera(); onListo(); }}>Listo</button>}
       </div>
+
+      {opciones && esNueva && (() => {
+        const p = buscarPaso(arbol, opciones.pasoId);
+        if (!p) return null;
+        return (
+          <HojaOpcionesPaso
+            paso={p}
+            tareaNombre={nombre || 'Nueva tarea'}
+            esGrande={true}
+            hoy={''}
+            onDividir={() => {
+              setDentroDe(p.id);
+              setTextoDentro('');
+            }}
+            onDia={() => {}}
+            onTexto={() => setEditandoPaso(p.id)}
+            onBorrar={() => setArbol((a) => borrarPaso(a, p.id))}
+            onCerrar={() => setOpciones(null)}
+          />
+        );
+      })()}
     </section>
   );
 };

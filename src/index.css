@@ -886,3 +886,14 @@ html:not(.dark) .tareas .tpop{box-shadow:0 12px 32px rgba(15,17,19,.14)}
 .tareas .tpop button:hover,.tareas .tpop button:focus-visible{background:var(--surface)}
 .tareas .tpop button svg{color:var(--text-muted)}
 
+
+.tareas .t3mas{width:40px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tareas .t3fle{width:44px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tareas .t3add{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0;border:none;background:none;color:var(--text-muted);font:inherit;font-size:14px;font-weight:600;text-align:left}
+.tareas .t3ayuda{display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-top:1px}
+.tareas .tmenu{display:flex;flex-direction:column}
+.tareas .tmenu button{display:flex;align-items:center;gap:14px;min-height:60px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.tareas .tmenu button:first-child{border-top:none}
+.tareas .tmenu button>svg{color:var(--text-muted);flex-shrink:0}
+.tareas .t3punto{width:8px;height:8px;border-radius:99px;background:var(--line-strong);flex-shrink:0;margin:0 9px}
+
