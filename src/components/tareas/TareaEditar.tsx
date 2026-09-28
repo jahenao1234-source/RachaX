@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GripVertical, Plus, Trash2, MoreHorizontal } from 'lucide-react';
+import { GripVertical, Plus, Trash2, MoreHorizontal, MessageCircle } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
@@ -7,6 +7,7 @@ import { nuevoIdPaso, agregarPaso, editarTextoPaso as editarTextoPasoPuro, borra
 import { useArrastrePasos } from './arrastrePasos';
 import { HojaOpcionesPaso } from './HojaOpcionesPaso';
 import { HojaPegarLista } from './HojaPegarLista';
+import { HojaPlanIA } from './HojaPlanIA';
 import { leerListaPegada, aSubtareas, ListaPegada } from '../../utils/pegarLista';
 import { useEsEscritorio } from '../screens/TodayScreen';
 
@@ -39,6 +40,7 @@ export const TareaEditar: React.FC<{
   const [pegado, setPegado] = useState<ListaPegada | null>(null);
   const desk = useEsEscritorio();
   const [editandoPaso, setEditandoPaso] = useState<string | null>(null);
+  const [verIA, setVerIA] = useState(false);
   const [textoNuevo, setTextoNuevo] = useState('');
   const [dentroDe, setDentroDe] = useState<string | null>(null);
   const [textoDentro, setTextoDentro] = useState('');
@@ -226,7 +228,10 @@ export const TareaEditar: React.FC<{
           placeholder={esNueva ? 'Escribe el primer paso, por pequeño que sea' : 'Agregar un paso'} aria-label="Agregar un paso" />
       </div>
       {esNueva && arbol.length === 0 && (
-        <p className="tpista">¿Tienes la lista en otro lado, como un chat con una IA? Cópiala y pégala aquí, en los pasos.</p>
+        <div className="t5ia">
+          <p className="tpista">¿Tienes la lista en otro lado, como un chat con una IA? Cópiala y pégala aquí, en los pasos.</p>
+          <button type="button" className="t5btn" onClick={() => setVerIA(true)}><MessageCircle size={16} />Pedirle el plan a una IA</button>
+        </div>
       )}
 
       <div className="tacciones fin">
@@ -259,6 +264,8 @@ export const TareaEditar: React.FC<{
         );
       })()}
       
+      {verIA && <HojaPlanIA nombre={nombre} onCerrar={() => setVerIA(false)} />}
+
       {pegado && esNueva && (
         <HojaPegarLista
           lista={pegado}

@@ -282,6 +282,7 @@ export const TasksScreen: React.FC = () => {
           <span className="tvico" aria-hidden="true"><ListChecks size={40} strokeWidth={1.6} /></span>
           <h2 className="font-heading font-bold m-0" style={{ fontSize: 26 }}>Todavía no tienes tareas</h2>
           <p className="sub" style={{ fontSize: 15, maxWidth: 290 }}>Una tarea grande se vuelve fácil cuando la partes en pasos pequeños. Aquí marcas cada paso, uno a la vez.</p>
+          <p className="t5otra">¿Ya tienes un plan de ChatGPT o Gemini? Crea la tarea y pega la lista en los pasos.</p>
           <button type="button" className="btnp" style={{ marginTop: 8 }} onClick={() => openTareaEditor(null)}><Plus size={18} strokeWidth={2.4} />Crear mi primera tarea</button>
         </div>
       ) : (

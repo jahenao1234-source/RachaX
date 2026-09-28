@@ -918,3 +918,15 @@ html:not(.dark) .tareas .tpop{box-shadow:0 12px 32px rgba(15,17,19,.14)}
 .tareas .t4dlg .t4caja{max-height:320px}
 html:not(.dark) .tareas .t4dlg{box-shadow:0 24px 60px rgba(15,17,19,.18)}
 
+.tareas .t5otra{margin:6px 0 0;font-size:14px;color:var(--text-muted);max-width:290px}
+.tareas .t5ia{padding:10px 14px 14px}
+.tareas .t5ia .tpista{margin:0 0 10px}
+.tareas .t5btn{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.tareas .t5pasos{list-style:none;margin:8px 0 0;padding:0}
+.tareas .t5pasos li{display:flex;align-items:center;gap:12px;min-height:44px;font-size:15px;font-weight:600;color:var(--text)}
+.tareas .t5n{width:28px;height:28px;border-radius:999px;background:var(--surface-raised);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.tareas .t5instr{margin:12px 0 14px;padding:12px 14px;border-radius:12px;background:var(--surface);font-size:14px;line-height:1.45;color:var(--text);user-select:text;-webkit-user-select:text}
+.tareas .btnp.full{width:100%}
+.tareas .t5ok,.tareas .btnp.t5ok:not([disabled]){background:var(--surface-raised);background-image:none;color:var(--text)}
+.tareas .t5nota{margin:8px 0 0;text-align:center;font-size:13px;color:var(--text-muted)}
+
