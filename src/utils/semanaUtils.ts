@@ -135,13 +135,36 @@ export function pasosDelDia(tareas: Tarea[], fecha: string, hoy: string): PasoDe
   return res.sort((a, b) => orden(a) - orden(b));
 }
 
-export interface GrupoSinDia { tareaId: string; tareaNombre: string; tareaIcono: string; pasos: Subtarea[] }
+/** Pasos seguidos que comparten el mismo camino de pasos grandes (ruta vacía = pasos sueltos de la tarea). */
+export interface RamaSinDia { ruta: string[]; pasos: Subtarea[] }
+export interface GrupoSinDia { tareaId: string; tareaNombre: string; tareaIcono: string; pasos: Subtarea[]; ramas: RamaSinDia[] }
 
-/** Pasos sin día y sin hacer, agrupados por tarea abierta (en el orden de las tareas y de los pasos). */
+/** Los pasos de un árbol con el camino de pasos grandes que los contiene, en orden. */
+const hojasConRuta = (lista: Subtarea[], ruta: string[] = [], res: { paso: Subtarea; ruta: string[] }[] = []) => {
+  for (const s of lista) {
+    if (s.subtareas && s.subtareas.length) hojasConRuta(s.subtareas, [...ruta, s.texto], res);
+    else if (s.texto?.trim()) res.push({ paso: s, ruta });
+  }
+  return res;
+};
+
+/**
+ * Pasos sin día y sin hacer, agrupados por tarea abierta, en el orden de Tareas.
+ * ramas: los pasos pequeños quedan juntos bajo el camino de su paso grande ("Paso › Paso pequeño").
+ */
 export function pasosSinDia(tareas: Tarea[]): GrupoSinDia[] {
   return tareas
     .filter((t) => !t.completada)
-    .map((t) => ({ tareaId: t.id, tareaNombre: t.nombre, tareaIcono: t.icono, pasos: hojas(t.subtareas || []).filter((s) => !s.hecha && !s.fecha) }))
+    .map((t) => {
+      const lista = hojasConRuta(t.subtareas || []).filter(({ paso }) => !paso.hecha && !paso.fecha);
+      const ramas: RamaSinDia[] = [];
+      for (const { paso, ruta } of lista) {
+        const ultima = ramas[ramas.length - 1];
+        if (ultima && ultima.ruta.join(' › ') === ruta.join(' › ')) ultima.pasos.push(paso);
+        else ramas.push({ ruta, pasos: [paso] });
+      }
+      return { tareaId: t.id, tareaNombre: t.nombre, tareaIcono: t.icono, pasos: lista.map((x) => x.paso), ramas };
+    })
     .filter((g) => g.pasos.length > 0);
 }
 

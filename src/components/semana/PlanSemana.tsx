@@ -164,7 +164,6 @@ export const PlanSemana: React.FC<{
         <div className="tsgrupos">
           {grupos.map(g => {
             const abierto = !!verTodos[g.tareaId];
-            const visibles = abierto ? g.pasos : g.pasos.slice(0, 4);
             return (
               <section key={g.tareaId} className="tsgrupo" aria-label={`Pasos sin día de ${g.tareaNombre}`}>
                 <p className="tsgrupo-h">
@@ -172,19 +171,34 @@ export const PlanSemana: React.FC<{
                   <span className="truncate" title={g.tareaNombre}>{g.tareaNombre}</span>
                   <span className="tsgrupo-n">{g.pasos.length}</span>
                 </p>
-                <ol className="tsgrupo-l">
-                  {visibles.map(p => (
-                    <li key={p.id}>
-                      <button type="button"
-                        className={`tspaso-sin${elegido?.tipo === 'paso' && elegido.paso.id === p.id ? ' elegido' : ''}${arrastre?.item.tipo === 'paso' && arrastre.item.paso.id === p.id ? ' fantasma' : ''}`}
-                        aria-label={`${p.texto}, de ${g.tareaNombre}. Elegir el día`}
-                        {...asa({ tipo: 'paso', tareaId: g.tareaId, paso: p })}>
-                        <GripVertical size={14} className="text-text-muted shrink-0" aria-hidden="true" />
-                        <span>{p.texto}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ol>
+                {/* Cada rama: el camino de sus pasos grandes como subtítulo y sus pasos pequeños con sangría */}
+                {(() => {
+                  let quedan = abierto ? Infinity : 4;
+                  return g.ramas.map((rama, ri) => {
+                    if (quedan <= 0) return null;
+                    const pasos = rama.pasos.slice(0, quedan);
+                    quedan -= pasos.length;
+                    const sub = rama.ruta.length > 0;
+                    return (
+                      <div key={ri} className={sub ? 'tsrama' : undefined}>
+                        {sub && <p className="tsrama-h" title={rama.ruta.join(' › ')}>{rama.ruta.join(' › ')}</p>}
+                        <ol className="tsgrupo-l">
+                          {pasos.map(p => (
+                            <li key={p.id}>
+                              <button type="button"
+                                className={`tspaso-sin${elegido?.tipo === 'paso' && elegido.paso.id === p.id ? ' elegido' : ''}${arrastre?.item.tipo === 'paso' && arrastre.item.paso.id === p.id ? ' fantasma' : ''}`}
+                                aria-label={`${p.texto}${sub ? `, dentro de ${rama.ruta[rama.ruta.length - 1]}` : ''}, de ${g.tareaNombre}. Elegir el día`}
+                                {...asa({ tipo: 'paso', tareaId: g.tareaId, paso: p })}>
+                                <GripVertical size={14} className="text-text-muted shrink-0" aria-hidden="true" />
+                                <span>{p.texto}</span>
+                              </button>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    );
+                  });
+                })()}
                 {g.pasos.length > 4 && (
                   <button type="button" className="tsgrupo-mas" onClick={(e) => { e.stopPropagation(); setVerTodos(v => ({ ...v, [g.tareaId]: !abierto })); }}>
                     {abierto ? 'Ver menos' : `Ver ${g.pasos.length - 4} más`}

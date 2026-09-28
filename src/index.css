@@ -1094,3 +1094,15 @@ html:not(.dark) .semana .tscomp-dias i b{background:var(--ambar-text)}
 .tareas .tasemana svg{color:var(--text-muted)}
 
 .semana .tsponer{display:flex;align-items:center;gap:6px;width:100%;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text-muted);font:inherit;font-size:14px;font-weight:600;text-align:left}
+
+/* Tu semana: pasos pequeños bajo el camino de su paso grande (como en Tareas: sangría y línea guía) */
+.semana .tsrama{margin:6px 0 4px 8px;padding-left:10px;border-left:1px solid var(--line-strong)}
+.semana .tsrama-h{margin:0 0 4px;font-size:12px;font-weight:700;color:var(--text);line-height:1.3;overflow-wrap:break-word}
+.tareas .tsrama{margin:10px 0 4px 8px;padding-left:10px;border-left:1px solid var(--line-strong)}
+.tareas .tsrama-h{margin:0 0 2px;font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+
+/* Tareas escritorio: la lista nunca se sale de su columna (textos largos se recortan con …) */
+.tareas .tdk-lista{min-width:0}
+.tareas .tlist{grid-template-columns:minmax(0,1fr)}
+.tareas .tlist > li{min-width:0}
+.tareas .tli{min-width:0;overflow:hidden}

@@ -60,14 +60,20 @@ export const HojaPonerPaso: React.FC<{
                   </div>
                   {g.tareaNombre}
                 </div>
-                <div className="tmenu">
-                  {g.pasos.map(p => (
-                    <button key={p.id} type="button" onClick={() => onElegir(g.tareaId, p.id, fecha)}>
-                      <CalendarPlus size={18} />
-                      <span className="flex-1 text-left line-clamp-2">{p.texto}</span>
-                    </button>
-                  ))}
-                </div>
+                {/* Pasos pequeños bajo el camino de su paso grande */}
+                {g.ramas.map((rama, ri) => (
+                  <div key={ri} className={rama.ruta.length ? 'tsrama' : undefined}>
+                    {rama.ruta.length > 0 && <p className="tsrama-h">{rama.ruta.join(' › ')}</p>}
+                    <div className="tmenu">
+                      {rama.pasos.map(p => (
+                        <button key={p.id} type="button" onClick={() => onElegir(g.tareaId, p.id, fecha)}>
+                          <CalendarPlus size={18} />
+                          <span className="flex-1 text-left">{p.texto}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
