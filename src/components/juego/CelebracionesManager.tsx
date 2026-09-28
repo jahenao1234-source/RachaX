@@ -2,9 +2,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ArrowRight, Gift } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
-import { getTodayString, contarProgresoReto, formatDateToString } from '../../utils/habitUtils';
+import { getTodayString, contarProgresoReto, formatDateToString, getDiasDeRegreso, obtenerHojasSubtareas } from '../../utils/habitUtils';
 import { tasaPeriodo } from '../../utils/progresoUtils';
 import { RetoCumplidoSheet } from '../screens/RetoCumplidoSheet';
+import { DiaCompletoSheet } from './DiaCompletoSheet';
+import { resumenDiaCompleto, diaCompletoYaMostrado, marcarDiaCompletoMostrado } from '../../utils/diaCompleto';
 import { ETAPAS, Llama, LlamaMes } from './Llama';
 import { CajaArte } from './Llama';
 import { CajaResultSheet } from './CajaResultSheet';
@@ -31,6 +33,8 @@ export const CelebracionesManager: React.FC = () => {
     diasCongelados,
     setAbrirColeccion,
     setActiveTab,
+    completadosHoy,
+    tareas,
   } = useHabitStore();
 
   const { acento, setAcento } = useTheme();
@@ -99,6 +103,12 @@ export const CelebracionesManager: React.FC = () => {
       return;
     }
 
+    const hoyDC = getTodayString();
+    if (!diaCompletoYaMostrado(hoyDC)) {
+      const resumen = resumenDiaCompleto(habitosActivos, registros, hoyDC);
+      if (resumen) { setActiveCeleb({ tipo: 'dia', resumen }); return; }
+    }
+
     // c. Mes
     const mesesGanados = Object.keys(llamasGanadas).filter(k => k.startsWith('mes_'));
     const mesPendiente = mesesGanados.find(m => !celebrado.meses.includes(m));
@@ -148,6 +158,13 @@ export const CelebracionesManager: React.FC = () => {
       meses: Object.keys(llamasGanadas).filter(k => k.startsWith('mes_')),
       resumenes: celebrado.resumenes || []
     });
+
+    // El día completo cuenta como mostrado solo si salió su hoja o si se nombró en "También" (reto o llama que creció)
+    const hoyDC = getTodayString();
+    const tipoCerrado = activeCeleb?.tipo;
+    if ((tipoCerrado === 'dia' || tipoCerrado === 'reto' || tipoCerrado === 'etapa') && resumenDiaCompleto(habitosActivos, registros, hoyDC)) {
+      marcarDiaCompletoMostrado(hoyDC);
+    }
 
     setActiveCeleb(null);
     setPrevAcentoForUndo(null);
@@ -226,6 +243,11 @@ export const CelebracionesManager: React.FC = () => {
     // subiste al nivel N
     if (nivelActual > celebrado.nivel && activeCeleb.tipo !== 'nivel') {
       extras.push(`subiste al nivel ${nivelActual}`);
+    }
+
+    const hoyDC = getTodayString();
+    if ((activeCeleb.tipo === 'reto' || activeCeleb.tipo === 'etapa') && !diaCompletoYaMostrado(hoyDC) && resumenDiaCompleto(habitosActivos, registros, hoyDC)) {
+      extras.push("completaste el día");
     }
     
     if (extras.length === 0) return null;
@@ -510,6 +532,29 @@ export const CelebracionesManager: React.FC = () => {
           if (activeCeleb.clave) setCelebrado({ ...celebrado, resumenes: [...(celebrado.resumenes || []), activeCeleb.clave] });
           setActiveCeleb(null);
         }}
+      />
+    );
+  }
+
+  if (activeCeleb.tipo === 'dia') {
+    const hoyDC = getTodayString();
+    const esDiaRegreso = getDiasDeRegreso(habitosActivos, registros, diasCongelados, hoyDC).includes(hoyDC);
+    const puntos = completadosHoy() * (esDiaRegreso ? 20 : 10);
+    
+    let pasos = 0;
+    if (tareas) {
+      pasos = tareas.reduce((sum: number, t: any) => {
+        return sum + obtenerHojasSubtareas(t.subtareas).filter((h: any) => h.hecha && h.hechaEn === hoyDC).length;
+      }, 0);
+    }
+
+    return (
+      <DiaCompletoSheet
+        resumen={activeCeleb.resumen}
+        puntos={puntos}
+        pasos={pasos}
+        tambien={tambien}
+        onSeguir={cerrarYMarcar}
       />
     );
   }
