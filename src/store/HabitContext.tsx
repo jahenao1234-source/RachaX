@@ -23,6 +23,7 @@ import {
   borrarPaso as _borrarPaso,
   moverPaso as _moverPaso,
   reabrirArbol as _reabrirArbol,
+  normalizarArbol as _normalizarArbol,
   nuevoIdPaso,
   DestinoPaso,
 } from '../utils/tareasUtils';
@@ -84,6 +85,10 @@ interface HabitContextType {
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
   editarTextoPaso: (tareaId: string, pasoId: string, texto: string) => void;
   borrarPasoTarea: (tareaId: string, pasoId: string) => void;
+  /** "Pegar una lista": agrega los pasos al final de la tarea y devuelve sus ids (para "Deshacer"). */
+  agregarPasosPegados: (tareaId: string, pasos: Subtarea[]) => string[];
+  /** "Deshacer" de pegar una lista: quita esos pasos (con lo que tengan adentro). */
+  quitarPasosTarea: (tareaId: string, ids: string[]) => void;
   moverPasoTarea: (tareaId: string, pasoId: string, destino: DestinoPaso) => boolean;
   reabrirTarea: (tareaId: string) => void;
   restaurarTarea: (tarea: Tarea, indice: number) => void;
@@ -1126,6 +1131,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     cambiarArbol(tareaId, (t) => _editarTextoPaso(t.subtareas, pasoId, texto));
   const borrarPasoTarea = (tareaId: string, pasoId: string) =>
     cambiarArbol(tareaId, (t) => _borrarPaso(t.subtareas, pasoId));
+  const agregarPasosPegados = (tareaId: string, pasos: Subtarea[]): string[] => {
+    if (!pasos.length) return [];
+    cambiarArbol(tareaId, (t) => _normalizarArbol([...t.subtareas, ...pasos]));
+    return pasos.map((p) => p.id);
+  };
+  const quitarPasosTarea = (tareaId: string, ids: string[]) =>
+    cambiarArbol(tareaId, (t) => ids.reduce((arbol, id) => _borrarPaso(arbol, id), t.subtareas));
   // Valida con el estado actual; si no es válido (p. ej. meter un paso dentro de sí mismo) no cambia nada
   const moverPasoTarea = (tareaId: string, pasoId: string, destino: DestinoPaso): boolean => {
     const actual = tareas.find((t) => t.id === tareaId);
@@ -1328,6 +1340,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         agregarPasoTarea,
         editarTextoPaso,
         borrarPasoTarea,
+        agregarPasosPegados,
+        quitarPasosTarea,
         moverPasoTarea,
         reabrirTarea,
         restaurarTarea,

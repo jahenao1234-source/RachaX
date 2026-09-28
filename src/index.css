@@ -864,6 +864,8 @@ html:not(.dark) .tareas .tscrim{background:rgba(15,17,19,.35)}
 .tareas .tdk-det .tpaso.sig>.tfila{margin:0;padding:6px 4px}
 .tareas .tdk-det .tfila:hover{background:var(--surface-raised)}
 .tareas .tdk-det .tnom{cursor:text}
+/* Asa ⋮⋮ del celular (Mover pasos): el navegador no debe desplazar ni seleccionar al mantenerla presionada */
+.tareas .tasam{width:28px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0;margin-left:-6px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .tareas .tasa{width:28px;height:44px;margin:-6px 0;display:flex;align-items:center;justify-content:center;border:none;border-radius:8px;background:transparent;color:var(--text-muted);flex-shrink:0;cursor:grab;touch-action:none;user-select:none}
 .tareas .tpaso.drag .tasa{cursor:grabbing}
 .tareas .tmas{width:44px;height:44px;margin:-6px 0;border-radius:10px;border:none;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}

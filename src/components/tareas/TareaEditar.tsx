@@ -55,7 +55,7 @@ export const TareaEditar: React.FC<{
         style={estilo(s.id)}>
         {d === 'antes' && <div className="tlinea" aria-hidden="true" />}
         <div className="tfila" data-paso-row={s.id}>
-          <span className="tasam" aria-hidden="true" style={{ cursor: 'grab' }}
+          <span className="tasam" aria-hidden="true" onContextMenu={(e) => e.preventDefault()}
             {...asa(s.id)}>
             <GripVertical size={18} />
           </span>
