@@ -7,7 +7,7 @@ import { HabitIcon } from '../common/HabitIcon';
 import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
 import { RetoSemanalSheet } from '../juego/RetoSemanalSheet';
 import { CajaSorpresaSheet } from '../juego/CajaSorpresaSheet';
-import { Habito, Subtarea } from '../../types';
+import { Habito, Subtarea, Compromiso } from '../../types';
 import {
   getTodayString,
   contarHojasSubtareas,
@@ -324,6 +324,40 @@ const renderRutina = ({ r, mom, minfo, desk, isNextInside, openRutinaEditor, ope
     </div>
   );
 }
+
+
+/** "Compromisos de hoy": debajo de "Tareas de hoy", solo si hay alguno. Ordenados por hora; los que ya pasaron, más suaves. */
+const renderCompromisosBox = ({ lista, desk, onAbrir }: { lista: Compromiso[]; desk: boolean; onAbrir: (c: Compromiso) => void }) => {
+  if (lista.length === 0) return null;
+  const ahora = new Date();
+  const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
+  const nombreMomento = (c: Compromiso) => { const m = momentoDe(c); return m === 'manana' ? 'En la mañana' : m === 'tarde' ? 'En la tarde' : m === 'noche' ? 'En la noche' : 'Hoy'; };
+  return (
+    <section aria-labelledby="compromisos-hoy-titulo" className={`bg-surface border border-line rounded-[18px] p-3.5 ${!desk ? 'mt-4' : ''}`}>
+      <h2 id="compromisos-hoy-titulo" className="m-0 font-heading font-bold text-[22px] min-h-[44px] flex items-center">Compromisos de hoy</h2>
+      <ul className="m-0 p-0 list-none">
+        {lista.map((c, i) => {
+          const [hh, mm] = (c.hora || '').split(':').map(Number);
+          const yaPaso = !!c.hora && hh * 60 + mm < minutosAhora;
+          return (
+            <li key={c.id} className={i > 0 ? 'border-t border-line' : ''}>
+              <button type="button" onClick={() => onAbrir(c)}
+                className={`w-full min-h-[52px] py-2 flex items-center gap-3 text-left ${yaPaso ? 'opacity-60' : ''}`}
+                aria-label={`${c.hora ? textoHora(c.hora) : nombreMomento(c)}: ${c.titulo}${c.repetirSemanal ? ', cada semana' : ''}${yaPaso ? ', ya pasó' : ''}. Editar`}>
+                <span className="w-[76px] shrink-0 font-heading font-bold text-[16px] text-text">{c.hora ? textoHora(c.hora) : <span className="text-[13px] font-body font-semibold text-text-muted">{nombreMomento(c)}</span>}</span>
+                <span className="flex-1 min-w-0">
+                  <span className="block text-[15px] font-semibold leading-tight break-words">{c.titulo}</span>
+                  {c.repetirSemanal && <span className="flex items-center gap-1 mt-0.5 text-[12px] text-text-muted"><Repeat size={12} />cada semana</span>}
+                </span>
+                <ChevronRight size={16} className="text-text-muted shrink-0" aria-hidden="true" />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+};
 
 const renderTareasBox = ({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab }: any) => {
   if (th.modo === 'nada') return null;
@@ -882,8 +916,7 @@ export const TodayScreen: React.FC = () => {
           <div className="flex flex-col gap-6">
             {ordenMomentos.map(mom => {
               const inMom = habitosConMomentoEfectivo.filter(h => h.momentoEfectivo === mom);
-              // El momento también se muestra si hoy tiene compromisos en él
-              if (inMom.length === 0 && !compromisosDelDia(compromisos, hoy).some(c => (momentoDe(c) ?? 'flexible') === mom)) return null;
+                            if (inMom.length === 0) return null;
 
               const hechos = inMom.filter(h => esHabitoCompletado(h.id)).length;
               const total = inMom.length;
@@ -914,31 +947,6 @@ export const TodayScreen: React.FC = () => {
                       });
                     })}
                     
-                    {compromisosDelDia(compromisos, hoy).filter(c => (momentoDe(c) || 'cualquiera') === mom || (momentoDe(c) === null && mom === 'flexible')).map(c => {
-                      const yaPaso = c.hora ? (() => {
-                        const [hh, mm] = c.hora.split(':').map(Number);
-                        const n = new Date();
-                        return (hh < n.getHours() || (hh === n.getHours() && mm < n.getMinutes()));
-                      })() : false;
-                      
-                      return (
-                        <div key={`c-${c.id}`}
-                          className={`rounded-xl border border-line-strong p-3 flex flex-col gap-1.5 cursor-pointer hover:bg-surface-raised transition-colors ${yaPaso ? 'opacity-60' : ''}`}
-                          onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
-                          <div className="flex items-center gap-1.5 text-[15px] font-heading font-bold text-text">
-                            <Clock size={16} />
-                            {c.hora ? textoHora(c.hora) : 'Sin hora'}
-                          </div>
-                          <span className="text-[15px] font-bold leading-tight">{c.titulo}</span>
-                          {c.repetirSemanal && (
-                            <div className="flex items-center gap-1 text-[12px] text-text-muted mt-1">
-                              <Repeat size={14} />
-                              cada semana
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
 
                     {inMom.filter(h => !enRutina.has(h.id)).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0)).map(habito => {
                       return renderHabitoFunc(habito, false);
@@ -953,6 +961,7 @@ export const TodayScreen: React.FC = () => {
         {/* Right Column */}
         <div className="flex flex-col gap-4">
           {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
+          {renderCompromisosBox({ lista: compromisosDelDia(compromisos, hoy), desk, onAbrir: (c) => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); } })}
 
           <EstaSemanaDesk
             habitosActivos={habitosActivos}
@@ -1106,8 +1115,7 @@ export const TodayScreen: React.FC = () => {
       <div className="flex flex-col gap-4">
         {ordenMomentos.map(mom => {
           const inMom = habitosConMomentoEfectivo.filter(h => h.momentoEfectivo === mom);
-          // El momento también se muestra si hoy tiene compromisos en él
-              if (inMom.length === 0 && !compromisosDelDia(compromisos, hoy).some(c => (momentoDe(c) ?? 'flexible') === mom)) return null;
+                        if (inMom.length === 0) return null;
 
           const hechos = inMom.filter(h => esHabitoCompletado(h.id)).length;
           const total = inMom.length;
@@ -1150,31 +1158,6 @@ export const TodayScreen: React.FC = () => {
                     });
                   })}
                   
-                  {compromisosDelDia(compromisos, hoy).filter(c => (momentoDe(c) || 'cualquiera') === mom || (momentoDe(c) === null && mom === 'flexible')).map(c => {
-                    const yaPaso = c.hora ? (() => {
-                      const [hh, mm] = c.hora.split(':').map(Number);
-                      const n = new Date();
-                      return (hh < n.getHours() || (hh === n.getHours() && mm < n.getMinutes()));
-                    })() : false;
-                    
-                    return (
-                      <div key={`c-${c.id}`}
-                        className={`rounded-xl border border-line-strong p-3 flex flex-col gap-1.5 cursor-pointer active:scale-[0.99] transition-transform ${yaPaso ? 'opacity-60' : ''}`}
-                        onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
-                        <div className="flex items-center gap-1.5 text-[15px] font-heading font-bold text-text">
-                          <Clock size={16} />
-                          {c.hora ? textoHora(c.hora) : 'Sin hora'}
-                        </div>
-                        <span className="text-[15px] font-bold leading-tight">{c.titulo}</span>
-                        {c.repetirSemanal && (
-                          <div className="flex items-center gap-1 text-[12px] text-text-muted mt-1">
-                            <Repeat size={14} />
-                            cada semana
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
 
                   {inMom.filter(h => !enRutina.has(h.id)).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0)).map(habito => {
                     return renderHabitoFunc(habito, false);
@@ -1187,6 +1170,7 @@ export const TodayScreen: React.FC = () => {
       </div>
 
       {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
+          {renderCompromisosBox({ lista: compromisosDelDia(compromisos, hoy), desk, onAbrir: (c) => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); } })}
 
       {proximaInsignia && (
         <div className="mt-4 flex items-center gap-3">
