@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
-import { TrendingUp, Clock, ChevronRight, Plus, Calendar } from 'lucide-react';
+import { TrendingUp, Clock, ChevronRight, Plus, Calendar, CalendarRange } from 'lucide-react';
 import {
   fuerzaSerieHabito,
   serieFuerzaTotal,
@@ -232,13 +232,22 @@ export const StatsScreen: React.FC = () => {
             <p className="text-[13px] text-text-muted">Desde el {startDay} de {startMonth} · sin contar hoy</p>
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => navigateToTab('calendario')}
-          className="h-[44px] px-3.5 rounded-[12px] bg-surface-raised border border-line-strong text-[14px] font-bold flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap shrink-0"
-        >
-          <Calendar size={18} /> Ver calendario
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => navigateToTab('semana')}
+            className="h-[44px] px-3.5 rounded-[12px] bg-surface-raised border border-line-strong text-[14px] font-bold flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap shrink-0"
+          >
+            <CalendarRange size={18} /> Tu semana
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateToTab('calendario')}
+            className="h-[44px] px-3.5 rounded-[12px] bg-surface-raised border border-line-strong text-[14px] font-bold flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap shrink-0"
+          >
+            <Calendar size={18} /> Ver calendario
+          </button>
+        </div>
       </header>
 
       {/* TARJETA FUERZA */}

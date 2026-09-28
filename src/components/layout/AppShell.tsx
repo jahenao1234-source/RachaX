@@ -13,6 +13,7 @@ import { HabitDetailScreen } from '../screens/HabitDetailScreen';
 import { ManageHabitsModal } from '../screens/ManageHabitsModal';
 import { FocusModeScreen } from '../screens/FocusModeScreen';
 import { TasksScreen } from '../screens/TasksScreen';
+import { SemanaScreen } from '../screens/SemanaScreen';
 import { RutinaEditorModal } from '../screens/RutinaEditorModal';
 import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
@@ -55,6 +56,8 @@ export const AppShell: React.FC = () => {
         return <TodayScreen />;
       case 'tareas':
         return <TasksScreen />;
+      case 'semana':
+        return <SemanaScreen />;
       case 'stats':
         return <StatsScreen />;
       case 'calendario':
@@ -108,12 +111,12 @@ export const AppShell: React.FC = () => {
 
           {/* Scrollable Screen Content */}
           <div className={`flex-1 overflow-y-auto relative z-10 custom-scrollbar ${
-            (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas')
+            (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas' || activeTab === 'semana')
               ? 'px-5 sm:px-6 lg:px-[22px] xl:px-[32px] pt-3 lg:pt-[18px] xl:pt-[24px] pb-24 lg:pb-8' 
               : 'px-5 sm:px-6 lg:px-8 pt-3 lg:pt-6 pb-24 lg:pb-8'
           }`}>
             <div className={`w-full mx-auto ${
-              (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
+              (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas' || activeTab === 'semana') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
             }`}>
               {renderActiveScreen()}
             </div>
