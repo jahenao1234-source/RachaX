@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, Calendar } from 'lucide-react';
 import { formatDateToString, parseDateString } from '../../utils/habitUtils';
 import { Subtarea } from '../../types';
+import { CalendarioMes } from '../common/CalendarioMes';
 
 const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
@@ -36,6 +37,7 @@ export const HojaCuando: React.FC<{
 }> = ({ tareaId, paso, tareaNombre, ruta, hoy, diaInicial, onCerrar, onHecho, ponerFechaPaso }) => {
   const [fecha, setFecha] = useState<string | undefined>(paso.fecha ?? (diaInicial && diaInicial >= hoy ? diaInicial : hoy));
   const [momento, setMomento] = useState<'cualquiera'|'manana'|'tarde'|'noche'>(paso.momento ?? 'cualquiera');
+  const [verCalendario, setVerCalendario] = useState(false);
   const cerrarRef = useRef<HTMLButtonElement>(null);
 
   const alCerrar = useRef(onCerrar);
@@ -108,17 +110,30 @@ export const HojaCuando: React.FC<{
             {fila(hoy, 'Hoy')}
             {fila(manana, 'Mañana')}
             {otros.slice(0, 4).map((v) => fila(v, 'Otro'))}
-            {/* "Más": el calendario del sistema va encima, invisible, para que el toque lo abra en cualquier celular */}
-            <label
-              style={fMas ? { borderColor: 'var(--text)', borderWidth: 2, background: 'var(--surface-raised)' } : undefined}
-              className="relative w-full min-h-[56px] flex flex-col items-center justify-center gap-[1px] rounded-xl border border-line-strong bg-surface text-[12px] text-text-muted cursor-pointer">
-              {fMas ? <><span>{DIAS_CORTOS[fMas.getDay()]}</span><b className="text-[18px] text-text">{fMas.getDate()}</b></> : <><Calendar size={18} aria-hidden="true" /><span>Más</span></>}
-              <input type="date" min={hoy} value={fMas ? fecha : ''} aria-label="Elegir otro día en el calendario"
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                onClick={(e) => { try { (e.currentTarget as HTMLInputElement & { showPicker?: () => void }).showPicker?.(); } catch { /* el navegador lo abre solo */ } }}
-                onChange={(e) => { if (e.target.value) setFecha(e.target.value); }} />
-            </label>
+            <button
+              type="button"
+              aria-expanded={verCalendario}
+              aria-label="Elegir otro día en el calendario"
+              onClick={() => setVerCalendario(!verCalendario)}
+              style={verCalendario || fMas ? { borderColor: 'var(--text)', borderWidth: 2, background: fMas ? 'var(--surface-raised)' : undefined } : undefined}
+              className="w-full min-h-[56px] flex flex-col items-center justify-center gap-[1px] rounded-xl border border-line-strong bg-surface text-[12px] text-text-muted transition-colors">
+              {fMas ? <>
+                <span>{DIAS_CORTOS[fMas.getDay()]}</span>
+                <b className="text-[18px] text-text leading-none my-[1px]">{fMas.getDate()}</b>
+                <span className="text-[11px] leading-none">{MESES[fMas.getMonth()].slice(0,3)}</span>
+              </> : <><Calendar size={18} aria-hidden="true" /><span>Más</span></>}
+            </button>
           </div>
+          {verCalendario && (
+            <CalendarioMes 
+              min={hoy}
+              valor={fecha}
+              onElegir={(f) => {
+                setFecha(f);
+                setVerCalendario(false);
+              }}
+            />
+          )}
 
           <p className="text-[13px] font-semibold text-text-muted mt-[14px] mb-[8px]">Momento</p>
           <div className="grid grid-cols-4 gap-[3px] p-[3px] rounded-xl border border-line bg-surface" role="radiogroup" aria-label="Momento">

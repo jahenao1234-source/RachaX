@@ -835,6 +835,10 @@ html:not(.dark) .tareas .tchk.on{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
 html:not(.dark) .tareas .tscrim{background:rgba(15,17,19,.35)}
 .tareas .tsheet{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;background:var(--bg);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:71}
 .tareas .tgrab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 12px}
+/* Nuevo / Editar compromiso: el cuerpo se desplaza y el pie queda a la vista; en escritorio, ventana centrada de 480px */
+.tareas .tsheet.hcomp{display:flex;flex-direction:column;max-height:88dvh;overflow:hidden}
+.tareas .tsheet.hcomp .t4pie{flex-shrink:0;border-top:1px solid var(--line);padding-bottom:max(18px,env(safe-area-inset-bottom))}
+@media (min-width:1024px){.tareas .tsheet.hcomp{top:50%;bottom:auto;transform:translate(-50%,-50%);max-width:480px;max-height:90vh;border-radius:20px;border:1px solid var(--line);padding-top:18px}.tareas .tsheet.hcomp .tgrab{display:none}}
 .tareas .ttoast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;width:calc(100% - 32px);max-width:398px;z-index:60}
 @media (min-width:1024px){.tareas .ttoast{bottom:24px}}
 

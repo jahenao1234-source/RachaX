@@ -72,6 +72,7 @@ export const SemanaScreen: React.FC = () => {
   // Estado para la hoja de compromisos
   const [hojaCompromisoAbierta, setHojaCompromisoAbierta] = useState(false);
   const [compromisoEditando, setCompromisoEditando] = useState<Compromiso | undefined>(undefined);
+  const [fechaOcurrencia, setFechaOcurrencia] = useState<string | undefined>(undefined);
   const [fechaCompromisoNuevo, setFechaCompromisoNuevo] = useState(hoy);
 
   useEffect(() => {
@@ -170,7 +171,7 @@ export const SemanaScreen: React.FC = () => {
       {!esEscritorio && <div className="s3plan mt-[18px]">
         <div className="s3ph flex items-center justify-between gap-[10px] mb-[10px]">
           <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
-          <button type="button" className="s3mas min-h-[44px] inline-flex items-center gap-[6px] px-[12px] rounded-[12px] border border-line-strong bg-surface-raised text-text font-bold text-[14px]" onClick={() => { setCompromisoEditando(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}>
+          <button type="button" className="s3mas min-h-[44px] inline-flex items-center gap-[6px] px-[12px] rounded-[12px] border border-line-strong bg-surface-raised text-text font-bold text-[14px]" onClick={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}>
             <Plus size={16} strokeWidth={2.4} />Compromiso
           </button>
         </div>
@@ -183,7 +184,7 @@ export const SemanaScreen: React.FC = () => {
       {esEscritorio && <div className="tsplanh">
       <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
       <div className="flex items-center gap-2 flex-wrap">
-      <button type="button" className="tsnuevo" onClick={() => { setCompromisoEditando(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}><Plus size={16} strokeWidth={2.4} />Compromiso</button>
+      <button type="button" className="tsnuevo" onClick={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}><Plus size={16} strokeWidth={2.4} />Compromiso</button>
       <div role="tablist" aria-label="Qué semana planear">
         <button type="button" role="tab" aria-selected={pestaña === 'esta'} onClick={() => setPestaña('esta')}>
           Esta semana <span className="tab-range">{rangoSemana(diasDeSemana(hoy, 'esta'))}</span>
@@ -201,8 +202,9 @@ export const SemanaScreen: React.FC = () => {
           hoy={hoy} 
           onElegirDia={(tareaId, paso) => setPasoEligiendo({ tareaId, paso, tareaNombre: tareas.find(t => t.id === tareaId)?.nombre || '', ruta: rutaDePaso(tareas.find(t => t.id === tareaId), paso.id) })} 
           avisar={avisar}
-          onEditarCompromiso={(c) => {
+          onEditarCompromiso={(c, fecha) => {
             setCompromisoEditando(c);
+            setFechaOcurrencia(fecha);
             setHojaCompromisoAbierta(true);
           }}
           onMoverCompromiso={handleMoverCompromiso}
@@ -291,7 +293,7 @@ export const SemanaScreen: React.FC = () => {
                                   return (
                                     <li key={`c-${c.id}`}
                                       className={`s2comp p-[7px] px-[8px] rounded-[10px] border border-line-strong bg-transparent ${pasado ? 'opacity-60' : ''}`}
-                                      onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
+                                      onClick={() => { setCompromisoEditando(c); setFechaOcurrencia(diaMovilElegido); setHojaCompromisoAbierta(true); }}>
                                       <span className="s2hora flex items-center gap-[4px] font-heading font-bold text-[14px] text-text">
                                         <Clock size={12} className="text-text-muted" />
                                         {c.hora ? textoHora(c.hora) : 'Sin hora'}
@@ -402,6 +404,7 @@ export const SemanaScreen: React.FC = () => {
           titulo={fechaPonerPaso.franja ? `${fechaPonerPaso.diaCorto} en la ${fechaPonerPaso.franja === 'manana' ? 'mañana' : fechaPonerPaso.franja}` : undefined}
           onCompromiso={fechaPonerPaso.franja ? () => {
             setCompromisoEditando(undefined);
+            setFechaOcurrencia(undefined);
             setFechaCompromisoNuevo(fechaPonerPaso.fecha);
             setFechaPonerPaso(null);
             setHojaCompromisoAbierta(true);
@@ -422,7 +425,7 @@ export const SemanaScreen: React.FC = () => {
         isOpen={hojaCompromisoAbierta}
         onClose={() => setHojaCompromisoAbierta(false)}
         compromiso={compromisoEditando}
-        fechas={fechas}
+        fechaOcurrencia={fechaOcurrencia}
         fechaInicial={fechaCompromisoNuevo}
       />
     </div>

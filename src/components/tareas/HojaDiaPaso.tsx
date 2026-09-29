@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, X, Calendar } from 'lucide-react';
 import { formatDateToString, parseDateString } from '../../utils/habitUtils';
+import { CalendarioMes } from '../common/CalendarioMes';
 
 const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
@@ -22,7 +23,7 @@ export const HojaDiaPaso: React.FC<{
   onElegir: (fecha?: string) => void;
   onCerrar: () => void;
 }> = ({ pasoTexto, tareaNombre, fecha, hoy, onElegir, onCerrar }) => {
-  const fechaRef = useRef<HTMLInputElement>(null);
+  const [verCalendario, setVerCalendario] = React.useState(false);
   const cerrarRef = useRef<HTMLButtonElement>(null);
 
   const alCerrar = useRef(onCerrar);
@@ -76,16 +77,18 @@ export const HojaDiaPaso: React.FC<{
                 </button>
               );
             })}
-            <button type="button" aria-label="Elegir otro día en el calendario" onClick={() => {
-              const el = fechaRef.current;
-              if (!el) return;
-              try { (el as HTMLInputElement & { showPicker?: () => void }).showPicker?.(); } catch { el.click(); }
-            }}>
+            <button type="button" aria-expanded={verCalendario} aria-label="Elegir otro día en el calendario" onClick={() => setVerCalendario(!verCalendario)}
+              style={verCalendario ? { borderColor: 'var(--text)', borderWidth: 2 } : undefined}>
               <Calendar size={18} /><span>Más</span>
             </button>
           </div>
-          <input ref={fechaRef} type="date" min={hoy} className="sr-only" tabIndex={-1} aria-hidden="true"
-            onChange={(e) => { if (e.target.value) onElegir(e.target.value); }} />
+          {verCalendario && (
+            <CalendarioMes 
+              min={hoy}
+              valor={fecha}
+              onElegir={onElegir}
+            />
+          )}
         </div>
         {fecha && <button type="button" className="tquitar" onClick={() => onElegir(undefined)}>Quitar el día</button>}
       </div>
