@@ -168,6 +168,18 @@ export function pasosSinDia(tareas: Tarea[]): GrupoSinDia[] {
     .filter((g) => g.pasos.length > 0);
 }
 
+/** El camino de pasos grandes que contiene un paso (vacío si es un paso suelto de la tarea). */
+export function rutaDePaso(tarea: Tarea | undefined, pasoId: string): string[] {
+  return hojasConRuta(tarea?.subtareas || []).find(({ paso }) => paso.id === pasoId)?.ruta ?? [];
+}
+
+const DIAS_LARGOS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+/** "Jueves 24", para el título de la agenda del día en el celular. */
+export function diaLargo(fecha: string): string {
+  const d = parseDateString(fecha);
+  return `${DIAS_LARGOS[d.getDay()]} ${d.getDate()}`;
+}
+
 // ---------- Tu semana 2: el día repartido por momentos (design/maqueta-tu-semana-2.html) ----------
 
 export type Franja = 'cualquiera' | MomentoPlan;

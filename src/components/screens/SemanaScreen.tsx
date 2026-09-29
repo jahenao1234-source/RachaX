@@ -13,7 +13,9 @@ import {
   diaPorMomentos,
   FRANJAS,
   Franja,
-  textoCargaDia
+  textoCargaDia,
+  rutaDePaso,
+  diaLargo
 } from '../../utils/semanaUtils';
 import { HabitIcon } from '../common/HabitIcon';
 import { Casilla } from '../tareas/piezas';
@@ -21,8 +23,9 @@ import { HojaDiaPaso } from '../tareas/HojaDiaPaso';
 import { HojaPonerPaso } from '../semana/HojaPonerPaso';
 import { PlanSemana } from '../semana/PlanSemana';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
+import { HojaCuando } from '../semana/HojaCuando';
 import { useEsEscritorio } from './TodayScreen';
-import { GripVertical, Clock, Repeat, Sunrise, Sun, Moon, Plus } from 'lucide-react';
+import { GripVertical, Clock, Repeat, Sunrise, Sun, Moon, Plus, Calendar, CalendarPlus } from 'lucide-react';
 import { momentoDeHora } from '../../utils/compromisosUtils';
 import { textoDiaLargo } from '../../utils/tareasUtils';
 import { Subtarea, Compromiso } from '../../types';
@@ -63,7 +66,7 @@ export const SemanaScreen: React.FC = () => {
   };
   useEffect(() => () => { if (timerAviso.current) window.clearTimeout(timerAviso.current); }, []);
   
-  const [pasoEligiendo, setPasoEligiendo] = useState<{ tareaId: string, paso: Subtarea } | null>(null);
+  const [pasoEligiendo, setPasoEligiendo] = useState<{ tareaId: string, paso: Subtarea, tareaNombre: string, ruta: string[] } | null>(null);
   const [fechaPonerPaso, setFechaPonerPaso] = useState<{ fecha: string, diaCorto: string, franja?: Franja } | null>(null);
   
   // Estado para la hoja de compromisos
@@ -122,7 +125,17 @@ export const SemanaScreen: React.FC = () => {
       </header>
 
       {/* Arriba, compacto: Cómo vas en una franja y Rescate en un renglón (más espacio para planear) */}
-      <section className="tscomp" aria-labelledby="tscomp-t">
+      {!esEscritorio && <section className="card s3como mt-[12px] p-[12px] px-[14px] rounded-[18px] bg-surface border border-line" aria-label={`Cómo vas: cumpliste ${vas.cumplidas} de ${vas.tocaban}, quedan ${vas.quedan} días`}>
+        <p className="s3ct m-0 mb-[10px] flex items-baseline justify-between gap-[8px] text-[13px] text-text-muted">
+          <b className="font-heading text-[18px] text-text">Cómo vas</b>
+          <span>Cumpliste <b className="text-text">{vas.cumplidas} de {vas.tocaban}</b>{vas.quedan > 0 ? ` · quedan ${vas.quedan} días` : ''}</span>
+        </p>
+        <i className="s3barra block h-[6px] rounded-[9px] bg-track-empty overflow-hidden" aria-hidden="true">
+          <b className="block h-full rounded-[9px] bg-ambar-text" style={{ width: vas.tocaban > 0 ? `${Math.round((vas.cumplidas / vas.tocaban) * 100)}%` : '0%' }} />
+        </i>
+      </section>}
+
+      {esEscritorio && <section className="tscomp" aria-labelledby="tscomp-t">
         <div className="tscomp-txt">
           <h2 id="tscomp-t" className="font-heading font-bold text-[20px] m-0">Cómo vas</h2>
           <p className="m-0">Cumpliste <b>{vas.cumplidas} de {vas.tocaban}</b> veces lo que te tocaba{vas.quedan > 0 ? ` · quedan ${vas.quedan} días` : ''}</p>
@@ -140,7 +153,7 @@ export const SemanaScreen: React.FC = () => {
             );
           })}
         </ol>
-      </section>
+      </section>}
 
       {rescate && (
         <section className="tsresc" aria-label={`Rescate: ${rescate.habito.nombre}`}>
@@ -154,7 +167,20 @@ export const SemanaScreen: React.FC = () => {
       )}
 
       {/* Planea */}
-      <div className="tsplanh">
+      {!esEscritorio && <div className="s3plan mt-[18px]">
+        <div className="s3ph flex items-center justify-between gap-[10px] mb-[10px]">
+          <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
+          <button type="button" className="s3mas min-h-[44px] inline-flex items-center gap-[6px] px-[12px] rounded-[12px] border border-line-strong bg-surface-raised text-text font-bold text-[14px]" onClick={() => { setCompromisoEditando(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}>
+            <Plus size={16} strokeWidth={2.4} />Compromiso
+          </button>
+        </div>
+        <div className="s3tabs grid grid-cols-2 gap-[4px] p-[4px] rounded-[14px] bg-surface border border-line mb-[8px]" role="tablist">
+          <button type="button" role="tab" aria-selected={pestaña === 'esta'} onClick={() => setPestaña('esta')} className={`min-h-[40px] border-none rounded-[10px] bg-transparent text-text-muted font-bold text-[14px] ${pestaña === 'esta' ? 'bg-surface-raised text-text' : ''}`}>Esta semana</button>
+          <button type="button" role="tab" aria-selected={pestaña === 'proxima'} onClick={() => setPestaña('proxima')} className={`min-h-[40px] border-none rounded-[10px] bg-transparent text-text-muted font-bold text-[14px] ${pestaña === 'proxima' ? 'bg-surface-raised text-text' : ''}`}>La próxima</button>
+        </div>
+      </div>}
+
+      {esEscritorio && <div className="tsplanh">
       <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
       <div className="flex items-center gap-2 flex-wrap">
       <button type="button" className="tsnuevo" onClick={() => { setCompromisoEditando(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}><Plus size={16} strokeWidth={2.4} />Compromiso</button>
@@ -167,13 +193,13 @@ export const SemanaScreen: React.FC = () => {
         </button>
       </div>
       </div>
-      </div>
+      </div>}
 
       {esEscritorio ? (
         <PlanSemana 
           fechas={fechas} 
           hoy={hoy} 
-          onElegirDia={(tareaId, paso) => setPasoEligiendo({ tareaId, paso })} 
+          onElegirDia={(tareaId, paso) => setPasoEligiendo({ tareaId, paso, tareaNombre: tareas.find(t => t.id === tareaId)?.nombre || '', ruta: rutaDePaso(tareas.find(t => t.id === tareaId), paso.id) })} 
           avisar={avisar}
           onEditarCompromiso={(c) => {
             setCompromisoEditando(c);
@@ -182,25 +208,25 @@ export const SemanaScreen: React.FC = () => {
           onMoverCompromiso={handleMoverCompromiso}
         />
         ) : (
-          <div className="flex flex-col w-full mt-4">
+          <div className="flex flex-col w-full">
             {/* Móvil: tira horizontal de días */}
-            <div className="grid grid-cols-7 gap-1 pb-2 mb-4" role="tablist" aria-label="Días">
+            <div className="s3tira grid grid-cols-7 gap-[4px] mb-[10px]" role="tablist" aria-label="Días">
               {fechas.map(f => {
                 const r = etiquetaDia(f);
-                const isHoy = f === hoy;
                 const isSelected = f === diaMovilElegido;
+                const dmInfo = diaPorMomentos(tareas, compromisos, habitosActivos, f, hoy);
+                const totalItems = dmInfo.pasos + dmInfo.compromisos;
+                const puntitos = '•'.repeat(Math.min(totalItems, 3));
                 return (
                   <button 
                     key={f} 
                     onClick={() => setDiaMovilElegido(f)}
                     role="tab" aria-selected={isSelected}
-                    className={`h-[60px] rounded-xl flex flex-col items-center justify-center border transition-colors ${isSelected ? 'border-text bg-surface-raised font-bold text-text' : 'border-line bg-surface text-text-muted'} ${f < hoy && !isSelected ? 'opacity-60' : ''}`}
+                    className={`min-h-[56px] flex flex-col items-center justify-center gap-[1px] rounded-[12px] border font-inherit text-[12px] font-semibold transition-colors ${isSelected ? 'border-text border-[1.5px] bg-surface-raised text-text' : 'border-line bg-surface text-text'} ${f < hoy && !isSelected ? 'text-text-muted' : ''}`}
                   >
-                    <span className="text-[12px] font-bold">{r.corto.charAt(0)}</span>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <span className="text-[18px] font-heading font-bold">{r.numero}</span>
-                      
-                    </div>
+                    <span>{r.corto.charAt(0)}</span>
+                    <b className="text-[18px]">{r.numero}</b>
+                    <i className="not-italic h-[10px] leading-[8px] tracking-[1px] text-text-muted text-[14px]" aria-hidden="true">{puntitos}</i>
                   </button>
                 );
               })}
@@ -211,81 +237,117 @@ export const SemanaScreen: React.FC = () => {
               const dm = diaPorMomentos(tareas, compromisos, habitosActivos, diaMovilElegido, hoy);
               const r = etiquetaDia(diaMovilElegido);
               const pasado = diaMovilElegido < hoy;
+              const titleDate = diaMovilElegido === hoy ? `${diaLargo(diaMovilElegido)} · hoy` : diaLargo(diaMovilElegido);
+              const totalHabitos = Object.values(dm.habitos).reduce((a, b) => a + b, 0);
               
               return (
-                <div className="flex flex-col gap-4 mb-24">
-                  <div className="flex justify-between items-center px-1">
-                    <h3 className="font-heading font-bold text-[22px]">{diaMovilElegido === hoy ? 'Hoy' : `${r.corto} ${r.numero}`}</h3>
-                    <span className="text-[13px] text-text-muted">{textoCargaDia(dm)}</span>
+                <div className="flex flex-col mb-24">
+                  <div className="s3dia p-[4px] px-[14px] pb-[10px] rounded-[16px] bg-surface border border-line">
+                    <div className="s3dh my-[10px] mt-[10px] mb-[4px] flex items-baseline justify-between gap-[8px] text-[15px]">
+                      <b className="font-bold text-text">{titleDate}</b>
+                      <span className="text-[12px] text-text-muted">{textoCargaDia(dm)}{totalHabitos > 0 ? ` · ${totalHabitos} hábitos` : ''}</span>
+                    </div>
+
+                    {FRANJAS.map(franja => {
+                      if (franja === 'cualquiera' && dm.franjas[franja].length === 0) return null;
+                      const items = dm.franjas[franja];
+                      const vacio = items.length === 0;
+                      
+                      return (
+                        <div key={franja} className={`s3mom py-[4px] pb-[8px] border-t border-line${vacio ? ' py-[2px]' : ''}`}>
+                          <div className="s3mh m-0 flex items-center gap-[8px] min-h-[44px] text-[14px] font-bold">
+                            <span className={`flex ${colorFranja(franja)}`} aria-hidden="true">{iconForFranja(franja)}</span>
+                            <span className={`s3mn ${vacio ? "flex-none" : "flex-1"}`}>{franja === 'manana' ? 'Mañana' : franja === 'tarde' ? 'Tarde' : franja === 'noche' ? 'Noche' : 'Cualquier momento'}</span>
+                            {vacio && <span className="s3libre flex-1 text-[13px] font-medium text-text-muted">Libre</span>}
+                            {!pasado && franja !== 'cualquiera' && (
+                              <button type="button" className="s3add w-[44px] h-[44px] mr-[-6px] border-none bg-transparent text-text flex items-center justify-center relative before:content-[''] before:absolute before:inset-[6px] before:rounded-[99px] before:bg-surface-raised before:z-0" aria-label={`Agregar a la ${franja === 'manana' ? 'mañana' : franja}`} onClick={() => setFechaPonerPaso({ fecha: diaMovilElegido, diaCorto: `${r.corto} ${r.numero}`, franja })}>
+                                <Plus size={18} strokeWidth={2.4} className="relative" />
+                              </button>
+                            )}
+                          </div>
+                          
+                          {items.length > 0 && (
+                            <ul className="s2items list-none m-0 p-0 grid grid-cols-1 gap-[5px]">
+                              {items.map(it => {
+                                if (it.tipo === 'paso') {
+                                  return (
+                                    <li key={`p-${it.dato.paso.id}`}
+                                      className={`s2paso s3paso relative pr-[44px] p-[7px] px-[8px] rounded-[10px] ${pasado ? 'bg-transparent py-[3px] px-0' : 'bg-surface-raised'}`}
+                                      onClick={(e) => { if (!pasado && !(e.target as HTMLElement).closest('.tchk')) setPasoEligiendo({ tareaId: it.dato.tareaId, paso: it.dato.paso, tareaNombre: it.dato.tareaNombre, ruta: rutaDePaso(tareas.find(t => t.id === it.dato.tareaId), it.dato.paso.id) }); }}>
+                                      <span className="s2pt block text-[13px] font-semibold leading-[1.3] text-text" style={it.dato.paso.hecha ? { textDecoration: 'line-through', color: 'var(--text-muted)' } : undefined}>{it.dato.paso.texto}</span>
+                                      <span className="s2pie flex items-start gap-[6px] mt-[5px] min-w-0">
+                                        <Casilla paso={it.dato.paso} onToggle={() => toggleSubtarea(it.dato.tareaId, it.dato.paso.id)} />
+                                        <span className="s2tarea text-[12px] leading-[1.3] text-text-muted min-w-0 break-words">{it.dato.tareaNombre}{it.dato.atraso ? ` · ${it.dato.atraso}` : ''}</span>
+                                      </span>
+                                      {!pasado && (
+                                        <button className="s3cambiar absolute right-0 top-1/2 -translate-y-1/2 w-[44px] h-[44px] border-none bg-none text-text-muted flex items-center justify-center" aria-label={`Cambiar el día o el momento de ${it.dato.paso.texto}`} onClick={(e) => { e.stopPropagation(); setPasoEligiendo({ tareaId: it.dato.tareaId, paso: it.dato.paso, tareaNombre: it.dato.tareaNombre, ruta: rutaDePaso(tareas.find(t => t.id === it.dato.tareaId), it.dato.paso.id) }); }}>
+                                          <Calendar size={16} />
+                                        </button>
+                                      )}
+                                    </li>
+                                  );
+                                } else {
+                                  const c = it.dato as Compromiso;
+                                  return (
+                                    <li key={`c-${c.id}`}
+                                      className={`s2comp p-[7px] px-[8px] rounded-[10px] border border-line-strong bg-transparent ${pasado ? 'opacity-60' : ''}`}
+                                      onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
+                                      <span className="s2hora flex items-center gap-[4px] font-heading font-bold text-[14px] text-text">
+                                        <Clock size={12} className="text-text-muted" />
+                                        {c.hora ? textoHora(c.hora) : 'Sin hora'}
+                                      </span>
+                                      <span className="s2ct block text-[13px] font-semibold leading-[1.3] mt-[2px] text-text">{c.titulo}</span>
+                                      {c.repetirSemanal && (
+                                        <span className="s2rep flex items-center gap-[4px] mt-[3px] text-[11px] text-text-muted">
+                                          <Repeat size={11} />
+                                          cada semana
+                                        </span>
+                                      )}
+                                    </li>
+                                  );
+                                }
+                              })}
+                            </ul>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {dm.pasos > 0 && <p className="s3pista m-0 mt-[8px] text-[12px] text-text-muted">Toca un paso para cambiarlo de día o de momento.</p>}
                   </div>
 
-                  {FRANJAS.map(franja => {
-                    if (franja === 'cualquiera' && dm.franjas[franja].length === 0 && dm.habitos[franja] === 0) return null;
-                    const items = dm.franjas[franja];
-                    
-                    return (
-                      <div key={franja} className={`flex flex-col gap-2`}>
-                        {(franja !== 'cualquiera' || items.length > 0 || dm.habitos[franja] > 0) && (
-                          <div className="flex items-center justify-between mb-1 px-1">
-                            <div className={`flex items-center gap-1.5 text-[14px] font-bold${colorFranja(franja)}`}>
-                              {iconForFranja(franja)}
-                              {franja === 'manana' ? 'Mañana' : franja === 'tarde' ? 'Tarde' : franja === 'noche' ? 'Noche' : 'Cualquier momento'}
+                  {psd.length > 0 && (
+                    <section className="s3sin-card mt-[12px] p-[12px] px-[14px] pb-[8px] rounded-[16px] bg-surface border border-line" aria-labelledby="s3sd">
+                      <p className="s3sd-h m-0 flex items-baseline gap-[8px]"><b id="s3sd" className="font-heading text-[20px] text-text">Pasos sin día</b><span className="num tscnt text-[15px] text-text-muted">{psd.reduce((a, g) => a + g.pasos.length, 0)}</span></p>
+                      <p className="s3sd-sub m-0 mt-[2px] mb-[6px] text-[13px] text-text-muted">Toca uno para ponerlo en el día que estás mirando.</p>
+                      
+                      {psd.map(g => (
+                        <div key={g.tareaId} className="s3sd-grupo py-[4px] pb-[6px] border-t border-line">
+                          <p className="tsgt flex items-center gap-[6px] my-[8px] mb-[4px] text-[12px] font-bold text-text-muted">
+                            <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: g.tareaIcono || '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' }} />
+                            {g.tareaNombre}
+                          </p>
+                          {g.ramas.map((rama, i) => (
+                            <div key={i} className={rama.ruta.length > 0 ? "s3rama m-0 my-[2px] ml-[6px] pl-[10px] border-l border-line-strong" : ""}>
+                              {rama.ruta.length > 0 && <p className="s3rama-h m-0 mt-[6px] text-[13px] font-bold text-text">{rama.ruta.join(' › ')}</p>}
+                              <div>
+                                {rama.pasos.map(p => (
+                                  <button type="button" key={p.id} className="s3sd-paso flex items-center gap-[10px] w-full min-h-[48px] py-[6px] border-none bg-none text-text text-[15px] font-semibold text-left border-t border-line first:border-none" aria-label={`${p.texto}, de ${g.tareaNombre}. Ponerle día`} onClick={() => setPasoEligiendo({ tareaId: g.tareaId, paso: p, tareaNombre: g.tareaNombre, ruta: rama.ruta })}>
+                                    <CalendarPlus size={16} className="text-text-muted flex-shrink-0" />
+                                    {p.texto}
+                                  </button>
+                                ))}
+                              </div>
                             </div>
-                            {dm.habitos[franja] > 0 && <span className="text-[12px] text-text-muted">{dm.habitos[franja]} {dm.habitos[franja] === 1 ? 'hábito' : 'hábitos'}</span>}
-                          </div>
-                        )}
-                        
-                                                
-                        <div className="flex flex-col gap-2">
-                          {items.map(it => {
-                            if (it.tipo === 'paso') {
-                              return (
-                                <div key={`p-${it.dato.paso.id}`}
-                                  className={`step-card rounded-xl bg-surface-raised p-3 flex flex-col gap-2 border border-line ${pasado ? 'bg-transparent border-line p-2' : ''}`}
-                                  onClick={(e) => { if (!pasado && !(e.target as HTMLElement).closest('.tchk')) setPasoEligiendo({ tareaId: it.dato.tareaId, paso: it.dato.paso }); }}>
-                                  <span className="text-[15px] font-bold leading-tight" style={it.dato.paso.hecha ? { textDecoration: 'line-through', color: 'var(--text-muted)' } : undefined}>{it.dato.paso.texto}</span>
-                                  <div className="flex items-center gap-2 mt-1">
-                                    <Casilla paso={it.dato.paso} onToggle={() => toggleSubtarea(it.dato.tareaId, it.dato.paso.id)} />
-                                    <span className="text-[13px] text-text-muted flex-1 min-w-0 leading-tight break-words">{it.dato.tareaNombre}{it.dato.atraso ? ` · ${it.dato.atraso}` : ''}</span>
-                                  </div>
-                                </div>
-                              );
-                            } else {
-                              const c = it.dato as Compromiso;
-                              return (
-                                <div key={`c-${c.id}`}
-                                  className={`compro-card rounded-xl border border-line-strong p-3 flex flex-col gap-1.5 ${pasado ? 'opacity-60' : ''}`}
-                                  onClick={() => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }}>
-                                  <div className="flex items-center gap-1.5 text-[15px] font-heading font-bold text-text">
-                                    <Clock size={16} />
-                                    {c.hora ? textoHora(c.hora) : 'Sin hora'}
-                                  </div>
-                                  <span className="text-[15px] font-bold leading-tight">{c.titulo}</span>
-                                  {c.repetirSemanal && (
-                                    <div className="flex items-center gap-1 text-[12px] text-text-muted mt-1">
-                                      <Repeat size={14} />
-                                      cada semana
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            }
-                          })}
+                          ))}
                         </div>
-                        {!pasado && franja !== 'cualquiera' && (
-                          <button type="button" className="tsponer" onClick={() => setFechaPonerPaso({ fecha: diaMovilElegido, diaCorto: `${r.corto} ${r.numero}`, franja })}>
-                            <Plus size={15} strokeWidth={2.4} />Agregar a la {franja === 'manana' ? 'mañana' : franja}
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
-                  
+                      ))}
+                    </section>
+                  )}
                 </div>
               );
             })()}
           </div>
-      )}
+        )}
 
       {aviso && (
         <div className="tareas">
@@ -304,16 +366,30 @@ export const SemanaScreen: React.FC = () => {
         </div>
       )}
 
-      {pasoEligiendo && (
-        <HojaDiaPaso 
+      {pasoEligiendo && esEscritorio && (
+        <HojaDiaPaso
           pasoTexto={pasoEligiendo.paso.texto}
-          tareaNombre={tareas.find(t => t.id === pasoEligiendo.tareaId)?.nombre || ''}
+          tareaNombre={pasoEligiendo.tareaNombre}
           fecha={pasoEligiendo.paso.fecha}
           hoy={hoy}
-        onElegir={(f) => {
-          ponerFechaPaso(pasoEligiendo.tareaId, pasoEligiendo.paso.id, f);
-          setPasoEligiendo(null);
-        }}
+          onElegir={(f) => {
+            ponerFechaPaso(pasoEligiendo.tareaId, pasoEligiendo.paso.id, f);
+            setPasoEligiendo(null);
+          }}
+          onCerrar={() => setPasoEligiendo(null)}
+        />
+      )}
+
+      {pasoEligiendo && !esEscritorio && (
+        <HojaCuando
+          tareaId={pasoEligiendo.tareaId}
+          paso={pasoEligiendo.paso}
+          tareaNombre={pasoEligiendo.tareaNombre}
+          ruta={pasoEligiendo.ruta}
+          hoy={hoy}
+          diaInicial={diaMovilElegido}
+          ponerFechaPaso={ponerFechaPaso}
+          onHecho={avisar}
           onCerrar={() => setPasoEligiendo(null)}
         />
       )}

@@ -4,6 +4,9 @@ import { Compromiso, MomentoPlan } from '../../types';
 import { momentoDeHora, coincideCon, textoHora } from '../../utils/compromisosUtils';
 import { etiquetaDia } from '../../utils/semanaUtils';
 import { useHabitStore } from '../../store/HabitContext';
+import { getTodayString } from '../../utils/habitUtils';
+
+const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 interface HojaCompromisoProps {
   isOpen: boolean;
@@ -44,6 +47,7 @@ export const HojaCompromiso: React.FC<HojaCompromisoProps> = ({ isOpen, onClose,
   const textoMomento = momentoDeducido === 'manana' ? 'mañana' : momentoDeducido === 'tarde' ? 'tarde' : 'noche';
 
   const coincidencia = coincideCon(compromisos, fecha, hora, compromiso?.id);
+  const fueraDeSemana = !fechas.includes(fecha);
   const diaNombre = etiquetaDia(fecha).corto.toLowerCase() + ' ' + etiquetaDia(fecha).numero;
 
   const handleGuardar = (alcance: 'uno' | 'todos' = 'uno') => {
@@ -159,9 +163,20 @@ export const HojaCompromiso: React.FC<HojaCompromisoProps> = ({ isOpen, onClose,
                   </button>
                 );
               })}
-              <button className="h-[44px] px-3 rounded-xl border border-line bg-surface text-text-muted flex items-center gap-2">
-                <Calendar size={16} /> Más
-              </button>
+              {/* "Más": el calendario del sistema va encima del botón, invisible, para que el toque lo abra en cualquier celular */}
+              <label className={`relative h-[44px] px-3 rounded-xl border flex items-center gap-2 cursor-pointer ${fueraDeSemana ? 'border-text bg-surface-raised font-bold text-text' : 'border-line bg-surface text-text-muted'}`}>
+                <Calendar size={16} aria-hidden="true" />
+                {fueraDeSemana ? `${etiquetaDia(fecha).corto} ${etiquetaDia(fecha).numero} ${MESES_CORTOS[Number(fecha.slice(5, 7)) - 1]}` : 'Más'}
+                <input
+                  type="date"
+                  min={getTodayString()}
+                  value={fueraDeSemana ? fecha : ''}
+                  aria-label="Elegir otro día en el calendario"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  onClick={(e) => { try { (e.currentTarget as HTMLInputElement & { showPicker?: () => void }).showPicker?.(); } catch { /* el navegador lo abre solo */ } }}
+                  onChange={(e) => { if (e.target.value) setFecha(e.target.value); }}
+                />
+              </label>
             </div>
           </div>
 

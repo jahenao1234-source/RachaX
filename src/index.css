@@ -720,7 +720,7 @@ html:not(.dark) .hoyd .hoyd-dia.all, html:not(.dark) .hoyd .hoyd-ok { background
 
 /* ---- Tareas (pestaña, celular): design/maqueta-tareas.html. Todo dentro de .tareas ---- */
 .tareas .num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;font-size:1.08em}
-.tareas .tcab{display:flex;align-items:flex-end;gap:12px;margin:18px 0 14px}
+.tareas .tcab{display:flex;align-items:flex-start;gap:12px;margin:18px 0 14px}
 .tareas .tnueva{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
 .tareas .tcard{padding:0;margin-bottom:10px;overflow:hidden}
 .tareas .thh{margin:0;font:inherit}

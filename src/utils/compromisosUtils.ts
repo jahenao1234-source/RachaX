@@ -1,5 +1,5 @@
 import { Compromiso, MomentoPlan } from '../types';
-import { parseDateString } from './habitUtils';
+import { parseDateString, formatDateToString } from './habitUtils';
 
 /**
  * Compromisos de Tu semana (design/maqueta-tu-semana-2.html, DESIGN.md › Tu semana).
@@ -45,6 +45,84 @@ export function compromisosDelDia(lista: Compromiso[], fecha: string): Compromis
   return lista
     .filter((c) => aplicaEn(c, fecha))
     .sort((a, b) => (a.hora && b.hora ? a.hora.localeCompare(b.hora) : a.hora ? -1 : b.hora ? 1 : a.titulo.localeCompare(b.titulo)));
+}
+
+const sumarDias = (fecha: string, n: number) => {
+  const d = parseDateString(fecha);
+  d.setDate(d.getDate() + n);
+  return formatDateToString(d);
+};
+const diasEntre = (desde: string, hasta: string) =>
+  Math.round((parseDateString(hasta).getTime() - parseDateString(desde).getTime()) / 86400000);
+
+/**
+ * El próximo día (desde hoy, incluido) en que aplica el compromiso; null si ya no vuelve.
+ * Los que se repiten saltan de semana en semana, se saltan las excepciones y respetan "hasta".
+ */
+export function proximaFecha(c: Compromiso, hoy: string): string | null {
+  if (!c.repetirSemanal) return c.fecha >= hoy ? c.fecha : null;
+  let f = c.fecha >= hoy ? c.fecha : sumarDias(c.fecha, Math.ceil(diasEntre(c.fecha, hoy) / 7) * 7);
+  for (let i = 0; i < 104; i++) {
+    if (c.hasta && f > c.hasta) return null;
+    if (!c.excepciones?.includes(f)) return f;
+    f = sumarDias(f, 7);
+  }
+  return null;
+}
+
+/** Minutos desde medianoche para ordenar: la hora, o el comienzo de su momento; sin hora ni momento, al final. */
+const clave = (c: Compromiso) => {
+  if (c.hora) { const [h, m] = c.hora.split(':').map(Number); return h * 60 + (m || 0); }
+  return c.momento === 'manana' ? 0 : c.momento === 'tarde' ? 12 * 60 : c.momento === 'noche' ? 18 * 60 : 24 * 60;
+};
+
+export interface CompromisoProximo { c: Compromiso; fecha: string }
+
+/**
+ * "Tus compromisos" en Hoy (design/maqueta-compromisos.html): cada compromiso UNA sola vez,
+ * en su próxima fecha (hoy incluido), ordenados por día y luego por hora o momento.
+ */
+export function proximosCompromisos(lista: Compromiso[], hoy: string): CompromisoProximo[] {
+  return lista
+    .map((c) => ({ c, fecha: proximaFecha(c, hoy) }))
+    .filter((x): x is CompromisoProximo => x.fecha !== null)
+    .sort((a, b) => a.fecha.localeCompare(b.fecha) || clave(a.c) - clave(b.c) || a.c.titulo.localeCompare(b.c.titulo));
+}
+
+/** ¿Ya pasó? Solo los de hoy con hora anterior a este minuto (los de otros días o sin hora, nunca). */
+export function yaPaso(c: Compromiso, fecha: string, hoy: string, minutosAhora: number): boolean {
+  return fecha === hoy && !!c.hora && clave(c) < minutosAhora;
+}
+
+const DIAS_LARGOS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const mayus = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Título del grupo del día: "Hoy", "Mañana, martes 29", "Miércoles 30", "Sábado 3 de octubre" (con el año si es otro). */
+export function tituloDiaCompromiso(fecha: string, hoy: string): string {
+  if (fecha === hoy) return 'Hoy';
+  const d = parseDateString(fecha);
+  const h = parseDateString(hoy);
+  const base = `${DIAS_LARGOS[d.getDay()]} ${d.getDate()}`;
+  if (diasEntre(hoy, fecha) === 1) return `Mañana, ${base}`;
+  if (d.getFullYear() !== h.getFullYear()) return `${mayus(base)} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+  if (d.getMonth() !== h.getMonth()) return `${mayus(base)} de ${MESES[d.getMonth()]}`;
+  return mayus(base);
+}
+
+/** La columna de la hora: "3:00 p. m.", o "En la tarde"; sin hora ni momento, "Todo el día". */
+export function textoCuando(c: Pick<Compromiso, 'hora' | 'momento'>): string {
+  if (c.hora) return textoHora(c.hora);
+  return c.momento === 'manana' ? 'En la mañana' : c.momento === 'tarde' ? 'En la tarde' : c.momento === 'noche' ? 'En la noche' : 'Todo el día';
+}
+
+/** Debajo de "Repetir cada semana": "Todos los lunes a esta hora" / "Todos los sábados en la tarde". */
+export function textoRepetir(fecha: string, hora?: string, momento?: MomentoPlan | null): string {
+  const dia = DIAS_LARGOS[parseDateString(fecha).getDay()];
+  const plural = dia === 'sábado' || dia === 'domingo' ? `${dia}s` : dia;
+  if (hora) return `Todos los ${plural} a esta hora`;
+  const m = momento === 'manana' ? 'mañana' : momento;
+  return m ? `Todos los ${plural} en la ${m}` : `Todos los ${plural}`;
 }
 
 /** Para el aviso suave "Ya tienes algo a las 3:00 p. m.": otro compromiso ese día a la misma hora. */

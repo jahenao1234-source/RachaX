@@ -19,7 +19,7 @@ export const PlanSemana: React.FC<{
   hoy: string;
   onElegirDia: (tareaId: string, paso: Subtarea) => void;
   avisar: (texto: string, deshacer: () => void) => void;
-  onEditarCompromiso: (c: Compromiso) => void;
+  onEditarCompromiso: (c: Compromiso, fecha: string) => void;
   onMoverCompromiso: (c: Compromiso, fechaDestino: string, franjaDestino: Franja, fechaOriginal: string) => void;
 }> = ({ fechas, hoy, onElegirDia, avisar, onEditarCompromiso, onMoverCompromiso }) => {
   const { tareas, habitosActivos, compromisos, toggleSubtarea, ponerFechaPaso } = useHabitStore();
@@ -121,7 +121,7 @@ export const PlanSemana: React.FC<{
     onClick: (e: React.MouseEvent) => {
       if (e.detail === 0 && !(e.target as HTMLElement).closest('.tchk')) {
         if (item.tipo === 'paso') onElegirDia(item.tareaId, item.paso);
-        else onEditarCompromiso(item.dato);
+        else onEditarCompromiso(item.dato, item.fechaOriginal);
       }
     },
   });
@@ -274,7 +274,7 @@ export const PlanSemana: React.FC<{
                           return (
                             <div key={`c-${c.id}`}
                               className={`compro-card rounded-lg border border-line-strong p-2 flex flex-col gap-1 ${comun} ${pasado ? 'opacity-60' : ''}`}
-                              {...(movible ? { ...asa({ tipo: 'compromiso', dato: c, fechaOriginal: f }), role: 'button', tabIndex: 0, 'aria-label': `Compromiso: ${c.titulo}` } : { onClick: () => onEditarCompromiso(c), role: 'button', tabIndex: 0 })}>
+                              {...(movible ? { ...asa({ tipo: 'compromiso', dato: c, fechaOriginal: f }), role: 'button', tabIndex: 0, 'aria-label': `Compromiso: ${c.titulo}` } : { onClick: () => onEditarCompromiso(c, f), role: 'button', tabIndex: 0 })}>
                               <div className="flex items-center gap-1.5 text-[14px] font-heading font-bold text-text">
                                 <Clock size={14} />
                                 {c.hora ? textoHora(c.hora) : 'Sin hora'}

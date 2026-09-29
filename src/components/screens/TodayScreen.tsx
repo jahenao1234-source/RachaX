@@ -22,7 +22,9 @@ import {
   puntosParaNivel,
   ETAPAS,
   getSemanaDates,
-  isHabitScheduledForDate
+  isHabitScheduledForDate,
+  parseDateString,
+  formatDateToString
 } from '../../utils/habitUtils';
 import { idsEnRutinasDeHoy, tareasDeHoy, RutinaDeHoy } from '../../utils/hoyUtils';
 import { getLunesActual } from '../../utils/retoSemanal';
@@ -326,15 +328,23 @@ const renderRutina = ({ r, mom, minfo, desk, isNextInside, openRutinaEditor, ope
 }
 
 
+/** Hoy y los 6 días que siguen, para elegir el día de un compromiso nuevo. */
+const sieteDias = (hoy: string) => Array.from({ length: 7 }, (_, i) => { const d = parseDateString(hoy); d.setDate(d.getDate() + i); return formatDateToString(d); });
+
 /** "Compromisos de hoy": debajo de "Tareas de hoy", solo si hay alguno. Ordenados por hora; los que ya pasaron, más suaves. */
-const renderCompromisosBox = ({ lista, desk, onAbrir }: { lista: Compromiso[]; desk: boolean; onAbrir: (c: Compromiso) => void }) => {
+const renderCompromisosBox = ({ lista, desk, onAbrir, onAgregar }: { lista: Compromiso[]; desk: boolean; onAbrir: (c: Compromiso) => void; onAgregar: () => void }) => {
   if (lista.length === 0) return null;
   const ahora = new Date();
   const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
   const nombreMomento = (c: Compromiso) => { const m = momentoDe(c); return m === 'manana' ? 'En la mañana' : m === 'tarde' ? 'En la tarde' : m === 'noche' ? 'En la noche' : 'Hoy'; };
   return (
     <section aria-labelledby="compromisos-hoy-titulo" className={`bg-surface border border-line rounded-[18px] p-3.5 ${!desk ? 'mt-4' : ''}`}>
-      <h2 id="compromisos-hoy-titulo" className="m-0 font-heading font-bold text-[22px] min-h-[44px] flex items-center">Compromisos de hoy</h2>
+      <div className="flex flex-wrap items-center justify-between min-h-[44px]">
+        <h2 id="compromisos-hoy-titulo" className="m-0 font-heading font-bold text-[22px]">Compromisos de hoy</h2>
+        <button type="button" onClick={onAgregar} aria-label="Agregar un compromiso" className="flex items-center gap-1 min-h-[44px] text-[15px] font-semibold text-ambar-text hover:underline">
+          <Plus size={16} strokeWidth={2.5} aria-hidden="true" /> Agregar
+        </button>
+      </div>
       <ul className="m-0 p-0 list-none">
         {lista.map((c, i) => {
           const [hh, mm] = (c.hora || '').split(':').map(Number);
@@ -961,7 +971,7 @@ export const TodayScreen: React.FC = () => {
         {/* Right Column */}
         <div className="flex flex-col gap-4">
           {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
-          {renderCompromisosBox({ lista: compromisosDelDia(compromisos, hoy), desk, onAbrir: (c) => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); } })}
+          {renderCompromisosBox({ lista: compromisosDelDia(compromisos, hoy), desk, onAbrir: (c) => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }, onAgregar: () => { setCompromisoEditando(undefined); setHojaCompromisoAbierta(true); } })}
 
           <EstaSemanaDesk
             habitosActivos={habitosActivos}
@@ -1170,7 +1180,7 @@ export const TodayScreen: React.FC = () => {
       </div>
 
       {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
-          {renderCompromisosBox({ lista: compromisosDelDia(compromisos, hoy), desk, onAbrir: (c) => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); } })}
+          {renderCompromisosBox({ lista: compromisosDelDia(compromisos, hoy), desk, onAbrir: (c) => { setCompromisoEditando(c); setHojaCompromisoAbierta(true); }, onAgregar: () => { setCompromisoEditando(undefined); setHojaCompromisoAbierta(true); } })}
 
       {proximaInsignia && (
         <div className="mt-4 flex items-center gap-3">
@@ -1206,7 +1216,7 @@ export const TodayScreen: React.FC = () => {
         isOpen={hojaCompromisoAbierta}
         onClose={() => setHojaCompromisoAbierta(false)}
         compromiso={compromisoEditando}
-        fechas={[hoy]}
+        fechas={sieteDias(hoy)}
         fechaInicial={hoy}
       />
     </>

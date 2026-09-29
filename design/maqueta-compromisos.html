@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tus compromisos y hora</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.dark{--hearth:#1A1410;--hearth2:#3A2A16;--ring:#FFB547}
+.light{--hearth:#FFE3B8;--hearth2:#FFF6E6;--ring:#CC6A00}
+.logo{background:#FFB547}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.lvlstrip{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);text-decoration:none}
+.lvlflame{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lvlname{font-size:17px;white-space:nowrap}
+.lvltrack2{flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block}
+.lvltrack2 b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.lvlnums{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvltrack{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.lvltrack b{display:block;height:100%;border-radius:99px;background:var(--lila-text)}
+.segs{display:flex;gap:4px;margin-top:10px}
+.segs i{flex:1;height:12px;border-radius:6px;background:var(--track-empty)}
+.segs i.on{background:var(--ambar)}
+.light .segs i.on{background:var(--ambar-text)}
+.nextlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--lila-text);text-decoration:none}
+.bono{display:flex;gap:8px;align-items:center;margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);font-size:14px;color:var(--text)}
+.bono svg{color:var(--ambar-text);flex-shrink:0}
+.retorow{display:flex;align-items:center;gap:12px;margin-top:10px;min-height:60px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.retoic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.retorow.nuevo .retoic{background:var(--ambar-tint);color:var(--ambar-text)}
+.minibar{display:block;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin:6px 0 2px}
+.minibar b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .minibar b{background:var(--ambar-text)}
+.prize{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.prize li{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--raised);font-size:13px;font-weight:600;color:var(--text)}
+.prize li svg{color:var(--muted)}
+.prize li .cond{font-size:15px;color:var(--ambar-text)}
+.light .prize li .cond{color:var(--text)}
+
+.prize li.giftli{padding:0;background:transparent}
+.giftbtn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:6px 12px;border:none;border-radius:999px;background:var(--raised);color:var(--text);font-size:13px;font-weight:600}
+.giftbtn svg{color:var(--muted)}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.ghead2{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tile.sm{width:26px;height:26px;border-radius:6px}
+.hrowx{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.ring2{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);flex-shrink:0}
+.opts{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.opt2{position:relative;display:block}
+.opt2 input{position:absolute;opacity:0;width:1px;height:1px}
+.optbox{display:block;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.opt2 input:checked + .optbox{border:1.5px solid var(--text);background:var(--raised)}
+.opt2 input:focus-visible + .optbox,.seg4 input:focus-visible + span{outline:2px solid var(--text);outline-offset:2px}
+.rowlink{margin-top:8px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);color:var(--text);font-size:15px;font-weight:600;text-decoration:none}
+.chev{display:flex;color:var(--muted);flex-shrink:0}
+.odds{list-style:none;margin:8px 0 0;padding:0}
+.odds li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.odds li:last-child{border-bottom:none}
+.oddk{flex:0 0 96px;font-weight:700}
+.idrow{display:flex;align-items:center;gap:14px}
+.avatar{width:56px;height:56px;border-radius:999px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avatar .cond{font-size:28px;line-height:1}
+.pname{margin:0;font-size:28px;line-height:1.05}
+.flamecard{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.flamehero{width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.flamefoot{grid-column:1/-1}
+.stages{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages li{display:flex;flex-direction:column;align-items:center;gap:4px}
+.stg-ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.stages li.now .stg-ic{box-shadow:0 0 0 2px var(--text);border-radius:999px}
+.stages li.next .stg-ic{background:transparent;border:1.5px dashed var(--muted)}
+.q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--muted)}
+.stg-n{font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.stages li.now .stg-n{color:var(--text);font-weight:700}
+.seg4{border:none;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 0;padding:4px;border-radius:14px;background:var(--surface);outline:1px solid var(--line);outline-offset:-1px}
+.seg4 label{position:relative;display:block}
+.seg4 input{position:absolute;opacity:0;width:1px;height:1px}
+.seg4 span{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600}
+.seg4 input:checked + span{background:var(--raised);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--text)}
+.prizeline{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.prizeline b{color:var(--text);font-weight:600}
+.flabel{font-size:13px;font-weight:600;color:var(--muted)}
+
+.saludo{margin:14px 0 0;font-size:16px;font-weight:600;color:var(--text)}
+.lvlbig{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none}
+.lvlbigart{display:flex;flex-shrink:0}
+.lvlbigcol .lvltrack2,.llamacard .lvltrack2{flex:none}
+.lvlbigcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.lvlbigtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cabtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.cabcomp{display:flex;align-items:center;gap:12px;margin-top:10px}
+.cabart{display:flex;flex-shrink:0;border-radius:12px}
+.cabart:focus-visible,.llamacard:focus-visible,.lvlbig:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.llamacard{display:flex;align-items:center;gap:14px;margin-top:14px;color:var(--text);text-decoration:none}
+.hrow{display:flex;flex-direction:column;align-items:stretch;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.hrow.next{border:1.5px solid var(--coral);background:color-mix(in srgb,var(--coral) 8%,var(--surface))}
+.hrowtop{display:flex;align-items:center;gap:10px}
+.hic{width:38px;height:38px;border-radius:11px;background:var(--coral);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hrow .name{display:block;font-size:15px;font-weight:600}
+.meta2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--lila-text);margin-top:2px}
+.sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.cnt{display:flex;gap:3px;margin-top:6px;max-width:130px}.cnt i{flex:1;height:6px;border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1px var(--muted)}.cnt i.on{background:var(--text)}
+.emp{min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--coral);background:transparent;color:var(--coral-text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.plus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font-size:14px;font-weight:700}
+.retobar{display:flex;align-items:center;gap:8px;margin-top:10px}.retobar i{flex:1;height:6px;border-radius:99px;background:var(--line-strong);overflow:hidden;display:block}.retobar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}.retobar span{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.desk{width:1440px;height:900px;display:flex;background:var(--bg);color:var(--text);border-radius:16px;overflow:hidden;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.5);font-family:'Barlow',system-ui,sans-serif;text-align:left}
+.desk.w1024{width:1024px;height:768px}
+.light .desk{--coral-text:#C23D20;--ambar-text:#9A5B00}
+.desk .sub{margin:0;font-size:13px;color:var(--muted);line-height:1.4}
+.desk h1,.desk h2,.desk h3{margin:0}
+.desk ol,.desk ul{list-style:none;margin:0;padding:0}
+.desk :focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.dkskip{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.dkskip:focus{width:auto;height:auto;clip-path:none;padding:8px 12px;background:var(--text);color:var(--bg);border-radius:8px;z-index:5}
+.dkside{width:240px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;padding:20px 14px;border-right:1px solid var(--line);background:var(--surface);position:relative}
+.dkside.mini{width:76px;align-items:center;padding:20px 10px}
+.dkbrand{display:flex;align-items:center;gap:10px;padding:0 8px 10px}
+.dklogo{width:30px;height:30px;border-radius:9px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center}
+.dkcrear{min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:15px;font-weight:700;margin:4px 0 10px}
+.dkside.mini .dkcrear{width:48px;height:48px;border-radius:14px}
+.desk nav.dknav{position:static;height:auto;padding:0;background:none;border:none;display:grid;gap:2px}
+.desk nav.dknav a{width:auto;flex-direction:row;justify-content:flex-start;min-height:44px;gap:12px;padding:0 12px;border-radius:10px;color:var(--muted);font-size:15px;font-weight:600}
+.desk nav.dknav a.on{background:var(--raised);color:var(--text)}
+.desk nav.dknav a.on svg{color:var(--ambar-text)}
+.dkside.mini nav.dknav a{width:48px;justify-content:center;padding:0}
+.dkme{margin-top:auto;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px;border-top:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkme b{display:block;font-size:14px}
+.dkavatar{width:36px;height:36px;border-radius:999px;background:var(--raised);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;flex-shrink:0}
+.dkmain{flex:1;min-width:0;overflow:hidden;padding:24px 32px}
+.w1024 .dkmain{padding:18px 22px}
+.dkhead{display:flex;align-items:center;gap:16px;max-width:1120px;margin:0 auto}
+.dkhart{display:flex;flex-shrink:0}
+.dksaludo{margin:0 0 2px;font-size:16px;font-weight:600}
+.dkh1{font-size:48px;line-height:1}
+.dkhprog{display:flex;align-items:center;gap:12px;margin-top:10px;max-width:520px}
+.dkhprog .segs{flex:1;margin:0}
+.dkhact{display:flex;align-items:center;gap:10px;align-self:flex-start;margin-top:6px}
+.dkchip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;white-space:nowrap}
+.dkbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:15px;font-weight:700;white-space:nowrap}
+.dkgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;max-width:1120px;margin:22px auto 0}
+.w1024 .dkgrid{grid-template-columns:minmax(0,1fr) 280px;gap:18px;margin-top:16px}
+.dkcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.dkrail{position:sticky;top:0;align-self:start}
+.dkcard{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.dkch h2,.dkmhead h2{font-size:22px}
+.dklink{display:inline-flex;align-items:center;min-height:32px;color:var(--ambar-text);font-weight:600;text-decoration:none;font-size:14px}
+.dkmhead{display:flex;align-items:baseline;justify-content:space-between}
+.dkgrp{display:grid;gap:8px}
+.dkgh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:4px 0 0}
+.dkahora{padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text);font-size:12px;font-weight:700}
+.dkgc{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600}
+.dkrow{display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 14px 8px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.dkrow:hover{background:var(--raised)}
+.dkrow.next{border:1.5px solid var(--coral-text)}
+.dkrbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:48px;padding:4px 6px;border:none;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.dkric{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dkric.sm{width:30px;height:30px;border-radius:9px}
+.dkrow:hover .dkric{background:var(--surface)}
+.dkrow.done .dkric{color:var(--muted)}
+.dkrmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dkrname{font-size:15px;font-weight:700}
+.dkrow.done .dkrname{color:var(--muted)}
+.dkrmeta{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.dkok{color:var(--ambar-text);font-weight:700}
+.dkcnt{display:flex;gap:3px;max-width:160px;margin-top:3px}
+.dkcnt i{flex:1;height:6px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--muted)}
+.dkcnt i.on{background:var(--ambar);box-shadow:none}
+.dkreto{display:flex;align-items:center;gap:8px;margin-top:4px;max-width:260px}
+.dkreto i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.dkreto i b{display:block;height:100%;background:var(--ambar)}
+.dkreto span{font-size:12px;color:var(--muted);white-space:nowrap}
+.dkwk{display:flex;gap:4px;flex-shrink:0}
+.dkwk li{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted)}
+.dkwk li.ok{background:var(--ambar);color:var(--ink)}
+.dkwk li.gris{background:var(--raised)}
+.dkwk li.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkwk li.hoy{box-shadow:inset 0 0 0 1.5px var(--text);color:var(--text)}
+.dkwk li.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.7}
+.light .dkwk li.ok{background:var(--ambar-text);color:#fff}
+.w1024 .dkwk li{width:20px;height:20px;font-size:10px}
+.dkchk{width:34px;height:34px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--ink);position:relative}
+.dkchk::after{content:"";position:absolute;inset:-5px}
+.dkchk.on{border:none;background:var(--logro,var(--ambar))}
+.dkplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.dkemp{min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;position:relative;flex-shrink:0}
+.dkemp::after{content:"";position:absolute;inset:-2px}
+.dkbar{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.dkbar b{display:block;height:100%;background:var(--ambar)}
+.dkbar.thin{height:5px;margin-top:6px}
+.light .dkbar b,.light .dkcnt i.on,.light .dkreto i b{background:var(--ambar-text)}
+.dkweek{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.dkday{position:relative;min-height:52px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:12px;color:var(--muted)}
+.dkday b{font-family:'Barlow Condensed',sans-serif;font-size:17px;color:var(--text)}
+.dkday.ok{background:var(--ambar);color:var(--ink)}
+.dkday.ok b{color:var(--ink)}
+.light .dkday.ok{background:var(--ambar-text);color:#fff}
+.light .dkday.ok b{color:#fff}
+.dkday.medio{background:var(--raised)}
+.dkmid{position:absolute;left:6px;right:6px;bottom:5px;height:4px;border-radius:2px;background:var(--ambar-text)}
+.dkday.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkday.como b{color:var(--comodin-text)}
+.dkday.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.dkday.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.75}
+.dkleg{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--muted)}
+.dkleg li{display:flex;align-items:center;gap:6px}
+.dkleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dkleg i.ok{background:var(--ambar)}
+.light .dkleg i.ok{background:var(--ambar-text)}
+.dkleg i.medio{background:var(--raised);position:relative}
+.dkleg i.medio b{position:absolute;left:2px;right:2px;bottom:2px;height:2px;border-radius:1px;background:var(--ambar-text)}
+.dkleg i.como{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkretocard{display:flex;align-items:center;gap:12px;min-height:76px}
+.dkretocard b{font-size:15px}
+.dkline{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none;font-size:14px}
+.dkline + .dkline{border-top:1px solid var(--line)}
+.desk .segs{display:flex;gap:4px}
+.desk .segs i{flex:1;height:10px;border-radius:5px;background:var(--track-empty)}
+.desk .segs i.on{background:var(--ambar)}
+.light .desk .segs i.on{background:var(--ambar-text)}
+.desk .sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.w1024 .dkh1{font-size:40px}
+.w1024 .dkrow{min-height:58px;gap:10px}
+.w1024 .dkcol{gap:10px}
+
+/* ---- celular ---- */
+.phone.tall{height:auto}
+.phone.tall .scroll{overflow:visible;flex:none}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px}
+.mhd h2{margin:0;font-size:22px}
+.glink{display:inline-flex;align-items:center;min-height:44px;color:var(--ambar-text);font-weight:600;text-decoration:none}
+.mgrp{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.mgh{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font:inherit;text-align:left;width:100%}
+.mgic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mgt{flex:1;font-size:17px;display:flex;align-items:center;gap:6px}
+.mahora{font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text)}
+.mgc{font-size:13px;color:var(--muted)}
+.mgbar{width:44px;height:5px;border-radius:9px;background:var(--track-empty);overflow:hidden;flex-shrink:0;display:block}
+.mgbar b{display:block;height:100%;border-radius:9px}
+.mgchev{color:var(--muted);display:flex}
+.mrow{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;background:var(--surface)}
+.mrow.next{background:var(--mt);box-shadow:inset 0 0 0 1.5px var(--mc)}
+.mtop{display:flex;align-items:center;gap:10px}
+.mopen{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.mic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.mname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow.done .mname{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.mrow.done .mic{opacity:.7}
+.mmeta{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mmeta.mok{color:var(--ambar-text);font-weight:700}
+.mmeta.msig{color:var(--text)}
+.mpts{font-size:13px;color:var(--muted)}
+.memp{min-height:44px;padding:0 10px;border-radius:10px;border:1.5px solid;background:transparent;font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.mchk{width:32px;height:32px;border-radius:999px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative}
+.mchk::after{content:"";position:absolute;inset:-6px}
+.mchk.on{border:none;background:var(--logro,var(--ambar))}
+.mplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.rut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.ruthead{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 12px}
+.rutic{width:34px;height:34px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rutmain{flex:1;min-width:0;display:flex;flex-direction:column}
+.rutname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;line-height:1.15}
+.rutmeta{font-size:13px;color:var(--muted)}
+.rutmeta.ok{color:var(--ambar-text);font-weight:700}
+.rutemp{min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid;background:transparent;font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.rutlist .mrow{border-radius:0;background:transparent;border-top:1px solid var(--line);padding:8px 10px 8px 12px}
+.rutlist .mrow.next{background:var(--mt)}
+.statelbl{margin:18px 2px 8px;font-size:13px;font-weight:600;color:var(--muted)}
+/* ---- Tareas de hoy ---- */
+.th{display:flex;flex-direction:column;gap:6px}
+.thhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.thhead h2{margin:0;font-size:22px;white-space:nowrap}
+.thcount{margin:-6px 0 2px;font-size:13px;color:var(--muted);font-weight:600}
+.thcount.ok{color:var(--ambar-text);font-weight:700}
+.thlink{white-space:nowrap;margin-left:auto;display:inline-flex;align-items:center;gap:2px;min-height:44px;color:var(--ambar-text);font-weight:600;font-size:14px;text-decoration:none}
+.thnote{margin:-4px 0 2px}
+.thlist{list-style:none;margin:0;padding:0}
+.thitem{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 0;border-top:1px solid var(--line)}
+.thitem:first-child{border-top:none}
+.thchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative}
+.thchk::after{content:"";position:absolute;inset:-9px}
+.thchk.on{border:none;background:var(--logro,var(--ambar))}
+.thtxt{flex:1;min-width:0;display:flex;flex-direction:column}
+.thname{font-size:15px;font-weight:600}
+.thtask{font-size:13px;color:var(--muted)}
+.thitem.done .thname{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+/* ---- escritorio ---- */
+.desk nav.dknav{justify-content:stretch;align-items:stretch}
+.desk.auto{height:auto;min-height:900px;overflow:visible}
+.desk.w1024.auto{min-height:768px}
+.desk.auto .dkmain{overflow:visible}
+.dkrut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.dkruthead{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 14px 8px 14px}
+.dkruthead .dkrname{font-family:'Barlow Condensed',sans-serif;font-size:19px}
+
+.dkrow.inrut{border:none;border-top:1px solid var(--line);border-radius:0;background:transparent;padding-left:14px}
+.dkrow.inrut:hover{background:var(--raised)}
+.dkrail .th .thhead h2{font-size:22px}
+.mbottom{display:flex;align-items:center;gap:10px}
+.mbottom .retobar{flex:1;margin-top:0}
+.rutlist .mrow.next,.light .rutlist .mrow.next{box-shadow:none}
+/* semana en barritas, como Tu día */
+.desk .dkwk{gap:3px;align-items:center;width:136px}
+.desk .dkwk li,.desk .dkwk li.hoy,.desk .dkwk li.fut,.desk .dkwk li.gris{flex:1;width:auto;height:10px;border-radius:4px;font-size:0;box-shadow:none;border:none;opacity:1;background:var(--track-empty)}
+.desk .dkwk li span{display:none}
+.desk .dkwk li.ok{background:var(--ambar)}
+.light .desk .dkwk li.ok{background:var(--ambar-text)}
+.desk .dkwk li.como{background:var(--lila-text);box-shadow:none;border:none}
+.desk.w1024 .dkwk{width:112px}
+.dklvl{max-width:520px;margin-bottom:2px}
+.dklvl .lvlstrip{min-height:32px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.light{--coral-text:#B8381C}
+.light .desk{--coral-text:#B8381C}
+.mgh3{margin:0;font:inherit}
+.mnamerow{display:flex;align-items:center;gap:6px;min-width:0}
+.mnamerow .sigue{flex-shrink:0;font-size:11px}
+.rutname{margin:0}
+.rut.rutnext{border:1.5px solid var(--mc)}
+.rutsoft{min-height:44px;padding:0 8px;border:none;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.light .mrow.next{box-shadow:inset 0 0 0 1px var(--mc)}
+.light .dkrow.next{border-width:1px}
+h4.dkrname{margin:0}
+.dkrow.done .dkrname{text-decoration:line-through;text-decoration-thickness:1.5px}
+.dkwk li.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+.dkday.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+
+/* ---- Tareas: celular ---- */
+.num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-variant-numeric:tabular-nums;font-size:1.08em}
+.tcab{display:flex;align-items:flex-end;gap:12px;margin:18px 0 14px}
+.tnueva{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tcard{padding:0;margin-bottom:10px;overflow:hidden}
+.thh{margin:0;font:inherit}
+.thead{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 12px 10px 14px;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.tico{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none}
+.tico.btn{width:44px;height:44px}
+.tico.lg{width:48px;height:48px;border-radius:13px}
+.tico.ok{background:var(--logro,var(--ambar));color:var(--ink)}
+.tmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.tname{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tname2{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tchev{color:var(--muted);display:flex}
+.tavance{display:flex;align-items:center;gap:8px}
+.tavance i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;max-width:160px}
+.tavance i b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .tavance i b{background:var(--ambar-text)}
+.tavance>span{font-size:13px;color:var(--muted);white-space:nowrap}
+.tavance.sm{margin-top:2px}
+.tavance.sm i{max-width:none}
+.tsig{border-top:1px solid var(--line);padding:4px 12px 6px 14px}
+.tfila{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 0}
+.tchk{width:26px;height:26px;border-radius:8px;border:2px solid var(--muted);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink);position:relative;cursor:pointer}
+.tchk::after{content:"";position:absolute;inset:-9px}
+.tchk.on{border:none;background:var(--logro,var(--ambar))}
+.light .tchk.on{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.ttxt{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.tnom{font-size:15px;font-weight:600}
+.tpaso.done>.tfila .tnom{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.tsub{font-size:13px;color:var(--muted)}
+.tsigchip{display:inline-block;padding:1px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700}
+.tpaso.sig>.tfila{background:var(--raised);border-radius:10px;margin:0 -8px;padding:6px 8px}
+.tpadre{width:26px;flex-shrink:0}
+.tdia{min-height:32px;display:inline-flex;align-items:center;gap:5px;padding:0 9px;border-radius:8px;border:none;background:var(--raised);color:var(--text);font:inherit;font-size:12px;font-weight:700;flex-shrink:0;position:relative;white-space:nowrap}
+.tdia::after{content:"";position:absolute;inset:-6px -2px}
+.tdia.hoy{background:transparent;outline:1.5px dashed var(--text);outline-offset:-1.5px}
+.tdia.vacio{width:44px;padding:0;justify-content:center;background:transparent;color:var(--muted)}
+.tdia.vacio::after{inset:-6px 0}
+.tpaso.sig>.tfila .tdia:not(.vacio):not(.hoy){background:var(--surface)}
+.tarbol{list-style:none;margin:0;padding:4px 12px 4px 14px;border-top:1px solid var(--line)}
+.tarbol.tsubl{padding:4px 0 4px 22px;border-top:none;margin-left:12px;border-left:1px solid var(--line)}
+.tpaso+.tpaso{border-top:1px solid var(--line)}
+.tarbol.tsubl .tpaso+.tpaso{border-top:none}
+.tagregar{display:flex;align-items:center;gap:8px;width:100%;min-height:48px;padding:0 14px;border:none;border-top:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:15px;font-weight:600;text-align:left}
+.tacciones{display:flex;align-items:center;gap:8px;padding:0 12px 12px 14px}
+.tcard .tpaso.drag>.tfila{transform:none;margin-left:14px;padding:6px 8px;border-radius:10px}
+.tacciones.fin{justify-content:space-between;padding-top:10px;border-top:1px solid var(--line)}
+.tbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tbtnq{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.tbtnq.sm{padding:0 8px}
+.tbtnq.ico{width:44px;padding:0;justify-content:center}
+.btnp.sm{min-height:44px;font-size:15px;padding:0 18px}
+.btnp[disabled]{background:var(--raised);color:var(--muted)}
+.tterm{margin-top:18px}
+.tterm-h{margin:0}
+.tterm-h button{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:0 2px;border:none;background:none;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px}
+.tcnt{font-size:15px;color:var(--muted);margin-left:4px}
+.ttlist{list-style:none;margin:6px 0 0;padding:0}
+.ttrow{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 0;border-top:1px solid var(--line)}
+.tok{display:inline-flex;align-items:center;gap:3px;color:var(--ambar-text);font-weight:700}
+.tdel{width:44px;height:44px;border-radius:12px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ttoast{position:absolute;left:16px;right:16px;bottom:96px;display:flex;align-items:center;gap:12px;min-height:52px;padding:4px 6px 4px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;z-index:4}
+.ttoast span{flex:1}
+.ttoast button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font:inherit;font-weight:700;text-decoration:underline}
+.tvacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:60px 12px 20px}
+.tvico{display:flex;color:var(--muted);margin-bottom:4px}
+.btnp{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:none;border-radius:14px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:16px;font-weight:700}
+.tfinbody{padding:2px 14px 12px;border-top:1px solid var(--line)}
+.tfintit{margin:10px 0 2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--ambar-text)}
+.tfinbody .tbtnq{margin-top:4px;margin-left:-12px}
+.teh{display:flex;align-items:center;gap:10px;padding:12px}
+.tedit{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:15px;font-weight:600}
+.tnamein{font-size:17px;font-weight:700}
+.tedit::placeholder{color:var(--muted);font-weight:500}
+.tmover{width:44px;height:44px;border-radius:10px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tediting .tarbol .tfila{gap:2px}
+.tediting .tedit{margin-right:4px}
+.tarea-txt{display:flex;align-items:center;padding:10px 12px;line-height:1.3;white-space:normal;word-break:break-word}
+.tagrega-in{display:flex;align-items:center;gap:8px;min-height:52px;padding:0 14px;border-top:1px solid var(--line);color:var(--muted)}
+.tmenu{display:flex;flex-direction:column}
+.tmenu button{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.tmenu button:first-child{border-top:none}
+.tmenu button[disabled]{color:var(--muted)}
+.tmenu button svg{color:var(--muted)}
+.tdelq{padding-left:0}
+.tsheet{padding:0 20px 22px}
+.tsheet .grab{margin-bottom:12px}
+.tsheet-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.closeb{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topt{display:grid;grid-template-columns:1fr auto 22px;align-items:center;gap:10px;width:100%;min-height:56px;padding:0 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;text-align:left}
+.topt:first-child{border-top:none}
+.topt.on svg{color:var(--ambar-text)}
+.tsem-l{margin:14px 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.tsem{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tsem button{width:100%;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);font:inherit;font-size:12px;color:var(--muted)}
+.tsem b{font-size:18px;color:var(--text)}
+.tquitar{width:100%;min-height:48px;margin-top:14px;border:none;border-radius:12px;background:transparent;color:var(--muted);font:inherit;font-size:15px;font-weight:700}
+/* ---- Tareas: escritorio ---- */
+.tdk{display:grid;grid-template-columns:340px minmax(0,1fr);gap:28px;max-width:1120px;margin:0 auto;align-items:start}
+.w1024 .tdk{grid-template-columns:280px minmax(0,1fr);gap:18px}
+.tdk-lh{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.tlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tli{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);color:inherit;font:inherit;text-align:left}
+.tli:hover{background:var(--raised)}
+.tli.on{background:var(--raised);border-color:var(--text)}
+.tli .tmain{gap:2px}
+.tli .tsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tdk-det{padding:20px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.tdk-dh{display:flex;align-items:center;gap:14px}
+.desk .tdk-ayuda{margin:14px 0 8px}
+.tdk-det .tarbol{padding:4px 0;border-top:1px solid var(--line)}
+.tdk-det .tarbol.tsubl{padding:4px 0 4px 22px;border-top:none}
+.tpista{margin:0 14px 8px;font-size:13px;color:var(--muted)}
+.tasam{width:28px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;margin-left:-6px;touch-action:none}
+.tediting .tarbol.tsubl .tsoltar,.tediting .tsoltar{margin-left:34px}
+.tdk-det .tfila{min-height:52px;border-radius:10px;padding:6px 4px;position:relative}
+.tdk-det .tpaso.sig>.tfila{margin:0;padding:6px 4px}
+.tdk-det .tpaso.hov>.tfila{background:var(--raised)}
+.tasa{width:28px;height:44px;margin:-6px 0;display:flex;align-items:center;justify-content:center;border:none;border-radius:8px;background:transparent;color:var(--muted);flex-shrink:0;cursor:grab;opacity:0}
+.tmas{width:44px;height:44px;margin:-6px 0;border-radius:10px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0}
+.tdk-det .tdia.vacio{opacity:0}
+.tdk-det .tpaso.hov>.tfila .tasa,.tdk-det .tpaso.hov>.tfila .tmas,.tdk-det .tpaso.hov>.tfila .tdia.vacio,.tdk-det .tpaso.drag>.tfila .tasa{opacity:1}
+.tdk-det .tfila:focus-within .tasa,.tdk-det .tfila:focus-within .tmas,.tdk-det .tfila:focus-within .tdia.vacio{opacity:1}
+.tpaso.drag>.tfila{background:var(--raised);box-shadow:0 8px 24px rgba(0,0,0,.35);transform:translateX(26px)}
+.tsoltar{margin:2px 0 6px 48px;padding:8px 12px;border-radius:10px;border:1.5px dashed var(--line-strong);color:var(--muted);font-size:13px;font-weight:600}
+.tdk-add{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px 0 36px;border-top:1px solid var(--line);color:var(--muted)}
+.tinput{flex:1;min-width:0;min-height:44px;border:none;background:transparent;color:var(--text);font:inherit;font-size:15px}
+.tinput::placeholder{color:var(--muted)}
+.tdk .tterm{margin-top:16px}
+.tnuevo{gap:10px;padding-left:32px!important}
+.tinput-on{border-radius:8px;box-shadow:inset 0 -1.5px 0 var(--text)}
+.tenter{font-size:12px;color:var(--muted);white-space:nowrap}
+.tnuevo .tchk{cursor:default}
+
+/* ---- Tareas ronda 3 ---- */
+.t3mas{width:40px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t3fle{width:44px;height:44px;margin:-6px -8px -6px 0;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t3add{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:600;text-align:left}
+.t3ayuda{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-top:1px}
+.tmenu button{min-height:60px}
+.t3punto{width:8px;height:8px;border-radius:99px;background:var(--line-strong);flex-shrink:0;margin:0 9px}
+.tediting .tarbol .tfila{gap:6px}
+.t3lista{padding:4px 14px 12px;border-top:1px solid var(--line)}
+.t3lin{display:flex;align-items:center;gap:4px;min-height:48px;position:relative}
+.t3lin+.t3lin{border-top:1px solid var(--line)}
+.t3guia{position:absolute;left:12px;top:0;bottom:0;border-left:1px solid var(--line-strong)}
+.t3barra{position:absolute;left:0;right:0;bottom:250px;display:flex;gap:8px;padding:8px 12px;background:var(--raised);border-top:1px solid var(--line);z-index:6}
+.t3barra button{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.t3barra button.on{border-color:var(--text)}
+.t3barra .t3listo{margin-left:auto;border:none;background:transparent}
+.t3teclado{position:absolute;left:0;right:0;bottom:0;height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--surface);color:var(--muted);font-size:13px;z-index:6}
+.t3txtbtn{flex:1;min-width:0;display:flex;border:none;background:none;padding:0;color:inherit;font:inherit;text-align:left;min-height:44px;align-items:center}
+.t3tocado{background:var(--raised);border-radius:10px 10px 0 0;margin:0 -8px;padding:6px 8px}
+.t3acc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 -8px 6px;padding:4px 8px 10px;background:var(--raised);border-radius:0 0 10px 10px}
+.t3acc button{min-height:44px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:600}
+.t3acc button svg{color:var(--muted)}
+.t3acc .t3borrar{color:var(--muted)}
+
+/* ---- Tareas ronda 4: pegar una lista ---- */
+.t4sheet{padding-bottom:0}
+.t4lab{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:6px 0 6px}
+.t4sheet .tnamein{width:100%}
+.t4nota{margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.t4caja{max-height:300px;overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent)}
+.t4lista{list-style:none;margin:0;padding:0 0 20px}
+.t4li{display:flex;align-items:center;gap:8px;min-height:48px;font-size:15px;font-weight:600}
+.t4t{flex:1;min-width:0}
+.t4x{width:44px;height:44px;margin-right:-10px;border:none;border-radius:10px;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t4fuera{margin:10px 0 0;font-size:13px;color:var(--muted)}
+.t4li+.t4li{border-top:1px solid var(--line)}
+.t4li.sub{padding-left:26px;font-weight:500}
+.t4pie{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0 18px}
+.t4velo{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.t4dlg{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:520px;padding:22px 24px 6px;border-radius:20px;background:var(--sheet);box-shadow:0 24px 60px rgba(0,0,0,.45);z-index:6;text-align:left;color:var(--text);font-family:Barlow,system-ui,sans-serif}
+.t4dlg .t4caja{max-height:320px}
+
+/* ---- Celebración: día completo ---- */
+.dcsheet{max-height:94%}
+.dccerrar{display:flex;justify-content:flex-end;padding:6px 12px 0}
+.dcbody{padding:0 20px 22px;text-align:center}
+.dchero{display:flex;justify-content:center;margin-top:-18px}
+.dct{margin:6px 0 0;font-size:28px;line-height:1.05}
+.dcsub{margin:4px 0 0;font-size:17px;color:var(--ambar-text)}
+.dcs{margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--text)}
+.dcnums{display:flex;margin:18px 0 0;padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dcnums div{flex:1;padding:12px 4px;display:flex;flex-direction:column;gap:2px}
+.dcnums div+div{border-left:1px solid var(--line)}
+.dcnums dt{white-space:nowrap;font-size:13px;font-weight:600;color:var(--muted)}
+.dcnums dd{margin:0;font-size:13px;color:var(--muted)}
+.dcnums b{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1.1;color:var(--text);font-variant-numeric:tabular-nums}
+.dcnums b.dcpts{color:var(--ambar-text)}
+.dcmes{margin-top:14px;text-align:left}
+.dcmes p{display:flex;justify-content:space-between;margin:0 0 6px;font-size:13px;color:var(--muted)}
+.dcmes p b{color:var(--text);font-size:15px}
+.dctrk{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.dctrk b{display:block;height:100%;border-radius:99px;background:var(--ambar)}
+.light .dctrk b{background:var(--ambar-text)}
+.dctambien{margin:12px 0 0;font-size:13px;color:var(--muted)}
+.dcbtn{margin-top:18px}
+.dcdlg{width:460px;top:90px}
+
+/* ---- Tu semana ---- */
+.tsw{max-width:1120px;margin:0 auto}
+.tshead{margin-bottom:16px}
+.tstop{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:stretch}
+.w1024 .tstop{grid-template-columns:1fr 1fr;gap:12px}
+.dkcard.tscomo,.dkcard.tsres{margin:0}
+.tsch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.tsch h2{font-size:22px;margin:0}
+.tsdias{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.tsdias li{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 0;border-radius:10px}
+.tsdias li.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.tsdl{font-size:12px;font-weight:600;color:var(--muted)}
+.tsdias b.num{font-size:18px}
+.tsdias li.fut b.num{color:var(--muted)}
+.tsdias i{display:block;width:12px;height:44px;margin:4px 0 8px;border-radius:6px;background:var(--track-empty);position:relative;overflow:hidden}
+.tsdias i b{position:absolute;left:0;right:0;bottom:0;min-height:10px;background:var(--ambar);border-radius:6px}
+.light .tsdias i b{background:var(--ambar-text)}
+.tsdias li.como i{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.tsfrase{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.tsfrase b{color:var(--text)}
+.tsrh{display:flex;gap:12px;align-items:flex-start}
+.tsric{width:36px;height:36px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tsrt{margin:0;font-size:16px;font-weight:700}
+.tsres .sub{font-size:13px;margin-top:2px}
+.tsracc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.tsrb{display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;text-align:left}
+.tsrb svg{color:var(--muted);flex-shrink:0}
+.tsrb b{display:block;font-size:14px}
+.tsrb .sub{margin:0}
+.tsrq{grid-column:1/-1;min-height:44px;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:700}
+.tsplan{margin-top:22px}
+.tsplanh{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+.tsplanh h2{font-size:26px;margin:0}
+.tstabs{display:inline-flex;padding:4px;gap:4px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tstabs button{min-height:40px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700}
+.tstabs button span{font-weight:500;margin-left:6px;font-size:13px}
+.tstabs button.on{background:var(--raised);color:var(--text)}
+.tsplanb{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:start}
+.tsboard{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.tscol{min-height:180px;padding:10px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column}
+.tscol.pasado{background:transparent}
+.tscol.hoy{border-color:var(--text)}
+.tscol.soltar{border:1.5px dashed var(--text)}
+.tscolh{margin:0;display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:14px;font-weight:700}
+.tscolh b{font-size:17px}
+.tscol.pasado .tscolh{color:var(--muted)}
+.tshoy{padding:1px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700}
+.tshab{margin:2px 0 8px;font-size:12px;color:var(--muted)}
+.tspasos{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.tspaso{display:flex;gap:6px;align-items:flex-start;padding:7px 6px;border-radius:10px;background:var(--raised);font-size:13px}
+.tscol.pasado .tspaso{background:transparent;padding:4px 0}
+.tspaso .tchk{width:20px;height:20px;border-radius:6px;margin-top:1px}
+.tspaso .tchk::after{inset:-12px}
+.tspt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tspn{font-weight:600;line-height:1.25;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tspaso.done .tspn{color:var(--muted);text-decoration:line-through}
+.tspta{font-size:12px;color:var(--muted)}
+.tspta b{color:var(--text)}
+.tsdrop{margin-top:6px;padding:10px 8px;border-radius:10px;border:1.5px dashed var(--line-strong);color:var(--muted);font-size:12px;font-weight:600;text-align:center}
+.tssin{padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tssin.fila{margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.tssin.fila .sub{flex-basis:100%;margin:-2px 0 4px}
+.tssin.fila .tsgrupo{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tssin.fila .tsgrupo ul{display:flex;gap:6px;flex-wrap:wrap}
+.tssinh{margin:0;font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tscnt{font-size:15px;color:var(--muted)}
+.tssin .sub{margin:4px 0 8px}
+.tsgt{display:flex;align-items:center;gap:6px;margin:10px 0 4px;font-size:12px;font-weight:700;color:var(--muted)}
+.tsgrupo ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.tssp{display:flex;align-items:center;gap:6px;width:100%;min-height:40px;padding:6px 8px;border-radius:10px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:13px;font-weight:600;text-align:left;cursor:grab}
+.tssp svg{color:var(--muted);flex-shrink:0}
+.tssp.drag{opacity:.6;border-style:dashed}
+.tssin.fila .tssp{width:auto;min-height:36px}
+.tsboard.mini .tscol{min-height:150px;padding:8px 6px}
+/* celular */
+.card.tscomo,.card.tsres{margin-top:12px}
+.tsplan.cel .tstabs{display:flex;margin-bottom:12px}
+.tsplan.cel .tstabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52px}
+.tsplan.cel .tstabs button span{margin:0}
+.tsdiascel{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tsdcel{padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tsdcel.hoy{border-color:var(--text)}
+.tsdch{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px}
+.tsdch h3{margin:0;display:flex;align-items:center;gap:8px;font-size:15px}
+.tsponer{display:flex;align-items:center;gap:6px;width:100%;min-height:44px;margin-top:4px;padding:0;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:600}
+.tsdcel .tspaso{font-size:14px}
+
+/* ---- Tu semana v2 ---- */
+.s2nuevo{min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
+.s2band{margin-bottom:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.s2bh{margin:0 0 8px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:15px}
+.s2bh .sub{font-size:13px}
+.s2chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.s2chip{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px 6px 8px;border-radius:12px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;text-align:left;cursor:grab;max-width:280px}
+.s2chip svg{color:var(--muted);flex-shrink:0}
+.s2chip b{display:block;font-size:13px;line-height:1.25}
+.s2chip span span{display:block;font-size:12px;color:var(--muted)}
+.s2chip.drag{opacity:.55;border-style:dashed}
+.s2scroll{overflow-x:auto;padding-bottom:4px}
+.s2board{display:grid;grid-template-columns:repeat(7,minmax(148px,1fr));gap:6px}
+.s2col{padding:10px 8px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.s2col.pasado{background:transparent}
+.s2col.hoy{border-color:var(--text)}
+.s2h{margin:0;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700}
+.s2h b{font-size:17px}
+.s2col.pasado .s2h{color:var(--muted)}
+.s2carga{margin:2px 0 6px;font-size:12px;color:var(--muted)}
+.s2lleno{display:inline-block;margin-top:3px;padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text);font-size:11px;font-weight:700}
+.s2mom{padding:6px 0 6px;border-top:1px solid var(--line);min-height:52px;border-radius:6px}
+.s2mom.vacio{min-height:0;padding:5px 0}
+.s2mom.vacio .s2mh{margin:0;color:var(--muted);font-weight:600}
+.s2comp.pas{opacity:.6}
+.s2mom.soltar{outline:1.5px dashed var(--text);outline-offset:-1px;background:var(--raised)}
+.s2mh{margin:0 0 4px;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.s2hab{margin-left:auto;font-weight:500;color:var(--muted)}
+.s2items{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:5px}
+.s2items > li{min-width:0}
+.s2paso{padding:7px 8px;border-radius:10px;background:var(--raised)}
+.s2paso.pas{background:transparent;padding:3px 0}
+.s2pt{display:block;font-size:13px;font-weight:600;line-height:1.3;hyphens:auto;-webkit-hyphens:auto}
+.s2paso.done .s2pt{color:var(--muted);text-decoration:line-through}
+.s2pie{display:flex;align-items:flex-start;gap:6px;margin-top:5px;min-width:0}
+.s2chk{width:18px;height:18px;border-radius:6px;border-width:1.5px}
+.s2chk::after{inset:-13px}
+.s2tarea{font-size:12px;line-height:1.3;color:var(--muted);min-width:0;overflow-wrap:break-word}
+.s2tarea b{color:var(--text)}
+.s2comp{padding:7px 8px;border-radius:10px;border:1px solid var(--line-strong);background:transparent}
+.s2hora{display:flex;align-items:center;gap:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+.s2hora svg{color:var(--muted)}
+.s2ct{display:block;font-size:13px;font-weight:600;line-height:1.3;margin-top:2px;hyphens:auto}
+.s2rep{display:flex;align-items:center;gap:4px;margin-top:3px;font-size:11px;color:var(--muted)}
+.s2drop{margin-top:5px;padding:8px;border-radius:8px;color:var(--text);font-size:12px;font-weight:600;text-align:center}
+.s2dlg{width:480px;top:70px}
+.s2in{width:100%}
+.s2dias{grid-template-columns:repeat(7,1fr)}
+.s2dias button.on{border-color:var(--text);border-width:1.5px}
+.s2hrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.s2hora-in{width:150px;font-family:'Barlow Condensed',sans-serif;font-size:18px}
+.s2cancel{border:1px solid var(--line-strong)}
+.s2seg{display:flex;width:max-content;padding:3px;gap:3px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.s2seg button{min-height:38px;padding:0 10px;border:none;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700}
+.s2seg button.on{background:var(--raised);color:var(--text)}
+.s2nota{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.s2sw{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.s2sw > span:first-child{flex:1}
+.s2sw b{display:block;font-size:15px}
+.s2switch{width:46px;height:28px;border-radius:99px;background:var(--track-empty);position:relative;flex-shrink:0}
+.s2switch i{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:99px;background:var(--text)}
+.s2sheet{max-height:92%;overflow:auto}
+/* celular */
+.tsplan.cel .tsplanh{margin-bottom:10px}
+.s2tira{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.s2tira button{min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:12px;font-weight:600}
+.s2tira button b{font-size:18px}
+.s2tira button i{font-style:normal;height:10px;line-height:8px;letter-spacing:1px;color:var(--muted);font-size:14px}
+.s2tira button.on{border-color:var(--text);border-width:1.5px;background:var(--raised)}
+.s2tira button.pas{color:var(--muted)}
+.s2agenda{padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.s2ah{margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline;font-size:15px}
+.s2ah .sub{font-size:13px}
+.s2amom{padding:8px 0 2px;border-top:1px solid var(--line)}
+.s2amom .s2mh{font-size:13px}
+.s2amom .s2pt,.s2amom .s2ct{font-size:14px}
+.s2hoy{display:flex;align-items:center;gap:12px;margin:6px 0;padding:10px 12px;border-radius:14px;border:1px solid var(--line-strong);font-size:15px}
+.s2hoy .sub{display:block;font-size:12px}
+.s2hic{width:38px;height:38px;border-radius:11px;background:var(--raised);display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0}
+body{flex-direction:column;align-items:center}.rowm{display:flex;gap:40px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+/* Tus compromisos (Hoy) */
+.tcc .tch{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px}
+.tcc .tch h2{margin:0;font-size:22px}
+.tcc .tcadd{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 2px;border:none;background:none;color:var(--ambar-text);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.tcc .tcdia{margin:12px 0 0;font-size:13px;font-weight:700;color:var(--muted)}
+.tcc .tcdia:first-of-type{margin-top:4px}
+.tcc ul{list-style:none;margin:0;padding:0}
+.tcc li+li{border-top:1px solid var(--line)}
+.tcc .tcrow{width:100%;min-height:52px;display:flex;align-items:center;gap:12px;padding:8px 0;border:none;background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.tcc .tchora{width:74px;flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px}
+.tcc .tchora.mom{font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:var(--muted);line-height:1.2}
+.tcc .tcm{flex:1;min-width:0}
+.tcc .tct{display:block;font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.tcc .tcrep{display:flex;align-items:center;gap:4px;margin-top:3px;font-size:12px;color:var(--muted);font-weight:500}
+.tcc .tcchev{color:var(--muted);display:flex;flex:none}
+.tcc .paso{opacity:.6}
+.tcc .tcmas{width:100%;min-height:44px;margin-top:8px;border:1px solid var(--line-strong);border-radius:12px;background:transparent;color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+/* Tareas de hoy, resumido (solo para ubicar la tarjeta nueva) */
+.tdh .tch{display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.tdh .tch h2{margin:0;font-size:22px}
+.tdh .tdl{display:inline-flex;align-items:center;gap:4px;min-height:44px;color:var(--ambar-text);font-size:15px;font-weight:600}
+.tdh ul{list-style:none;margin:0;padding:0}
+.tdh li{display:flex;gap:12px;align-items:flex-start;padding:10px 0}
+.tdh li+li{border-top:1px solid var(--line)}
+.tdh .bx{width:22px;height:22px;border-radius:7px;border:2px solid var(--line-strong);flex:none;margin-top:1px}
+.tdh b{display:block;font-size:15px}
+.tdh span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+/* Selector de hora propio */
+.hp .hpm{display:flex;align-items:center;gap:6px;margin:10px 0 6px;font-size:12px;font-weight:700;color:var(--muted)}
+.hp .hpm i{font-style:normal;font-weight:500}
+.hp .hpg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.hp .hpg button{min-height:44px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;cursor:pointer}
+.hp .hpg button.on{border:2px solid var(--text);background:var(--raised)}
+.hp .hpmins{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:3px;margin-top:12px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.hp .hpmins button{min-height:44px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;cursor:pointer}
+.hp .hpmins button.on{background:var(--raised);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--text)}
+.hp .hpres{display:flex;align-items:baseline;gap:8px;margin:10px 0 0;font-size:13px;color:var(--muted)}
+.hp .hpres b{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:var(--text)}
+.hp .s2seg{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+.hp .s2seg button{min-height:44px}
+/* Calendario propio (dentro de la hoja) */
+.calx{margin-top:10px;padding:4px 0 6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.calx .calh{display:flex;align-items:center;justify-content:space-between}
+.calx .calh b{font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.calx .calh button{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:none;border-radius:12px;background:transparent;color:var(--text);cursor:pointer}
+.calx .calh button[disabled]{color:var(--line-strong);cursor:default}
+.calx .calw,.calx .calg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.calx .calw{margin:4px 0 4px;font-size:12px;font-weight:700;color:var(--muted)}
+.calx .calg button,.calx .calg span{height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-family:'Barlow',sans-serif;font-size:15px;font-variant-numeric:tabular-nums}
+.calx .calg button{border:1px solid transparent;background:transparent;color:var(--text);font-weight:600;cursor:pointer}
+.calx .calg span{color:var(--muted)}
+.calx .calg .hoy{border:1.5px dashed var(--text)}
+.calx .calg .on{border:2px solid var(--text);background:var(--raised);font-weight:800}
+.calx .calpie{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.calx .calpie .sub{font-size:12px}
+.tsem button.onx{border-color:var(--text);border-width:2px;background:var(--raised);color:var(--text)}
+.tsem button .mes{font-size:11px}
+.shx{max-height:none!important;overflow:visible}
+.shx .t4pie{position:static}
+.s3seg{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:3px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.s3seg button{min-height:44px;border:none;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700}
+.s3seg button.on{background:var(--raised);color:var(--text)}
+.s3listo{min-height:48px}
+.s3sin{border:1px solid var(--line-strong)}
+.s2switch.on{background:var(--lila)}
+.s2switch.on i{left:21px;background:var(--ink)}
+.s2dias button.on{border-color:var(--text);border-width:2px;background:var(--raised);color:var(--text)}
+.t4pie{align-items:center}
+.t4pie .btnp{margin-top:0}
+.phone.alta{height:auto;min-height:844px}
+.dkgrid{display:grid;grid-template-columns:1fr 340px;gap:24px;margin-top:22px;align-items:start}
+.dkhab{display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);margin-top:8px}
+.dkhab b{flex:1;font-size:15px}
+.dkhab i{width:30px;height:30px;border-radius:99px;border:2px solid var(--line-strong)}
+.dkmom{display:flex;align-items:center;gap:8px;margin:18px 0 0;font-weight:700;font-size:15px}
+.dkcol{display:flex;flex-direction:column;gap:16px}
+.dkcol .card{margin:0}
+
+
+/* Radios nativos con apariencia de botón (un solo grupo con flechas) */
+.rb{position:relative;display:block}
+.rb input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.rb span{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px}
+.rb input:checked+span,.rb.on span{border:2px solid var(--text);background:var(--raised)}
+.rb input:focus-visible+span{outline:2px solid var(--text);outline-offset:2px}
+.rb input:disabled+span{color:var(--muted);border-style:dashed;background:transparent}
+.hp2 fieldset{border:none;margin:14px 0 0;padding:0;min-width:0}
+.hp2 legend{padding:0;margin:0 0 6px!important}
+.tsem button[aria-expanded=true]{border-color:var(--text);border-width:2px;color:var(--text)}
+.hp2 .hg7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.hp2 .hg6{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.hp2 .hmin{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.hp2 .hmin .rb span{font-size:17px}
+.hp2 .hmin5{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.hp2 .hres{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;min-height:44px}
+.hp2 .hres p{margin:0;font-size:13px;color:var(--muted)}
+.hp2 .hres b{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:var(--text);margin-right:6px}
+.hp2 .hotra{display:inline-flex;align-items:center;min-height:44px;padding:0;border:none;background:none;color:var(--text);font:inherit;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.hp2 .haviso{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--raised);font-size:13px;color:var(--text)}
+.hp2 .s3seg{grid-template-columns:repeat(3,1fr)}
+.hp2 .s3seg .rb span{border:none;background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;font-size:14px}
+.hp2 .s3seg .rb input:checked+span,.hp2 .s3seg .rb.on span{background:var(--raised);color:var(--text);border:none;box-shadow:inset 0 0 0 1.5px var(--text)}
+/* Interruptor accesible, neutro */
+.sw2{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;margin-top:14px;padding:8px 0;border:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:none;color:var(--text);font:inherit;text-align:left}
+.sw2 b{display:block;font-size:15px}
+.sw2 .sub{display:block;font-size:13px}
+.sw2 i{position:relative;flex:none;width:46px;height:28px;border-radius:99px;background:var(--track-empty);box-shadow:inset 0 0 0 1.5px var(--muted)}
+.sw2 i::after{content:'';position:absolute;left:4px;top:4px;width:20px;height:20px;border-radius:99px;background:var(--muted)}
+.sw2[aria-checked=true] i{background:var(--text);box-shadow:none}
+.sw2[aria-checked=true] i::after{left:22px;background:var(--bg)}
+/* Calendario como cuadrícula */
+.calx .calg [aria-disabled=true]{border:1px solid transparent;background:transparent;color:var(--muted);font-weight:400;cursor:default}
+.calx .calrow{display:contents}
+/* Día elegido desde el calendario en la fila de 7 */
+.tsem button.onx{gap:0}
+.tsem button.onx .mes{font-size:11px;line-height:1}
+/* Tus compromisos: los de hoy que ya pasaron */
+.tcc .paso{opacity:1}
+.tcc .paso .tchora,.tcc .paso .tct{color:var(--muted)}
+.tcc .yp{display:block;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--muted)}
+
+.hr3 .hcampo{display:flex;align-items:center;gap:10px;width:100%;max-width:220px;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:16px;font-weight:700;text-align:left;cursor:pointer}
+.hr3 .hcampo[aria-expanded=true]{border:2px solid var(--text)}
+.hr3 .hcampo .ph{color:var(--muted);font-weight:500}
+.hr3 .hcampo .hc{margin-left:auto;display:flex;color:var(--muted)}
+.hr3 .rueda{position:relative;display:grid;grid-template-columns:1fr 1fr 104px;gap:8px;margin-top:10px;padding:10px 12px 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.hr3 .rcol{position:relative}
+.hr3 .rtit{margin:0 0 6px;text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.hr3 .rlista{position:relative;height:220px;overflow:hidden;border-radius:12px;list-style:none;margin:0;padding:0}
+.hr3 .rlista::before{content:'';position:absolute;left:0;right:0;top:88px;height:44px;border-radius:12px;background:var(--raised);box-shadow:inset 0 0 0 1.5px var(--text)}
+.hr3 .rlista li{position:relative;height:44px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--muted)}
+.hr3 .rlista li.lejos{opacity:.55}
+.hr3 .rlista li.on{color:var(--text);font-size:26px}
+.hr3 .ampm{display:flex;flex-direction:column;justify-content:center;gap:8px;height:220px}
+.hr3 .ampm button{min-height:52px;border-radius:12px;border:1px solid var(--line-strong);background:transparent;color:var(--muted);font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.hr3 .ampm button.on{border:2px solid var(--text);background:var(--raised);color:var(--text)}
+.hr3 .rpie{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.hr3 .rpie .btn2x{min-height:44px;padding:0 18px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.hr3 .haviso{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--raised);font-size:13px;color:var(--text)}
+.hr3 .s3seg{grid-template-columns:repeat(3,1fr)}
+</style>
+</head>
+<body>
+<div class="col"><h2>1 · Celular: Hoy, abajo de Tareas de hoy: “Tus compromisos” con los 5 que vienen (oscuro)</h2><div class="dark">
+  <div class="phone tall">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="cabcomp" style="margin-top:14px"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1><p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 2 de 5</p></div></div>
+      <p class="sub" style="margin:16px 0 0;font-size:13px">(… tu día y tus misiones, igual que ahora …)</p>
+      <div style="margin-top:14px"><section class="card tdh" aria-labelledby="tdT1">
+    <div class="tch"><h2 class="cond" id="tdT1">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section></div>
+      <div style="margin-top:16px"><section class="card tcc" aria-labelledby="tcT1">
+    <div class="tch"><h2 class="cond" id="tcT1">Tus compromisos</h2><button class="tcadd" aria-label="Agregar un compromiso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar</button></div>
+    <div id="tcL1">
+    <p class="tcdia">Hoy</p><ul><li><button class="tcrow paso" aria-label="Hoy, 7:00 a. m.: Gimnasio con Andrés, ya pasó. Editar">
+      <span class="tchora">7:00 a. m.<span class="yp">ya pasó</span></span>
+      <span class="tcm"><span class="tct">Gimnasio con Andrés</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li><li><button class="tcrow" aria-label="Hoy, 3:00 p. m.: Reunión con el contador para revisar la declaración de renta, cada semana. Editar">
+      <span class="tchora">3:00 p. m.</span>
+      <span class="tcm"><span class="tct">Reunión con el contador para revisar la declaración de renta</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Mañana, martes 29</p><ul><li><button class="tcrow" aria-label="Mañana, martes 29, En la noche: Clase de inglés, cada semana. Editar">
+      <span class="tchora mom">En la noche</span>
+      <span class="tcm"><span class="tct">Clase de inglés</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Miércoles 30</p><ul><li><button class="tcrow" aria-label="Miércoles 30, 7:20 a. m.: Cita médica en la EPS. Editar">
+      <span class="tchora">7:20 a. m.</span>
+      <span class="tcm"><span class="tct">Cita médica en la EPS</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Sábado 3 de octubre</p><ul><li><button class="tcrow" aria-label="Sábado 3 de octubre, 8:00 p. m.: Cumpleaños de mi mamá. Editar">
+      <span class="tchora">8:00 p. m.</span>
+      <span class="tcm"><span class="tct">Cumpleaños de mi mamá</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Viernes 9 de octubre</p><ul><li><button class="tcrow" aria-label="Viernes 9 de octubre, 9:00 a. m.: Entregar el proyecto de grado. Editar">
+      <span class="tchora">9:00 a. m.</span>
+      <span class="tcm"><span class="tct">Entregar el proyecto de grado</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    </div>
+    <button class="tcmas" aria-expanded="false" aria-controls="tcL1">Ver todos (7)</button>
+  </section></div>
+    </div></div>
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>2 · Celular: tocaste “Ver todos (7)” (claro)</h2><div class="light">
+  <div class="phone tall">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="cabcomp" style="margin-top:14px"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1><p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 2 de 5</p></div></div>
+      <p class="sub" style="margin:16px 0 0;font-size:13px">(… tu día y tus misiones, igual que ahora …)</p>
+      <div style="margin-top:14px"><section class="card tdh" aria-labelledby="tdT2">
+    <div class="tch"><h2 class="cond" id="tdT2">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section></div>
+      <div style="margin-top:16px"><section class="card tcc" aria-labelledby="tcT2">
+    <div class="tch"><h2 class="cond" id="tcT2">Tus compromisos</h2><button class="tcadd" aria-label="Agregar un compromiso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar</button></div>
+    <div id="tcL2">
+    <p class="tcdia">Hoy</p><ul><li><button class="tcrow paso" aria-label="Hoy, 7:00 a. m.: Gimnasio con Andrés, ya pasó. Editar">
+      <span class="tchora">7:00 a. m.<span class="yp">ya pasó</span></span>
+      <span class="tcm"><span class="tct">Gimnasio con Andrés</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li><li><button class="tcrow" aria-label="Hoy, 3:00 p. m.: Reunión con el contador para revisar la declaración de renta, cada semana. Editar">
+      <span class="tchora">3:00 p. m.</span>
+      <span class="tcm"><span class="tct">Reunión con el contador para revisar la declaración de renta</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Mañana, martes 29</p><ul><li><button class="tcrow" aria-label="Mañana, martes 29, En la noche: Clase de inglés, cada semana. Editar">
+      <span class="tchora mom">En la noche</span>
+      <span class="tcm"><span class="tct">Clase de inglés</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Miércoles 30</p><ul><li><button class="tcrow" aria-label="Miércoles 30, 7:20 a. m.: Cita médica en la EPS. Editar">
+      <span class="tchora">7:20 a. m.</span>
+      <span class="tcm"><span class="tct">Cita médica en la EPS</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Sábado 3 de octubre</p><ul><li><button class="tcrow" aria-label="Sábado 3 de octubre, 8:00 p. m.: Cumpleaños de mi mamá. Editar">
+      <span class="tchora">8:00 p. m.</span>
+      <span class="tcm"><span class="tct">Cumpleaños de mi mamá</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Viernes 9 de octubre</p><ul><li><button class="tcrow" aria-label="Viernes 9 de octubre, 9:00 a. m.: Entregar el proyecto de grado. Editar">
+      <span class="tchora">9:00 a. m.</span>
+      <span class="tcm"><span class="tct">Entregar el proyecto de grado</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Miércoles 14 de octubre</p><ul><li><button class="tcrow" aria-label="Miércoles 14 de octubre, En la tarde: Recoger el pasaporte. Editar">
+      <span class="tchora mom">En la tarde</span>
+      <span class="tcm"><span class="tct">Recoger el pasaporte</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    </div>
+    <button class="tcmas" aria-expanded="true" aria-controls="tcL2">Ver menos</button>
+  </section></div>
+    </div></div>
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    
+  </div></div></div>
+<div class="col"><h2>3 · Celular: tocaste la hora: se abre el selector dentro de la hoja (oscuro)</h2><div class="dark">
+  <div class="phone alta" style="height:1040px">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="cabcomp" style="margin-top:14px"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1><p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 2 de 5</p></div></div>
+      <p class="sub" style="margin:16px 0 0;font-size:13px">(… tu día y tus misiones, igual que ahora …)</p><div style="margin-top:14px"><section class="card tdh" aria-labelledby="tdT3">
+    <div class="tch"><h2 class="cond" id="tdT3">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section></div>
+    </div></div>
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="sheet tsheet s2sheet shx" role="dialog" aria-modal="true" aria-labelledby="fc3">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="tsheet-h" style="margin-top:12px">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="fc3" style="margin:0;font-size:24px">Nuevo compromiso</h2><p class="sub" style="margin-top:4px">Una reunión, una cita, una clase…</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <label class="t4lab" for="fc3q">¿Qué es?</label>
+      <input class="tedit tnamein s2in" id="fc3q" value="Cita médica en la EPS" placeholder="Por ejemplo, cita con el médico">
+      <p class="t4lab" style="margin-top:14px">¿Qué día?</p>
+      <div class="tsem s2dias" role="radiogroup" aria-label="Día"><button role="radio" aria-checked="false" aria-label="hoy, lunes 28"><span>hoy</span><b class="num">28</b></button><button role="radio" aria-checked="false" aria-label="mar 29"><span>mar</span><b class="num">29</b></button><button role="radio" aria-checked="true" class="on" aria-label="mié 30"><span>mié</span><b class="num">30</b></button><button role="radio" aria-checked="false" aria-label="jue 1"><span>jue</span><b class="num">1</b></button><button role="radio" aria-checked="false" aria-label="vie 2"><span>vie</span><b class="num">2</b></button><button role="radio" aria-checked="false" aria-label="sáb 3"><span>sáb</span><b class="num">3</b></button><button aria-label="Otro día en el calendario" aria-expanded="false" aria-controls="calfc3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Más</span></button></div>
+      
+      <div class="hr3">
+      <p class="t4lab" style="margin-top:14px">¿A qué hora?</p>
+      <button class="hcampo" aria-expanded="true" aria-controls="rdfc3" aria-label="Hora: 7:20 a. m.. Cambiar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>7:20 a. m.</span><span class="hc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></span></button>
+      <div class="rueda" id="rdfc3" role="group" aria-label="Elegir la hora">
+        <div class="rcol"><p class="rtit" id="rhfc3">Hora</p><ul class="rlista" role="listbox" aria-labelledby="rhfc3" tabindex="0"><li class="lejos" role="option">5</li><li role="option">6</li><li class="on" aria-selected="true" role="option">7</li><li role="option">8</li><li class="lejos" role="option">9</li></ul></div>
+        <div class="rcol"><p class="rtit" id="rmfc3">Minutos</p><ul class="rlista" role="listbox" aria-labelledby="rmfc3" tabindex="0"><li class="lejos" role="option">10</li><li role="option">15</li><li class="on" aria-selected="true" role="option">20</li><li role="option">25</li><li class="lejos" role="option">30</li></ul></div>
+        <div class="rcol"><p class="rtit">&nbsp;</p><div class="ampm" role="radiogroup" aria-label="a. m. o p. m."><button role="radio" aria-checked="true" class="on">a. m.</button><button role="radio" aria-checked="false">p. m.</button></div></div>
+        <div class="rpie"><button class="tbtnq sm">Quitar la hora</button><button class="btn2x">Listo</button></div>
+      </div>
+      <p class="s2nota" aria-live="polite">Con esta hora queda en la mañana.</p>
+      
+      <p class="t4lab" style="margin-top:14px">¿Sin hora exacta? Elige el momento</p>
+      <div class="s3seg" role="radiogroup" aria-label="Momento del día"><button role="radio" aria-checked="false">Mañana</button><button role="radio" aria-checked="false">Tarde</button><button role="radio" aria-checked="false">Noche</button></div>
+    </div>
+      <button class="sw2" role="switch" aria-checked="false"><span><b>Repetir cada semana</b><span class="sub">Todos los miércoles a esta hora</span></span><i aria-hidden="true"></i></button>
+      
+      <div class="t4pie"><button class="tbtnq s2cancel">Cancelar</button><button class="btnp sm">Guardar</button></div>
+    </div>
+  </div></div></div>
+<div class="col"><h2>4 · Celular: tocaste “Más”: el mes se abre dentro de la hoja (claro)</h2><div class="light">
+  <div class="phone alta" style="height:1110px">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="cabcomp" style="margin-top:14px"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1><p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 2 de 5</p></div></div>
+      <p class="sub" style="margin:16px 0 0;font-size:13px">(… tu día y tus misiones, igual que ahora …)</p><div style="margin-top:14px"><section class="card tdh" aria-labelledby="tdT4">
+    <div class="tch"><h2 class="cond" id="tdT4">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section></div>
+    </div></div>
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="sheet tsheet s2sheet shx" role="dialog" aria-modal="true" aria-labelledby="fc4">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="tsheet-h" style="margin-top:12px">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="fc4" style="margin:0;font-size:24px">Nuevo compromiso</h2><p class="sub" style="margin-top:4px">Una reunión, una cita, una clase…</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <label class="t4lab" for="fc4q">¿Qué es?</label>
+      <input class="tedit tnamein s2in" id="fc4q" value="Recoger el pasaporte" placeholder="Por ejemplo, cita con el médico">
+      <p class="t4lab" style="margin-top:14px">¿Qué día?</p>
+      <div class="tsem s2dias" role="radiogroup" aria-label="Día"><button role="radio" aria-checked="false" aria-label="hoy, lunes 28"><span>hoy</span><b class="num">28</b></button><button role="radio" aria-checked="false" aria-label="mar 29"><span>mar</span><b class="num">29</b></button><button role="radio" aria-checked="false" aria-label="mié 30"><span>mié</span><b class="num">30</b></button><button role="radio" aria-checked="false" aria-label="jue 1"><span>jue</span><b class="num">1</b></button><button role="radio" aria-checked="false" aria-label="vie 2"><span>vie</span><b class="num">2</b></button><button role="radio" aria-checked="false" aria-label="sáb 3"><span>sáb</span><b class="num">3</b></button><button aria-label="Otro día en el calendario" aria-expanded="true" aria-controls="calfc4"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Más</span></button></div>
+      <div class="calx" id="calfc4">
+      <div class="calh"><button disabled aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><b id="calTfc4" aria-live="polite">Septiembre 2026</b><button aria-label="Mes siguiente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
+      <div class="calg" role="grid" aria-labelledby="calTfc4">
+        <div role="row" class="calrow calw"><span role="columnheader" aria-label="lunes">L</span><span role="columnheader" aria-label="martes">M</span><span role="columnheader" aria-label="miércoles">X</span><span role="columnheader" aria-label="jueves">J</span><span role="columnheader" aria-label="viernes">V</span><span role="columnheader" aria-label="sábado">S</span><span role="columnheader" aria-label="domingo">D</span></div>
+        <div role="row" class="calrow"><span role="gridcell" aria-hidden="true"></span><button role="gridcell" aria-label="martes 1 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">1</button><button role="gridcell" aria-label="miércoles 2 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">2</button><button role="gridcell" aria-label="jueves 3 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">3</button><button role="gridcell" aria-label="viernes 4 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">4</button><button role="gridcell" aria-label="sábado 5 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">5</button><button role="gridcell" aria-label="domingo 6 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">6</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 7 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">7</button><button role="gridcell" aria-label="martes 8 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">8</button><button role="gridcell" aria-label="miércoles 9 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">9</button><button role="gridcell" aria-label="jueves 10 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">10</button><button role="gridcell" aria-label="viernes 11 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">11</button><button role="gridcell" aria-label="sábado 12 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">12</button><button role="gridcell" aria-label="domingo 13 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">13</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 14 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">14</button><button role="gridcell" aria-label="martes 15 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">15</button><button role="gridcell" aria-label="miércoles 16 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">16</button><button role="gridcell" aria-label="jueves 17 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">17</button><button role="gridcell" aria-label="viernes 18 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">18</button><button role="gridcell" aria-label="sábado 19 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">19</button><button role="gridcell" aria-label="domingo 20 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">20</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 21 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">21</button><button role="gridcell" aria-label="martes 22 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">22</button><button role="gridcell" aria-label="miércoles 23 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">23</button><button role="gridcell" aria-label="jueves 24 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">24</button><button role="gridcell" aria-label="viernes 25 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">25</button><button role="gridcell" aria-label="sábado 26 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">26</button><button role="gridcell" aria-label="domingo 27 de septiembre, ya pasó" aria-disabled="true" tabindex="-1">27</button></div>
+        <div role="row" class="calrow"><button role="gridcell" class="hoy" aria-label="hoy, lunes 28 de septiembre" tabindex="-1">28</button><button role="gridcell" aria-label="martes 29 de septiembre" tabindex="-1">29</button><button role="gridcell" aria-label="miércoles 30 de septiembre" tabindex="-1">30</button></div>
+      </div>
+      <p class="sub" style="margin:6px 0 0;font-size:12px">Al tocar un día, el calendario se cierra solo.</p>
+    </div>
+      <div class="hr3">
+      <p class="t4lab" style="margin-top:14px">¿A qué hora?</p>
+      <button class="hcampo" aria-expanded="false" aria-controls="rdfc4" aria-label="Elegir la hora"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="ph">Elegir la hora</span><span class="hc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      
+      
+      
+      <p class="t4lab" style="margin-top:14px">¿Sin hora exacta? Elige el momento</p>
+      <div class="s3seg" role="radiogroup" aria-label="Momento del día"><button role="radio" aria-checked="false">Mañana</button><button role="radio" aria-checked="true" class="on">Tarde</button><button role="radio" aria-checked="false">Noche</button></div>
+    </div>
+      <button class="sw2" role="switch" aria-checked="false"><span><b>Repetir cada semana</b><span class="sub">Todos los lunes en la tarde</span></span><i aria-hidden="true"></i></button>
+      
+      <div class="t4pie"><button class="tbtnq s2cancel">Cancelar</button><button class="btnp sm">Guardar</button></div>
+    </div>
+  </div></div></div>
+<div class="col"><h2>5 · Celular: después de elegir el 14 de octubre en el calendario; sin hora exacta (oscuro)</h2><div class="dark">
+  <div class="phone alta" style="height:900px">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="cabcomp" style="margin-top:14px"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1><p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 2 de 5</p></div></div>
+      <p class="sub" style="margin:16px 0 0;font-size:13px">(… tu día y tus misiones, igual que ahora …)</p><div style="margin-top:14px"><section class="card tdh" aria-labelledby="tdT5">
+    <div class="tch"><h2 class="cond" id="tdT5">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section></div>
+    </div></div>
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="sheet tsheet s2sheet shx" role="dialog" aria-modal="true" aria-labelledby="fc5">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="tsheet-h" style="margin-top:12px">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="fc5" style="margin:0;font-size:24px">Nuevo compromiso</h2><p class="sub" style="margin-top:4px">Una reunión, una cita, una clase…</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <label class="t4lab" for="fc5q">¿Qué es?</label>
+      <input class="tedit tnamein s2in" id="fc5q" value="Recoger el pasaporte" placeholder="Por ejemplo, cita con el médico">
+      <p class="t4lab" style="margin-top:14px">¿Qué día?</p>
+      <div class="tsem s2dias" role="radiogroup" aria-label="Día"><button role="radio" aria-checked="false" aria-label="hoy, lunes 28"><span>hoy</span><b class="num">28</b></button><button role="radio" aria-checked="false" aria-label="mar 29"><span>mar</span><b class="num">29</b></button><button role="radio" aria-checked="false" aria-label="mié 30"><span>mié</span><b class="num">30</b></button><button role="radio" aria-checked="false" aria-label="jue 1"><span>jue</span><b class="num">1</b></button><button role="radio" aria-checked="false" aria-label="vie 2"><span>vie</span><b class="num">2</b></button><button role="radio" aria-checked="false" aria-label="sáb 3"><span>sáb</span><b class="num">3</b></button><button class="onx" aria-label="miércoles 14 de octubre. Cambiar en el calendario" aria-expanded="false" aria-controls="calfc5"><span>mié</span><b class="num">14</b><span class="mes">oct</span></button></div>
+      
+      <div class="hr3">
+      <p class="t4lab" style="margin-top:14px">¿A qué hora?</p>
+      <button class="hcampo" aria-expanded="false" aria-controls="rdfc5" aria-label="Elegir la hora"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="ph">Elegir la hora</span><span class="hc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      
+      
+      
+      <p class="t4lab" style="margin-top:14px">¿Sin hora exacta? Elige el momento</p>
+      <div class="s3seg" role="radiogroup" aria-label="Momento del día"><button role="radio" aria-checked="false">Mañana</button><button role="radio" aria-checked="true" class="on">Tarde</button><button role="radio" aria-checked="false">Noche</button></div>
+    </div>
+      <button class="sw2" role="switch" aria-checked="false"><span><b>Repetir cada semana</b><span class="sub">Todos los miércoles en la tarde</span></span><i aria-hidden="true"></i></button>
+      
+      <div class="t4pie"><button class="tbtnq s2cancel">Cancelar</button><button class="btnp sm">Guardar</button></div>
+    </div>
+  </div></div></div>
+<div class="col"><h2>6 · Celular: editar uno de las 3:10 p. m.: la hora se respeta tal cual (claro)</h2><div class="light">
+  <div class="phone alta" style="height:900px">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="cabcomp" style="margin-top:14px"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1><p class="sub" style="margin-top:4px;font-size:15px">Misiones de hoy: 2 de 5</p></div></div>
+      <p class="sub" style="margin:16px 0 0;font-size:13px">(… tu día y tus misiones, igual que ahora …)</p><div style="margin-top:14px"><section class="card tdh" aria-labelledby="tdT6">
+    <div class="tch"><h2 class="cond" id="tdT6">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section></div>
+    </div></div>
+    <nav>
+      <a href="#" class="on" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="sheet tsheet s2sheet shx" role="dialog" aria-modal="true" aria-labelledby="fc6">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="tsheet-h" style="margin-top:12px">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="fc6" style="margin:0;font-size:24px">Editar compromiso</h2><p class="sub" style="margin-top:4px">Una reunión, una cita, una clase…</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <label class="t4lab" for="fc6q">¿Qué es?</label>
+      <input class="tedit tnamein s2in" id="fc6q" value="Reunión con el contador para revisar la declaración de renta" placeholder="Por ejemplo, cita con el médico">
+      <p class="t4lab" style="margin-top:14px">¿Qué día?</p>
+      <div class="tsem s2dias" role="radiogroup" aria-label="Día"><button role="radio" aria-checked="true" class="on" aria-label="hoy, lunes 28"><span>hoy</span><b class="num">28</b></button><button role="radio" aria-checked="false" aria-label="mar 29"><span>mar</span><b class="num">29</b></button><button role="radio" aria-checked="false" aria-label="mié 30"><span>mié</span><b class="num">30</b></button><button role="radio" aria-checked="false" aria-label="jue 1"><span>jue</span><b class="num">1</b></button><button role="radio" aria-checked="false" aria-label="vie 2"><span>vie</span><b class="num">2</b></button><button role="radio" aria-checked="false" aria-label="sáb 3"><span>sáb</span><b class="num">3</b></button><button aria-label="Otro día en el calendario" aria-expanded="false" aria-controls="calfc6"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Más</span></button></div>
+      
+      <div class="hr3">
+      <p class="t4lab" style="margin-top:14px">¿A qué hora?</p>
+      <button class="hcampo" aria-expanded="false" aria-controls="rdfc6" aria-label="Hora: 3:10 p. m.. Cambiar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>3:10 p. m.</span><span class="hc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      
+      <p class="s2nota" aria-live="polite">Con esta hora queda en la tarde.</p>
+      
+      <p class="t4lab" style="margin-top:14px">¿Sin hora exacta? Elige el momento</p>
+      <div class="s3seg" role="radiogroup" aria-label="Momento del día"><button role="radio" aria-checked="false">Mañana</button><button role="radio" aria-checked="false">Tarde</button><button role="radio" aria-checked="false">Noche</button></div>
+    </div>
+      <button class="sw2" role="switch" aria-checked="true"><span><b>Repetir cada semana</b><span class="sub">Todos los lunes a esta hora</span></span><i aria-hidden="true"></i></button>
+      <button class="tbtnq" style="margin-top:6px;color:var(--coral-text)">Borrar compromiso</button>
+      <div class="t4pie"><button class="tbtnq s2cancel">Cancelar</button><button class="btnp sm">Guardar</button></div>
+    </div>
+  </div></div></div>
+<div class="col"><h2>7 · Celular: el mismo calendario en “¿Cuándo lo haces?” de Tu semana, mirando octubre (oscuro)</h2><div class="dark">
+  <div class="phone alta" style="height:900px">
+    <div class="bar"><div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></div><span class="cond" style="font-size:20px">Racha</span></div>
+    <div class="scroll"><div style="padding-bottom:20px">
+      <div class="tcab"><div style="flex:1;min-width:0"><h1 class="cond" style="margin:0;font-size:40px;line-height:1">Tu semana</h1><p class="sub" style="margin-top:6px;font-size:14px">Mira cómo vas y deja lista la semana.</p></div></div>
+    </div></div>
+    <nav>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Hoy</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg>Tareas</a>
+      <button class="plus" aria-label="Crear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Progreso</a>
+      <a href="#"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Perfil</a>
+    </nav>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="sheet tsheet s2sheet shx" role="dialog" aria-modal="true" aria-labelledby="hc7">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="tsheet-h" style="margin-top:12px">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="hc7" style="margin:0;font-size:24px">¿Cuándo lo haces?</h2><p class="sub" style="margin-top:4px">Empacar la cocina · Mudanza</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <p class="t4lab" style="margin-top:4px">Día</p>
+      <div class="tsem s2dias" role="radiogroup" aria-label="Día"><button role="radio" aria-checked="false" aria-label="hoy, lunes 28"><span>hoy</span><b class="num">28</b></button><button role="radio" aria-checked="false" aria-label="mar 29"><span>mar</span><b class="num">29</b></button><button role="radio" aria-checked="true" class="on" aria-label="mié 30"><span>mié</span><b class="num">30</b></button><button role="radio" aria-checked="false" aria-label="jue 1"><span>jue</span><b class="num">1</b></button><button role="radio" aria-checked="false" aria-label="vie 2"><span>vie</span><b class="num">2</b></button><button role="radio" aria-checked="false" aria-label="sáb 3"><span>sáb</span><b class="num">3</b></button><button aria-label="Otro día en el calendario" aria-expanded="true" aria-controls="calhc7"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Más</span></button></div>
+      <div class="calx" id="calhc7">
+      <div class="calh"><button aria-label="Mes anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><b id="calThc7" aria-live="polite">Octubre 2026</b><button aria-label="Mes siguiente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
+      <div class="calg" role="grid" aria-labelledby="calThc7">
+        <div role="row" class="calrow calw"><span role="columnheader" aria-label="lunes">L</span><span role="columnheader" aria-label="martes">M</span><span role="columnheader" aria-label="miércoles">X</span><span role="columnheader" aria-label="jueves">J</span><span role="columnheader" aria-label="viernes">V</span><span role="columnheader" aria-label="sábado">S</span><span role="columnheader" aria-label="domingo">D</span></div>
+        <div role="row" class="calrow"><span role="gridcell" aria-hidden="true"></span><span role="gridcell" aria-hidden="true"></span><span role="gridcell" aria-hidden="true"></span><button role="gridcell" aria-label="jueves 1 de octubre" tabindex="-1">1</button><button role="gridcell" aria-label="viernes 2 de octubre" tabindex="-1">2</button><button role="gridcell" aria-label="sábado 3 de octubre" tabindex="-1">3</button><button role="gridcell" aria-label="domingo 4 de octubre" tabindex="-1">4</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 5 de octubre" tabindex="-1">5</button><button role="gridcell" aria-label="martes 6 de octubre" tabindex="-1">6</button><button role="gridcell" aria-label="miércoles 7 de octubre" tabindex="-1">7</button><button role="gridcell" aria-label="jueves 8 de octubre" tabindex="-1">8</button><button role="gridcell" aria-label="viernes 9 de octubre" tabindex="-1">9</button><button role="gridcell" aria-label="sábado 10 de octubre" tabindex="-1">10</button><button role="gridcell" aria-label="domingo 11 de octubre" tabindex="-1">11</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 12 de octubre" tabindex="-1">12</button><button role="gridcell" aria-label="martes 13 de octubre" tabindex="-1">13</button><button role="gridcell" aria-label="miércoles 14 de octubre" tabindex="-1">14</button><button role="gridcell" aria-label="jueves 15 de octubre" tabindex="-1">15</button><button role="gridcell" aria-label="viernes 16 de octubre" tabindex="-1">16</button><button role="gridcell" aria-label="sábado 17 de octubre" tabindex="-1">17</button><button role="gridcell" aria-label="domingo 18 de octubre" tabindex="-1">18</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 19 de octubre" tabindex="-1">19</button><button role="gridcell" aria-label="martes 20 de octubre" tabindex="-1">20</button><button role="gridcell" aria-label="miércoles 21 de octubre" tabindex="-1">21</button><button role="gridcell" aria-label="jueves 22 de octubre" tabindex="-1">22</button><button role="gridcell" aria-label="viernes 23 de octubre" tabindex="-1">23</button><button role="gridcell" aria-label="sábado 24 de octubre" tabindex="-1">24</button><button role="gridcell" aria-label="domingo 25 de octubre" tabindex="-1">25</button></div>
+        <div role="row" class="calrow"><button role="gridcell" aria-label="lunes 26 de octubre" tabindex="-1">26</button><button role="gridcell" aria-label="martes 27 de octubre" tabindex="-1">27</button><button role="gridcell" aria-label="miércoles 28 de octubre" tabindex="-1">28</button><button role="gridcell" aria-label="jueves 29 de octubre" tabindex="-1">29</button><button role="gridcell" aria-label="viernes 30 de octubre" tabindex="-1">30</button><button role="gridcell" aria-label="sábado 31 de octubre" tabindex="-1">31</button></div>
+      </div>
+      
+    </div>
+      <p class="t4lab" style="margin-top:14px">Momento</p>
+      <div class="s3seg" role="radiogroup" aria-label="Momento"><button role="radio" aria-checked="false">Cualquiera</button><button role="radio" aria-checked="true" class="on">Mañana</button><button role="radio" aria-checked="false">Tarde</button><button role="radio" aria-checked="false">Noche</button></div>
+      <div class="t4pie"><button class="tbtnq s3sin">Dejar sin día</button><button class="btnp sm s3listo">Listo</button></div>
+    </div>
+  </div></div></div>
+<div class="col"><h2>8 · Escritorio 1440 px: “Tus compromisos” en la columna derecha de Hoy (claro)</h2><div class="light">
+  <div class="desk auto"><aside class="dkside">
+      <a href="#dk-main" class="dkskip">Saltar al contenido</a>
+      <div class="dkbrand"><span class="dklogo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:22px">Racha</span></div>
+      <button class="dkcrear" aria-label="Crear"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span>Crear</span></button>
+      <nav class="dknav" aria-label="Secciones">
+        <a href="#" class="on" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg><span>Hoy</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg><span>Tareas</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M7 15h10"/></svg><span>Tu semana</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg><span>Progreso</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendario</span></a>
+      </nav>
+      <a href="#" class="dkme" aria-label="Perfil: Johnatan, nivel 11">
+        <span class="dkavatar" aria-hidden="true">J</span>
+        <span style="flex:1;min-width:0"><b>Johnatan</b><span class="sub">Nivel 11 · Perfil</span></span>
+      </a>
+    </aside><main class="dkmain" id="dk-main1">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1>
+      <p class="sub" style="margin-top:6px;font-size:14px">(… cabecera, Tu día y misiones, igual que ahora …)</p>
+      <div class="dkgrid">
+        <div>
+          <p class="dkmom"><span style="color:var(--ambar-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span>Mañana</p>
+          <div class="dkhab"><b>Tomar agua</b><i aria-hidden="true"></i></div>
+          <div class="dkhab"><b>Meditar 10 minutos</b><i aria-hidden="true"></i></div>
+          <p class="dkmom"><span style="color:var(--coral-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>Tarde</p>
+          <div class="dkhab"><b>Caminar</b><i aria-hidden="true"></i></div>
+          <p class="dkmom"><span style="color:var(--lila-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+          <div class="dkhab"><b>Leer 20 minutos</b><i aria-hidden="true"></i></div>
+        </div>
+        <div class="dkcol"><section class="card tdh" aria-labelledby="tdTd1">
+    <div class="tch"><h2 class="cond" id="tdTd1">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section><section class="card tcc" aria-labelledby="tcTd1">
+    <div class="tch"><h2 class="cond" id="tcTd1">Tus compromisos</h2><button class="tcadd" aria-label="Agregar un compromiso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar</button></div>
+    <div id="tcLd1">
+    <p class="tcdia">Hoy</p><ul><li><button class="tcrow paso" aria-label="Hoy, 7:00 a. m.: Gimnasio con Andrés, ya pasó. Editar">
+      <span class="tchora">7:00 a. m.<span class="yp">ya pasó</span></span>
+      <span class="tcm"><span class="tct">Gimnasio con Andrés</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li><li><button class="tcrow" aria-label="Hoy, 3:00 p. m.: Reunión con el contador para revisar la declaración de renta, cada semana. Editar">
+      <span class="tchora">3:00 p. m.</span>
+      <span class="tcm"><span class="tct">Reunión con el contador para revisar la declaración de renta</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Mañana, martes 29</p><ul><li><button class="tcrow" aria-label="Mañana, martes 29, En la noche: Clase de inglés, cada semana. Editar">
+      <span class="tchora mom">En la noche</span>
+      <span class="tcm"><span class="tct">Clase de inglés</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Miércoles 30</p><ul><li><button class="tcrow" aria-label="Miércoles 30, 7:20 a. m.: Cita médica en la EPS. Editar">
+      <span class="tchora">7:20 a. m.</span>
+      <span class="tcm"><span class="tct">Cita médica en la EPS</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Sábado 3 de octubre</p><ul><li><button class="tcrow" aria-label="Sábado 3 de octubre, 8:00 p. m.: Cumpleaños de mi mamá. Editar">
+      <span class="tchora">8:00 p. m.</span>
+      <span class="tcm"><span class="tct">Cumpleaños de mi mamá</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Viernes 9 de octubre</p><ul><li><button class="tcrow" aria-label="Viernes 9 de octubre, 9:00 a. m.: Entregar el proyecto de grado. Editar">
+      <span class="tchora">9:00 a. m.</span>
+      <span class="tcm"><span class="tct">Entregar el proyecto de grado</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    </div>
+    <button class="tcmas" aria-expanded="false" aria-controls="tcLd1">Ver todos (7)</button>
+  </section></div>
+      </div>
+    </main></div></div></div>
+<div class="col"><h2>9 · Escritorio 1440 px: nuevo compromiso en ventana, con aviso de choque de horario (oscuro)</h2><div class="dark">
+  <div style="position:relative">
+  <div class="desk auto" style="min-height:1180px"><aside class="dkside">
+      <a href="#dk-main" class="dkskip">Saltar al contenido</a>
+      <div class="dkbrand"><span class="dklogo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><span class="cond" style="font-size:22px">Racha</span></div>
+      <button class="dkcrear" aria-label="Crear"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span>Crear</span></button>
+      <nav class="dknav" aria-label="Secciones">
+        <a href="#" class="on" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg><span>Hoy</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18H3"/><path d="M11 12H3"/><path d="M16 6H3"/><path d="m15 18 2 2 4-4"/></svg><span>Tareas</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M7 15h10"/></svg><span>Tu semana</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg><span>Progreso</span></a><a href="#" class=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Calendario</span></a>
+      </nav>
+      <a href="#" class="dkme" aria-label="Perfil: Johnatan, nivel 11">
+        <span class="dkavatar" aria-hidden="true">J</span>
+        <span style="flex:1;min-width:0"><b>Johnatan</b><span class="sub">Nivel 11 · Perfil</span></span>
+      </a>
+    </aside><main class="dkmain" id="dk-main2">
+      <h1 class="cond" style="margin:0;font-size:44px;line-height:1">Lunes 28</h1>
+      <p class="sub" style="margin-top:6px;font-size:14px">(… cabecera, Tu día y misiones, igual que ahora …)</p>
+      <div class="dkgrid">
+        <div>
+          <p class="dkmom"><span style="color:var(--ambar-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></span>Mañana</p>
+          <div class="dkhab"><b>Tomar agua</b><i aria-hidden="true"></i></div>
+          <div class="dkhab"><b>Meditar 10 minutos</b><i aria-hidden="true"></i></div>
+          <p class="dkmom"><span style="color:var(--coral-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>Tarde</p>
+          <div class="dkhab"><b>Caminar</b><i aria-hidden="true"></i></div>
+          <p class="dkmom"><span style="color:var(--lila-text);display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>Noche</p>
+          <div class="dkhab"><b>Leer 20 minutos</b><i aria-hidden="true"></i></div>
+        </div>
+        <div class="dkcol"><section class="card tdh" aria-labelledby="tdTd2">
+    <div class="tch"><h2 class="cond" id="tdTd2">Tareas de hoy</h2><a class="tdl" href="#">Ver tareas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    <ul><li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Empacar la cocina</b><span>Mudanza</span></span></li>
+    <li><i class="bx" aria-hidden="true"></i><span style="margin:0"><b>Buscar el certificado de ingresos</b><span>Declaración de renta</span></span></li></ul>
+  </section><section class="card tcc" aria-labelledby="tcTd2">
+    <div class="tch"><h2 class="cond" id="tcTd2">Tus compromisos</h2><button class="tcadd" aria-label="Agregar un compromiso"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar</button></div>
+    <div id="tcLd2">
+    <p class="tcdia">Hoy</p><ul><li><button class="tcrow paso" aria-label="Hoy, 7:00 a. m.: Gimnasio con Andrés, ya pasó. Editar">
+      <span class="tchora">7:00 a. m.<span class="yp">ya pasó</span></span>
+      <span class="tcm"><span class="tct">Gimnasio con Andrés</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li><li><button class="tcrow" aria-label="Hoy, 3:00 p. m.: Reunión con el contador para revisar la declaración de renta, cada semana. Editar">
+      <span class="tchora">3:00 p. m.</span>
+      <span class="tcm"><span class="tct">Reunión con el contador para revisar la declaración de renta</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Mañana, martes 29</p><ul><li><button class="tcrow" aria-label="Mañana, martes 29, En la noche: Clase de inglés, cada semana. Editar">
+      <span class="tchora mom">En la noche</span>
+      <span class="tcm"><span class="tct">Clase de inglés</span><span class="tcrep"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>cada semana</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Miércoles 30</p><ul><li><button class="tcrow" aria-label="Miércoles 30, 7:20 a. m.: Cita médica en la EPS. Editar">
+      <span class="tchora">7:20 a. m.</span>
+      <span class="tcm"><span class="tct">Cita médica en la EPS</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Sábado 3 de octubre</p><ul><li><button class="tcrow" aria-label="Sábado 3 de octubre, 8:00 p. m.: Cumpleaños de mi mamá. Editar">
+      <span class="tchora">8:00 p. m.</span>
+      <span class="tcm"><span class="tct">Cumpleaños de mi mamá</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    <p class="tcdia">Viernes 9 de octubre</p><ul><li><button class="tcrow" aria-label="Viernes 9 de octubre, 9:00 a. m.: Entregar el proyecto de grado. Editar">
+      <span class="tchora">9:00 a. m.</span>
+      <span class="tcm"><span class="tct">Entregar el proyecto de grado</span></span>
+      <span class="tcchev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span></button></li></ul>
+    </div>
+    <button class="tcmas" aria-expanded="false" aria-controls="tcLd2">Ver todos (7)</button>
+  </section></div>
+      </div>
+    </main></div>
+  <div class="t4velo" aria-hidden="true"></div><div class="t4dlg s2dlg" role="dialog" aria-modal="true" aria-labelledby="fcd">
+      <div class="tsheet-h">
+        <div style="flex:1;min-width:0"><h2 class="cond" id="fcd" style="margin:0;font-size:24px">Nuevo compromiso</h2><p class="sub" style="margin-top:4px">Una reunión, una cita, una clase…</p></div>
+        <button class="closeb" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+      <label class="t4lab" for="fcdq">¿Qué es?</label>
+      <input class="tedit tnamein s2in" id="fcdq" value="Llamar al banco" placeholder="Por ejemplo, cita con el médico">
+      <p class="t4lab" style="margin-top:14px">¿Qué día?</p>
+      <div class="tsem s2dias" role="radiogroup" aria-label="Día"><button role="radio" aria-checked="true" class="on" aria-label="hoy, lunes 28"><span>hoy</span><b class="num">28</b></button><button role="radio" aria-checked="false" aria-label="mar 29"><span>mar</span><b class="num">29</b></button><button role="radio" aria-checked="false" aria-label="mié 30"><span>mié</span><b class="num">30</b></button><button role="radio" aria-checked="false" aria-label="jue 1"><span>jue</span><b class="num">1</b></button><button role="radio" aria-checked="false" aria-label="vie 2"><span>vie</span><b class="num">2</b></button><button role="radio" aria-checked="false" aria-label="sáb 3"><span>sáb</span><b class="num">3</b></button><button aria-label="Otro día en el calendario" aria-expanded="false" aria-controls="calfcd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Más</span></button></div>
+      
+      <div class="hr3">
+      <p class="t4lab" style="margin-top:14px">¿A qué hora?</p>
+      <button class="hcampo" aria-expanded="true" aria-controls="rdfcd" aria-label="Hora: 3:00 p. m.. Cambiar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>3:00 p. m.</span><span class="hc"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></span></button>
+      <div class="rueda" id="rdfcd" role="group" aria-label="Elegir la hora">
+        <div class="rcol"><p class="rtit" id="rhfcd">Hora</p><ul class="rlista" role="listbox" aria-labelledby="rhfcd" tabindex="0"><li class="lejos" role="option">1</li><li role="option">2</li><li class="on" aria-selected="true" role="option">3</li><li role="option">4</li><li class="lejos" role="option">5</li></ul></div>
+        <div class="rcol"><p class="rtit" id="rmfcd">Minutos</p><ul class="rlista" role="listbox" aria-labelledby="rmfcd" tabindex="0"><li class="lejos" role="option">50</li><li role="option">55</li><li class="on" aria-selected="true" role="option">00</li><li role="option">05</li><li class="lejos" role="option">10</li></ul></div>
+        <div class="rcol"><p class="rtit">&nbsp;</p><div class="ampm" role="radiogroup" aria-label="a. m. o p. m."><button role="radio" aria-checked="false">a. m.</button><button role="radio" aria-checked="true" class="on">p. m.</button></div></div>
+        <div class="rpie"><button class="tbtnq sm">Quitar la hora</button><button class="btn2x">Listo</button></div>
+      </div>
+      <p class="s2nota" aria-live="polite">Con esta hora queda en la tarde.</p>
+      <p class="haviso" role="status">Ya tienes “Reunión con el contador” a las 3:00 p. m.</p>
+      <p class="t4lab" style="margin-top:14px">¿Sin hora exacta? Elige el momento</p>
+      <div class="s3seg" role="radiogroup" aria-label="Momento del día"><button role="radio" aria-checked="false">Mañana</button><button role="radio" aria-checked="false">Tarde</button><button role="radio" aria-checked="false">Noche</button></div>
+    </div>
+      <button class="sw2" role="switch" aria-checked="false"><span><b>Repetir cada semana</b><span class="sub">Todos los lunes a esta hora</span></span><i aria-hidden="true"></i></button>
+      
+      <div class="t4pie"><button class="tbtnq s2cancel">Cancelar</button><button class="btnp sm">Guardar</button></div>
+  </div></div></div></div>
+</body>
+</html>
