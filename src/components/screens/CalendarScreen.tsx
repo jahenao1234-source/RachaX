@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, Check, X, ShieldCheck, ChevronRight as ChevronRightIcon, Plus, Minus } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
@@ -16,7 +16,7 @@ import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 
 const ordenMomentos = ['manana', 'tarde', 'noche', 'flexible'];
 
-export const CalendarScreen: React.FC = () => {
+export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: string | null; onFechaAbierta?: () => void }> = ({ incrustado, abrirFecha, onFechaAbierta }) => {
   const {
     habitosActivos: habitos,
     registros,
@@ -32,6 +32,14 @@ export const CalendarScreen: React.FC = () => {
 
   const [viewDate, setViewDate] = useState<Date>(() => new Date());
   const [selectedDateForModal, setSelectedDateForModal] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (abrirFecha) {
+      setViewDate(new Date(parseDateString(abrirFecha)));
+      setSelectedDateForModal(abrirFecha);
+      onFechaAbierta?.();
+    }
+  }, [abrirFecha, onFechaAbierta]);
 
   const todayStr = getTodayString();
   const yesterdayDate = new Date(parseDateString(todayStr));
@@ -211,13 +219,19 @@ export const CalendarScreen: React.FC = () => {
   }, [selectedDateForModal]);
 
   return (
-    <div id="screen-calendar" className="pb-28">
+    <div id={incrustado ? undefined : "screen-calendar"} className={incrustado ? "mt-4" : "pb-28"}>
       {/* CABECERA */}
       <div className="flex items-start gap-2 mb-3">
         <div className="flex-1 min-w-0">
-          <h1 className="font-heading font-bold text-[44px] leading-none m-0 capitalize text-text">
-            {monthNames[currentMonthIdx]}
-          </h1>
+          {incrustado ? (
+             <h2 className="font-heading font-bold text-[28px] leading-none m-0 capitalize text-text">
+               {monthNames[currentMonthIdx]}
+             </h2>
+          ) : (
+             <h1 className="font-heading font-bold text-[44px] leading-none m-0 capitalize text-text">
+               {monthNames[currentMonthIdx]}
+             </h1>
+          )}
           <p className="text-[13px] text-text-muted mt-1">{currentYear}</p>
         </div>
         

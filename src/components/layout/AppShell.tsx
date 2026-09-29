@@ -59,9 +59,8 @@ export const AppShell: React.FC = () => {
       case 'semana':
         return <SemanaScreen />;
       case 'stats':
-        return <StatsScreen />;
       case 'calendario':
-        return <CalendarScreen />;
+        return <StatsScreen pestanaInicial={screenToRender === 'calendario' ? 'calendario' : 'resumen'} />;
       case 'perfil':
         return <ProfileScreen />;
       default:

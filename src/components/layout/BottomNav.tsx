@@ -84,14 +84,14 @@ export const BottomNav: React.FC = () => {
           type="button"
           onClick={() => navigateToTab('stats')}
           className={`flex-1 flex flex-col items-center justify-center py-1 min-h-[44px] transition-all duration-200 group ${
-            activeTab === 'stats' ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
+            (activeTab === 'stats' || activeTab === 'calendario') ? 'text-[var(--accent)]' : 'text-text-muted hover:text-text-muted'
           }`}
         >
           <div className={`relative p-1 rounded-xl transition-all duration-200 ${
-            activeTab === 'stats' ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
+            (activeTab === 'stats' || activeTab === 'calendario') ? 'bg-[var(--accent-15)]' : 'group-hover:bg-surface-raised'
           }`}>
-            <BarChart3 size={20} strokeWidth={activeTab === 'stats' ? 2.3 : 1.9} />
-            {activeTab === 'stats' && (
+            <BarChart3 size={20} strokeWidth={(activeTab === 'stats' || activeTab === 'calendario') ? 2.3 : 1.9} />
+            {(activeTab === 'stats' || activeTab === 'calendario') && (
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--accent)] rounded-full" />
             )}
           </div>

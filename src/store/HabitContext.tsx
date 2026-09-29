@@ -36,6 +36,7 @@ import {
   DestinoPaso,
 } from '../utils/tareasUtils';
 import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
+import { hastaOcultarConsejo, limpiarConsejosOcultos } from '../utils/consejosUtils';
 import { InsigniaDef, calcularInsignias } from '../utils/badgeUtils';
 
 const STORAGE_HABITOS_KEY = 'racha_habitos';
@@ -48,6 +49,7 @@ const STORAGE_COMODINES_MES_KEY = 'racha_comodines_mes';
 const STORAGE_RUTINAS_KEY = 'racha_rutinas';
 const STORAGE_TAREAS_KEY = 'racha_tareas';
 const STORAGE_COMPROMISOS_KEY = 'racha_compromisos';
+const STORAGE_CONSEJOS_OCULTOS_KEY = 'racha_consejos_ocultos';
 const STORAGE_PREMIOS_KEY = 'racha_premios';
 const STORAGE_CAJAS_KEY = 'racha_cajas';
 const STORAGE_RETO_SEMANAL_KEY = 'racha_reto_semanal';
@@ -98,6 +100,11 @@ interface HabitContextType {
   /** alcance "uno" en uno que se repite: solo ese día (fechaDelDia). */
   editarCompromiso: (id: string, cambios: CambiosCompromiso, alcance: Alcance, fechaDelDia: string) => void;
   borrarCompromiso: (id: string, alcance: Alcance, fechaDelDia: string) => void;
+  // Progreso › Qué hacer ahora (src/utils/consejosUtils.ts): 'Ahora no' esconde un consejo 7 días (viaja en la copia a la nube)
+  consejosOcultos: Record<string, string>;
+  ocultarConsejo: (clave: string) => void;
+  /** Deshacer de 'Ahora no'. */
+  mostrarConsejo: (clave: string) => void;
   /** "Deshacer": vuelve la lista de compromisos a como estaba. */
   restaurarCompromisos: (lista: Compromiso[]) => void;
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
@@ -186,6 +193,7 @@ interface HabitContextType {
     rutinas?: Rutina[];
     tareas?: Tarea[];
     compromisos?: Compromiso[];
+    consejosOcultos?: Record<string, string>;
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
@@ -283,6 +291,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (stored) return JSON.parse(stored);
     } catch {}
     return [];
+  });
+  const [consejosOcultos, setConsejosOcultos] = useState<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_CONSEJOS_OCULTOS_KEY);
+      if (stored) return limpiarConsejosOcultos(JSON.parse(stored), getTodayString());
+    } catch {}
+    return {};
   });
   const [isTareaEditorOpen, setIsTareaEditorOpen] = useState(false);
   const [tareaBeingEdited, setTareaBeingEdited] = useState<Tarea | null>(null);
@@ -599,6 +614,24 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch {}
   }, [compromisos]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_CONSEJOS_OCULTOS_KEY, JSON.stringify(consejosOcultos));
+    } catch {}
+  }, [consejosOcultos]);
+
+  const ocultarConsejo = (clave: string) => {
+    const hoy = getTodayString();
+    setConsejosOcultos((prev) => ({ ...limpiarConsejosOcultos(prev, hoy), [clave]: hastaOcultarConsejo(hoy) }));
+  };
+  const mostrarConsejo = (clave: string) => {
+    setConsejosOcultos((prev) => {
+      if (!(clave in prev)) return prev;
+      const { [clave]: _, ...resto } = prev;
+      return resto;
+    });
+  };
+
   // Navigation helpers
   const openOnboarding = () => {
     setIsOnboardingOpen(true);
@@ -692,6 +725,16 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         return h;
       })
     );
+    // Si cambia la meta, el registro de hoy se recalcula (antes, al bajarla, quedaba 'no cumplido')
+    if ('metaDiaria' in updates) {
+      const hoy = getTodayString();
+      const meta = updates.metaDiaria;
+      setRegistros((prev) => prev.map((r) =>
+        r.habitoId === id && r.fecha === hoy && typeof r.valor === 'number'
+          ? { ...r, completado: meta ? r.valor >= meta : r.valor > 0 }
+          : r));
+      setLastRegistroUpdate(Date.now());
+    }
   };
 
   // Action: Eliminar Hábito
@@ -760,6 +803,8 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setRutinas([]);
     setTareas([]);
     setCompromisos([]);
+    setConsejosOcultos({});
+    localStorage.removeItem(STORAGE_CONSEJOS_OCULTOS_KEY);
     localStorage.removeItem(STORAGE_HABITOS_KEY);
     localStorage.removeItem(STORAGE_REGISTROS_KEY);
     localStorage.removeItem(STORAGE_RUTINAS_KEY);
@@ -812,6 +857,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       rutinas,
       tareas,
       compromisos,
+      consejosOcultos,
       comodines,
       diasCongelados,
       ordenMomentos,
@@ -853,6 +899,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     rutinas?: Rutina[];
     tareas?: Tarea[];
     compromisos?: Compromiso[];
+    consejosOcultos?: Record<string, string>;
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
@@ -899,6 +946,11 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (Array.isArray(datos.rutinas)) setRutinas(datos.rutinas);
       if (Array.isArray(datos.tareas)) setTareas(datos.tareas);
       if (Array.isArray(datos.compromisos)) setCompromisos(datos.compromisos);
+      if (datos.consejosOcultos && typeof datos.consejosOcultos === 'object' && !Array.isArray(datos.consejosOcultos)) {
+        const limpios: Record<string, string> = {};
+        for (const [k, v] of Object.entries(datos.consejosOcultos)) if (typeof v === 'string') limpios[k] = v;
+        setConsejosOcultos(limpiarConsejosOcultos(limpios, getTodayString()));
+      }
       if (typeof datos.comodines === 'number') setComodines(Math.max(0, Math.min(COMODINES_MAX, datos.comodines)));
       if (Array.isArray(datos.diasCongelados)) setDiasCongelados(datos.diasCongelados);
       if (Array.isArray(datos.ordenMomentos)) setOrdenMomentos(datos.ordenMomentos);
@@ -1395,6 +1447,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         editarCompromiso,
         borrarCompromiso,
         restaurarCompromisos,
+        consejosOcultos,
+        ocultarConsejo,
+        mostrarConsejo,
         agregarPasosPegados,
         quitarPasosTarea,
         moverPasoTarea,

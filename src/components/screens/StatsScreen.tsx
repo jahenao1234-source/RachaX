@@ -11,10 +11,20 @@ import {
 import { getTodayString, parseDateString, subtractDays, formatDateToString, contarCompletadosSemana } from '../../utils/habitUtils';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 import { HabitIcon } from '../common/HabitIcon';
+import { useState, useEffect } from 'react';
+import { CalendarScreen } from './CalendarScreen';
+import { QueHacerAhora } from '../progreso/QueHacerAhora';
 
 
-export const StatsScreen: React.FC = () => {
+export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }> = ({ pestanaInicial = 'resumen' }) => {
   const { habitosActivos: habitos, registros, diasCongelados, rachaGlobal, openHabitDetail, openCreateMenu, ordenMomentos, navigateToTab } = useHabitStore();
+
+  const [pestana, setPestana] = useState<'resumen' | 'calendario'>(pestanaInicial);
+  const [fechaAbrir, setFechaAbrir] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPestana(pestanaInicial);
+  }, [pestanaInicial]);
 
   const todayStr = getTodayString();
   const yesterdayStr = subtractDays(todayStr, 1);
@@ -217,7 +227,7 @@ export const StatsScreen: React.FC = () => {
   return (
     <div id="screen-stats" className="pb-28">
       
-      <header className="mb-[26px] flex justify-between items-start gap-4">
+      <header className="flex justify-between items-start gap-4">
         <div className="flex-1 min-w-0">
           <h1 className="font-heading font-bold text-[44px] leading-none m-0 text-text mb-1.5">Progreso</h1>
           {isRecent ? (
@@ -232,14 +242,42 @@ export const StatsScreen: React.FC = () => {
             <p className="text-[13px] text-text-muted">Desde el {startDay} de {startMonth} · sin contar hoy</p>
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => navigateToTab('calendario')}
-          className="h-[44px] px-3.5 rounded-[12px] bg-surface-raised border border-line-strong text-[14px] font-bold flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap shrink-0"
-        >
-          <Calendar size={18} /> Ver calendario
-        </button>
       </header>
+
+      <div className="grid grid-cols-2 gap-[3px] p-[3px] rounded-[12px] border border-line bg-surface mt-3.5 mb-[26px]" role="tablist" aria-label="Progreso" onKeyDown={(e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          const otra = pestana === 'resumen' ? 'calendario' : 'resumen';
+          setPestana(otra);
+          document.getElementById(otra === 'resumen' ? 'tR1' : 'tC1')?.focus();
+        }
+      }}>
+        <button 
+          role="tab" 
+          id="tR1" 
+          aria-selected={pestana === 'resumen'} 
+          aria-controls="pR1" 
+          onClick={() => setPestana('resumen')} 
+          tabIndex={pestana === 'resumen' ? 0 : -1}
+          className={`min-h-[44px] border-none rounded-[9px] bg-transparent text-[15px] font-bold outline-none focus-visible:outline-2 focus-visible:outline-text focus-visible:outline-offset-2 transition-colors ${pestana === 'resumen' ? 'bg-surface-raised text-text shadow-[inset_0_0_0_1.5px_var(--text)]' : 'text-text-muted'}`}
+        >
+          Resumen
+        </button>
+        <button 
+          role="tab" 
+          id="tC1" 
+          aria-selected={pestana === 'calendario'} 
+          aria-controls="pC1" 
+          onClick={() => setPestana('calendario')} 
+          tabIndex={pestana === 'calendario' ? 0 : -1}
+          className={`min-h-[44px] border-none rounded-[9px] bg-transparent text-[15px] font-bold outline-none focus-visible:outline-2 focus-visible:outline-text focus-visible:outline-offset-2 transition-colors ${pestana === 'calendario' ? 'bg-surface-raised text-text shadow-[inset_0_0_0_1.5px_var(--text)]' : 'text-text-muted'}`}
+        >
+          Calendario
+        </button>
+      </div>
+
+      {pestana === 'resumen' && (
+        <div role="tabpanel" id="pR1" aria-labelledby="tR1" className="progreso">
+          <QueHacerAhora onRevisarDia={(f) => { setFechaAbrir(f); setPestana('calendario'); }} />
 
       {/* TARJETA FUERZA */}
       <div className="rounded-[18px] bg-surface border border-line p-[18px] mb-[26px]">
@@ -453,7 +491,7 @@ export const StatsScreen: React.FC = () => {
               <p className="text-[13px] text-text-muted mb-6">No hay suficientes datos por día.</p>
             )}
 
-            <p className="text-[13px] font-semibold text-text-muted mb-3">Por momento del día</p>
+            <p id="progreso-momentos" className="text-[13px] font-semibold text-text-muted mb-3 scroll-mt-4">Por momento del día</p>
             {momentsBreakdown.length > 0 ? (
               <>
                 <div className="space-y-3 mb-4">
@@ -532,6 +570,14 @@ export const StatsScreen: React.FC = () => {
         </div>
       )}
       
+        </div>
+      )}
+
+      {pestana === 'calendario' && (
+        <div role="tabpanel" id="pC1" aria-labelledby="tC1" className="progreso">
+          <CalendarScreen incrustado abrirFecha={fechaAbrir} onFechaAbierta={() => setFechaAbrir(null)} />
+        </div>
+      )}
     </div>
   );
 };

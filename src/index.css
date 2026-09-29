@@ -1110,3 +1110,29 @@ html:not(.dark) .semana .tscomp-dias i b{background:var(--ambar-text)}
 .tareas .tlist{grid-template-columns:minmax(0,1fr)}
 .tareas .tlist > li{min-width:0}
 .tareas .tli{min-width:0;overflow:hidden}
+
+/* Progreso › Qué hacer ahora (design/maqueta-progreso-informe.html, DESIGN.md › Progreso 2) */
+.progreso .qha{margin-bottom:26px}
+.progreso .qha .cardhead h2{margin:0;font-size:22px;color:var(--text)}
+.progreso .cjs{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.progreso .cj{display:flex;gap:12px;padding:14px 14px 8px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.progreso .cjic{width:36px;height:36px;border-radius:10px;background:var(--surface-raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex:none}
+.progreso .cj.pos .cjic,.progreso .cjok .cjic{background:var(--ambar-tint);color:var(--ambar-text)}
+.progreso .cjm{flex:1;min-width:0}
+.progreso .cj .cjt,.progreso .cjok b{margin:0;font-family:var(--font-sans);display:block;font-size:15px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;color:var(--text)}
+.progreso .cj p,.progreso .cjok p{margin:4px 0 0;font-size:14px;line-height:1.45;color:var(--text-muted)}
+.progreso .cjact{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.progreso .cjbtn{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.progreso .cjno{min-height:44px;padding:0 10px;border:none;background:none;color:var(--text-muted);font-size:14px;font-weight:600}
+.progreso .cjmas{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin-top:10px;border:1px solid var(--line-strong);border-radius:12px;background:transparent;color:var(--text);font-size:14px;font-weight:700}
+.progreso .cjmas svg{color:var(--text-muted)}
+.progreso .cjok{display:flex;gap:12px;align-items:flex-start;margin-top:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.progreso .cjbtn:focus-visible,.progreso .cjno:focus-visible,.progreso .cjmas:focus-visible,.progreso [role=tab]:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.progreso .cjs.dk{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.progreso .cjs.dk .cj{flex-direction:column;gap:10px;padding:18px 18px 10px}
+.progreso .cjs.dk .cjm{display:flex;flex-direction:column;flex:1}
+.progreso .cjs.dk .cjact{margin-top:auto;padding-top:12px}
+.progreso .ttoast{position:fixed;left:16px;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));max-width:420px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:60}
+.progreso .ttoast span{flex:1}
+.progreso .ttoast button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+@media (min-width:1024px){.progreso .ttoast{bottom:32px}}

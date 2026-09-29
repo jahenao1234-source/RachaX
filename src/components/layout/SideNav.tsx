@@ -19,7 +19,6 @@ export const SideNav: React.FC = () => {
     { id: 'tareas', label: 'Tareas', icon: ListChecks },
     { id: 'semana', label: 'Tu semana', icon: CalendarRange },
     { id: 'stats', label: 'Progreso', icon: BarChart3 },
-    { id: 'calendario', label: 'Calendario', icon: Calendar },
   ];
 
   const primerNombre = (nombre || '').trim().split(/\s+/)[0];
@@ -69,7 +68,7 @@ export const SideNav: React.FC = () => {
         <nav className="flex flex-col gap-1 xl:pt-2" aria-label="Secciones de la aplicación">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id;
+            const isActive = activeTab === item.id || (item.id === 'stats' && activeTab === 'calendario');
 
             return (
               <button

@@ -361,8 +361,8 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 - **Error:** mensaje en label debajo del campo que nombra el problema y cómo arreglarlo; borde danger solo en formularios, nunca en hábitos.
 
 ### Navigation
-- **Barra inferior (móvil):** fondo bg con línea superior en line, 82px. Cuatro destinos: **Hoy · Tareas · + · Progreso · Perfil** (la pestaña se llama "Progreso", nunca "Estadísticas"; Tareas con el ícono list-checks) con ícono lucide de 22px y etiqueta micro; activo en text, inactivos en text-muted. Botón Crear al centro. El Calendario sale de la barra: mientras llega la maqueta de Progreso ("Resumen | Calendario"), arriba de Progreso hay un botón secundario temporal "Ver calendario" que abre el Calendario de siempre.
-- **Menú lateral (escritorio):** 240px, fondo surface con línea derecha en line. Arriba el logo y "Racha"; el botón ámbar "Crear" (46px, ícono +); los destinos en filas de 44px (ícono de 20px + nombre de 15px, 600; activo con fondo surface-raised, texto text e ícono en ambar-text; inactivos en text-muted); abajo, separado por una línea, el bloque de Perfil (avatar de 36px con la inicial, el nombre y "Nivel N · Perfil"), que abre Perfil. De 1024 a 1279px el menú mide 76px y muestra solo íconos (con title y aria-label). Destinos definitivos (maqueta aprobada): Hoy · Tareas · Tu semana · Progreso · Calendario. **Tu semana se agrega cuando exista su pantalla**; mientras tanto: Hoy · Tareas · Progreso · Calendario.
+- **Barra inferior (móvil):** fondo bg con línea superior en line, 82px. Cuatro destinos: **Hoy · Tareas · + · Progreso · Perfil** (la pestaña se llama "Progreso", nunca "Estadísticas"; Tareas con el ícono list-checks) con ícono lucide de 22px y etiqueta micro; activo en text, inactivos en text-muted. Botón Crear al centro. El Calendario sale de la barra: vive en la pestaña "Calendario" de Progreso (aprobado el 29 sep; reemplaza el botón temporal "Ver calendario").
+- **Menú lateral (escritorio):** 240px, fondo surface con línea derecha en line. Arriba el logo y "Racha"; el botón ámbar "Crear" (46px, ícono +); los destinos en filas de 44px (ícono de 20px + nombre de 15px, 600; activo con fondo surface-raised, texto text e ícono en ambar-text; inactivos en text-muted); abajo, separado por una línea, el bloque de Perfil (avatar de 36px con la inicial, el nombre y "Nivel N · Perfil"), que abre Perfil. De 1024 a 1279px el menú mide 76px y muestra solo íconos (con title y aria-label). Destinos definitivos (29 sep, design/maqueta-progreso-informe.html): **Hoy · Tareas · Tu semana · Progreso**. Calendario ya no va en el menú: es la pestaña "Calendario" de Progreso, y Progreso queda marcado también cuando se ve esa pestaña.
 
 ### Check de hábito
 - **Sin marcar** (check-toggle): círculo de 32px, borde 2px text-muted (line-strong no llega a 3:1), fondo transparente, zona táctil de 44px. Lo mismo para el "+1" (borde 1px text-muted).
@@ -557,6 +557,124 @@ Pestaña que responde "¿voy mejorando?" y "¿qué me cuesta?". Referencia exact
 - **Empezaste hace poco** (menos de 14 días desde el primer hábito): cabecera "Llevas N días y M veces cumplidas · sin contar hoy"; la fuerza con el chip "creciendo" y el texto "Todo hábito empieza en 0 y sube con cada día que cumples. En unas semanas verás la curva tomar forma."; en Dónde puedes mejorar, el aviso "Con 2 semanas de datos verás aquí qué días y qué momentos te cuestan más. Te faltan N días."; luego Tus hábitos. Sin Este mes ni récords.
 - **Sin hábitos:** ícono de tendencia en text-muted, "Tu progreso empieza con un hábito" (26px), "Cuando cumplas unos días, aquí verás la fuerza de tus hábitos, tus récords y qué días te cuestan más." y el botón primario "Crear mi primer hábito".
 - **Ámbar solo para lo logrado:** la curva, el chip que sube y el mes actual. Las barras de comparación van en gris.
+
+#### Progreso 2: pestañas, "Qué hacer ahora" y escritorio (aprobado el 29 sep, design/maqueta-progreso-informe.html)
+Cálculos en src/utils/consejosUtils.ts (calcularConsejos, elegirConsejos, tuAnio, textoTuAnio; 82 pruebas). Lo de arriba (Fuerza, Este mes, Tus hábitos, Dónde puedes mejorar, Tus récords) no cambia.
+- **Pestañas:** debajo de la cabecera va un control segmentado "Resumen | Calendario", con el mismo estilo que Apariencia en Perfil:
+  - pista surface con borde line y 3px de relleno;
+  - cada pestaña mide 44px, en 15px/700;
+  - la elegida va en surface-raised con contorno de 1.5px en text; la otra, en text-muted.
+
+  Usa role=tablist/tab/tabpanel, y las flechas izquierda y derecha cambian de pestaña. Reemplaza el botón "Ver calendario".
+
+  La pestaña Calendario muestra el Calendario de siempre (DESIGN.md › Calendario) debajo de la cabecera de Progreso. El mes va en 28px (32px en escritorio) en vez de 44px, y su título baja a h2. La ruta 'calendario' abre Progreso en esa pestaña.
+- **Qué hacer ahora:** es la primera sección del Resumen, con título de 22px condensado. Cada consejo va en una tarjeta surface con borde line y esquinas de 16px, con:
+  - ícono de 36px: surface-raised con el ícono en text; el positivo, en ambar-tint con el ícono en ambar-text;
+  - título h3 de 15px/700 y texto de 14px en text-muted;
+  - abajo, el botón secundario (btn2 de 44px con borde line-strong) y "Ahora no" (44px, text-muted, aria-label "Ahora no: {título}").
+  - **Celular:** se ve 1 consejo completo. Debajo, el botón "Ver 2 consejos más" / "Ver 1 consejo más" (44px, a todo el ancho, borde line-strong, chevrón) muestra los demás y cambia a "Ver menos" (aria-expanded).
+  - **Escritorio:** los 3 lado a lado; las columnas se acomodan si son 1 o 2.
+  - **Máximo 3.** Salen en el orden de la lista de abajo. Si hay un consejo positivo, va de último (el tercer lugar si hay 3), para que nunca sean solo cosas por arreglar. El de regreso sale solo.
+  - **"Ahora no"** esconde ese consejo 7 días:
+    - la clave lleva su sujeto (p. ej. "cae:{hábito}"), se guarda en consejosOcultos y viaja en la copia a la nube;
+    - abajo sale el aviso "Listo. No te lo muestro esta semana." con "Deshacer";
+    - el foco pasa al siguiente consejo, o al título de la sección si no hay más.
+  - **Acciones que cambian datos** (Bajar la meta, Ir por N días): se hacen al tocar y dejan un aviso con "Deshacer": "Bajaste la meta de {hábito} a {N}." / "Empezaste el reto de {N} días de {hábito}."
+  - **Sin consejos:** tarjeta con ✓ (ambar-tint / ambar-text), "Nada que ajustar por ahora" y "Vas parejo. Cuando algo necesite un cambio, te lo digo aquí."
+  - **Empezaste hace poco** (menos de 14 días): solo pueden salir regreso, olvido, tarea y semana. Si no hay ninguno, sale la tarjeta de "Nada que ajustar".
+  - **Sin hábitos:** la sección no aparece.
+  - **Los 11 consejos.** Textos exactos; lo que va entre {…} sale de los datos.
+    1. **Regreso.** Sale solo.
+       - Cuándo: 3 o más días seguidos con hábitos y nada cumplido, sin comodín, y hoy todavía nada.
+       - Título: "Hoy tu regreso vale el doble".
+       - Texto: "Cumple uno hoy, el que sea, y suma el doble de puntos."
+       - Botón: **Ir a Hoy**. Es positivo.
+    2. **Olvido.**
+       - Cuándo: ayer nada, sin comodín, y en los 14 días anteriores cumplía 70% o más.
+       - Título: "¿Se te olvidó marcar ayer?"
+       - Texto: "Ayer no marcaste nada, y casi siempre cumples. Si lo hiciste, márcalo. Si no pudiste, congélalo con un comodín."
+       - Botón: **Revisar ayer** (abre la pestaña Calendario con la hoja de ayer abierta).
+    3. **Se cae.**
+       - Cuándo: un hábito de hacer, con 7 días o más, lleva 3 o más días programados seguidos sin marcar. Sale el de más días.
+       - Título: "{hábito} lleva {N} días sin marcarse".
+       - Texto: "Hazlo más pequeño por unos días. Con 5 minutos también cuenta."
+       - Botón: **Editar el hábito**.
+    4. **Demasiados.**
+       - Cuándo: 6 o más hábitos y el mes por debajo de 50%, contado hasta ayer y desde el día 7.
+       - Título: "Con {N} hábitos, este mes vas en {X}%".
+       - Texto: "Con menos hábitos cumples más. Archiva uno o dos y vuelve a sumarlos cuando los demás estén firmes."
+       - Botón: **Elegir cuáles archivar** (abre Gestionar hábitos).
+    5. **Choque.**
+       - Cuándo: hay un compromiso semanal con hora o momento. En sus últimos 4 días, el hábito de ese momento salió 1 vez o ninguna, y los otros días va en 60% o más.
+       - Título: "Los {martes} en la {noche} tienes {compromiso}".
+       - Texto: "Ese día {hábito} casi nunca sale ({1} de {4}). Pásalo a otro momento del día."
+       - Botón: **Cambiar el momento** (abre Editar el hábito).
+    6. **Día flojo.**
+       - Cuándo: en los últimos 30 días, el día más bajo va en 60% o menos y 20 puntos o más por debajo del mejor.
+       - Título: "Los {sábados} te cuestan más ({X}%)".
+       - Texto si es sábado o domingo: "Entre semana vas en {Y}%. Decide desde el {viernes} a qué hora lo harás el {sábado}."
+       - Texto si es de lunes a viernes: "Los otros días vas en {Y}%. Decide desde el {domingo} a qué hora lo harás el {lunes}."
+       - Botón: **Planear el {sábado}** (abre Tu semana).
+    7. **Momento flojo.**
+       - Cuándo: la misma regla del día flojo, pero por momento.
+       - Título: "La {noche} es tu momento más difícil ({X}%)".
+       - Texto: "Amarra esos hábitos a algo que ya haces siempre, como {después de cenar}." En la mañana: "después de cepillarte"; en la tarde: "después de almorzar".
+       - Botón: **Ver tus momentos** (lleva a "Por momento del día").
+    8. **Meta muy alta.**
+       - Cuándo: un hábito con meta de 2 o más que, en sus últimos 14 días programados, avanzó 7 o más veces y la cumplió 3 o menos, y lo típico queda por debajo de la meta.
+       - Título: "{hábito}: casi siempre llegas a {5} de {8}".
+       - Texto: "Una meta que sí alcanzas anima más. Cuando la cumplas seguido, la vuelves a subir."
+       - Botón: **Bajar la meta a {6}** (lo típico + 1).
+    9. **Tarea quieta.**
+       - Cuándo: 10 días o más sin marcar pasos y sin pasos pendientes con día de hoy en adelante.
+       - Título: "{tarea} lleva {N} días quieta".
+       - Texto: "Ponle día al siguiente paso: {paso}."
+       - Botón: **Ponerle día** (abre la hoja "¿Qué día lo haces?" de ese paso).
+    10. **Planear la semana.** Con "Ahora no" se esconde hasta la otra semana.
+        - Cuándo: 5 o más pasos sin día.
+        - Título: "Tienes {N} pasos sin día".
+        - Texto: "Con 5 minutos los repartes en la semana y sabes qué toca cada día."
+        - Botón: **Abrir Tu semana**.
+    11. **Firme.**
+        - Cuándo: el hábito más fuerte, con fuerza de 85 o más y sin reto en curso. Propone 30 días, y 66 si ya cumplió el de 30.
+        - Título: "{hábito} ya está firme".
+        - Texto: "Su fuerza va en {89} de 100. ¿Vas por el reto de {30} días?"
+        - Botón: **Ir por {30} días**. Es positivo.
+- **Escritorio:** el contenido va centrado, con un máximo de 1120px. De arriba abajo:
+  1. la cabecera, con "Progreso" y la fecha a la izquierda y las pestañas (320px) a la derecha;
+  2. Qué hacer ahora, en 3 columnas;
+  3. dos columnas (1.6fr y 1fr): a la izquierda la Fuerza, con la gráfica más alta; a la derecha Este mes y Tus récords, cada uno en su tarjeta;
+  4. **Tu año**, a todo el ancho;
+  5. dos columnas: Tus hábitos y Dónde puedes mejorar, cada una en su tarjeta.
+
+  En la pestaña Calendario van el mes grande (días de 72px, con el número arriba a la izquierda) y a su derecha, en 360px, la tarjeta "Tu mes".
+- **Tu año** (solo escritorio): una tarjeta a todo el ancho.
+  - **Cabecera:** el título "Tu año" (22px) con "últimos 12 meses" debajo. A la derecha, un select nativo de 44px, con la etiqueta oculta "Ver", que ofrece "Todos tus hábitos" y cada hábito activo.
+  - **Cuadrícula:** 53 semanas por 7 días, con el lunes arriba.
+    - Las columnas son fluidas (1fr), con cuadritos cuadrados, 3px de separación y esquinas de 3px. Caben desde 1024px sin desplazarse.
+    - A la izquierda van L, X y V.
+    - Arriba va la abreviatura del mes en la columna donde empieza, con el año en la primera y en enero ("oct 2025", "ene 2026").
+  - **Estados con todos los hábitos:**
+    - **todo:** relleno ámbar (en claro, ambar-text);
+    - **una parte:** solo la mitad de abajo en ámbar, sobre track-empty; se distingue por la forma, no solo por el color;
+    - **nada:** track-empty;
+    - **comodín:** comodin-bg con contorno de 1.5px en lila-text;
+    - **día libre** y **antes de empezar:** solo un borde de 1px en line;
+    - **hoy:** contorno de 1.5px en text;
+    - **futuro:** vacío.
+
+    Los semanales no cuentan en "Todos", igual que en Tu mes.
+  - **Estados con un solo hábito:** cumplido, sin cumplir, comodín o libre. Los semanales solo tienen cumplido o libre.
+  - **Frase de abajo** (nunca con un 0):
+    - con todos: "Desde el 1 de julio: 28 días completos, 61 con una parte y 3 sin nada." (o "En los últimos 12 meses: …");
+    - con un hábito: "{hábito}: 54 de 89 días cumplidos desde el 1 de julio.";
+    - sin datos: "Aquí se irán llenando tus días."
+
+    A la derecha de la frase va la leyenda.
+  - **Accesibilidad e interacción:**
+    - la cuadrícula es role=img, con la frase como nombre;
+    - al pasar el mouse, cada día dice su fecha y su estado;
+    - al hacer clic en un día pasado se abre la hoja del día del Calendario.
 
 ### Perfil
 Referencia exacta: design/maqueta-perfil.html. Orden: "Perfil" (display 44px) → tarjeta de identidad → Insignias → Tus hábitos → Apariencia → Tus datos → Ayuda. La pantalla nunca termina en la acción roja.
