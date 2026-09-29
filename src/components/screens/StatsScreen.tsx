@@ -283,7 +283,11 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
             creciendo
           </div>
         ) : (
-          diffFuerza >= 0 ? (
+          diffFuerza === 0 ? (
+            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
+              Igual que hace 30 días
+            </div>
+          ) : diffFuerza > 0 ? (
             <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold gap-1">
               <TrendingUp size={14} strokeWidth={3} />
               +{diffFuerza} en 30 días
