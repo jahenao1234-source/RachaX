@@ -719,6 +719,70 @@ Un reto opcional por hábito: **cuenta días cumplidos, no días de calendario**
 - **Ayudas en pantalla:** si la frecuencia no es diaria, la duración real ("Con 3 días por semana, son unas 10 semanas."); al editar con avance, "Si cambias o quitas el reto, no pierdes lo cumplido."
 - **Reto cumplido:** hoja en Hoy (una sola vez) con estrella en círculo ámbar, "Reto cumplido: 30 días" en Barlow Condensed 28px, "30 días cumplidos en N semanas" en Barlow Condensed 17px ámbar, la frase sin culpa "No fue perfecto y no hacía falta: volviste cada vez.", la fila en estado cumplido, botón primario "Ir por N días" (el siguiente reto, sin reiniciar lo cumplido) y el enlace "Seguir sin reto". El hábito nunca desaparece al terminar un reto.
 
+### Modo Foco (aprobado el 29 sep, design/maqueta-foco.html)
+Mejora el Foco que ya existía: sigue mostrando **un paso a la vez** con **Hecho · Pausar · Saltar**, y ahora lleva reloj.
+- En un **hábito** el reloj es un **cronómetro** que sube.
+- En una **tarea** es un **pomodoro**.
+- Existe el **pomodoro solo**, sin hábito ni tarea.
+
+Los cálculos están en src/utils/focoUtils.ts (48 pruebas); el sonido, la vibración y la pantalla encendida, en src/utils/focoAviso.ts. Las sesiones se guardan en `sesionesFoco` (HabitContext) y viajan en la copia a la nube. La meta por tiempo queda para después del lanzamiento.
+- **Pantalla completa** (fondo bg, sin barra de navegación). Tiene tres partes:
+  - **Barra de arriba:** la X de 44px (surface-raised, aria-label "Salir de Foco"); el contexto en 15px/700 ("Tu día", el nombre de la rutina o de la tarea, "Pomodoro"); y debajo, 13px text-muted ("Hábito 3 de 5", "Paso 4 de 8 · Pomodoro 1", "Foco libre" o lo que escribió).
+  - **Segmentos de avance:** 5px, hechos en ámbar (en claro, ambar-text); el actual va con contorno de 1.5px en text.
+  - **Pie en el flujo:** "Hecho" (primario ámbar de 52px con ✓), debajo "Pausar" / "Seguir" y "Saltar" (secundarios de 48px, surface-raised, borde line-strong; en claro el borde es text-muted), y el enlace "Terminar por ahora" (44px, text-muted) cuando hay reloj de pomodoro.
+- **Hábito (cronómetro):**
+  - arriba, el cuadrito del momento (52px) al lado del nombre (Barlow Condensed 30px), con el anclaje debajo ("Después de cenar", 14px text-muted);
+  - el reloj que sube ("12:34", Barlow Condensed 92px, cifras tabulares; en pausa, text-muted con "En pausa" debajo);
+  - la nota "Tu tiempo se guarda al marcar Hecho o al salir.";
+  - si el hábito ya está hecho hoy, no hay reloj: "Ya lo hiciste hoy" y el botón "Siguiente".
+- **Tarea (pomodoro):**
+  - Antes de empezar:
+    - la tarjeta del paso: "Ahora" (12px/700 text-muted), el paso (17px/600) y, separado por una línea, "Después: {siguiente paso}" (13px text-muted);
+    - "¿Cuánto tiempo?" con el control segmentado **15 min · 25 min · 50 min** (radiogroup; 25 elegido de entrada, y se recuerda el último que eligió);
+    - la nota "Después descansas 5 minutos (con 50, descansas 10). Suena solo con Racha abierta.";
+    - el botón "Empezar pomodoro" y el enlace "Seguir sin reloj" (el Foco de siempre, sin reloj).
+  - Corriendo:
+    - anillo de 236px (300px en escritorio): pista track-empty de 10px y arco ámbar (en claro, ambar-text) que avanza;
+    - adentro, lo que queda ("18:42", 64px) y "quedan";
+    - debajo, la tarjeta del paso y el pie de siempre.
+  - "Hecho" marca el paso, pasa al siguiente y el reloj sigue; sale el aviso "Marcaste {paso}." con "Deshacer". Si era el último paso, la tarea queda terminada y el reloj sigue hasta que termine el pomodoro.
+  - Tarea sin pasos: el reloj con el nombre de la tarea, sin tarjeta.
+- **Terminó el pomodoro** (sonido suave y vibración):
+  - círculo ámbar-tint con ✓ y el título "Terminó tu pomodoro" (30px);
+  - "25 min en {tarea}. Marcaste 2 pasos." (sin la parte de los pasos si no marcó ninguno);
+  - "Descansar 5 min" (primario), "Otro pomodoro" (secundario) y "Terminar por ahora".
+  - Si pasó con la app cerrada o de fondo, al volver el título es "Terminó tu pomodoro mientras no estabas" y no suena.
+- **Descanso:** "Descanso" arriba y el anillo en text-muted con lo que queda; debajo, "Párate, toma agua y mira lejos un momento." Botones: "Saltar el descanso" y "Terminar por ahora".
+  - Al terminar suena y dice "Terminó el descanso" / "Cuando quieras, sigue con {paso}.", con "Empezar pomodoro 2" y "Terminar por ahora". **Nunca arranca solo.**
+- **Salir a mitad** (la X con el reloj andando): hoja "¿Terminar por ahora?" / "Llevas 12 min en {tarea}. Se guardan.", con "Seguir" (primario) y "Terminar por ahora". Esc también la abre.
+- **Fin** (reemplaza "¡Sesión completada!" y el trofeo):
+  - ✓ en círculo ámbar-tint y el título "Terminaste por ahora" ("Terminaste {tarea}" si la tarea quedó terminada);
+  - "Tu avance quedó guardado. Sigue cuando quieras.";
+  - un resumen de 3 columnas: Tiempo {N} min · Pomodoros {N} · Pasos {N} (solo las que aplican);
+  - el botón "Volver".
+- **Pomodoro solo:**
+  - Se entra desde el + ("Empezar un pomodoro" / "Un rato de foco con reloj, para lo que quieras", separado de lo que se crea por una línea).
+  - La pantalla lleva el título "Pomodoro" y "Enfócate en una sola cosa. Cuando suene, descansa.", el campo opcional "¿En qué vas a trabajar? (opcional)" (placeholder "Por ejemplo, estudiar para el parcial"), la duración y "Empezar pomodoro".
+- **Escritorio:** a la izquierda, el reloj grande con la tarjeta del paso y el pie. A la derecha (380px), la tarjeta de la tarea: nombre, "{h} de {n} pasos · {tiempo} en Foco hoy" y todos los pasos (hechos con casilla ámbar, el actual resaltado con "Sigue").
+  - Teclas: Espacio pausa o sigue, H marca Hecho y Esc sale. Ninguna tecla actúa si el foco está en un botón o campo. Debajo del pie va "Teclas: Espacio pausa o sigue · H marca Hecho · Esc sale".
+  - Con la pestaña de fondo, el título de la pestaña muestra el tiempo ("18:42 · Mudanza").
+- **Reglas del tiempo:**
+  - Se guarda cada bloque de **1 minuto o más** (al marcar Hecho, Saltar, al salir o al terminar un pomodoro); los descansos no cuentan.
+  - Un cronómetro olvidado se corta a las **3 horas**.
+  - El reloj se mide con la hora, así que no se pierde al bloquear la pantalla ni al cambiar de app.
+  - Si la app se cierra con el reloj andando, al abrirla se retoma; si era de otro día, se guarda lo que llevaba (con el tope) y no se retoma.
+  - Mientras el reloj corre, la pantalla se mantiene encendida. El sonido y la vibración solo funcionan con Racha abierta (en iPhone no hay vibración).
+- **Dónde se ve el tiempo:**
+  - **Detalle del hábito**, después de Tu constancia: la tarjeta "Tiempo en Foco" con "4 h 10 min" (40px condensado) y "este mes", y debajo "Unos 18 min por día cuando lo haces en Foco." Solo aparece si ese mes hay tiempo.
+  - **Tu semana**, dentro de Cómo vas, separado por una línea: "En Foco esta semana: **2 h 40 min**" y debajo "Mudanza: 1 h 10 min · Leer 20 min: 55 min · Pomodoros solos: 35 min" (los 3 primeros y "y N más"). Solo aparece si hay tiempo esa semana.
+  - **Progreso › Tus hábitos:** al lado del % se agrega "· 4 h 10 min en Foco" (el mes), solo si hay tiempo.
+  - Formato: "25 min", "1 h 10 min", "2 h".
+- **Accesibilidad:**
+  - el reloj es role="timer" con un nombre fijo ("Tiempo que queda" / "Tiempo"), que no se anuncia cada segundo;
+  - una región role="status" anuncia "Empezó", "En pausa", "Terminó tu pomodoro" y "Terminó el descanso";
+  - en las pantallas de fin, el foco va al título;
+  - después de marcar un paso, el foco va al botón Hecho del siguiente.
+
 ### Onboarding
 Aprobado el 25 sep (design/maqueta-onboarding.html, 13 teléfonos). Enseña haciendo: la persona crea UN solo hábito, lo amarra a algo que ya hace y llega a Hoy lista para su primera victoria. Sin barra de navegación; arriba el botón Atrás (44px) y el avance en 5 segmentos (role="progressbar", aria-valuetext "Paso N de 5"); abajo un pie fijo con el botón principal (btnp full) y, si aplica, un link quiet. Cada pantalla tiene un solo h1 (32px condensada) y un sub de 15px.
 - **1 Bienvenida** (sin avance): Chispa sola a 210px, h1 40px "Que no se apague lo que empiezas", "Un hábito, amarrado a algo que ya haces. Si fallas un día, no pierdes nada: lo que cuenta es volver." (17px) y "Esta es Chispa, tu llama. Crece cada vez que cumples." Botón "Empezar".

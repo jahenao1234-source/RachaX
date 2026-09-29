@@ -37,6 +37,7 @@ import {
 } from '../utils/tareasUtils';
 import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
 import { hastaOcultarConsejo, limpiarConsejosOcultos } from '../utils/consejosUtils';
+import { SesionFoco, sanearSesiones } from '../utils/focoUtils';
 import { InsigniaDef, calcularInsignias } from '../utils/badgeUtils';
 
 const STORAGE_HABITOS_KEY = 'racha_habitos';
@@ -50,6 +51,7 @@ const STORAGE_RUTINAS_KEY = 'racha_rutinas';
 const STORAGE_TAREAS_KEY = 'racha_tareas';
 const STORAGE_COMPROMISOS_KEY = 'racha_compromisos';
 const STORAGE_CONSEJOS_OCULTOS_KEY = 'racha_consejos_ocultos';
+const STORAGE_SESIONES_FOCO_KEY = 'racha_sesiones_foco';
 const STORAGE_PREMIOS_KEY = 'racha_premios';
 const STORAGE_CAJAS_KEY = 'racha_cajas';
 const STORAGE_RETO_SEMANAL_KEY = 'racha_reto_semanal';
@@ -105,6 +107,11 @@ interface HabitContextType {
   ocultarConsejo: (clave: string) => void;
   /** Deshacer de 'Ahora no'. */
   mostrarConsejo: (clave: string) => void;
+  // Modo Foco (src/utils/focoUtils.ts): bloques de foco terminados (1 min o más), viajan en la copia a la nube
+  sesionesFoco: SesionFoco[];
+  /** Guarda un bloque (si ya existe ese id, no lo duplica). */
+  guardarSesionFoco: (s: SesionFoco) => void;
+  quitarSesionFoco: (id: string) => void;
   /** "Deshacer": vuelve la lista de compromisos a como estaba. */
   restaurarCompromisos: (lista: Compromiso[]) => void;
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
@@ -194,6 +201,7 @@ interface HabitContextType {
     tareas?: Tarea[];
     compromisos?: Compromiso[];
     consejosOcultos?: Record<string, string>;
+    sesionesFoco?: SesionFoco[];
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
@@ -298,6 +306,13 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (stored) return limpiarConsejosOcultos(JSON.parse(stored), getTodayString());
     } catch {}
     return {};
+  });
+  const [sesionesFoco, setSesionesFoco] = useState<SesionFoco[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_SESIONES_FOCO_KEY);
+      if (stored) return sanearSesiones(JSON.parse(stored));
+    } catch {}
+    return [];
   });
   const [isTareaEditorOpen, setIsTareaEditorOpen] = useState(false);
   const [tareaBeingEdited, setTareaBeingEdited] = useState<Tarea | null>(null);
@@ -620,6 +635,19 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch {}
   }, [consejosOcultos]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_SESIONES_FOCO_KEY, JSON.stringify(sesionesFoco));
+    } catch {}
+  }, [sesionesFoco]);
+
+  const guardarSesionFoco = (nueva: SesionFoco) => {
+    setSesionesFoco((prev) => (prev.some((x) => x.id === nueva.id) ? prev : [...prev, nueva]));
+  };
+  const quitarSesionFoco = (id: string) => {
+    setSesionesFoco((prev) => (prev.some((x) => x.id === id) ? prev.filter((x) => x.id !== id) : prev));
+  };
+
   const ocultarConsejo = (clave: string) => {
     const hoy = getTodayString();
     setConsejosOcultos((prev) => ({ ...limpiarConsejosOcultos(prev, hoy), [clave]: hastaOcultarConsejo(hoy) }));
@@ -805,6 +833,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setCompromisos([]);
     setConsejosOcultos({});
     localStorage.removeItem(STORAGE_CONSEJOS_OCULTOS_KEY);
+    setSesionesFoco([]);
+    localStorage.removeItem(STORAGE_SESIONES_FOCO_KEY);
+    localStorage.removeItem('racha_foco_en_curso');
     localStorage.removeItem(STORAGE_HABITOS_KEY);
     localStorage.removeItem(STORAGE_REGISTROS_KEY);
     localStorage.removeItem(STORAGE_RUTINAS_KEY);
@@ -858,6 +889,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       tareas,
       compromisos,
       consejosOcultos,
+      sesionesFoco,
       comodines,
       diasCongelados,
       ordenMomentos,
@@ -900,6 +932,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     tareas?: Tarea[];
     compromisos?: Compromiso[];
     consejosOcultos?: Record<string, string>;
+    sesionesFoco?: SesionFoco[];
     comodines?: number;
     diasCongelados?: string[];
     ordenMomentos?: MomentoDia[];
@@ -951,6 +984,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         for (const [k, v] of Object.entries(datos.consejosOcultos)) if (typeof v === 'string') limpios[k] = v;
         setConsejosOcultos(limpiarConsejosOcultos(limpios, getTodayString()));
       }
+      if (Array.isArray(datos.sesionesFoco)) setSesionesFoco(sanearSesiones(datos.sesionesFoco));
       if (typeof datos.comodines === 'number') setComodines(Math.max(0, Math.min(COMODINES_MAX, datos.comodines)));
       if (Array.isArray(datos.diasCongelados)) setDiasCongelados(datos.diasCongelados);
       if (Array.isArray(datos.ordenMomentos)) setOrdenMomentos(datos.ordenMomentos);
@@ -1450,6 +1484,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         consejosOcultos,
         ocultarConsejo,
         mostrarConsejo,
+        sesionesFoco,
+        guardarSesionFoco,
+        quitarSesionFoco,
         agregarPasosPegados,
         quitarPasosTarea,
         moverPasoTarea,
