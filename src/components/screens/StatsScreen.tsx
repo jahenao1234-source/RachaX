@@ -14,6 +14,8 @@ import { HabitIcon } from '../common/HabitIcon';
 import { useState, useEffect } from 'react';
 import { CalendarScreen } from './CalendarScreen';
 import { QueHacerAhora } from '../progreso/QueHacerAhora';
+import { TuAnio } from '../progreso/TuAnio';
+import { useEsEscritorio } from './TodayScreen';
 
 
 export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }> = ({ pestanaInicial = 'resumen' }) => {
@@ -21,6 +23,7 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
 
   const [pestana, setPestana] = useState<'resumen' | 'calendario'>(pestanaInicial);
   const [fechaAbrir, setFechaAbrir] = useState<string | null>(null);
+  const desk = useEsEscritorio();
 
   useEffect(() => {
     setPestana(pestanaInicial);
@@ -224,10 +227,339 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
     );
   }
 
+  // ---------- Piezas de la pantalla (JSX, sin hooks). El celular y el escritorio las ordenan distinto ----------
+  // design/maqueta-progreso-informe.html: celular 1-4 · escritorio 6-8. Tarjeta de escritorio = surface, borde line, 18px, 20px de relleno.
+  const tarjeta = 'rounded-[18px] bg-surface border border-line p-5';
+  const revisarDia = (f: string) => { setFechaAbrir(f); setPestana('calendario'); };
+
+  const pestanas = (
+    <div
+      className={`grid grid-cols-2 gap-[3px] p-[3px] rounded-[12px] border border-line bg-surface ${desk ? 'w-[320px] shrink-0' : 'mt-3.5 mb-[26px]'}`}
+      role="tablist"
+      aria-label="Progreso"
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          const otra = pestana === 'resumen' ? 'calendario' : 'resumen';
+          setPestana(otra);
+          document.getElementById(otra === 'resumen' ? 'tR1' : 'tC1')?.focus();
+        }
+      }}
+    >
+      {(['resumen', 'calendario'] as const).map((p) => (
+        <button
+          key={p}
+          type="button"
+          role="tab"
+          id={p === 'resumen' ? 'tR1' : 'tC1'}
+          aria-selected={pestana === p}
+          aria-controls={p === 'resumen' ? 'pR1' : 'pC1'}
+          onClick={() => setPestana(p)}
+          tabIndex={pestana === p ? 0 : -1}
+          className={`min-h-[44px] border-none rounded-[9px] bg-transparent text-[15px] font-bold outline-none focus-visible:outline-2 focus-visible:outline-text focus-visible:outline-offset-2 transition-colors ${pestana === p ? 'bg-surface-raised text-text shadow-[inset_0_0_0_1.5px_var(--text)]' : 'text-text-muted'}`}
+        >
+          {p === 'resumen' ? 'Resumen' : 'Calendario'}
+        </button>
+      ))}
+    </div>
+  );
+
+  // Gráfica: en el celular 350x150; en escritorio 700x280 para que no quede gigante al estirarse.
+  const GW = desk ? 700 : 350, GH = desk ? 280 : 150;
+  const gFin = GW - 20, gTope = 20, gBase = GH - 20;
+  const gY = (v: number) => gBase - (v / 100) * (gBase - gTope);
+  const gLetra = desk ? 'text-[12px]' : 'text-[11px]';
+
+  const fuerzaCard = (
+    <div className={`rounded-[18px] bg-surface border border-line ${desk ? 'p-5' : 'p-[18px] mb-[26px]'}`}>
+      <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-2">Fuerza de tus hábitos</h2>
+
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-number font-bold text-[44px] leading-none text-text">{currentFuerza}</span>
+          <span className="font-number text-[20px] text-text-muted">de 100</span>
+        </div>
+        {isRecent ? (
+          <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold">
+            creciendo
+          </div>
+        ) : (
+          diffFuerza >= 0 ? (
+            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold gap-1">
+              <TrendingUp size={14} strokeWidth={3} />
+              +{diffFuerza} en 30 días
+            </div>
+          ) : (
+            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
+              −{Math.abs(diffFuerza)} en 30 días
+            </div>
+          )
+        )}
+      </div>
+
+      {/* SVG GRÁFICO MANUAL */}
+      <div className="w-full relative mb-4" style={{ aspectRatio: `${GW} / ${GH}` }}>
+        <svg viewBox={`0 0 ${GW} ${GH}`} className="w-full h-full overflow-visible" role="img">
+          <title>Fuerza de tus hábitos: hoy {currentFuerza} de 100</title>
+          {/* Guide lines */}
+          <line x1="0" y1={gY(50)} x2={gFin} y2={gY(50)} stroke="var(--line)" strokeWidth="1" />
+          <line x1="0" y1={gTope} x2={gFin} y2={gTope} stroke="var(--line)" strokeWidth="1" />
+          <line x1="0" y1={gBase} x2={gFin} y2={gBase} stroke="var(--line-strong)" strokeWidth="1" />
+
+          {/* Labels right */}
+          <text x={gFin + 6} y={gTope + 4} className={`fill-text-muted ${gLetra} font-medium font-sans`}>100</text>
+          <text x={gFin + 6} y={gY(50) + 4} className={`fill-text-muted ${gLetra} font-medium font-sans`}>50</text>
+
+          {/* Data Line and Area */}
+          {graphPoints.length > 0 && (() => {
+            const pts = graphPoints.map((p, i) => {
+              const x = graphPoints.length > 1 ? (i / (graphPoints.length - 1)) * gFin : gFin / 2;
+              const y = gY(p.valor);
+              return { x, y, fecha: p.fecha };
+            });
+
+            const lineD = "M " + pts.map(p => `${p.x},${p.y}`).join(" L ");
+            const areaD = `${lineD} L ${pts[pts.length - 1].x},${gBase} L ${pts[0].x},${gBase} Z`;
+            const endPt = pts[pts.length - 1];
+
+            // Month labels on x axis
+            const monthLabels = [];
+            let lastM = -1;
+            for (const p of pts) {
+              if (!p.fecha) continue;
+              const mIdx = parseDateString(p.fecha).getMonth();
+              const d = parseDateString(p.fecha).getDate();
+              if (d === 1 && mIdx !== lastM && p.x < gFin - 20) {
+                monthLabels.push(<text key={p.fecha} x={p.x} y={GH - 4} textAnchor="middle" className={`fill-text-muted ${gLetra} font-medium font-sans`}>{monthNamesShort[mIdx]}</text>);
+                lastM = mIdx;
+              }
+            }
+
+            return (
+              <>
+                <path d={areaD} className="fill-ambar-tint" />
+                <path d={lineD} className="stroke-ambar-text fill-none" strokeWidth="2.5" />
+                <circle cx={endPt.x} cy={endPt.y} r="4.5" className="fill-ambar-text stroke-surface" strokeWidth="2" />
+                {monthLabels}
+              </>
+            );
+          })()}
+        </svg>
+      </div>
+
+      <p className="text-[13px] text-text-muted leading-snug max-w-[68ch]">
+        {isRecent ? (
+          "Todo hábito empieza en 0 y sube con cada día que cumples. En unas semanas verás la curva tomar forma."
+        ) : (
+          currentFuerza >= 90 ? (
+            "Tus hábitos ya están firmes. Ahora toca mantenerlos: cada vez que cumples sigue sumando en tus récords."
+          ) : diffFuerza >= 0 ? (
+            "Sube cada día que cumples y un día gris solo la baja un poco. Cuanto más alta, más firme el hábito."
+          ) : (
+            "Bajó un poco, y así funciona: baja despacio. Con unos días seguidos vuelve a subir."
+          )
+        )}
+      </p>
+    </div>
+  );
+
+  const esteMesSec = showEsteMes ? (
+    <div className={desk ? tarjeta : 'mb-[26px]'}>
+      <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-4">Este mes</h2>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <span className="w-[92px] text-[15px] font-semibold text-text capitalize shrink-0">{monthNames[currMonthIdx]}</span>
+          <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
+            <div className="h-full fill-logro rounded-full" style={{ width: `${thisMonthData.pct}%` }} />
+          </div>
+          <span className="w-10 text-right font-number text-[20px] font-bold text-text shrink-0">{thisMonthData.pct}%</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="w-[92px] text-[15px] font-semibold text-text-muted capitalize shrink-0">{monthNames[prevMonthIdx]}</span>
+          <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
+            <div className="h-full bg-text-muted rounded-full" style={{ width: `${prevMonthData.pct}%` }} />
+          </div>
+          <span className="w-10 text-right font-number text-[20px] font-bold text-text-muted shrink-0">{prevMonthData.pct}%</span>
+        </div>
+      </div>
+      <p className="text-[13px] text-text-muted mt-4">
+        {esteMesPhrase}
+      </p>
+    </div>
+  ) : null;
+
+  const tusHabitosSec = (
+    <div className={desk ? tarjeta : 'mb-[26px]'}>
+      <div className="flex items-baseline justify-between mb-4">
+        <h2 className="font-heading font-bold text-[22px] m-0 text-text">Tus hábitos</h2>
+        <span className="text-[13px] text-text-muted">de menor a mayor fuerza</span>
+      </div>
+      <div className="flex flex-col">
+        {habitsBreakdown.map(h => {
+          const tokens = getMomentoColorTokens(h.momento || 'flexible');
+          return (
+            <button
+              key={h.id}
+              onClick={() => openHabitDetail(h.id)}
+              aria-label={`${h.nombre}: fuerza ${h.fuerza}, ${h.isWeekly ? h.weeklyText : `${h.monthPct}% este mes`}. Abrir`}
+              className="flex items-center gap-3 py-2.5 min-h-[52px] border-b border-line last:border-0 bg-transparent outline-none active:bg-surface-raised transition-colors text-left"
+            >
+              <div className={`w-[38px] h-[38px] rounded-[11px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
+                <HabitIcon name={h.icono} size={19} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="block text-[15px] font-semibold text-text truncate">{h.nombre}</span>
+                <span className="block text-[13px] text-text-muted mt-0.5">{h.isWeekly ? h.weeklyText : `${h.monthPct}% este mes`}</span>
+              </div>
+              <div className="text-right flex flex-col items-end justify-center mr-1">
+                <span className="font-number font-bold text-[24px] leading-none text-text">{h.fuerza}</span>
+                <span className="text-[12px] text-text-muted mt-0.5">fuerza</span>
+              </div>
+              <ChevronRight size={20} strokeWidth={2} className="text-line-strong shrink-0" aria-hidden="true" />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const dondeSec = (
+    <div className={desk ? tarjeta : 'mb-[26px]'}>
+      <div className="flex items-baseline justify-between mb-4">
+        <h2 className="font-heading font-bold text-[22px] m-0 text-text">Dónde puedes mejorar</h2>
+        {!isRecent && <span className="text-[13px] text-text-muted">últimos 30 días</span>}
+      </div>
+
+      {isRecent ? (
+        <p className="text-[14px] text-text-muted leading-snug">
+          Con 2 semanas de datos verás aquí qué días y qué momentos te cuestan más. Te {14 - daysSinceStart === 1 ? 'falta 1 día' : `faltan ${14 - daysSinceStart} días`}.
+        </p>
+      ) : (
+        <>
+          <p className="text-[13px] font-semibold text-text-muted mb-3">Por día de la semana</p>
+          {hasDayData ? (
+            <>
+              <div className="flex justify-between items-end gap-1 mb-4" role="list">
+                {daysBreakdown.map((d) => {
+                  const isLowest = d.pct === minDayPct && diffDay >= 10;
+                  return (
+                    <div key={d.label} role="listitem" className="flex flex-col items-center flex-1">
+                      <span className="sr-only">
+                        los {d.name}: {d.pct !== null ? `${d.pct}%` : 'sin datos'}{isLowest ? ', el más bajo' : ''}
+                      </span>
+                      <div aria-hidden="true" className="flex flex-col items-center w-full">
+                        <span className={`text-[12px] font-semibold mb-1.5 ${isLowest ? 'text-text' : 'text-text-muted'}`}>
+                          {d.pct !== null ? d.pct : '–'}
+                        </span>
+                        <div className={`w-full max-w-[32px] h-[84px] bg-track-empty rounded-[10px] relative flex flex-col justify-end overflow-hidden ${isLowest ? 'ring-[1.5px] ring-text ring-offset-[2px] ring-offset-bg' : ''}`}>
+                          <div
+                            className={`w-full rounded-b-[10px] rounded-t-[4px] ${isLowest ? 'bg-text' : 'bg-text-muted'}`}
+                            style={{ height: d.pct !== null ? `${d.pct}%` : '0%' }}
+                          />
+                        </div>
+                        <span className={`text-[12px] font-semibold mt-2 ${isLowest ? 'text-text' : 'text-text-muted'}`}>
+                          {d.label}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[13px] text-text-muted leading-snug mb-6">
+                {diffDay >= 10 && lowestDay ? (
+                  <><span className="text-text font-semibold">Los {lowestDay.name} te cuestan más ({lowestDay.pct}%).</span> Entre semana vas en {averageWeekday}%. Ayuda decidir desde el día antes a qué hora lo harás.</>
+                ) : (
+                  "Tus días van parejos. Sigue así."
+                )}
+              </p>
+            </>
+          ) : (
+            <p className="text-[13px] text-text-muted mb-6">No hay suficientes datos por día.</p>
+          )}
+
+          <p id="progreso-momentos" className="text-[13px] font-semibold text-text-muted mb-3 scroll-mt-4">Por momento del día</p>
+          {momentsBreakdown.length > 0 ? (
+            <>
+              <div className="space-y-3 mb-4">
+                {momentsBreakdown.map((m) => {
+                  const isLowest = m.pct === minMomPct && diffMom >= 10;
+                  const tokens = getMomentoColorTokens(m.key as any);
+                  return (
+                    <div key={m.key} className="flex items-center gap-3">
+                      <div className={`w-[32px] h-[32px] rounded-[10px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
+                        {m.key === 'manana' && <HabitIcon name="Sunrise" size={16} />}
+                        {m.key === 'tarde' && <HabitIcon name="Sun" size={16} />}
+                        {m.key === 'noche' && <HabitIcon name="Moon" size={16} />}
+                        {m.key === 'flexible' && <HabitIcon name="Clock" size={16} />}
+                      </div>
+                      <span className={`w-[80px] text-[15px] shrink-0 ${isLowest ? 'font-bold text-text' : 'text-text'}`}>{m.nombre}</span>
+                      <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
+                        <div className={`h-full rounded-full bg-text-muted`} style={{ width: `${m.pct}%` }} />
+                      </div>
+                      <span className="w-10 text-right font-number text-[20px] shrink-0 text-text">{m.pct}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-[13px] text-text-muted leading-snug">
+                {diffMom >= 10 && lowestMom ? (
+                  <><span className="text-text font-semibold">La {lowestMom.nombre.toLowerCase()} es tu momento más difícil ({lowestMom.pct}%).</span> Prueba anclar esos hábitos a algo que ya haces siempre, como "{lowestMom.text}".</>
+                ) : (
+                  "Tus momentos van parejos. Sigue así."
+                )}
+              </p>
+            </>
+          ) : (
+            <p className="text-[13px] text-text-muted">No hay hábitos asignados a momentos específicos.</p>
+          )}
+        </>
+      )}
+    </div>
+  );
+
+  const recordsSec = !isRecent ? (
+    <div className={desk ? '' : 'mb-[26px]'}>
+      <div className={`bg-surface border border-line rounded-[18px] ${desk ? 'p-5' : 'p-[14px]'}`}>
+        <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-4">Tus récords</h2>
+        <dl>
+          <div className="flex items-center justify-between py-2.5 border-b border-line">
+            <dt className="text-[14px] font-semibold text-text">Mejor racha de días completos</dt>
+            <dd className="flex items-baseline gap-1.5">
+              <span className="font-number font-bold text-[24px] leading-none text-text">
+                {mejorRacha}
+              </span>
+              <span className="text-[13px] text-text-muted">{mejorRacha === 1 ? 'día' : 'días'}</span>
+            </dd>
+          </div>
+          <div className="flex items-center justify-between py-2.5 border-b border-line">
+            <dt className="text-[14px] font-semibold text-text">Racha actual</dt>
+            <dd className="flex items-baseline gap-1.5">
+              {rachaActual === 0 ? (
+                <span className="text-[15px] text-text-muted">Empieza hoy</span>
+              ) : (
+                <>
+                  <span className="font-number font-bold text-[24px] leading-none text-text">{rachaActual}</span>
+                  <span className="text-[13px] text-text-muted">{rachaActual === 1 ? 'día' : 'días'}</span>
+                </>
+              )}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between py-2.5">
+            <dt className="text-[14px] font-semibold text-text">Veces que cumpliste</dt>
+            <dd className="flex items-baseline gap-1.5">
+              <span className="font-number font-bold text-[24px] leading-none text-text">{totalVeces}</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  ) : null;
+
+  const derecha = esteMesSec || recordsSec;
+
   return (
     <div id="screen-stats" className="pb-28">
-      
-      <header className="flex justify-between items-start gap-4">
+
+      <header className={`flex justify-between gap-4 ${desk ? 'items-end' : 'items-start'}`}>
         <div className="flex-1 min-w-0">
           <h1 className="font-heading font-bold text-[44px] leading-none m-0 text-text mb-1.5">Progreso</h1>
           {isRecent ? (
@@ -242,334 +574,36 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
             <p className="text-[13px] text-text-muted">Desde el {startDay} de {startMonth} · sin contar hoy</p>
           )}
         </div>
+        {desk && pestanas}
       </header>
 
-      <div className="grid grid-cols-2 gap-[3px] p-[3px] rounded-[12px] border border-line bg-surface mt-3.5 mb-[26px]" role="tablist" aria-label="Progreso" onKeyDown={(e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-          const otra = pestana === 'resumen' ? 'calendario' : 'resumen';
-          setPestana(otra);
-          document.getElementById(otra === 'resumen' ? 'tR1' : 'tC1')?.focus();
-        }
-      }}>
-        <button 
-          role="tab" 
-          id="tR1" 
-          aria-selected={pestana === 'resumen'} 
-          aria-controls="pR1" 
-          onClick={() => setPestana('resumen')} 
-          tabIndex={pestana === 'resumen' ? 0 : -1}
-          className={`min-h-[44px] border-none rounded-[9px] bg-transparent text-[15px] font-bold outline-none focus-visible:outline-2 focus-visible:outline-text focus-visible:outline-offset-2 transition-colors ${pestana === 'resumen' ? 'bg-surface-raised text-text shadow-[inset_0_0_0_1.5px_var(--text)]' : 'text-text-muted'}`}
-        >
-          Resumen
-        </button>
-        <button 
-          role="tab" 
-          id="tC1" 
-          aria-selected={pestana === 'calendario'} 
-          aria-controls="pC1" 
-          onClick={() => setPestana('calendario')} 
-          tabIndex={pestana === 'calendario' ? 0 : -1}
-          className={`min-h-[44px] border-none rounded-[9px] bg-transparent text-[15px] font-bold outline-none focus-visible:outline-2 focus-visible:outline-text focus-visible:outline-offset-2 transition-colors ${pestana === 'calendario' ? 'bg-surface-raised text-text shadow-[inset_0_0_0_1.5px_var(--text)]' : 'text-text-muted'}`}
-        >
-          Calendario
-        </button>
-      </div>
+      {!desk && pestanas}
 
       {pestana === 'resumen' && (
-        <div role="tabpanel" id="pR1" aria-labelledby="tR1" className="progreso">
-          <QueHacerAhora onRevisarDia={(f) => { setFechaAbrir(f); setPestana('calendario'); }} />
+        <div role="tabpanel" id="pR1" aria-labelledby="tR1" className={`progreso ${desk ? 'mt-[26px]' : ''}`}>
+          <QueHacerAhora onRevisarDia={revisarDia} />
 
-      {/* TARJETA FUERZA */}
-      <div className="rounded-[18px] bg-surface border border-line p-[18px] mb-[26px]">
-        <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-2">Fuerza de tus hábitos</h2>
-        
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-number font-bold text-[44px] leading-none text-text">{currentFuerza}</span>
-            <span className="font-number text-[20px] text-text-muted">de 100</span>
-          </div>
-          {isRecent ? (
-            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold">
-              creciendo
-            </div>
+          {desk ? (
+            <>
+              <div className={derecha ? 'grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-5 items-start' : ''}>
+                {fuerzaCard}
+                {derecha && <div className="flex flex-col gap-5">{esteMesSec}{recordsSec}</div>}
+              </div>
+              <TuAnio onRevisarDia={revisarDia} />
+              <div className="grid grid-cols-2 gap-5 items-start mt-5">
+                {tusHabitosSec}
+                {dondeSec}
+              </div>
+            </>
           ) : (
-            diffFuerza >= 0 ? (
-              <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold gap-1">
-                <TrendingUp size={14} strokeWidth={3} />
-                +{diffFuerza} en 30 días
-              </div>
-            ) : (
-              <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
-                −{Math.abs(diffFuerza)} en 30 días
-              </div>
-            )
+            <>
+              {fuerzaCard}
+              {esteMesSec}
+              {tusHabitosSec}
+              {dondeSec}
+              {recordsSec}
+            </>
           )}
-        </div>
-
-        {/* SVG GRÁFICO MANUAL */}
-        <div className="w-full relative aspect-[350/150] mb-4">
-          <svg viewBox="0 0 350 150" className="w-full h-full overflow-visible" role="img">
-            <title>Fuerza de tus hábitos: hoy {currentFuerza} de 100</title>
-            {/* Guide lines */}
-            <line x1="0" y1="75" x2="330" y2="75" stroke="var(--line)" strokeWidth="1" />
-            <line x1="0" y1="20" x2="330" y2="20" stroke="var(--line)" strokeWidth="1" />
-            <line x1="0" y1="130" x2="330" y2="130" stroke="var(--line-strong)" strokeWidth="1" />
-            
-            {/* Labels right */}
-            <text x="336" y="24" className="fill-text-muted text-[11px] font-medium font-sans">100</text>
-            <text x="336" y="79" className="fill-text-muted text-[11px] font-medium font-sans">50</text>
-            
-            {/* Data Line and Area */}
-            {graphPoints.length > 0 && (() => {
-              const pts = graphPoints.map((p, i) => {
-                const x = graphPoints.length > 1 ? (i / (graphPoints.length - 1)) * 330 : 165;
-                const y = 130 - (p.valor / 100 * 110);
-                return { x, y, fecha: p.fecha };
-              });
-              
-              const lineD = "M " + pts.map(p => `${p.x},${p.y}`).join(" L ");
-              const areaD = `${lineD} L ${pts[pts.length - 1].x},130 L ${pts[0].x},130 Z`;
-              const endPt = pts[pts.length - 1];
-
-              // Month labels on x axis
-              const monthLabels = [];
-              let lastM = -1;
-              for (const p of pts) {
-                if (!p.fecha) continue;
-                const mIdx = parseDateString(p.fecha).getMonth();
-                const d = parseDateString(p.fecha).getDate();
-                if (d === 1 && mIdx !== lastM && p.x < 310) {
-                  monthLabels.push(<text key={p.fecha} x={p.x} y="146" textAnchor="middle" className="fill-text-muted text-[11px] font-medium font-sans">{monthNamesShort[mIdx]}</text>);
-                  lastM = mIdx;
-                }
-              }
-
-              return (
-                <>
-                  <path d={areaD} className="fill-ambar-tint" />
-                  <path d={lineD} className="stroke-ambar-text fill-none" strokeWidth="2.5" />
-                  <circle cx={endPt.x} cy={endPt.y} r="4.5" className="fill-ambar-text stroke-surface" strokeWidth="2" />
-                  {monthLabels}
-                </>
-              );
-            })()}
-          </svg>
-        </div>
-
-        <p className="text-[13px] text-text-muted leading-snug">
-          {isRecent ? (
-            "Todo hábito empieza en 0 y sube con cada día que cumples. En unas semanas verás la curva tomar forma."
-          ) : (
-            currentFuerza >= 90 ? (
-              "Tus hábitos ya están firmes. Ahora toca mantenerlos: cada vez que cumples sigue sumando en tus récords."
-            ) : diffFuerza >= 0 ? (
-              "Sube cada día que cumples y un día gris solo la baja un poco. Cuanto más alta, más firme el hábito."
-            ) : (
-              "Bajó un poco, y así funciona: baja despacio. Con unos días seguidos vuelve a subir."
-            )
-          )}
-        </p>
-      </div>
-
-      {/* ESTE MES */}
-      {showEsteMes && (
-        <div className="mb-[26px]">
-          <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-4">Este mes</h2>
-          <div className="space-y-3">
-            
-            <div className="flex items-center gap-3">
-              <span className="w-[92px] text-[15px] font-semibold text-text capitalize shrink-0">{monthNames[currMonthIdx]}</span>
-              <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
-                <div className="h-full fill-logro rounded-full" style={{ width: `${thisMonthData.pct}%` }} />
-              </div>
-              <span className="w-10 text-right font-number text-[20px] font-bold text-text shrink-0">{thisMonthData.pct}%</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <span className="w-[92px] text-[15px] font-semibold text-text-muted capitalize shrink-0">{monthNames[prevMonthIdx]}</span>
-              <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
-                <div className="h-full bg-text-muted rounded-full" style={{ width: `${prevMonthData.pct}%` }} />
-              </div>
-              <span className="w-10 text-right font-number text-[20px] font-bold text-text-muted shrink-0">{prevMonthData.pct}%</span>
-            </div>
-
-          </div>
-          
-          <p className="text-[13px] text-text-muted mt-4">
-            {esteMesPhrase}
-          </p>
-        </div>
-      )}
-
-      {/* TUS HABITOS */}
-      <div className="mb-[26px]">
-        <div className="flex items-baseline justify-between mb-4">
-          <h2 className="font-heading font-bold text-[22px] m-0 text-text">Tus hábitos</h2>
-          <span className="text-[13px] text-text-muted">de menor a mayor fuerza</span>
-        </div>
-        
-        <div className="flex flex-col">
-          {habitsBreakdown.map(h => {
-            const tokens = getMomentoColorTokens(h.momento || 'flexible');
-            return (
-              <button 
-                key={h.id}
-                onClick={() => openHabitDetail(h.id)}
-                aria-label={`${h.nombre}: fuerza ${h.fuerza}, ${h.isWeekly ? h.weeklyText : `${h.monthPct}% este mes`}. Abrir`}
-                className="flex items-center gap-3 py-2.5 min-h-[52px] border-b border-line last:border-0 bg-transparent outline-none active:bg-surface-raised transition-colors text-left"
-              >
-                <div className={`w-[38px] h-[38px] rounded-[11px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
-                  <HabitIcon name={h.icono} size={19} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="block text-[15px] font-semibold text-text truncate">{h.nombre}</span>
-                  <span className="block text-[13px] text-text-muted mt-0.5">{h.isWeekly ? h.weeklyText : `${h.monthPct}% este mes`}</span>
-                </div>
-                <div className="text-right flex flex-col items-end justify-center mr-1">
-                  <span className="font-number font-bold text-[24px] leading-none text-text">{h.fuerza}</span>
-                  <span className="text-[12px] text-text-muted mt-0.5">fuerza</span>
-                </div>
-                <ChevronRight size={20} strokeWidth={2} className="text-line-strong shrink-0" aria-hidden="true" />
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* DONDE PUEDES MEJORAR */}
-      <div className="mb-[26px]">
-        <div className="flex items-baseline justify-between mb-4">
-          <h2 className="font-heading font-bold text-[22px] m-0 text-text">Dónde puedes mejorar</h2>
-          {!isRecent && <span className="text-[13px] text-text-muted">últimos 30 días</span>}
-        </div>
-        
-        {isRecent ? (
-          <p className="text-[14px] text-text-muted leading-snug">
-            Con 2 semanas de datos verás aquí qué días y qué momentos te cuestan más. Te {14 - daysSinceStart === 1 ? 'falta 1 día' : `faltan ${14 - daysSinceStart} días`}.
-          </p>
-        ) : (
-          <>
-            
-            <p className="text-[13px] font-semibold text-text-muted mb-3">Por día de la semana</p>
-            {hasDayData ? (
-              <>
-                <div className="flex justify-between items-end gap-1 mb-4" role="list">
-                  {daysBreakdown.map((d) => {
-                    const isLowest = d.pct === minDayPct && diffDay >= 10;
-                    return (
-                      <div key={d.label} role="listitem" className="flex flex-col items-center flex-1">
-                        <span className="sr-only">
-                          los {d.name}: {d.pct !== null ? `${d.pct}%` : 'sin datos'}{isLowest ? ', el más bajo' : ''}
-                        </span>
-                        <div aria-hidden="true" className="flex flex-col items-center w-full">
-                          <span className={`text-[12px] font-semibold mb-1.5 ${isLowest ? 'text-text' : 'text-text-muted'}`}>
-                            {d.pct !== null ? d.pct : '–'}
-                          </span>
-                          <div className={`w-full max-w-[32px] h-[84px] bg-track-empty rounded-[10px] relative flex flex-col justify-end overflow-hidden ${isLowest ? 'ring-[1.5px] ring-text ring-offset-[2px] ring-offset-bg' : ''}`}>
-                            <div 
-                              className={`w-full rounded-b-[10px] rounded-t-[4px] ${isLowest ? 'bg-text' : 'bg-text-muted'}`}
-                              style={{ height: d.pct !== null ? `${d.pct}%` : '0%' }}
-                            />
-                          </div>
-                          <span className={`text-[12px] font-semibold mt-2 ${isLowest ? 'text-text' : 'text-text-muted'}`}>
-                            {d.label}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <p className="text-[13px] text-text-muted leading-snug mb-6">
-                  {diffDay >= 10 && lowestDay ? (
-                    <><span className="text-text font-semibold">Los {lowestDay.name} te cuestan más ({lowestDay.pct}%).</span> Entre semana vas en {averageWeekday}%. Ayuda decidir desde el día antes a qué hora lo harás.</>
-                  ) : (
-                    "Tus días van parejos. Sigue así."
-                  )}
-                </p>
-              </>
-            ) : (
-              <p className="text-[13px] text-text-muted mb-6">No hay suficientes datos por día.</p>
-            )}
-
-            <p id="progreso-momentos" className="text-[13px] font-semibold text-text-muted mb-3 scroll-mt-4">Por momento del día</p>
-            {momentsBreakdown.length > 0 ? (
-              <>
-                <div className="space-y-3 mb-4">
-                  {momentsBreakdown.map((m) => {
-                    const isLowest = m.pct === minMomPct && diffMom >= 10;
-                    const tokens = getMomentoColorTokens(m.key as any);
-                    return (
-                      <div key={m.key} className="flex items-center gap-3">
-                        <div className={`w-[32px] h-[32px] rounded-[10px] flex items-center justify-center shrink-0 ${tokens.bg} ${tokens.icon}`}>
-                          {m.key === 'manana' && <HabitIcon name="Sunrise" size={16} />}
-                          {m.key === 'tarde' && <HabitIcon name="Sun" size={16} />}
-                          {m.key === 'noche' && <HabitIcon name="Moon" size={16} />}
-                          {m.key === 'flexible' && <HabitIcon name="Clock" size={16} />}
-                        </div>
-                        <span className={`w-[80px] text-[15px] shrink-0 ${isLowest ? 'font-bold text-text' : 'text-text'}`}>{m.nombre}</span>
-                        <div className="flex-1 h-2 rounded-full bg-track-empty overflow-hidden">
-                          <div className={`h-full rounded-full bg-text-muted`} style={{ width: `${m.pct}%` }} />
-                        </div>
-                        <span className="w-10 text-right font-number text-[20px] shrink-0 text-text">{m.pct}%</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                <p className="text-[13px] text-text-muted leading-snug">
-                  {diffMom >= 10 && lowestMom ? (
-                    <><span className="text-text font-semibold">La {lowestMom.nombre.toLowerCase()} es tu momento más difícil ({lowestMom.pct}%).</span> Prueba anclar esos hábitos a algo que ya haces siempre, como "{lowestMom.text}".</>
-                  ) : (
-                    "Tus momentos van parejos. Sigue así."
-                  )}
-                </p>
-              </>
-            ) : (
-              <p className="text-[13px] text-text-muted">No hay hábitos asignados a momentos específicos.</p>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* TUS RÉCORDS */}
-      {!isRecent && (
-        <div className="mb-[26px]">
-          <div className="bg-surface border border-line rounded-[18px] p-[14px]">
-            <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-4">Tus récords</h2>
-            
-            <dl>
-              <div className="flex items-center justify-between py-2.5 border-b border-line">
-                <dt className="text-[14px] font-semibold text-text">Mejor racha de días completos</dt>
-                <dd className="flex items-baseline gap-1.5">
-                  <span className="font-number font-bold text-[24px] leading-none text-text">
-                    {mejorRacha}
-                  </span>
-                  <span className="text-[13px] text-text-muted">{mejorRacha === 1 ? 'día' : 'días'}</span>
-                </dd>
-              </div>
-              <div className="flex items-center justify-between py-2.5 border-b border-line">
-                <dt className="text-[14px] font-semibold text-text">Racha actual</dt>
-                <dd className="flex items-baseline gap-1.5">
-                  {rachaActual === 0 ? (
-                    <span className="text-[15px] text-text-muted">Empieza hoy</span>
-                  ) : (
-                    <>
-                      <span className="font-number font-bold text-[24px] leading-none text-text">{rachaActual}</span>
-                      <span className="text-[13px] text-text-muted">{rachaActual === 1 ? 'día' : 'días'}</span>
-                    </>
-                  )}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between py-2.5">
-                <dt className="text-[14px] font-semibold text-text">Veces que cumpliste</dt>
-                <dd className="flex items-baseline gap-1.5">
-                  <span className="font-number font-bold text-[24px] leading-none text-text">{totalVeces}</span>
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      )}
-      
         </div>
       )}
 

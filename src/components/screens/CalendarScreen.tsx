@@ -13,6 +13,7 @@ import {
 } from '../../utils/habitUtils';
 import { tasaPeriodo, calcularMejorRachaGlobal } from '../../utils/progresoUtils';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
+import { useEsEscritorio } from './TodayScreen';
 
 const ordenMomentos = ['manana', 'tarde', 'noche', 'flexible'];
 
@@ -32,6 +33,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
 
   const [viewDate, setViewDate] = useState<Date>(() => new Date());
   const [selectedDateForModal, setSelectedDateForModal] = useState<string | null>(null);
+  const grande = useEsEscritorio() && !!incrustado;
 
   useEffect(() => {
     if (abrirFecha) {
@@ -220,11 +222,13 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
 
   return (
     <div id={incrustado ? undefined : "screen-calendar"} className={incrustado ? "mt-4" : "pb-28"}>
+      <div className={grande ? "calgrande" : ""}>
+      <div>
       {/* CABECERA */}
       <div className="flex items-start gap-2 mb-3">
         <div className="flex-1 min-w-0">
           {incrustado ? (
-             <h2 className="font-heading font-bold text-[28px] leading-none m-0 capitalize text-text">
+             <h2 className={`font-heading font-bold ${grande ? "text-[32px]" : "text-[28px]"} leading-none m-0 capitalize text-text`}>
                {monthNames[currentMonthIdx]}
              </h2>
           ) : (
@@ -259,15 +263,15 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
         )}
       </div>
 
-      {/* CUADRICULA */}
-      <div className="grid grid-cols-7 gap-1.5 text-center text-[12px] font-semibold text-text-muted mb-1.5 mt-3">
-        {weekDays.map(d => <span key={d}>{d}</span>)}
-      </div>
+          {/* CUADRICULA */}
+          <div className={`grid grid-cols-7 text-center text-[12px] font-semibold text-text-muted mb-1.5 mt-3 ${grande ? 'gap-2' : 'gap-1.5'}`}>
+            {weekDays.map(d => <span key={d}>{d}</span>)}
+          </div>
       
-      <div className="grid grid-cols-7 gap-1.5">
-        {Array.from({ length: startDayOffset }).map((_, i) => (
-          <span key={`empty-${i}`} className="bg-transparent border-none"></span>
-        ))}
+          <div className={`grid grid-cols-7 ${grande ? 'gap-2' : 'gap-1.5'}`}>
+            {Array.from({ length: startDayOffset }).map((_, i) => (
+              <span key={`empty-${i}`} className="bg-transparent border-none"></span>
+            ))}
 
         {monthDays.map((day) => {
           let state = 'fut';
@@ -281,7 +285,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
           if (day.isToday && state !== 'fut' && state !== 'como' && state !== 'full') state = 'today';
           if (day.isToday && state === 'part') state = 'today-part';
 
-          const baseClass = "h-[44px] rounded-[10px] flex items-center justify-center font-number text-[14px] font-bold relative active:scale-95 transition-transform overflow-hidden select-none outline-none";
+          const baseClass = `flex ${grande ? 'h-[72px] rounded-[12px] items-start justify-start px-3 py-2.5 text-[17px]' : 'h-[44px] rounded-[10px] items-center justify-center text-[14px]'} font-number font-bold relative active:scale-95 transition-transform overflow-hidden select-none outline-none`;
           
           let btnClass = baseClass;
           const wk = new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(currentYear, currentMonthIdx, day.dayNumber));
@@ -311,11 +315,11 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
               ariaLabel += `, hoy`;
               break;
             case 'today-part':
-              btnClass += " bg-transparent text-text border-[1.5px] border-dashed border-text";
+              btnClass += ` bg-transparent text-text border-[1.5px] border-dashed border-text`;
               ariaLabel += `, hoy`;
               break;
             case 'fut':
-              btnClass += " bg-transparent border-transparent text-text-muted font-medium cursor-default active:scale-100";
+              btnClass += ` bg-transparent border-transparent text-text-muted font-medium cursor-default active:scale-100`;
               break;
           }
 
@@ -338,9 +342,9 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
               onClick={() => setSelectedDateForModal(day.dateStr)}
             >
               {state === 'como' && <span className="absolute top-[3px] right-[4px]"><ShieldCheck size={10} strokeWidth={3} /></span>}
-              <span className={hasBar ? 'pb-1' : ''}>{day.dayNumber}</span>
+              <span className={hasBar && !grande ? 'pb-1' : ''}>{day.dayNumber}</span>
               {hasBar && (
-                <i className="absolute left-[6px] right-[6px] bottom-[6px] h-1 rounded-full bg-track-empty block overflow-hidden" aria-hidden="true">
+                <i className={`absolute ${grande ? 'left-2.5 right-2.5 bottom-2.5 h-[5px]' : 'left-[6px] right-[6px] bottom-[6px] h-1'} rounded-full bg-track-empty block overflow-hidden`} aria-hidden="true">
                   <b className="block h-full rounded-full fill-logro" style={{ width: barWidth }} />
                 </i>
               )}
@@ -372,9 +376,10 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
           Empezaste el {parseDateString(firstHabitDateStr).getDate()} de {monthNames[currentMonthIdx]}. Los días de antes no cuentan.
         </p>
       )}
+      </div>
 
       {/* TARJETA TU MES */}
-      <div className="mt-[18px] p-[14px] rounded-[18px] bg-surface border border-line">
+      <div className={`${grande ? 'mt-0 p-5' : 'mt-[18px] p-[14px]'} rounded-[18px] bg-surface border border-line`}>
         <div className="flex items-baseline justify-between gap-2.5 mb-1.5">
           <h2 className="font-heading font-bold text-[22px] m-0 text-text">Tu mes</h2>
           <span className="text-[13px] text-text-muted">sin contar hoy</span>
@@ -426,6 +431,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
             )}
           </div>
         )}
+      </div>
       </div>
 
       {/* HOJA DEL DIA */}

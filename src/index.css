@@ -710,6 +710,41 @@ html:not(.dark) .onb .otp.bad .otpd, html:not(.dark) .onb .input.bad { border-co
 .hoyc-next { outline-width: 1.5px; }
 html:not(.dark) .hoyc-next { outline-width: 1px; }
 
+/* Progreso en escritorio › Tu año (design/maqueta-progreso-informe.html, escritorios 6 y 7) */
+.progreso .anio{margin-top:20px}
+.progreso .anioh{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.progreso .yasel{position:relative;display:inline-flex;align-items:center;min-height:44px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text)}
+.progreso .yasel select{appearance:none;-webkit-appearance:none;min-height:44px;padding:0 40px 0 14px;border:none;border-radius:12px;background:transparent;color:inherit;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.progreso .yasel select:focus{outline:none}
+.progreso .yasel:focus-within{outline:2px solid var(--text);outline-offset:2px}
+.progreso .yasel svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none}
+.progreso .yasel option{background:var(--surface);color:var(--text)}
+.progreso .yawrap{margin-top:16px}
+.progreso .yameses{display:grid;grid-template-columns:22px repeat(53,minmax(0,1fr));column-gap:3px;height:18px;font-size:12px;font-weight:600;color:var(--text-muted)}
+.progreso .yameses span{white-space:nowrap;overflow:visible;width:0}
+.progreso .yabody{display:grid;grid-template-columns:22px repeat(53,minmax(0,1fr));gap:3px}
+.progreso .yacol,.progreso .yadias{display:flex;flex-direction:column;gap:3px}
+.progreso .yadias i{flex:1 1 0;min-height:0;font-style:normal;font-size:12px;line-height:1;font-weight:600;display:flex;align-items:center;color:var(--text-muted)}
+.progreso .yameses span.fin{direction:rtl}
+.progreso .ya{display:block;width:100%;aspect-ratio:1;border-radius:3px}
+.progreso .ya.pasado{cursor:pointer}
+.progreso .ya.antes,.progreso .ya.libre{box-shadow:inset 0 0 0 1px var(--line)}
+.progreso .ya.fut{visibility:hidden}
+.progreso .ya.nada{background:var(--track-empty)}
+.progreso .ya.parte{background:linear-gradient(to top,var(--ambar) 50%,var(--track-empty) 50%)}
+.progreso .ya.todo{background:var(--ambar)}
+.progreso .ya.como{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.progreso .ya.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+html:not(.dark) .progreso .ya.parte{background:linear-gradient(to top,var(--ambar-text) 50%,var(--track-empty) 50%)}
+html:not(.dark) .progreso .ya.todo{background:var(--ambar-text)}
+.progreso .yapie{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;flex-wrap:wrap}
+.progreso .yaleg{display:flex;gap:14px;font-size:12px;color:var(--text-muted)}
+.progreso .yaleg span{display:inline-flex;align-items:center;gap:6px}
+.progreso .yaleg .ya{width:12px}
+
+/* Progreso en escritorio › pestaña Calendario (escritorio 8) */
+.progreso .calgrande{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;margin-top:28px;align-items:start}
+
 /* Hoy en escritorio: semana de cada hábito en barritas y días de "Esta semana" */
 .hoyd .hoyd-wk li { flex: 1; height: 10px; border-radius: 4px; background: var(--track-empty); }
 .hoyd .hoyd-wk li.ok { background: var(--ambar); }
