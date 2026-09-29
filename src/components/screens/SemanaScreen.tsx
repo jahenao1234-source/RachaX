@@ -30,6 +30,7 @@ import { momentoDeHora } from '../../utils/compromisosUtils';
 import { textoDiaLargo } from '../../utils/tareasUtils';
 import { Subtarea, Compromiso } from '../../types';
 import { textoHora, momentoDe } from '../../utils/compromisosUtils';
+import { focoSemana, formatoDuracion } from '../../utils/focoUtils';
 
 export const SemanaScreen: React.FC = () => {
   const { 
@@ -43,7 +44,8 @@ export const SemanaScreen: React.FC = () => {
     openEditHabit, 
     navigateToTab,
     editarCompromiso,
-    restaurarCompromisos
+    restaurarCompromisos,
+    sesionesFoco
   } = useHabitStore();
   
   const hoy = getTodayString();
@@ -94,6 +96,7 @@ export const SemanaScreen: React.FC = () => {
   const vas = comoVasSemana(habitosActivos, registros, diasCongelados, hoy);
   const rescate = rescateSemana(habitosActivos, registros, diasCongelados, hoy);
   const psd = pasosSinDia(tareas);
+  const s = focoSemana(sesionesFoco, hoy, { habitos: Object.fromEntries(habitosActivos.map(h => [h.id, h.nombre])), tareas: Object.fromEntries(tareas.map(t => [t.id, t.nombre])) });
 
   const iconForFranja = (m: Franja) => {
     if (m === 'manana') return <Sunrise size={16} className="text-ambar-text" />;
@@ -134,6 +137,15 @@ export const SemanaScreen: React.FC = () => {
         <i className="s3barra block h-[6px] rounded-[9px] bg-track-empty overflow-hidden" aria-hidden="true">
           <b className="block h-full rounded-[9px] bg-ambar-text" style={{ width: vas.tocaban > 0 ? `${Math.round((vas.cumplidas / vas.tocaban) * 100)}%` : '0%' }} />
         </i>
+        {s.seg >= 60 && (
+          <div className="border-t border-line mt-[12px] pt-[10px]">
+            <p className="text-[13px] text-text-muted m-0">
+              En Foco esta semana: <b className="text-text">{formatoDuracion(s.seg)}</b><br />
+              {s.grupos.slice(0, 3).map(g => `${g.etiqueta}: ${formatoDuracion(g.seg)}`).join(' · ')}
+              {s.grupos.length > 3 ? ` · y ${s.grupos.length - 3} más` : ''}
+            </p>
+          </div>
+        )}
       </section>}
 
       {esEscritorio && <section className="tscomp" aria-labelledby="tscomp-t">
@@ -154,6 +166,15 @@ export const SemanaScreen: React.FC = () => {
             );
           })}
         </ol>
+        {s.seg >= 60 && (
+          <div className="basis-full border-t border-line pt-[10px]">
+            <p className="text-[13px] text-text-muted m-0">
+              En Foco esta semana: <b className="text-text">{formatoDuracion(s.seg)}</b><br />
+              {s.grupos.slice(0, 3).map(g => `${g.etiqueta}: ${formatoDuracion(g.seg)}`).join(' · ')}
+              {s.grupos.length > 3 ? ` · y ${s.grupos.length - 3} más` : ''}
+            </p>
+          </div>
+        )}
       </section>}
 
       {rescate && (

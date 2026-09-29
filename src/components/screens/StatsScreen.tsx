@@ -16,10 +16,11 @@ import { CalendarScreen } from './CalendarScreen';
 import { QueHacerAhora } from '../progreso/QueHacerAhora';
 import { TuAnio } from '../progreso/TuAnio';
 import { useEsEscritorio } from './TodayScreen';
+import { focoHabitoMes, formatoDuracion } from '../../utils/focoUtils';
 
 
 export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }> = ({ pestanaInicial = 'resumen' }) => {
-  const { habitosActivos: habitos, registros, diasCongelados, rachaGlobal, openHabitDetail, openCreateMenu, ordenMomentos, navigateToTab } = useHabitStore();
+  const { habitosActivos: habitos, registros, diasCongelados, rachaGlobal, openHabitDetail, openCreateMenu, ordenMomentos, navigateToTab, sesionesFoco } = useHabitStore();
 
   const [pestana, setPestana] = useState<'resumen' | 'calendario'>(pestanaInicial);
   const [fechaAbrir, setFechaAbrir] = useState<string | null>(null);
@@ -141,6 +142,9 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
       let monthPct = 0;
       let isWeekly = h.frecuencia === 'semanal';
       let weeklyText = '';
+      
+      let focoSeg = focoHabitoMes(sesionesFoco, h.id, todayStr).seg;
+      let focoText = focoSeg >= 60 ? ` · ${formatoDuracion(focoSeg)} en Foco` : '';
 
       if (isWeekly) {
         const fs = fuerzaSerieHabito(h, registros, diasCongelados, yesterdayStr);
@@ -161,10 +165,11 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
         fuerza: Math.round(f * 100),
         monthPct,
         weeklyText,
+        focoText,
         isWeekly
       };
     }).sort((a, b) => a.fuerza - b.fuerza);
-  }, [habitos, registros, diasCongelados, yesterdayStr]);
+  }, [habitos, registros, diasCongelados, yesterdayStr, sesionesFoco, todayStr]);
 
   // Este mes 
   const currentMonthStart = `${yesterdayStr.substring(0, 7)}-01`;
@@ -412,7 +417,7 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
               </div>
               <div className="flex-1 min-w-0">
                 <span className="block text-[15px] font-semibold text-text truncate">{h.nombre}</span>
-                <span className="block text-[13px] text-text-muted mt-0.5">{h.isWeekly ? h.weeklyText : `${h.monthPct}% este mes`}</span>
+                <span className="block text-[13px] text-text-muted mt-0.5">{h.isWeekly ? h.weeklyText : `${h.monthPct}% este mes`}{h.focoText}</span>
               </div>
               <div className="text-right flex flex-col items-end justify-center mr-1">
                 <span className="font-number font-bold text-[24px] leading-none text-text">{h.fuerza}</span>

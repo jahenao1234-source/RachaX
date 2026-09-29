@@ -13,6 +13,7 @@ import {
 } from '../../utils/habitUtils';
 
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
+import { focoHabitoMes, formatoDuracion } from '../../utils/focoUtils';
 
 interface HabitDetailScreenProps {
   habitId: string;
@@ -42,7 +43,8 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
     rachaGlobal,
     habitosActivos,
     premios,
-    insignias
+    insignias,
+    sesionesFoco
   } = useHabitStore();
 
   const habit = habitos.find((h) => h.id === habitId);
@@ -289,6 +291,22 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
               </>
             )}
           </section>
+
+          {/* TIEMPO EN FOCO */}
+          {(() => {
+            const f = focoHabitoMes(sesionesFoco, habit.id, todayStr);
+            if (f.seg < 60) return null;
+            return (
+              <section className="bg-surface border border-line rounded-[18px] p-4 mb-4">
+                <h2 className="font-heading font-bold text-[22px] m-0 mb-2 text-text">Tiempo en Foco</h2>
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="font-heading font-bold text-[40px] leading-none text-text">{formatoDuracion(f.seg)}</span>
+                  <span className="text-[15px] text-text-muted">este mes</span>
+                </div>
+                <p className="text-[13px] text-text-muted m-0">Unos {formatoDuracion(f.promedioSeg)} por día cuando lo haces en Foco.</p>
+              </section>
+            );
+          })()}
 
           {/* RETO */}
           {isReto ? (
