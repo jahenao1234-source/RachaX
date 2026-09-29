@@ -1171,3 +1171,101 @@ html:not(.dark) .semana .tscomp-dias i b{background:var(--ambar-text)}
 .progreso .ttoast span{flex:1}
 .progreso .ttoast button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font-weight:800;text-decoration:underline;text-underline-offset:3px}
 @media (min-width:1024px){.progreso .ttoast{bottom:32px}}
+
+/* Modo Foco (design/maqueta-foco.html, DESIGN.md › Modo Foco). Todo dentro de .foco */
+.foco{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow-y:auto}
+.foco button:focus-visible,.foco input:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.foco .fbar{display:flex;align-items:center;gap:10px;padding:14px 16px 8px}
+.foco .fx{width:44px;height:44px;border-radius:999px;border:none;background:var(--surface-raised);color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex:none}
+.foco .fctx{flex:1;min-width:0}
+.foco .fctx b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foco .fctx span{display:block;font-size:13px;color:var(--text-muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foco .fseg{display:flex;gap:4px;padding:0 16px}
+.foco .fseg i{flex:1;height:5px;border-radius:9px;background:var(--track-empty)}
+.foco .fseg i.on{background:var(--ambar)}
+html:not(.dark) .foco .fseg i.on{background:var(--ambar-text)}
+.foco .fseg i.now{background:transparent;box-shadow:inset 0 0 0 1.5px var(--text)}
+.foco .fcuerpo,.foco .fcol{flex:1;display:flex;flex-direction:column;min-height:0}
+.foco .fbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 24px;text-align:center}
+.foco .fpie{width:100%;max-width:420px;margin:0 auto;padding:12px 16px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+.foco .fbtn{min-height:52px;border:none;border-radius:14px;background:var(--ambar);color:var(--ink);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.foco .ffila{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.foco .ffila>:only-child{grid-column:1/-1}
+.foco .fsec{min-height:48px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+html:not(.dark) .foco .fsec{border-color:var(--text-muted)}
+.foco .fq{min-height:44px;border:none;background:none;color:var(--text-muted);font-size:15px;font-weight:600}
+/* Hábito con cronómetro */
+.foco .fid{display:flex;align-items:center;gap:12px;text-align:left}
+.foco .ftile{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;flex:none}
+.foco .fname{margin:0;font-size:30px;line-height:1.1}
+.foco .fanc{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:14px;color:var(--text-muted)}
+.foco .freloj{margin:26px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:92px;line-height:1;font-variant-numeric:tabular-nums}
+.foco .freloj.pausa{color:var(--text-muted)}
+.foco .fcap{margin:8px 0 0;font-size:13px;color:var(--text-muted)}
+/* Pomodoro */
+.foco .fanillo{position:relative;width:236px;height:236px;margin-top:6px}
+.foco .fanillo svg{position:absolute;inset:0;width:100%;height:100%}
+.foco .fanillo .pista{fill:none;stroke:var(--track-empty);stroke-width:10}
+.foco .fanillo .arco{fill:none;stroke:var(--ambar);stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
+html:not(.dark) .foco .fanillo .arco{stroke:var(--ambar-text)}
+.foco .fanillo.desc .arco{stroke:var(--text-muted)}
+.foco .fanillo .dentro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.foco .fanillo .t{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:64px;line-height:1;font-variant-numeric:tabular-nums}
+.foco .fanillo .q{margin-top:4px;font-size:13px;color:var(--text-muted)}
+.foco .fetq{margin:0 0 12px;font-size:13px;font-weight:700;color:var(--text-muted)}
+.foco .fpaso{width:100%;max-width:358px;margin-top:22px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:left}
+.foco .fpaso .lab{display:block;font-size:12px;font-weight:700;color:var(--text-muted)}
+.foco .fpaso .txt{display:block;margin-top:4px;font-size:17px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.foco .fpaso .sig{display:block;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--text-muted)}
+.foco .fdur{width:100%;max-width:358px;margin-top:22px;text-align:left}
+.foco .fdur .lab{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--text-muted)}
+.foco .fdur .nota{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--text-muted)}
+.foco .fseg3{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.foco .fseg3 button{min-height:44px;border:none;border-radius:9px;background:transparent;color:var(--text-muted);font-size:15px;font-weight:700}
+.foco .fseg3 button[aria-checked=true]{background:var(--surface-raised);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--text)}
+/* Fin */
+.foco .fok{width:64px;height:64px;border-radius:999px;background:var(--ambar-tint);color:var(--ambar-text);display:flex;align-items:center;justify-content:center}
+.foco .fok.gris{background:var(--surface-raised);color:var(--text)}
+.foco .ftit{margin:16px 0 0;font-size:30px;line-height:1.1;outline:none}
+.foco .fsub{margin:8px 0 0;max-width:320px;font-size:15px;line-height:1.45;color:var(--text-muted)}
+.foco .fres{width:100%;max-width:358px;margin:22px 0 0;display:grid;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.foco .fres div{padding:12px 4px}
+.foco .fres div+div{border-left:1px solid var(--line)}
+.foco .fres dt{font-size:12px;font-weight:700;color:var(--text-muted)}
+.foco .fres dd{margin:4px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px}
+/* Pomodoro solo */
+.foco .fcampo{width:100%;max-width:358px;margin-top:22px;text-align:left}
+.foco .fcampo label{display:block;margin:0 0 8px;font-size:13px;font-weight:700;color:var(--text-muted)}
+.foco .fcampo .in{width:100%;min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid var(--text-muted);background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.foco .fcampo .in::placeholder{color:var(--text-muted)}
+/* Aviso con Deshacer y hoja de salir */
+.foco .toastf{position:fixed;left:16px;right:16px;bottom:calc(196px + env(safe-area-inset-bottom));max-width:420px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:2}
+.foco .toastf span{flex:1;min-width:0}
+.foco .toastf button{min-height:44px;padding:0 14px;border:none;background:transparent;color:var(--bg);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.foco .fscrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3}
+.foco .fhoja{position:fixed;left:0;right:0;bottom:0;z-index:4;display:flex;flex-direction:column;gap:8px;padding:22px 20px calc(22px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);border-radius:22px 22px 0 0}
+.foco .fhoja h2{margin:0;font-size:26px}
+.foco .fhoja p{margin:0 0 10px;font-size:15px;color:var(--text-muted)}
+@media (min-width:1024px){
+  .foco .toastf{bottom:24px}
+  .foco .fhoja{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:420px;border:1px solid var(--line);border-radius:20px}
+}
+/* Escritorio con una tarea: el reloj a la izquierda y los pasos a la derecha */
+.foco .dfoco{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start;padding:12px 40px 28px;max-width:1280px;width:100%;margin:0 auto}
+.foco .dfoco .fanillo{width:300px;height:300px}
+.foco .dfoco .fanillo .t{font-size:84px}
+.foco .dlista{padding:20px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.foco .dlista h2{margin:0;font-size:24px}
+.foco .dmin{margin:4px 0 0;font-size:13px;color:var(--text-muted)}
+.foco .dlista ol{list-style:none;margin:12px 0 0;padding:0}
+.foco .dlista li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.foco .dlista li:first-child{border-top:none}
+.foco .dlista li .c{width:22px;height:22px;border-radius:7px;border:2px solid var(--line-strong);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.foco .dlista li.ok{color:var(--text-muted)}
+.foco .dlista li.ok .c{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+html:not(.dark) .foco .dlista li.ok .c{background:var(--ambar-text);border-color:var(--ambar-text);color:#fff}
+.foco .dlista li.now{margin:0 -10px;padding:10px;border-radius:12px;background:var(--surface-raised);border-top-color:transparent;font-weight:600}
+.foco .dlista li.now+li{border-top-color:transparent}
+.foco .dlista .sigue{margin-left:auto;padding:2px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700;flex:none}
+@media (prefers-reduced-motion:reduce){.foco .fanillo .arco{transition:none}}
+

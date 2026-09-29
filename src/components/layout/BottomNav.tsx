@@ -71,7 +71,7 @@ export const BottomNav: React.FC = () => {
             id="nav-btn-create-habit"
             type="button"
             onClick={openCreateMenu}
-            aria-label="Crear nuevo hábito"
+            aria-label="Crear"
             className="w-13 h-13 rounded-full logro hover:brightness-95 active:scale-95 text-ink flex items-center justify-center shadow-lg shadow-[var(--accent-40)] transition-all duration-200 border-4 border-bg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-bg"
           >
             <Plus size={26} strokeWidth={2.6} className="transition-transform duration-200 group-hover:rotate-90" />
