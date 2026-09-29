@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/panel", "destination": "/index.html" },
+    { "source": "/panel/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/panel(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}

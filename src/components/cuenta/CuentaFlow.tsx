@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, Flame, Mail, HelpCircle, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Flame, Mail, HelpCircle, AlertCircle, PauseCircle, MessageCircle } from 'lucide-react';
 import { useCuenta } from '../../store/CuentaContext';
 import { supabaseListo } from '../../lib/supabase';
 import { SOPORTE_URL, VENTA_URL } from '../../lib/config';
@@ -110,6 +110,25 @@ export const CuentaFlow: React.FC = () => {
       <div className="obfoot">{pie}</div>
     </div>
   );
+
+  // Bloqueado desde el panel de pagos (design/maqueta-panel-pagos.html, celulares 10 y 11)
+  if (estado === 'bloqueado') {
+    return marco(
+      null,
+      <>
+        <h1 className="cond obh ctit" ref={h1Ref} tabIndex={-1} style={{ outline: 'none' }}><span className="ctiti" aria-hidden="true"><PauseCircle size={22} /></span>No pudimos confirmar tu pago</h1>
+        <p className="sub obsub">No encontramos el pago de tu cuenta <b style={{ color: 'var(--text)' }}>{correo || limpio}</b>, así que está en pausa.</p>
+        <ul className="clist">
+          <li>Si ya pagaste, escríbenos por WhatsApp con la foto del comprobante y lo arreglamos.</li>
+          <li>Tus hábitos y tu progreso siguen guardados. Cuando se confirme, entras como siempre.</li>
+        </ul>
+      </>,
+      <>
+        {SOPORTE_URL && <a className="btnp full" style={{ margin: 0 }} href={SOPORTE_URL} target="_blank" rel="noopener noreferrer"><MessageCircle size={18} />Escribir por WhatsApp</a>}
+        <button className="link quiet center" onClick={() => { salir(); cambiarCorreo(); }}>Probar con otro correo</button>
+      </>
+    );
+  }
 
   if (estado === 'sinCompra') {
     return marco(

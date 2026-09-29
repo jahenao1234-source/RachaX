@@ -802,6 +802,87 @@ Aprobado el 25 sep (design/maqueta-cuenta.html, 14 teléfonos). Supabase. Solo q
 - **Encontramos tu Racha en este celular** (primera vez con cuenta, si hay datos locales y la cuenta está vacía): "¿La guardamos en tu cuenta? Así no la pierdes si cambias de celular y la ves también en el computador." Resumen: llama, hábitos, veces cumplidas, nivel y llama, insignias y llamas. Botón "Guardarla en mi cuenta"; link "Empezar de cero", que confirma en una hoja: "¿Empezar de cero?" / "Se borran tus 4 hábitos y todo lo que llevas en este celular. No se puede deshacer." / botón coral "Sí, empezar de cero" / "Mejor la guardo".
 - **Tu cuenta ya tiene una Racha** (cuenta y celular con datos distintos): "Y en este celular hay otra distinta. ¿Con cuál sigues?" Dos radios con los mismos datos (Nivel · hábitos · veces cumplidas · usada {cuándo}); por defecto la de la cuenta. "La que no elijas se borra. Antes, te descargamos una copia de respaldo. Si tienes dudas, sigue con la de tu cuenta." El botón dice "Seguir con la de tu cuenta" o "Seguir con la de este celular"; elegir la del celular confirma en una hoja ("¿Seguir con la de este celular?" / "La de tu cuenta (Nivel 12, 6 hábitos) se borra. Antes te descargamos una copia de respaldo." / "Sí, seguir con esta" / "Volver").
 - **Perfil › Tu cuenta:** tarjeta con "Correo", el estado ("Guardada en tu cuenta" · "Hace un momento"; sin conexión: "Sin conexión" · "N cambios esperan para subirse") y "Salir de tu cuenta". Debajo: "Si no hay internet, lo que hagas se guarda en el celular y se sube solo al volver la conexión." Salir con cambios sin subir confirma: "Tienes 3 cambios sin subir" / "Conéctate a internet antes de salir o se pierden." / "Salir de todas formas" / "Quedarme". Al salir se borran los datos de Racha del celular (no el tema ni el color).
+- **Cuenta en pausa** (bloqueada desde el panel de pagos; aprobado el 29 sep, design/maqueta-panel-pagos.html, celulares 10 y 11):
+  - Título "No pudimos confirmar tu pago", con el ícono de pausa en surface-raised.
+  - Texto: "No encontramos el pago de tu cuenta {correo}, así que está en pausa."
+  - Dos puntos: "Si ya pagaste, escríbenos por WhatsApp con la foto del comprobante y lo arreglamos." / "Tus hábitos y tu progreso siguen guardados. Cuando se confirme, entras como siempre."
+  - Botón "Escribir por WhatsApp" (SOPORTE_URL) y link "Probar con otro correo".
+  - La app lo sabe porque lee `estado_pago = 'bloqueado'` de la propia fila de compradores. Sus datos en la nube no se tocan.
+
+### Panel de pagos (aprobado el 29 sep, design/maqueta-panel-pagos.html)
+Solo para el dueño, **solo en computador**, en `tengoracha.com/panel`.
+- **Base de datos:** `supabase/schema-6-panel.sql`. Todo pasa por funciones que revisan `es_admin()`. Un comprador solo puede leer email, activo y estado_pago de su propia fila.
+- **Datos y textos:** `src/panel/panelDatos.ts` (34 pruebas).
+- **Estados de una compra** (lo que ve el dueño):
+  - `revisar` = "Algo no cuadra" (contorno de 1.5px en text con ícono de alerta);
+  - `por_verificar` = "Se ve bien" (contorno de 1px en line-strong, texto text-muted);
+  - `verificado` = "Pagó" (ambar-tint con ambar-text; en claro, contorno de 1.5px en ambar-text);
+  - `bloqueado` = "Bloqueado" (contorno y texto en danger).
+
+  **En todos los casos la persona entra a Racha de una**; el dueño confirma o bloquea después.
+- **Barra de arriba** (64px, surface):
+  - a la izquierda, el logo y "Panel de pagos" (Barlow Condensed 22px);
+  - a la derecha, el botón "Agregar comprador", el correo del dueño y "Salir".
+- **Cuadra tu caja** (tarjeta superior):
+  - "Desde tu último cuadre: {sábado 26 de septiembre, 8:40 p. m.}" (o "Todavía no has cuadrado.").
+  - Dos cifras: "Compras que se ven bien" y "Deberían haber llegado" (Barlow Condensed 28px). Cuentan solo las transferencias en "Se ve bien" o "Pagó" que llegaron desde el último cuadre, con el valor que leyó la IA.
+  - Si hay de "Algo no cuadra" en ese tiempo, aparece "Las {N} de “Algo no cuadra” no entran hasta que las decidas.".
+  - A la derecha, la pregunta "¿Cuánto te llegó por Racha desde el {sáb 26 sep, 8:40 p. m.}?", el campo (placeholder "$0"), la ayuda "Súmalo en tu app del banco. Cuenta solo las transferencias de Racha." y el botón "Cuadrar".
+  - **Si cuadra:** fondo ambar-tint con ✓, "**Cuadra.** Te llegaron {$151.600} de {4} compras." y el botón "Guardar y marcar las {4} como pagadas".
+  - **Si falta plata:** fondo surface-raised con una barra de 3px en text a la izquierda y ⓘ, "Te llegaron **{$37.900} menos** de lo que dicen los comprobantes (justo {1} compra). Abre tu banco y compara nombre, hora y referencia con la lista.", el botón "Guardar con la diferencia" y debajo "Se anota que faltaron {$37.900}. Ninguna compra queda como pagada.". Si la diferencia no es un múltiplo del precio, se quita "(justo N compra)".
+  - **Si sobra plata:** "Te llegaron **{$X} más** de lo esperado. Puede ser un pago que no mandó comprobante, o una venta a mano." con "Guardar con la diferencia".
+  - Debajo: "Tu último cuadre cuadró ({$492.700}, {13} compras)." (o "…no cuadró: faltaron {$X}.") y el link "Ver cuadres anteriores", que abre la lista de los últimos 20.
+  - El cuadre se guarda con la función `guardar_cierre`, todo de una vez. Si llegó una compra mientras cuadrabas, sale "Llegó una compra nueva mientras cuadrabas. Revisa los números otra vez." y se recargan.
+- **Lista** (izquierda, tarjeta):
+  - Botones de filtro con su número (aria-pressed): "Algo no cuadra · Se ven bien · Pagaron · Bloqueados · Todas". Se abre en "Algo no cuadra" si hay alguna; si no, en "Se ven bien".
+  - El buscador: "Buscar por correo, nombre, teléfono o referencia".
+  - La tabla (con caption oculto) tiene las columnas "Correo y nombre" (el correo en negrita, que es un botón que cubre toda la fila, y debajo el nombre o "Sin nombre", más " · {el primer problema}" si no cuadra), "Valor" (Barlow Condensed 18px; si no cuadra lleva ⓘ y el texto oculto "(no cuadra)"), "Fecha del pago" y "Estado".
+  - La fila elegida va en surface-raised con una barra de 3px en text a la izquierda.
+  - De a 50, con "Ver más". Las de "Mandó otro comprobante" van primero.
+  - **Vacíos:**
+    - pestaña sin compras: "Nada por revisar. Las compras que no cuadren aparecen aquí." (en las demás, "No hay compras aquí.");
+    - búsqueda sin resultados: "No hay compras con “{texto}”. Revisa cómo está escrito, o busca por teléfono o referencia.";
+    - sin ninguna compra: el ícono de balanza, "Aún no hay compras" y "Cuando alguien pague por WhatsApp, aparece aquí con la foto de su comprobante.".
+- **Detalle** (derecha, 440px, **fijo al desplazar**):
+  - El correo, "{nombre} · mandó el comprobante {hoy, 10:20 a. m.}" y el chip del estado.
+  - **Botones justo debajo:**
+    - "Sí pagó" (ámbar) y "Bloquear" (contorno danger), con la ayuda "{Nombre} ya puede usar Racha. Si la plata te llegó, toca “Sí pagó”. Si no, “Bloquear” le quita la entrada; su progreso se guarda y lo puedes deshacer.";
+    - si ya pagó, solo "Bloquear";
+    - si está bloqueado, "Desbloquear" (ámbar), con "Vuelve a entrar con sus datos de siempre y queda como pagado.".
+  - **Si mandó otro comprobante estando bloqueado:** una barra de 3px en text con "**Mandó otro comprobante** después del bloqueo. Míralo y, si la plata te llegó, toca “Desbloquear”.".
+  - **Lo que no cuadra** (barra de 3px en text): la lista de `problemas()`, por ejemplo "Pagó $30.000, no $37.900", "El comprobante es del lun 21 sep (hace 8 días)", "La plata le llegó a «X», no a ti", "La foto no parece un comprobante", "La IA no pudo leer la foto", "No mandó foto" o "Esta referencia ya está en {correo}".
+  - **La foto** (230px, fondo bg), con "Ver grande" (ventana a pantalla completa; si es PDF, se abre en otra pestaña). El enlace vence a los 2 minutos y se pide de nuevo. Sin foto: "La IA no pudo leer esta foto. Ábrela y míralo tú." o "No mandó foto".
+  - **Lo que leyó la IA:** Valor, Fecha del pago, Referencia, Le llegó a, Pagó y Banco ("No se leyó" si falta). Lo que no cuadra lleva ⓘ y "(no cuadra)" oculto.
+  - El teléfono y el link "Escribirle por WhatsApp" (wa.me con los dígitos).
+  - "Nota (solo la ves tú)": un campo que se guarda solo al salir de él, con "Guardada" pequeño al lado.
+- **Después de "Sí pagó", "Bloquear" o "Desbloquear":**
+  - la compra sale de la pestaña y queda elegida la siguiente;
+  - aviso abajo al centro: "Marcaste a {nombre} como pagado." / "Bloqueaste a {correo}." / "Desbloqueaste a {correo}.", con "Deshacer" (vuelve al estado que tenía);
+  - el foco pasa a la fila siguiente.
+- **Bloquear pregunta antes** (ventana centrada, alertdialog):
+  - título "¿Bloquear a {correo}?";
+  - texto "Ya no podrá entrar a Racha y verá “No pudimos confirmar tu pago”. Sus datos no se borran y lo puedes deshacer con “Desbloquear”.";
+  - botones "Cancelar" (con el foco inicial) y "Bloquear" (lleno en danger).
+- **Agregar comprador** (ventana centrada de 460px, con X):
+  - "Queda con acceso y como pagado. Dile que entre a tengoracha.com con este correo.";
+  - campo "Correo" (con el "¿Quisiste decir…?" de Tu cuenta);
+  - "¿Cómo pagó?": Transferencia · Efectivo · Regalo (radiogroup), con "Efectivo y regalo no entran al cuadre de la caja.";
+  - "Valor" (37.900 de entrada; con Regalo queda en $0 y se apaga);
+  - "Nota (opcional)", con el placeholder "Por ejemplo, amiga del trabajo";
+  - botones "Cancelar" y "Agregar". Si el correo ya existe: "Ese correo ya está en el panel ({estado}).".
+- **Quien no es el dueño** abre /panel: el candado, "Esta página es solo para el dueño de Racha", "Entraste como {correo}." y "Volver a Racha".
+  - **Sin sesión:** la misma entrada con código de Tu cuenta, pero sin revisar compra (el dueño puede no ser comprador).
+- **Teclado:**
+  - flechas arriba/abajo cambian de compra;
+  - S = "Sí pagó", B = "Bloquear" (abre la pregunta);
+  - ninguna actúa si el foco está en un campo.
+
+  Las ventanas usan `<dialog>` (Escape, fondo inerte), y el foco vuelve al botón que las abrió. Los avisos van en una región `role="status"` que siempre existe.
+- **Colores:**
+  - danger (oscuro #F87171, claro #C62828) solo en Bloquear y el chip Bloqueado;
+  - lo que no cuadra se marca con ícono y texto, no con color;
+  - ámbar solo en lo que ya pagó y en los botones principales.
+- **Fechas y plata:** fechas siempre en hora de Colombia ("hoy, 10:14 a. m.", "ayer, 9:55 p. m.", "lun 21 sep, 6:02 p. m."); pesos como "$37.900".
 
 ## Do's and Don'ts
 

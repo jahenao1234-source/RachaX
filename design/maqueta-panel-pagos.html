@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de pagos (aprobada 29 sep)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.dark{--bg:#0F1113;--surface:#181B1F;--raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--muted:#98A0AA;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#FFB547;--ambar-tint:#2B2419;--lila:#8E9BFF;--lila-text:#8E9BFF;--lila-tint:#1F2233;--coral:#FF7A59;--coral-text:#FF7A59;--coral-tint:#2A211F;--track-empty:#33383F;--comodin-bg:#1B1F2E;--comodin-text:#C9CFFF;--scrim:rgba(0,0,0,.6);--sheet:#131518;--navline:#22262C;--navmuted:#8D96A0}
+.light{--bg:#F6F7F8;--surface:#FFFFFF;--raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CED4;--text:#15181B;--muted:#5D6570;--ink:#0F1113;--ambar:#FFB547;--ambar-text:#A56200;--ambar-tint:#FFF1DB;--lila:#8E9BFF;--lila-text:#4F5BD5;--lila-tint:#ECEEFF;--coral:#FF7A59;--coral-text:#D9492A;--coral-tint:#FFE9E2;--track-empty:#D5D9DE;--comodin-bg:#EEF0FF;--comodin-text:#3F4BC0;--scrim:rgba(15,17,19,.35);--sheet:#F6F7F8;--navline:#E1E4E8;--navmuted:#5D6570}
+*{box-sizing:border-box}
+body{margin:0;background:#060708;font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:40px;justify-content:center;padding:32px 16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.cond{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center}
+.col>h2{margin:0;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:20px}
+.phone{width:390px;height:844px;border-radius:28px;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;position:relative;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scroll{flex:1;overflow:hidden;padding:14px 20px 96px}
+.mhead{display:flex;align-items:flex-start;gap:8px}
+.nb{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb:disabled{color:var(--line-strong);cursor:default}
+.sub{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--text)}
+.chip svg{color:var(--lila-text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:6px}
+.d{position:relative;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.d .bar{position:absolute;left:6px;right:6px;bottom:6px;height:4px;border-radius:99px;background:var(--track-empty);overflow:hidden;display:block;padding:0;border:none}
+.d .bar b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.d.full{background:var(--ambar);border-color:var(--ambar-text);color:var(--ink);font-weight:700;padding:0}
+.d.como{background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--comodin-text);padding:0}
+.d.como .shield{position:absolute;top:3px;right:4px}
+.d.free{background:transparent;border-style:dashed;border-color:var(--muted);color:var(--muted);font-weight:500;padding:0}
+.d.miss{padding:0}
+.d.part{color:var(--text)}
+.d.first{box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.d.fut{background:transparent;border-color:transparent;color:var(--muted);font-weight:500;padding:0}
+.d.today{background:transparent;border:1.5px dashed var(--text);font-weight:700}
+.d.ghost{background:transparent;border:none}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid var(--line-strong);display:inline-block;position:relative;overflow:hidden}
+.sw.full{background:var(--ambar);border-color:var(--ambar-text)}
+.sw.part{background:var(--surface);border-color:var(--muted)}
+.sw.part b{position:absolute;left:1px;right:1px;bottom:1px;height:3px;background:var(--ambar-text)}
+.sw.como{background:var(--comodin-bg);border-color:var(--lila-text)}
+.sw.free{background:transparent;border-style:dashed;border-color:var(--muted)}
+.sw.today{background:transparent;border:1.5px dashed var(--text)}
+.card{margin-top:18px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cardhead h2{margin:0;font-size:22px}
+.bignum{margin:6px 0 2px;display:flex;align-items:baseline;gap:8px}
+.bignum .cond{font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.bignum .of{font-size:20px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.minis div{display:flex;align-items:baseline;gap:6px}
+.minis .n{font-size:22px;font-variant-numeric:tabular-nums}
+nav{position:absolute;left:0;right:0;bottom:0;height:82px;padding:8px 12px 18px;background:var(--bg);border-top:1px solid var(--navline);display:flex;align-items:center;justify-content:space-around}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:64px;min-height:48px;color:var(--navmuted);text-decoration:none;font-size:11px;font-weight:600}
+nav a.on{color:var(--text)}
+.plus{width:54px;height:54px;border-radius:999px;border:none;background:var(--ambar);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;display:flex;flex-direction:column;background:var(--sheet);border-radius:22px 22px 0 0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.35);z-index:6}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line-strong);margin:8px auto 0;flex-shrink:0}
+.shead{display:flex;align-items:flex-start;gap:12px;padding:12px 20px 10px;border-bottom:1px solid var(--line)}
+.x{width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slist{flex:1;overflow:hidden;padding:0 20px}
+.hrow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:0;border:none;background:transparent;text-align:left}
+.go{width:44px;height:44px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--raised);color:var(--muted);margin-right:6px}
+.meta.ambar{color:var(--ambar-text);font-weight:600}
+.hoybtn{min-height:44px;padding:0 12px;font-size:13px;flex-shrink:0}
+.btn2:disabled{color:var(--muted);cursor:default}
+.btn2:disabled svg{color:var(--muted)}
+.sb:disabled{color:var(--line-strong);cursor:default}
+.back{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;border-radius:10px;background:var(--ambar-tint);color:var(--text);font-size:14px;font-weight:600}
+.back svg{color:var(--ambar-text)}
+.hrow:last-child{border-bottom:none}
+.hopen-unused{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:44px;padding:0;border:none;background:transparent}
+.tile{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.name{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name.tach{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.meta{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ring{width:44px;height:44px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.ring.done{background:var(--ambar);border-color:var(--ambar);color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--raised);display:flex;align-items:center;justify-content:center}
+.sv{min-width:44px;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sv small{font-size:13px;color:var(--muted);font-family:'Barlow',sans-serif;font-weight:600}
+.sfoot{padding:12px 20px 20px;border-top:1px solid var(--line)}
+.btn2{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--text);font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn2.full{width:100%}
+.btn2 svg{color:var(--lila-text)}
+.frozen{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--comodin-bg);color:var(--comodin-text);font-size:13px;line-height:1.35}
+.note{max-width:380px;color:#C5CBD3;font-size:14px;line-height:1.5;align-self:flex-start}
+.note h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:0 0 8px;color:#fff}
+.note li{margin-bottom:8px}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.chart{width:100%;height:auto;display:block;margin-top:8px}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .gl.base{stroke:var(--line-strong)}
+.chart .ax{fill:var(--muted);font-size:11px;font-family:'Barlow',sans-serif;font-weight:600}
+.chart .area{fill:var(--ambar-tint)}
+.chart .ln{fill:none;stroke:var(--ambar-text);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.chart .dot{fill:var(--ambar-text);stroke:var(--surface);stroke-width:2}
+.delta{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;background:var(--raised);color:var(--muted);font-size:13px;font-weight:700}
+.delta.up{background:var(--ambar-tint);color:var(--ambar-text)}
+.light .delta.up{background:transparent;box-shadow:inset 0 0 0 1px var(--ambar-text)}
+.sec{margin-top:26px}
+.sec .cardhead h2{font-size:22px;margin:0}
+.h3{margin:14px 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.track{display:block;flex:1;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.track b{display:block;height:100%;border-radius:99px;background:var(--ambar-text)}
+.track.gray b{background:var(--muted)}
+.cmp{display:flex;align-items:center;gap:12px;margin-top:12px}
+.cmp-l{width:92px;font-size:15px;font-weight:600}
+.cmp-v{width:44px;text-align:right;font-size:20px;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.wkrow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end}
+.wk{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+.wk-v{font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.wk-t{display:flex;align-items:flex-end;width:100%;height:84px;border-radius:10px;background:var(--track-empty);overflow:hidden}
+.wk-t b{display:block;width:100%;background:var(--muted);border-radius:10px 10px 0 0}
+.wk-l{font-size:12px;font-weight:600;color:var(--muted)}
+.wk.low .wk-v,.wk.low .wk-l{color:var(--text);font-weight:700}
+.wk.low .wk-t{outline:1.5px solid var(--text);outline-offset:2px}
+.wk.low .wk-t b{background:var(--text)}
+.tip{margin:12px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.tip b{color:var(--text);font-weight:600}
+.mrow{display:flex;align-items:center;gap:12px;margin-top:10px}
+.tile.sm{width:32px;height:32px;border-radius:10px}
+.mrow-l{width:84px;font-size:15px;font-weight:500}
+.mrow-l.b{font-weight:700}
+.board{margin-top:26px}
+.board dl{margin:0}
+.brow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.brow:first-child{border-top:none}
+.brow dt{margin:0}
+.brow dd{margin:0}
+.bv{font-size:24px;font-variant-numeric:tabular-nums}
+.bv small{font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:var(--muted)}
+.fz{display:flex;flex-direction:column;align-items:flex-end;min-width:48px}
+.fz .cond{font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.fz small{font-size:12px;color:var(--muted);font-weight:600}
+.chev{width:28px;display:flex;justify-content:flex-end;color:var(--muted);flex-shrink:0}
+.wait{display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:14px;line-height:1.45;color:var(--muted)}
+.wait svg{flex-shrink:0;color:var(--muted);margin-top:1px}
+.empty{text-align:center;margin-top:90px;display:flex;flex-direction:column;align-items:center}
+.emptyic{color:var(--muted);display:flex}
+.btnp{margin-top:22px;min-height:48px;padding:0 20px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:8px}
+
+.desk{width:1440px;height:900px;display:flex;background:var(--bg);color:var(--text);border-radius:16px;overflow:hidden;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.5);font-family:'Barlow',system-ui,sans-serif;text-align:left}
+.desk.w1024{width:1024px;height:768px}
+.light .desk{--coral-text:#C23D20;--ambar-text:#9A5B00}
+.desk .sub{margin:0;font-size:13px;color:var(--muted);line-height:1.4}
+.desk h1,.desk h2,.desk h3{margin:0}
+.desk ol,.desk ul{list-style:none;margin:0;padding:0}
+.desk :focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.dkskip{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.dkskip:focus{width:auto;height:auto;clip-path:none;padding:8px 12px;background:var(--text);color:var(--bg);border-radius:8px;z-index:5}
+.dkside{width:240px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;padding:20px 14px;border-right:1px solid var(--line);background:var(--surface);position:relative}
+.dkside.mini{width:76px;align-items:center;padding:20px 10px}
+.dkbrand{display:flex;align-items:center;gap:10px;padding:0 8px 10px}
+.dklogo{width:30px;height:30px;border-radius:9px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center}
+.dkcrear{min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;background:var(--logro,var(--ambar));color:var(--ink);font:inherit;font-size:15px;font-weight:700;margin:4px 0 10px}
+.dkside.mini .dkcrear{width:48px;height:48px;border-radius:14px}
+.desk nav.dknav{position:static;height:auto;padding:0;background:none;border:none;display:grid;gap:2px}
+.desk nav.dknav a{width:auto;flex-direction:row;justify-content:flex-start;min-height:44px;gap:12px;padding:0 12px;border-radius:10px;color:var(--muted);font-size:15px;font-weight:600}
+.desk nav.dknav a.on{background:var(--raised);color:var(--text)}
+.desk nav.dknav a.on svg{color:var(--ambar-text)}
+.dkside.mini nav.dknav a{width:48px;justify-content:center;padding:0}
+.dkme{margin-top:auto;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px;border-top:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkme b{display:block;font-size:14px}
+.dkavatar{width:36px;height:36px;border-radius:999px;background:var(--raised);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;flex-shrink:0}
+.dkmain{flex:1;min-width:0;overflow:hidden;padding:24px 32px}
+.dkhead{display:flex;align-items:center;gap:16px;max-width:1120px;margin:0 auto}
+.dkhart{display:flex;flex-shrink:0}
+.dksaludo{margin:0 0 2px;font-size:16px;font-weight:600}
+.dkh1{font-size:48px;line-height:1}
+.dkhprog{display:flex;align-items:center;gap:12px;margin-top:10px;max-width:520px}
+.dkhprog .segs{flex:1;margin:0}
+.dkhact{display:flex;align-items:center;gap:10px;align-self:flex-start;margin-top:6px}
+.dkchip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px;font-weight:600;white-space:nowrap}
+.dkbtn2{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:15px;font-weight:700;white-space:nowrap}
+.dkgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;max-width:1120px;margin:22px auto 0}
+.dkcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.dkrail{position:sticky;top:0;align-self:start}
+.dkcard{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none}
+.dkch{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.dkch h2,.dkmhead h2{font-size:22px}
+.dklink{display:inline-flex;align-items:center;min-height:32px;color:var(--ambar-text);font-weight:600;text-decoration:none;font-size:14px}
+.dkmhead{display:flex;align-items:baseline;justify-content:space-between}
+.dkgrp{display:grid;gap:8px}
+.dkgh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:4px 0 0}
+.dkahora{padding:1px 7px;border-radius:6px;background:var(--raised);color:var(--text);font-size:12px;font-weight:700}
+.dkgc{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600}
+.dkrow{display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 14px 8px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.dkrow:hover{background:var(--raised)}
+.dkrow.next{border:1.5px solid var(--coral-text)}
+.dkrbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:48px;padding:4px 6px;border:none;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.dkric{width:38px;height:38px;border-radius:11px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dkric.sm{width:30px;height:30px;border-radius:9px}
+.dkrow:hover .dkric{background:var(--surface)}
+.dkrow.done .dkric{color:var(--muted)}
+.dkrmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dkrname{font-size:15px;font-weight:700}
+.dkrow.done .dkrname{color:var(--muted)}
+.dkrmeta{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.dkok{color:var(--ambar-text);font-weight:700}
+.dkcnt{display:flex;gap:3px;max-width:160px;margin-top:3px}
+.dkcnt i{flex:1;height:6px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--muted)}
+.dkcnt i.on{background:var(--ambar);box-shadow:none}
+.dkreto{display:flex;align-items:center;gap:8px;margin-top:4px;max-width:260px}
+.dkreto i{flex:1;height:6px;border-radius:99px;background:var(--track-empty);overflow:hidden}
+.dkreto i b{display:block;height:100%;background:var(--ambar)}
+.dkreto span{font-size:12px;color:var(--muted);white-space:nowrap}
+.dkwk{display:flex;gap:4px;flex-shrink:0}
+.dkwk li{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted)}
+.dkwk li.ok{background:var(--ambar);color:var(--ink)}
+.dkwk li.gris{background:var(--raised)}
+.dkwk li.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkwk li.hoy{box-shadow:inset 0 0 0 1.5px var(--text);color:var(--text)}
+.dkwk li.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.7}
+.dkchk{width:34px;height:34px;border-radius:999px;border:2px solid var(--muted);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--ink);position:relative}
+.dkchk::after{content:"";position:absolute;inset:-5px}
+.dkchk.on{border:none;background:var(--logro,var(--ambar))}
+.dkplus1{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--muted);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.dkemp{min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;position:relative;flex-shrink:0}
+.dkemp::after{content:"";position:absolute;inset:-2px}
+.dkbar{display:block;height:8px;border-radius:99px;background:var(--track-empty);overflow:hidden;margin-top:8px}
+.dkbar b{display:block;height:100%;background:var(--ambar)}
+.dkbar.thin{height:5px;margin-top:6px}
+.dkweek{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.dkday{position:relative;min-height:52px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:12px;color:var(--muted)}
+.dkday b{font-family:'Barlow Condensed',sans-serif;font-size:17px;color:var(--text)}
+.dkday.ok{background:var(--ambar);color:var(--ink)}
+.dkday.ok b{color:var(--ink)}
+.dkday.medio{background:var(--raised)}
+.dkmid{position:absolute;left:6px;right:6px;bottom:5px;height:4px;border-radius:2px;background:var(--ambar-text)}
+.dkday.como{background:var(--comodin-bg);color:var(--comodin-text);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkday.como b{color:var(--comodin-text)}
+.dkday.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.dkday.fut{box-shadow:inset 0 0 0 1px var(--line-strong);opacity:.75}
+.dkleg{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--muted)}
+.dkleg li{display:flex;align-items:center;gap:6px}
+.dkleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dkleg i.ok{background:var(--ambar)}
+.dkleg i.medio{background:var(--raised);position:relative}
+.dkleg i.medio b{position:absolute;left:2px;right:2px;bottom:2px;height:2px;border-radius:1px;background:var(--ambar-text)}
+.dkleg i.como{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.dkretocard{display:flex;align-items:center;gap:12px;min-height:76px}
+.dkretocard b{font-size:15px}
+.dkline{display:flex;align-items:center;gap:12px;min-height:56px;color:var(--text);text-decoration:none;font-size:14px}
+.dkline + .dkline{border-top:1px solid var(--line)}
+.desk .segs{display:flex;gap:4px}
+.desk .segs i{flex:1;height:10px;border-radius:5px;background:var(--track-empty)}
+.desk .segs i.on{background:var(--ambar)}
+.light .desk .segs i.on{background:var(--ambar-text)}
+.desk .sigue{padding:1px 7px;border-radius:6px;background:var(--coral);color:var(--ink);font-size:12px;font-weight:700}
+.desk.auto{height:auto;min-height:900px;overflow:visible}
+.desk.w1024.auto{min-height:768px}
+.desk.auto .dkmain{overflow:visible}
+.dkrut{border-radius:16px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.dkruthead{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 14px 8px 14px}
+.dkruthead .dkrname{font-family:'Barlow Condensed',sans-serif;font-size:19px}
+.dkrow.inrut{border:none;border-top:1px solid var(--line);border-radius:0;background:transparent;padding-left:14px}
+.dkrow.inrut:hover{background:var(--raised)}
+.dkrail .th .thhead h2{font-size:22px}
+.desk .dkwk li,.desk .dkwk li.hoy,.desk .dkwk li.fut,.desk .dkwk li.gris{flex:1;width:auto;height:10px;border-radius:4px;font-size:0;box-shadow:none;border:none;opacity:1;background:var(--track-empty)}
+.desk .dkwk li span{display:none}
+.desk .dkwk li.ok{background:var(--ambar)}
+.light .desk .dkwk li.ok{background:var(--ambar-text)}
+.desk .dkwk li.como{background:var(--lila-text);box-shadow:none;border:none}
+.desk.w1024 .dkwk{width:112px}
+.dklvl{max-width:520px;margin-bottom:2px}
+.dklvl .lvlstrip{min-height:32px}
+.light .desk{--coral-text:#B8381C}
+.dkrow.done .dkrname{text-decoration:line-through;text-decoration-thickness:1.5px}
+.dkwk li.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+.dkday.fut{opacity:1;box-shadow:none;border:1px dashed var(--line-strong)}
+.desk .tdk-ayuda{margin:14px 0 8px}
+.dkcard.tscomo,.dkcard.tsres{margin:0}
+
+/* Pestañas Resumen | Calendario (mismo estilo que Apariencia en Perfil) */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;margin-top:14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.tabs button{min-height:44px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-size:15px;font-weight:700}
+.tabs button[aria-selected=true]{background:var(--raised);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--text)}
+.tabs button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+/* Qué hacer ahora */
+.qha{margin-top:22px}
+.qha .cardhead h2{margin:0;font-size:22px}
+.cjs{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.cj{display:flex;gap:12px;padding:14px 14px 8px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.cjic{width:36px;height:36px;border-radius:10px;background:var(--raised);color:var(--text);display:flex;align-items:center;justify-content:center;flex:none}
+.cj.pos .cjic{background:var(--ambar-tint);color:var(--ambar-text)}
+.cjm{flex:1;min-width:0}
+.cj .cjt,.cjok b{margin:0;display:block;font-size:15px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.cj p,.cjok p{margin:4px 0 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.cjact{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.cjbtn{border-color:var(--line-strong)}
+.cjno{min-height:44px;padding:0 10px;border:none;background:none;color:var(--muted);font-size:14px;font-weight:600}
+.cjmas{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin-top:10px;border:1px solid var(--line-strong);border-radius:12px;background:transparent;color:var(--text);font-size:14px;font-weight:700}
+.cjmas svg{color:var(--muted)}
+.cjok{display:flex;gap:12px;align-items:flex-start;margin-top:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.cjok .cjic{background:var(--ambar-tint);color:var(--ambar-text)}
+.cjs.dk{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.cjs.dk .cj{flex-direction:column;gap:10px;padding:18px 18px 10px}
+.cjs.dk .cjm{display:flex;flex-direction:column;flex:1}
+.cjs.dk .cjact{margin-top:auto;padding-top:12px}
+/* Calendario dentro de la pestaña */
+.calhd{display:flex;align-items:center;gap:8px}
+.fzcard{margin-top:22px}
+/* Escritorio */
+.pgd{flex:1;min-width:0;padding:32px 40px 48px}
+.pgin{max-width:1120px;margin:0 auto}
+.pgtop{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.pgtop .tabs{width:320px;margin-top:0}
+.pgg{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;margin-top:28px;align-items:start}
+.pgg2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:20px;align-items:start}
+.pgd .card{margin-top:0;padding:20px}
+.pgd .fzcard{margin-top:0}
+.pgd .qha{margin-top:26px}
+.pgcol{display:flex;flex-direction:column;gap:20px}
+.pgd .sec.card .cardhead h2,.pgd .card .cardhead h2{font-size:22px;margin:0}
+.pgd .dondeg{display:grid;grid-template-columns:1fr;gap:6px}
+.pgd .hrow:last-child{border-bottom:none}
+.pgd .hmain:hover .name{text-decoration:underline;text-underline-offset:3px}
+.pgd .anio{margin-top:20px}
+.pgd .fzcard .sub,.pgd .tip{max-width:68ch}
+.pgd .h3{margin:16px 0 10px}
+.pgd .h3.hm{margin-top:22px}
+.col{align-self:flex-start}
+.desk nav.dknav{position:static;height:auto;padding:0;border:none;background:none;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start}
+.desk nav.dknav a{width:auto}
+/* Tu año (solo escritorio) */
+.anioh{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.anioh h2{margin:0;font-size:22px}
+.yasel{position:relative;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font-size:14px;font-weight:700}
+.yasel svg{color:var(--muted);pointer-events:none}
+.yasel select{appearance:none;border:none;background:transparent;color:inherit;font:inherit;padding:0 26px 0 0;margin-right:-26px;min-height:44px;cursor:pointer}
+.yasel:focus-within{outline:2px solid var(--text);outline-offset:2px}
+.yasel select:focus{outline:none}
+.yawrap{margin-top:16px}
+.yameses{display:grid;grid-template-columns:22px repeat(53,minmax(0,1fr));column-gap:3px;height:18px;font-size:12px;font-weight:600;color:var(--muted)}
+.yameses span{white-space:nowrap;overflow:visible;width:0}
+.yabody{display:grid;grid-template-columns:22px repeat(53,minmax(0,1fr));gap:3px}
+.yacol,.yadias{display:flex;flex-direction:column;gap:3px}
+
+.yadias i{aspect-ratio:1;font-style:normal;font-size:12px;font-weight:600;display:flex;align-items:center;color:var(--muted)}
+.ya{display:block;width:100%;aspect-ratio:1;border-radius:3px}
+.ya.antes{border:1px solid var(--line)}
+.ya.fut{visibility:hidden}
+.ya.nada{background:var(--track-empty)}
+.ya.parte{background:linear-gradient(to top,var(--ambar) 50%,var(--track-empty) 50%)}
+.ya.todo{background:var(--ambar)}
+.ya.como{background:var(--comodin-bg);box-shadow:inset 0 0 0 1.5px var(--lila-text)}
+.ya.hoy{box-shadow:inset 0 0 0 1.5px var(--text)}
+.light .ya.parte{background:linear-gradient(to top,var(--ambar-text) 50%,var(--track-empty) 50%)}
+.light .ya.todo{background:var(--ambar-text)}
+.yapie{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;flex-wrap:wrap}
+.yaleg{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.yaleg span{display:inline-flex;align-items:center;gap:6px}
+.yaleg .ya{width:12px}
+/* Calendario grande (escritorio) */
+.calgrande{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;margin-top:28px;align-items:start}
+.calgrande .grid7{gap:8px}
+.calgrande .dow{gap:8px}
+.calgrande .d{height:72px;border-radius:12px;font-size:17px;align-items:flex-start;justify-content:flex-start;padding:10px 12px}
+.calgrande .d .bar{left:10px;right:10px;bottom:10px;height:5px}
+.calgrande .d.fut,.calgrande .d.ghost{padding:10px 12px}
+.calgrande .card{margin-top:0}
+.calgrande .calhd h2{font-size:32px!important}
+.desk .phone-note{display:none}
+.toastp{position:absolute;left:16px;right:16px;bottom:96px;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:4}
+.toastp span{flex:1}
+.toastp button{min-height:44px;padding:0 14px;border:none;border-radius:10px;background:transparent;color:var(--bg);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+
+
+.dark .panel{--danger:#F87171}
+.light .panel{--danger:#C62828}
+.panel{display:flex;flex-direction:column;width:1440px;min-height:900px;background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,sans-serif;border-radius:16px;overflow:hidden;outline:1px solid #22262C;box-shadow:0 20px 50px rgba(0,0,0,.5);position:relative;text-align:left}
+.panel.w1280{width:1280px}
+.panel :focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.panel .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.panel .ptop{display:flex;align-items:center;gap:12px;height:64px;padding:0 28px;border-bottom:1px solid var(--line);background:var(--surface)}
+.panel .plogo{width:30px;height:30px;border-radius:9px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center}
+.panel .ptop h1{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:22px}
+.panel .ptop .yo{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted)}
+.panel .pbtn2{min-height:44px;padding:10px 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.panel .pbtnp{min-height:44px;padding:10px 18px;border:none;border-radius:12px;background:var(--ambar);color:var(--ink);font:inherit;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.panel .pbtnq{min-height:44px;padding:10px;border:none;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:600}
+.panel .pbloq{min-height:44px;padding:10px 16px;border-radius:12px;border:1.5px solid var(--danger);background:transparent;color:var(--danger);font:inherit;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.panel .pbloq.lleno{background:var(--danger);color:var(--ink);border:none}
+.light .panel .pbloq.lleno{color:#fff}
+.panel .pmain{flex:1;display:flex;flex-direction:column;gap:18px;padding:24px 28px 28px;max-width:1360px;width:100%;margin:0 auto}
+/* Cuadre */
+.panel .cuadre{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 28px;align-items:center;padding:18px 20px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.panel .cuadre h2{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:22px}
+.panel .cuadre .desde{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.panel .cuadre .num{display:flex;gap:28px;margin:12px 0 0}
+.panel .cuadre .num dt{font-size:12px;font-weight:700;color:var(--muted)}
+.panel .cuadre .num dd{margin:2px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;font-variant-numeric:tabular-nums}
+.panel .cuadre .fuera{margin:8px 0 0;font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px}
+.panel .cform{display:flex;align-items:flex-end;gap:10px}
+.panel .cform label{display:block;margin:0 0 6px;font-size:13px;font-weight:700;color:var(--muted);max-width:300px}
+.panel .cform .ay{margin:6px 0 0;font-size:12px;color:var(--muted);max-width:300px}
+.panel .cin{width:220px;min-height:48px;padding:10px 14px;border-radius:12px;border:1px solid var(--muted);background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;display:flex;align-items:center}
+.panel .cin.vacio{color:var(--muted)}
+.panel .cres{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;font-size:15px;line-height:1.4}
+.panel .cres.bien{background:var(--ambar-tint)}
+.panel .cres.bien>svg{color:var(--ambar-text);flex:none}
+.panel .cres.mal{background:var(--raised);border-left:3px solid var(--text);border-radius:0 12px 12px 0}
+.panel .cres.mal>svg{flex:none}
+.panel .cres .cacc{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none;text-align:right}
+.panel .cres .cacc small{font-size:12px;color:var(--muted);max-width:260px}
+.panel .cant{grid-column:1/-1;margin:0;font-size:13px;color:var(--muted)}
+.panel .cant a{display:inline-flex;align-items:center;min-height:44px;color:var(--text);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+/* Lista */
+.panel .pcuerpo{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:20px;align-items:start}
+.panel .plista{border-radius:18px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.panel .pfil{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.panel .ptabs{display:flex;gap:4px;padding:3px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+.panel .ptabs button{min-height:44px;padding:10px 12px;border:none;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.panel .ptabs button[aria-pressed=true]{background:var(--raised);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--text)}
+.panel .ptabs .n{font-family:'Barlow Condensed',sans-serif;font-size:16px}
+.panel .pbus{margin-left:auto;display:flex;align-items:center;gap:8px;min-height:44px;width:300px;padding:10px 12px;border-radius:12px;border:1px solid var(--muted);background:var(--bg);color:var(--muted);font-size:14px}
+.panel table{width:100%;border-collapse:collapse;font-size:14px}
+.panel th{padding:10px 16px;text-align:left;font-size:12px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line)}
+.panel td{padding:0 16px;height:60px;border-bottom:1px solid var(--line);vertical-align:middle}
+.panel tr:last-child td{border-bottom:none}
+.panel tbody tr{position:relative}
+.panel td .co::after{content:"";position:absolute;inset:0;cursor:pointer}
+.panel tbody tr:hover{background:var(--raised)}
+.panel tbody tr.sel{background:var(--raised);box-shadow:inset 3px 0 0 var(--text)}
+.panel td .co{display:block;font-weight:700;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:none;background:none;padding:0;color:inherit;font:inherit;font-weight:700;text-align:left}
+.panel td .su{display:block;margin-top:2px;font-size:12px;color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel td.val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.panel .difm{display:inline-flex;align-items:center;gap:4px}
+.panel .difm svg{flex:none}
+.panel .pchip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.panel .pchip.cr{box-shadow:inset 0 0 0 1.5px var(--text);color:var(--text)}
+.panel .pchip.cp{box-shadow:inset 0 0 0 1px var(--line-strong);color:var(--muted)}
+.panel .pchip.cv{background:var(--ambar-tint);color:var(--ambar-text)}
+.light .panel .pchip.cv{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ambar-text)}
+.panel .pchip.cb{box-shadow:inset 0 0 0 1.5px var(--danger);color:var(--danger)}
+.panel .pvaciol{padding:40px 20px;text-align:center;color:var(--muted);font-size:15px}
+/* Detalle: fijo al desplazar, con los botones arriba */
+.panel .pdet{position:sticky;top:16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);padding:18px}
+.panel .pdet .dh{display:flex;align-items:flex-start;gap:10px}
+.panel .pdet .dh h2{margin:0;font-size:17px;font-weight:700;overflow-wrap:anywhere}
+.panel .pdet .dh p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+.panel .dacc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.panel .dacc .solo{grid-column:1/-1}
+.panel .dayuda{margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.45}
+.panel .dotro{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;padding:2px 0 2px 12px;border-left:3px solid var(--text);font-size:14px;line-height:1.4}
+.panel .foto{position:relative;margin-top:14px;height:230px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.panel .recibo{width:180px;padding:16px 16px 18px;border-radius:12px;background:#F4F5F7;color:#1B1E22;font-size:11px;line-height:1.5;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.panel .recibo .rt{font-weight:800;font-size:12px}
+.panel .recibo .rv{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;margin:6px 0}
+.panel .recibo .rl{display:block;height:6px;border-radius:9px;background:#D7DBE0;margin-top:6px}
+.panel .foto .vg{position:absolute;right:10px;bottom:10px;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.panel .foto.nada{flex-direction:column;gap:6px;color:var(--muted);font-size:13px;text-align:center;padding:0 30px}
+.panel .fall{margin:14px 0 0;padding:2px 0 2px 12px;border-left:3px solid var(--text)}
+.panel .fall h3,.panel .ia h3,.panel .dnota h3{margin:0 0 6px;font-size:12px;font-weight:700;color:var(--muted)}
+.panel .fall h3{color:var(--text)}
+.panel .fall ul{margin:0;padding-left:18px;font-size:14px;line-height:1.45}
+.panel .ia{margin:14px 0 0}
+.panel .ia dl{margin:0;display:grid;grid-template-columns:130px 1fr;gap:6px 12px;font-size:14px}
+.panel .ia dt{color:var(--muted)}
+.panel .ia dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.panel .dtel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:14px}
+.panel .dtel a{min-height:44px;display:inline-flex;align-items:center;gap:6px;color:var(--text);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.panel .dnota{margin:12px 0 0}
+.panel .dnota .ta{min-height:56px;padding:10px 12px;border-radius:12px;border:1px solid var(--muted);background:var(--bg);color:var(--muted);font-size:14px}
+/* Ventanas y aviso */
+.panel .velo{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:5}
+.light .panel .velo{background:rgba(15,17,19,.35)}
+.panel .vent{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:460px;padding:22px;border-radius:20px;background:var(--surface);border:1px solid var(--line);z-index:6}
+.panel .vent h2{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:26px;padding-right:44px}
+.panel .vent p.s{margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--muted)}
+.panel .vent label,.panel .vent .lab{display:block;margin:16px 0 6px;font-size:13px;font-weight:700;color:var(--muted)}
+.panel .vent .in{min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid var(--muted);background:var(--bg);display:flex;align-items:center;font-size:15px}
+.panel .vent .in.ph{color:var(--muted)}
+.panel .vent .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+.panel .vent .seg button{min-height:44px;padding:10px;border:none;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700}
+.panel .vent .seg button[aria-checked=true]{background:var(--raised);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--text)}
+.panel .vent .nota{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.panel .vent .pie{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.panel .vent .x{position:absolute;right:14px;top:14px;width:44px;height:44px;border-radius:999px;border:none;background:var(--raised);color:var(--muted);display:flex;align-items:center;justify-content:center}
+.panel .pvacio{padding:60px 20px;text-align:center}
+.panel .pvacio h2{margin:12px 0 0;font-family:'Barlow Condensed',sans-serif;font-size:26px}
+.panel .pvacio p{margin:6px auto 0;max-width:380px;font-size:15px;color:var(--muted);line-height:1.45}
+.panel .pvi{width:56px;height:56px;border-radius:999px;margin:0 auto;background:var(--raised);display:flex;align-items:center;justify-content:center;color:var(--text)}
+.panel .toastp{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:6px 6px 6px 16px;border-radius:14px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:4}
+.panel .toastp button{min-height:44px;padding:10px 12px;border:none;background:transparent;color:var(--bg);font:inherit;font-weight:800;text-decoration:underline}
+.col{align-self:flex-start}
+.phone.onb .ctiti.pausa{background:var(--raised);color:var(--text)}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:none;background:transparent;color:var(--text);font-size:15px;font-weight:600}
+.link.sm{min-height:auto;font-size:13px;font-weight:700;color:var(--ambar-text);padding:0}
+.link.quiet{color:var(--muted);font-weight:500}
+.link.center{width:100%;justify-content:center}
+.btnp{margin-top:18px;min-height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--ambar);color:var(--ink);font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btnp.full{width:100%}
+.obtop{display:flex;align-items:center;gap:10px;padding:10px 16px 4px}
+.obback{width:44px;height:44px;margin-left:-8px;border:none;border-radius:12px;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obprog{flex:1;display:flex;gap:4px}
+.obprog i{flex:1;height:4px;border-radius:999px;background:var(--track-empty)}
+.obprog i.on{background:var(--text)}
+.obbody{padding:14px 20px 24px}
+.obwelcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;padding-top:40px}
+.obhero{display:flex;justify-content:center}
+.obtitle{margin:18px 0 0;font-size:40px;line-height:1.02}
+.oblead{margin:12px 0 0;font-size:17px;line-height:1.4;color:var(--text)}
+.obcap{margin-top:14px}
+.obh{margin:6px 0 0;font-size:32px;line-height:1.05}
+.obsub{margin-top:6px;font-size:15px;line-height:1.4}
+.obfoot{padding:12px 20px 22px;display:grid;gap:4px;border-top:1px solid var(--line);background:var(--bg)}
+.obfoot .btnp.off{opacity:1;background:var(--raised);background-image:none;color:var(--muted)}
+.obhab{margin-top:18px;display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:15px;font-weight:700}
+.obhab .hopti{width:32px;height:32px;color:var(--text)}
+.obprize{margin-top:18px;padding:14px 16px}
+.obplist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.obplist li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.obpn{min-width:44px;font-size:20px;color:var(--ambar-text)}
+.obpi{width:44px;display:flex;justify-content:center;color:var(--ambar-text)}
+.obidea{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:18px}
+.obidea li{display:flex;gap:14px;align-items:flex-start}
+.obidea b{display:block;font-size:17px;line-height:1.25}
+.obidea .sub{display:block;margin-top:4px;font-size:14px;line-height:1.45}
+.obic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface);border:1px solid var(--line)}
+.obic.shield{color:var(--comodin-text);background:var(--comodin-bg);border-color:transparent}
+.obic.gift{color:var(--ambar-text);background:var(--ambar-tint);border-color:transparent}
+.obtip{margin-top:14px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--ambar-tint);color:var(--text);font-size:14px;line-height:1.4}
+.obtip svg{color:var(--ambar-text);flex-shrink:0;margin-top:1px}
+.ctit{display:flex;align-items:center;gap:10px}
+.ctiti{display:flex;color:var(--text)}
+.ctiti.ok{color:var(--comodin-text)}
+.ctiti.warn{color:var(--coral-text)}
+.btnp.danger{background:var(--coral);background-image:none;color:var(--ink)}
+.onb .input.bad,.otp.bad .otpd{border-color:var(--coral-text)}
+.clist{margin:18px 0 0;padding:0 0 0 18px;display:grid;gap:8px;font-size:15px;line-height:1.45;color:var(--text)}
+
+</style>
+</head>
+<body>
+<div class="col"><h2>1 · Panel: “Algo no cuadra” primero; los botones siempre arriba (oscuro)</h2><div class="dark"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin vacio" id="cin">$0</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="true">Algo no cuadra <span class="n">3</span></button><button aria-pressed="false">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="false">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <table><caption class="sr">Compras de la pestaña Algo no cuadra</caption><thead><tr><th>Correo y nombre</th><th>Valor</th><th>Fecha del pago</th><th>Estado</th></tr></thead><tbody>
+    <tr class="sel"><td><button class="co" aria-current="true">ana.gomez@gmail.com</button><span class="su">Ana Gómez · Pagó $30.000, no $37.900</span></td><td class="val"><span class="difm">$30.000<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="sr">(no cuadra)</span></span></td><td>hoy, 10:14 a. m.</td><td><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></td></tr><tr class=""><td><button class="co">carlos.rios@hotmail.com</button><span class="su">Carlos Ríos · El comprobante es del dom 21 sep (hace 8 días)</span></td><td class="val">$37.900</td><td>dom 21 sep, 6:02 p. m.</td><td><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></td></tr><tr class=""><td><button class="co">luisa.m@gmail.com</button><span class="su">Sin nombre · La IA no pudo leer la foto</span></td><td class="val">—</td><td>—</td><td><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></td></tr>
+    </tbody></table></section><section class="pdet" aria-labelledby="dt">
+    <div class="dh"><div style="flex:1;min-width:0"><h2 id="dt">ana.gomez@gmail.com</h2><p>Ana Gómez · mandó el comprobante hoy, 10:20 a. m.</p></div><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></div>
+    <div class="dacc"><button class="pbtnp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sí pagó</button><button class="pbloq"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloquear</button></div><p class="dayuda">Ana ya puede usar Racha. Si la plata te llegó, toca “Sí pagó”. Si no, “Bloquear” le quita la entrada; su progreso se guarda y lo puedes deshacer.</p>
+    
+    <div class="fall" role="note"><h3>Lo que no cuadra</h3><ul><li>Pagó $30.000, no $37.900</li></ul></div>
+    <div class="foto"><div class="recibo" aria-hidden="true"><span class="rt">Comprobante de transferencia</span><div class="rv">$30.000</div><span>Para JOHNATAN H*** H***</span><span class="rl" style="width:80%"></span><span class="rl" style="width:60%"></span><span class="rl" style="width:70%"></span></div><button class="vg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>Ver grande</button></div>
+    <div class="ia"><h3>Lo que leyó la IA</h3><dl>
+      <dt>Valor</dt><dd><span class="difm">$30.000<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="sr">(no cuadra)</span></span></dd>
+      <dt>Fecha del pago</dt><dd>hoy, 10:14 a. m.</dd>
+      <dt>Referencia</dt><dd>M8841207</dd>
+      <dt>Le llegó a</dt><dd>JOHNATAN H*** H***</dd>
+      <dt>Pagó</dt><dd>Ana Gómez</dd>
+      <dt>Banco</dt><dd>Nequi</dd></dl></div>
+    <div class="dtel"><span>300 555 0142</span><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribirle por WhatsApp</a></div>
+    <div class="dnota"><h3><label for="nt">Nota (solo la ves tú)</label></h3><div class="ta" id="nt">Por ejemplo, “me escribió que pagó desde la cuenta de la mamá”</div></div>
+  </section></div></main></div></div></div>
+<div class="col"><h2>2 · Cuadraste y faltan $37.900: el panel te dice dónde mirar (claro)</h2><div class="light"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin" id="cin">$113.700</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    <div class="cres mal" role="status"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span>Te llegaron <b>$37.900 menos</b> de lo que dicen los comprobantes (justo 1 compra). Abre tu banco y compara nombre, hora y referencia con la lista.</span><span class="cacc"><button class="pbtn2">Guardar con la diferencia</button><small>Se anota que faltaron $37.900. Ninguna compra queda como pagada.</small></span></div>
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="false">Algo no cuadra <span class="n">3</span></button><button aria-pressed="true">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="false">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <table><caption class="sr">Compras de la pestaña Se ven bien</caption><thead><tr><th>Correo y nombre</th><th>Valor</th><th>Fecha del pago</th><th>Estado</th></tr></thead><tbody>
+    <tr class="sel"><td><button class="co" aria-current="true">julian.perez@gmail.com</button><span class="su">Julián Pérez</span></td><td class="val">$37.900</td><td>hoy, 9:40 a. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">dayana.castro@yahoo.com</button><span class="su">Dayana Castro</span></td><td class="val">$37.900</td><td>hoy, 8:12 a. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">felipe.ospina@gmail.com</button><span class="su">Felipe Ospina</span></td><td class="val">$37.900</td><td>ayer, 9:55 p. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">marcela.v@outlook.com</button><span class="su">Marcela Vélez</span></td><td class="val">$37.900</td><td>ayer, 7:31 p. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr>
+    </tbody></table></section><section class="pdet" aria-labelledby="dt">
+    <div class="dh"><div style="flex:1;min-width:0"><h2 id="dt">julian.perez@gmail.com</h2><p>Julián Pérez · mandó el comprobante hoy, 9:42 a. m.</p></div><span class="pchip cp">Se ve bien</span></div>
+    <div class="dacc"><button class="pbtnp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sí pagó</button><button class="pbloq"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloquear</button></div><p class="dayuda">Julián ya puede usar Racha. Si la plata te llegó, toca “Sí pagó”. Si no, “Bloquear” le quita la entrada; su progreso se guarda y lo puedes deshacer.</p>
+    
+    
+    <div class="foto"><div class="recibo" aria-hidden="true"><span class="rt">Comprobante de transferencia</span><div class="rv">$37.900</div><span>Para JOHNATAN H*** H***</span><span class="rl" style="width:80%"></span><span class="rl" style="width:60%"></span><span class="rl" style="width:70%"></span></div><button class="vg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>Ver grande</button></div>
+    <div class="ia"><h3>Lo que leyó la IA</h3><dl>
+      <dt>Valor</dt><dd>$37.900</dd>
+      <dt>Fecha del pago</dt><dd>hoy, 9:40 a. m.</dd>
+      <dt>Referencia</dt><dd>M8839951</dd>
+      <dt>Le llegó a</dt><dd>JOHNATAN H*** H***</dd>
+      <dt>Pagó</dt><dd>Julián Pérez</dd>
+      <dt>Banco</dt><dd>Nequi</dd></dl></div>
+    <div class="dtel"><span>301 555 0177</span><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribirle por WhatsApp</a></div>
+    <div class="dnota"><h3><label for="nt">Nota (solo la ves tú)</label></h3><div class="ta" id="nt">Por ejemplo, “me escribió que pagó desde la cuenta de la mamá”</div></div>
+  </section></div></main></div></div></div>
+<div class="col"><h2>3 · Cuadra; y marcaste a Julián “Sí pagó”: pasa sola a la siguiente, con Deshacer (oscuro)</h2><div class="dark"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin" id="cin">$151.600</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    <div class="cres bien" role="status"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><b>Cuadra.</b> Te llegaron $151.600 de 4 compras.</span><span class="cacc"><button class="pbtnp">Guardar y marcar las 4 como pagadas</button></span></div>
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="false">Algo no cuadra <span class="n">3</span></button><button aria-pressed="true">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="false">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <table><caption class="sr">Compras de la pestaña Se ven bien</caption><thead><tr><th>Correo y nombre</th><th>Valor</th><th>Fecha del pago</th><th>Estado</th></tr></thead><tbody>
+    <tr class="sel"><td><button class="co" aria-current="true">dayana.castro@yahoo.com</button><span class="su">Dayana Castro</span></td><td class="val">$37.900</td><td>hoy, 8:12 a. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">felipe.ospina@gmail.com</button><span class="su">Felipe Ospina</span></td><td class="val">$37.900</td><td>ayer, 9:55 p. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">marcela.v@outlook.com</button><span class="su">Marcela Vélez</span></td><td class="val">$37.900</td><td>ayer, 7:31 p. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr>
+    </tbody></table></section><section class="pdet" aria-labelledby="dt">
+    <div class="dh"><div style="flex:1;min-width:0"><h2 id="dt">dayana.castro@yahoo.com</h2><p>Dayana Castro · mandó el comprobante hoy, 8:15 a. m.</p></div><span class="pchip cp">Se ve bien</span></div>
+    <div class="dacc"><button class="pbtnp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sí pagó</button><button class="pbloq"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloquear</button></div><p class="dayuda">Dayana ya puede usar Racha. Si la plata te llegó, toca “Sí pagó”. Si no, “Bloquear” le quita la entrada; su progreso se guarda y lo puedes deshacer.</p>
+    
+    
+    <div class="foto"><div class="recibo" aria-hidden="true"><span class="rt">Comprobante de transferencia</span><div class="rv">$37.900</div><span>Para JOHNATAN H*** H***</span><span class="rl" style="width:80%"></span><span class="rl" style="width:60%"></span><span class="rl" style="width:70%"></span></div><button class="vg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>Ver grande</button></div>
+    <div class="ia"><h3>Lo que leyó la IA</h3><dl>
+      <dt>Valor</dt><dd>$37.900</dd>
+      <dt>Fecha del pago</dt><dd>hoy, 8:12 a. m.</dd>
+      <dt>Referencia</dt><dd>5510328</dd>
+      <dt>Le llegó a</dt><dd>JOHNATAN H*** H***</dd>
+      <dt>Pagó</dt><dd>Dayana Castro</dd>
+      <dt>Banco</dt><dd>Daviplata</dd></dl></div>
+    <div class="dtel"><span>320 555 0124</span><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribirle por WhatsApp</a></div>
+    <div class="dnota"><h3><label for="nt">Nota (solo la ves tú)</label></h3><div class="ta" id="nt">Por ejemplo, “me escribió que pagó desde la cuenta de la mamá”</div></div>
+  </section></div></main><div class="toastp" role="status"><span>Marcaste a Julián Pérez como pagado.</span><button>Deshacer</button></div></div></div></div>
+<div class="col"><h2>4 · “Agregar comprador”: dice cómo pagó; efectivo y regalo no entran al cuadre (claro)</h2><div class="light"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin vacio" id="cin">$0</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="false">Algo no cuadra <span class="n">3</span></button><button aria-pressed="true">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="false">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <table><caption class="sr">Compras de la pestaña Se ven bien</caption><thead><tr><th>Correo y nombre</th><th>Valor</th><th>Fecha del pago</th><th>Estado</th></tr></thead><tbody>
+    <tr class=""><td><button class="co">julian.perez@gmail.com</button><span class="su">Julián Pérez</span></td><td class="val">$37.900</td><td>hoy, 9:40 a. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">dayana.castro@yahoo.com</button><span class="su">Dayana Castro</span></td><td class="val">$37.900</td><td>hoy, 8:12 a. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">felipe.ospina@gmail.com</button><span class="su">Felipe Ospina</span></td><td class="val">$37.900</td><td>ayer, 9:55 p. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr><tr class=""><td><button class="co">marcela.v@outlook.com</button><span class="su">Marcela Vélez</span></td><td class="val">$37.900</td><td>ayer, 7:31 p. m.</td><td><span class="pchip cp">Se ve bien</span></td></tr>
+    </tbody></table></section><section class="pdet" aria-labelledby="dt">
+    <div class="dh"><div style="flex:1;min-width:0"><h2 id="dt">dayana.castro@yahoo.com</h2><p>Dayana Castro · mandó el comprobante hoy, 8:15 a. m.</p></div><span class="pchip cp">Se ve bien</span></div>
+    <div class="dacc"><button class="pbtnp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sí pagó</button><button class="pbloq"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloquear</button></div><p class="dayuda">Dayana ya puede usar Racha. Si la plata te llegó, toca “Sí pagó”. Si no, “Bloquear” le quita la entrada; su progreso se guarda y lo puedes deshacer.</p>
+    
+    
+    <div class="foto"><div class="recibo" aria-hidden="true"><span class="rt">Comprobante de transferencia</span><div class="rv">$37.900</div><span>Para JOHNATAN H*** H***</span><span class="rl" style="width:80%"></span><span class="rl" style="width:60%"></span><span class="rl" style="width:70%"></span></div><button class="vg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>Ver grande</button></div>
+    <div class="ia"><h3>Lo que leyó la IA</h3><dl>
+      <dt>Valor</dt><dd>$37.900</dd>
+      <dt>Fecha del pago</dt><dd>hoy, 8:12 a. m.</dd>
+      <dt>Referencia</dt><dd>5510328</dd>
+      <dt>Le llegó a</dt><dd>JOHNATAN H*** H***</dd>
+      <dt>Pagó</dt><dd>Dayana Castro</dd>
+      <dt>Banco</dt><dd>Daviplata</dd></dl></div>
+    <div class="dtel"><span>320 555 0124</span><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribirle por WhatsApp</a></div>
+    <div class="dnota"><h3><label for="nt">Nota (solo la ves tú)</label></h3><div class="ta" id="nt">Por ejemplo, “me escribió que pagó desde la cuenta de la mamá”</div></div>
+  </section></div></main><div class="velo" aria-hidden="true"></div><div class="vent" role="dialog" aria-modal="true" aria-labelledby="ag" aria-describedby="agd">
+    <button class="x" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+    <h2 id="ag">Agregar comprador</h2><p class="s" id="agd">Queda con acceso y como pagado. Dile que entre a tengoracha.com con este correo.</p>
+    <label for="ag1">Correo</label><div class="in ph" id="ag1">correo@ejemplo.com</div>
+    <span class="lab" id="agc">¿Cómo pagó?</span><div class="seg" role="radiogroup" aria-labelledby="agc"><button role="radio" aria-checked="true">Transferencia</button><button role="radio" aria-checked="false" tabindex="-1">Efectivo</button><button role="radio" aria-checked="false" tabindex="-1">Regalo</button></div>
+    <p class="nota">Efectivo y regalo no entran al cuadre de la caja.</p>
+    <label for="ag2">Valor</label><div class="in" id="ag2" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700">$37.900</div>
+    <label for="ag3">Nota (opcional)</label><div class="in ph" id="ag3">Por ejemplo, amiga del trabajo</div>
+    <div class="pie"><button class="pbtnq">Cancelar</button><button class="pbtnp">Agregar</button></div></div></div></div></div>
+<div class="col"><h2>5 · “Bloquear” pregunta antes; sus datos no se borran (oscuro)</h2><div class="dark"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin vacio" id="cin">$0</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="true">Algo no cuadra <span class="n">3</span></button><button aria-pressed="false">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="false">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <table><caption class="sr">Compras de la pestaña Algo no cuadra</caption><thead><tr><th>Correo y nombre</th><th>Valor</th><th>Fecha del pago</th><th>Estado</th></tr></thead><tbody>
+    <tr class="sel"><td><button class="co" aria-current="true">ana.gomez@gmail.com</button><span class="su">Ana Gómez · Pagó $30.000, no $37.900</span></td><td class="val"><span class="difm">$30.000<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="sr">(no cuadra)</span></span></td><td>hoy, 10:14 a. m.</td><td><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></td></tr><tr class=""><td><button class="co">carlos.rios@hotmail.com</button><span class="su">Carlos Ríos · El comprobante es del dom 21 sep (hace 8 días)</span></td><td class="val">$37.900</td><td>dom 21 sep, 6:02 p. m.</td><td><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></td></tr><tr class=""><td><button class="co">luisa.m@gmail.com</button><span class="su">Sin nombre · La IA no pudo leer la foto</span></td><td class="val">—</td><td>—</td><td><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></td></tr>
+    </tbody></table></section><section class="pdet" aria-labelledby="dt">
+    <div class="dh"><div style="flex:1;min-width:0"><h2 id="dt">ana.gomez@gmail.com</h2><p>Ana Gómez · mandó el comprobante hoy, 10:20 a. m.</p></div><span class="pchip cr"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Algo no cuadra</span></div>
+    <div class="dacc"><button class="pbtnp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sí pagó</button><button class="pbloq"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloquear</button></div><p class="dayuda">Ana ya puede usar Racha. Si la plata te llegó, toca “Sí pagó”. Si no, “Bloquear” le quita la entrada; su progreso se guarda y lo puedes deshacer.</p>
+    
+    <div class="fall" role="note"><h3>Lo que no cuadra</h3><ul><li>Pagó $30.000, no $37.900</li></ul></div>
+    <div class="foto"><div class="recibo" aria-hidden="true"><span class="rt">Comprobante de transferencia</span><div class="rv">$30.000</div><span>Para JOHNATAN H*** H***</span><span class="rl" style="width:80%"></span><span class="rl" style="width:60%"></span><span class="rl" style="width:70%"></span></div><button class="vg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>Ver grande</button></div>
+    <div class="ia"><h3>Lo que leyó la IA</h3><dl>
+      <dt>Valor</dt><dd><span class="difm">$30.000<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="sr">(no cuadra)</span></span></dd>
+      <dt>Fecha del pago</dt><dd>hoy, 10:14 a. m.</dd>
+      <dt>Referencia</dt><dd>M8841207</dd>
+      <dt>Le llegó a</dt><dd>JOHNATAN H*** H***</dd>
+      <dt>Pagó</dt><dd>Ana Gómez</dd>
+      <dt>Banco</dt><dd>Nequi</dd></dl></div>
+    <div class="dtel"><span>300 555 0142</span><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribirle por WhatsApp</a></div>
+    <div class="dnota"><h3><label for="nt">Nota (solo la ves tú)</label></h3><div class="ta" id="nt">Por ejemplo, “me escribió que pagó desde la cuenta de la mamá”</div></div>
+  </section></div></main><div class="velo" aria-hidden="true"></div><div class="vent" role="alertdialog" aria-modal="true" aria-labelledby="bq" aria-describedby="bqd">
+    <h2 id="bq">¿Bloquear a ana.gomez@gmail.com?</h2><p class="s" id="bqd">Ya no podrá entrar a Racha y verá “No pudimos confirmar tu pago”. Sus datos no se borran y lo puedes deshacer con “Desbloquear”.</p>
+    <div class="pie"><button class="pbtnq">Cancelar</button><button class="pbloq lleno"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloquear</button></div></div></div></div></div>
+<div class="col"><h2>6 · Bloqueados: la bloqueada mandó otro comprobante (claro)</h2><div class="light"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin vacio" id="cin">$0</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="false">Algo no cuadra <span class="n">3</span></button><button aria-pressed="false">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="true">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <table><caption class="sr">Compras de la pestaña Bloqueados</caption><thead><tr><th>Correo y nombre</th><th>Valor</th><th>Fecha del pago</th><th>Estado</th></tr></thead><tbody>
+    <tr class="sel"><td><button class="co" aria-current="true">ana.gomez@gmail.com</button><span class="su">Ana Gómez</span></td><td class="val"><span class="difm">$30.000<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="sr">(no cuadra)</span></span></td><td>hoy, 10:14 a. m.</td><td><span class="pchip cb"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloqueado</span></td></tr>
+    </tbody></table></section><section class="pdet" aria-labelledby="dt">
+    <div class="dh"><div style="flex:1;min-width:0"><h2 id="dt">ana.gomez@gmail.com</h2><p>Ana Gómez · mandó el comprobante otra vez hoy, 4:05 p. m.</p></div><span class="pchip cb"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Bloqueado</span></div>
+    <div class="dacc"><button class="pbtnp solo">Desbloquear</button></div><p class="dayuda">Vuelve a entrar con sus datos de siempre y queda como pagado.</p>
+    <div class="dotro" role="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span><b>Mandó otro comprobante</b> después del bloqueo. Míralo y, si la plata te llegó, toca “Desbloquear”.</span></div>
+    
+    <div class="foto"><div class="recibo" aria-hidden="true"><span class="rt">Comprobante de transferencia</span><div class="rv">$30.000</div><span>Para JOHNATAN H*** H***</span><span class="rl" style="width:80%"></span><span class="rl" style="width:60%"></span><span class="rl" style="width:70%"></span></div><button class="vg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>Ver grande</button></div>
+    <div class="ia"><h3>Lo que leyó la IA</h3><dl>
+      <dt>Valor</dt><dd><span class="difm">$30.000<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="sr">(no cuadra)</span></span></dd>
+      <dt>Fecha del pago</dt><dd>hoy, 10:14 a. m.</dd>
+      <dt>Referencia</dt><dd>M8841207</dd>
+      <dt>Le llegó a</dt><dd>JOHNATAN H*** H***</dd>
+      <dt>Pagó</dt><dd>Ana Gómez</dd>
+      <dt>Banco</dt><dd>Nequi</dd></dl></div>
+    <div class="dtel"><span>300 555 0142</span><a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribirle por WhatsApp</a></div>
+    <div class="dnota"><h3><label for="nt">Nota (solo la ves tú)</label></h3><div class="ta" id="nt">Por ejemplo, “me escribió que pagó desde la cuenta de la mamá”</div></div>
+  </section></div></main></div></div></div>
+<div class="col"><h2>7 · Una pestaña vacía y la búsqueda sin resultados (oscuro)</h2><div class="dark"><div class="panel"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq">
+    <div><h2 id="cq">Cuadra tu caja</h2><p class="desde">Desde tu último cuadre: sábado 26 de septiembre, 8:40 p. m.</p>
+      <dl class="num"><div><dt>Compras que se ven bien</dt><dd>4</dd></div><div><dt>Deberían haber llegado</dt><dd>$151.600</dd></div></dl>
+      <p class="fuera"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Las 3 de “Algo no cuadra” no entran hasta que las decidas.</p></div>
+    <div class="cform"><div><label for="cin">¿Cuánto te llegó por Racha desde el sáb 26 sep, 8:40 p. m.?</label><div class="cin vacio" id="cin">$0</div><p class="ay">Súmalo en tu app del banco. Cuenta solo las transferencias de Racha.</p></div><button class="pbtnp" style="margin-bottom:22px">Cuadrar</button></div>
+    
+    <p class="cant">Tu último cuadre cuadró ($492.700, 13 compras). <a href="#">Ver cuadres anteriores</a></p>
+  </section><div class="pcuerpo"><section class="plista" aria-labelledby="lt">
+    <h2 id="lt" class="sr">Compras</h2>
+    <div class="pfil"><div class="ptabs" role="group" aria-label="Filtrar por estado"><button aria-pressed="true">Algo no cuadra <span class="n">3</span></button><button aria-pressed="false">Se ven bien <span class="n">4</span></button><button aria-pressed="false">Pagaron <span class="n">41</span></button><button aria-pressed="false">Bloqueados <span class="n">1</span></button><button aria-pressed="false">Todas <span class="n">49</span></button></div>
+      <div class="pbus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Buscar por correo, nombre, teléfono o referencia</div></div>
+    <div class="pvaciol">Nada por revisar. Las compras que no cuadren aparecen aquí.</div></section><section class="plista"><div class="pvaciol">No hay compras con “carlos.r”. Revisa cómo está escrito, o busca por teléfono o referencia.</div></section></div></main></div></div></div>
+<div class="col"><h2>8 · Sin compras todavía (claro)</h2><div class="light"><div class="panel w1280"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1>
+  <div class="yo"><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Agregar comprador</button><span>johnatan@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="cuadre" aria-labelledby="cq8"><div><h2 id="cq8">Cuadra tu caja</h2><p class="desde">Todavía no has cuadrado.</p><dl class="num"><div><dt>Compras que se ven bien</dt><dd>0</dd></div><div><dt>Deberían haber llegado</dt><dd>$0</dd></div></dl></div></section>
+  <section class="plista"><div class="pvacio"><span class="pvi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><h2>Aún no hay compras</h2><p>Cuando alguien pague por WhatsApp, aparece aquí con la foto de su comprobante.</p></div></section></main></div></div></div>
+<div class="col"><h2>9 · Alguien que no es el dueño abre /panel (oscuro)</h2><div class="dark"><div class="panel w1280"><header class="ptop"><span class="plogo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3 0 1.66 1.34 3 2.5 2.5z"/></svg></span><h1>Panel de pagos</h1><div class="yo"><span>otra.persona@gmail.com</span><button class="pbtn2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>Salir</button></div></header><main class="pmain"><section class="plista"><div class="pvacio"><span class="pvi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><h2>Esta página es solo para el dueño de Racha</h2><p>Entraste como otra.persona@gmail.com.</p><p style="margin-top:14px"><button class="pbtn2">Volver a Racha</button></p></div></section></main></div></div></div>
+<div class="col"><h2>10 · Celular: quien quedó bloqueado, al abrir Racha (oscuro)</h2><div class="dark"><div class="phone onb"><div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti pausa" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 15V9"/><path d="M14 15V9"/></svg></span>No pudimos confirmar tu pago</h1>
+      <p class="sub obsub">No encontramos el pago de tu cuenta <b style="color:var(--text)">ana.gomez@gmail.com</b>, así que está en pausa.</p>
+      <ul class="clist" role="list">
+        <li>Si ya pagaste, escríbenos por WhatsApp con la foto del comprobante y lo arreglamos.</li>
+        <li>Tus hábitos y tu progreso siguen guardados. Cuando se confirme, entras como siempre.</li>
+      </ul></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribir por WhatsApp</button>
+      <button class="link quiet center">Probar con otro correo</button></div></div></div></div>
+<div class="col"><h2>11 · Celular: quien quedó bloqueado (claro)</h2><div class="light"><div class="phone onb"><div class="scroll"><div class="obbody" style="padding-top:34px">
+      <h1 class="cond obh ctit"><span class="ctiti pausa" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 15V9"/><path d="M14 15V9"/></svg></span>No pudimos confirmar tu pago</h1>
+      <p class="sub obsub">No encontramos el pago de tu cuenta <b style="color:var(--text)">ana.gomez@gmail.com</b>, así que está en pausa.</p>
+      <ul class="clist" role="list">
+        <li>Si ya pagaste, escríbenos por WhatsApp con la foto del comprobante y lo arreglamos.</li>
+        <li>Tus hábitos y tu progreso siguen guardados. Cuando se confirme, entras como siempre.</li>
+      </ul></div></div>
+    <div class="obfoot"><button class="btnp full" style="margin:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>Escribir por WhatsApp</button>
+      <button class="link quiet center">Probar con otro correo</button></div></div></div></div>
+</body>
+</html>

@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, supabaseListo } from '../lib/supabase';
 
-export type CuentaEstado = 'cargando' | 'fuera' | 'sinCompra' | 'dentro';
+/** bloqueado: el dueño no pudo confirmar su pago (panel de pagos); sus datos siguen en la nube. */
+export type CuentaEstado = 'cargando' | 'fuera' | 'sinCompra' | 'bloqueado' | 'dentro';
 
 interface CuentaContextType {
   estado: CuentaEstado;
@@ -14,15 +15,17 @@ interface CuentaContextType {
 const CuentaContext = createContext<CuentaContextType | undefined>(undefined);
 const COMPRA_OK = 'racha_compra_ok';
 
-// Revisa si el correo compró. 'si' | 'no' | 'sinRed' (no se pudo preguntar)
-const revisarCompra = async (email: string): Promise<'si' | 'no' | 'sinRed'> => {
+// Revisa si el correo compró. 'si' | 'no' | 'bloqueado' | 'sinRed' (no se pudo preguntar)
+// Solo se pueden leer email, activo y estado_pago de la PROPIA fila (supabase/schema-6-panel.sql).
+const revisarCompra = async (email: string): Promise<'si' | 'no' | 'bloqueado' | 'sinRed'> => {
   try {
     const { data, error } = await supabase
       .from('compradores')
-      .select('activo')
+      .select('activo, estado_pago')
       .eq('email', email.toLowerCase())
       .maybeSingle();
     if (error) return 'sinRed';
+    if (data?.estado_pago === 'bloqueado') return 'bloqueado';
     return data?.activo ? 'si' : 'no';
   } catch {
     return 'sinRed';
@@ -38,9 +41,9 @@ export const CuentaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     if (r === 'si') {
       try { localStorage.setItem(COMPRA_OK, email.toLowerCase()); } catch {}
       setEstado('dentro');
-    } else if (r === 'no') {
+    } else if (r === 'no' || r === 'bloqueado') {
       try { localStorage.removeItem(COMPRA_OK); } catch {}
-      setEstado('sinCompra');
+      setEstado(r === 'bloqueado' ? 'bloqueado' : 'sinCompra');
     } else {
       // Sin conexión: vale el último resultado bueno de este correo
       let ok = '';

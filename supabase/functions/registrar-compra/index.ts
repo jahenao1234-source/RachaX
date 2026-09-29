@@ -110,7 +110,11 @@ Deno.serve(async (req) => {
     return responder({ ok: true });
   }
 
-  const { data: previo } = await supa.from('compradores').select('activo, estado_pago').eq('email', correo).maybeSingle();
+  const { data: previo } = await supa
+    .from('compradores')
+    .select('activo, estado_pago, telefono, nombre_pagador, comprobante_path, comprobantes_anteriores')
+    .eq('email', correo)
+    .maybeSingle();
   if (previo?.activo && previo.estado_pago === 'verificado') {
     return responder({ ok: true, estado: 'ya_comprador', necesita_nombre: false });
   }
@@ -128,7 +132,8 @@ Deno.serve(async (req) => {
         if (bytes.length < 8_000_000) {
           const ext = mime.includes('png') ? 'png' : mime.includes('pdf') ? 'pdf' : 'jpg';
           ruta = `${diasValidos()[0]}/${correo.replace(/[^a-z0-9]/g, '_')}-${Date.now()}.${ext}`;
-          await supa.storage.from('comprobantes').upload(ruta, bytes, { contentType: mime });
+          const { error: errFoto } = await supa.storage.from('comprobantes').upload(ruta, bytes, { contentType: mime });
+          if (errFoto) ruta = null;
           // 2) Que la IA lo lea
           lectura = await leerComprobante(encodeBase64(bytes), mime);
         }
@@ -137,31 +142,48 @@ Deno.serve(async (req) => {
   }
 
   // 3) Anotarlo como comprador: entra de una; el dueño confirma o bloquea después
-  const fallas = revisarLectura(lectura);
-  const pagador = String(d.nombre_pagador || lectura?.pagador || '').trim() || null;
+  // Lo que no cuadra va en "fallas"; "notas" es solo del dueño y nunca se toca aquí (schema-6-panel.sql).
+  const fallas = !ruta ? [url.startsWith('https://') ? 'No se pudo guardar la foto' : 'No mandó foto'] : revisarLectura(lectura);
+  // El mismo comprobante mandado con otro correo
+  if (lectura?.referencia) {
+    const { data: otro } = await supa.from('compradores').select('email').eq('referencia', lectura.referencia).neq('email', correo).limit(1).maybeSingle();
+    if (otro?.email) fallas.push(`Esta referencia ya está en ${otro.email}`);
+  }
+  const bloqueado = previo?.estado_pago === 'bloqueado';
+  const pagador = String(d.nombre_pagador || lectura?.pagador || '').trim() || previo?.nombre_pagador || null;
   const fechaPago = lectura?.fecha ? `${lectura.fecha}T${lectura.hora || '00:00'}:00-05:00` : null;
-  const fila = {
-    email: correo,
-    activo: previo?.estado_pago === 'bloqueado' ? false : true,
-    estado_pago: previo?.estado_pago === 'bloqueado' ? 'bloqueado' : (fallas.length ? 'revisar' : 'por_verificar'),
-    origen: 'whatsapp',
-    telefono: String(d.telefono || '').slice(0, 30) || null,
+  const ahora = new Date().toISOString();
+  const cambios = {
+    activo: !bloqueado,
+    estado_pago: bloqueado ? 'bloqueado' : (fallas.length ? 'revisar' : 'por_verificar'),
+    telefono: String(d.telefono || '').slice(0, 30) || previo?.telefono || null,
     nombre_pagador: pagador,
     valor: lectura?.valor ?? null,
     referencia: lectura?.referencia ?? null,
     fecha_pago: fechaPago,
     comprobante_path: ruta,
     lectura_ia: lectura,
-    notas: fallas.length ? fallas.join(' · ') : null,
-    actualizado_en: new Date().toISOString(),
+    fallas: fallas.length ? fallas.join(' · ') : null,
+    actualizado_en: ahora,
   };
-  const { error } = await supa.from('compradores').upsert(fila, { onConflict: 'email' });
+  let error;
+  if (previo) {
+    // Otro comprobante del mismo correo: el anterior se guarda en la lista (no se pierde). La fecha de llegada no cambia.
+    const anteriores = [...(previo.comprobantes_anteriores || []), ...(previo.comprobante_path ? [previo.comprobante_path] : [])].slice(-10);
+    ({ error } = await supa.from('compradores').update({
+      ...cambios,
+      comprobantes_anteriores: anteriores,
+      ...(bloqueado ? { otro_comprobante_en: ahora } : {}),
+    }).eq('email', correo));
+  } else {
+    ({ error } = await supa.from('compradores').insert({ email: correo, origen: 'whatsapp', forma_pago: 'transferencia', registrado_en: ahora, ...cambios }));
+  }
   if (error) return responder({ ok: false, error: 'guardar' }, 500);
 
   return responder({
     ok: true,
-    estado: fila.estado_pago,
+    estado: cambios.estado_pago,
     necesita_nombre: !pagador,
-    bloqueado: fila.estado_pago === 'bloqueado',
+    bloqueado,
   });
 });
