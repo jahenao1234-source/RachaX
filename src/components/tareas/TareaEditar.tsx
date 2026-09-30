@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { GripVertical, Plus, Trash2, MoreHorizontal, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { GripVertical, Plus, Trash2, MoreHorizontal, MessageCircle, X, ArrowUp, ArrowDown, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
 import { nuevoIdPaso, agregarPaso, editarTextoPaso as editarTextoPasoPuro, borrarPaso, buscarPaso } from '../../utils/tareasUtils';
-import { useArrastrePasos } from './arrastrePasos';
+import { useArrastrePasos, movimientosPaso, destinoConTeclado } from './arrastrePasos';
 import { HojaOpcionesPaso } from './HojaOpcionesPaso';
 import { HojaPegarLista } from './HojaPegarLista';
 import { HojaPlanIA } from './HojaPlanIA';
@@ -30,7 +31,7 @@ export const TareaEditar: React.FC<{
   onListo: (idNueva?: string) => void;
   onBorrar?: (t: Tarea) => void;
 }> = ({ tarea, onListo, onBorrar }) => {
-  const { crearTarea, editarTarea, editarTextoPaso, agregarPasoTarea, borrarPasoTarea } = useHabitStore();
+  const { crearTarea, editarTarea, editarTextoPaso, agregarPasoTarea, borrarPasoTarea, moverPasoTarea } = useHabitStore();
   const esNueva = !tarea;
   const [nombre, setNombre] = useState(tarea ? tarea.nombre : '');
   const [icono, setIcono] = useState(tarea ? tarea.icono : 'ListChecks');
@@ -44,6 +45,41 @@ export const TareaEditar: React.FC<{
   const [textoNuevo, setTextoNuevo] = useState('');
   const [dentroDe, setDentroDe] = useState<string | null>(null);
   const [textoDentro, setTextoDentro] = useState('');
+  const [moviendo, setMoviendo] = useState<string | null>(null);
+  const [anuncio, setAnuncio] = useState('');
+
+  useEffect(() => {
+    if (!desk && moviendo) {
+      document.body.classList.add('sin-barra');
+      return () => document.body.classList.remove('sin-barra');
+    }
+  }, [desk, moviendo]);
+
+  useEffect(() => {
+    if (moviendo) {
+      const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setMoviendo(null); };
+      document.addEventListener('keydown', esc);
+      return () => document.removeEventListener('keydown', esc);
+    }
+  }, [moviendo]);
+
+  useEffect(() => {
+    if (moviendo && tarea) {
+      if (!buscarPaso(tarea.subtareas, moviendo)) {
+        setMoviendo(null);
+      } else {
+        document.querySelector(`[data-paso-li="${moviendo}"]`)?.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [moviendo, tarea?.subtareas]);
+
+  const moverDir = (dir: 'arriba' | 'abajo' | 'dentro' | 'fuera') => {
+    if (!tarea || !moviendo) return;
+    const d = destinoConTeclado(tarea.subtareas, moviendo, dir);
+    if (d && moverPasoTarea(tarea.id, moviendo, { padreId: d.padreId, indice: d.indice })) {
+      setAnuncio(d.mensaje);
+    }
+  };
 
   const guardarCabecera = (nuevoIcono = icono) => {
     if (!tarea) return;
@@ -56,16 +92,24 @@ export const TareaEditar: React.FC<{
 
   const renderPaso = (s: Subtarea): React.ReactNode => {
     const arrastrando = arrastre?.id === s.id;
+    const isMov = moviendo === s.id;
     const d = destinoEn(s.id);
     return (
-      <li key={s.id} data-paso-li={s.id} className={`tpaso${arrastrando ? ' drag' : ''}`}
+      <li key={s.id} data-paso-li={s.id} className={`tpaso${arrastrando ? ' drag' : ''}${!desk && isMov ? ' movil' : ''}`}
         style={estilo(s.id)}>
         {d === 'antes' && <div className="tlinea" aria-hidden="true" />}
         <div className="tfila" data-paso-row={s.id}>
-          <span className="tasam" aria-hidden="true" onContextMenu={(e) => e.preventDefault()}
-            {...asa(s.id)}>
-            <GripVertical size={18} />
-          </span>
+          {desk ? (
+            <span className="tasam" aria-hidden="true" onContextMenu={(e) => e.preventDefault()}
+              {...asa(s.id)}>
+              <GripVertical size={18} />
+            </span>
+          ) : (
+            <button type="button" className="tasam" aria-label={`Mover ${s.texto}`} aria-pressed={isMov}
+              {...asa(s.id)} onClick={() => setMoviendo((m) => (m === s.id ? null : s.id))}>
+              <GripVertical size={18} />
+            </button>
+          )}
           <textarea className="tedit" rows={1} defaultValue={s.texto} aria-label="Texto del paso"
             ref={autoAlto} onInput={(e) => autoAlto(e.currentTarget)}
             onBlur={(e) => { if (tarea && e.target.value.trim() !== s.texto) editarTextoPaso(tarea.id, s.id, e.target.value); }} />
@@ -171,7 +215,7 @@ export const TareaEditar: React.FC<{
   };
 
   return (
-    <section className="card tcard open tediting" aria-label={esNueva ? 'Nueva tarea' : `Editar ${tarea?.nombre}`}>
+    <section className={`card tcard open tediting${!desk && moviendo ? ' moviendo' : ''}`} aria-label={esNueva ? 'Nueva tarea' : `Editar ${tarea?.nombre}`}>
       <div className="teh">
         <button type="button" className="tico btn" aria-label="Cambiar el ícono" aria-expanded={verIconos} onClick={() => setVerIconos((v) => !v)}>
           <HabitIcon name={icono} size={19} />
@@ -200,7 +244,7 @@ export const TareaEditar: React.FC<{
 
       {tarea && (
         <>
-          <p className="tpista">Con + le agregas pasos más pequeños a un paso. Mantén presionado ⋮⋮ para arrastrarlo; hacia la derecha lo metes dentro del de arriba.</p>
+          <p className="tpista">Toca ⋮⋮ para mover un paso con los botones, o mantenlo y arrástralo. Con + le agregas un paso más pequeño adentro.</p>
           <ul className="tarbol">{tarea.subtareas.map(renderPaso)}</ul>
         </>
       )}
@@ -280,6 +324,37 @@ export const TareaEditar: React.FC<{
           onCancelar={() => setPegado(null)}
         />
       )}
+      
+      {!desk && moviendo && tarea && createPortal(
+        <div className="tareas">
+          {(() => {
+            const paso = buscarPaso(tarea.subtareas, moviendo);
+            if (!paso) return null;
+            const m = movimientosPaso(tarea.subtareas, moviendo);
+            return (
+              <div className="tmueve" role="toolbar" aria-label={`Mover ${paso.texto}`}>
+                <div className="tmueve-h">
+                  <span>
+                    <span className="tmueve-t">Mover <b>{paso.texto}</b></span>
+                    {m.padre && <span className="tmueve-s">Está dentro de “{m.padre}”</span>}
+                  </span>
+                  <button type="button" className="tmueve-x" aria-label="Dejar de mover" onClick={() => setMoviendo(null)}>
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="tmueve-b">
+                  <button type="button" aria-disabled={!m.arriba} onClick={() => m.arriba && moverDir('arriba')}><ArrowUp size={22} /><span>Subir</span></button>
+                  <button type="button" aria-disabled={!m.abajo} onClick={() => m.abajo && moverDir('abajo')}><ArrowDown size={22} /><span>Bajar</span></button>
+                  <button type="button" aria-disabled={!m.dentro} onClick={() => m.dentro && moverDir('dentro')}><ArrowRight size={22} /><span>Meter dentro</span></button>
+                  <button type="button" aria-disabled={!m.fuera} onClick={() => m.fuera && moverDir('fuera')}><ArrowLeft size={22} /><span>Sacar</span></button>
+                </div>
+              </div>
+            );
+          })()}
+        </div>,
+        document.body
+      )}
+      <div className="sr-only" aria-live="polite">{anuncio}</div>
     </section>
   );
 };

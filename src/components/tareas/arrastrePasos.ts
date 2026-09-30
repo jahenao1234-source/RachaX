@@ -198,6 +198,8 @@ export function useArrastrePasos(tarea: Tarea | null, alEmpezar?: () => void) {
     const i = inicio.current;
     const a = actual.current;
     cancelar();
+    // El clic que sigue a un arrastre llega enseguida (mouse); con el dedo no llega ninguno, y no hay que tragarse el siguiente
+    if (huboArrastre.current) window.setTimeout(() => { huboArrastre.current = false; }, 0);
     if (!i?.activo || !a?.destino || !tarea) return;
     const mapa = ubicar(tarea.subtareas);
     if (a.destino.pos === 'dentro') {

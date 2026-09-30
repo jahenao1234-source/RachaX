@@ -4,7 +4,7 @@ import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
 import { obtenerHojasSubtareas } from '../../utils/habitUtils';
-import { siguientePaso, GrupoTarea } from '../../utils/tareasUtils';
+import { siguientePaso, agruparTareas, lineaTarea, moverTareaEnGrupo, colocarTareaEnGrupo, GrupoTarea } from '../../utils/tareasUtils';
 import { Barra, Casilla, ChipDia, Terminadas } from './piezas';
 import { TAREA_ICONOS, TareaEditar } from './TareaEditar';
 import { DirTeclado, destinoConTeclado, useArrastrePasos } from './arrastrePasos';
@@ -40,7 +40,7 @@ export const TareasEscritorio: React.FC<{
   terminadas: Tarea[];
   resumen: string;
 }> = ({ ctl, abiertas, terminadas, resumen }) => {
-  const { isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor, reabrirTarea } = useHabitStore();
+  const { tareas, reordenarTareas, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor, reabrirTarea } = useHabitStore();
   const [elegidaId, setElegidaId] = useState<string | null>(() => {
     const conHoy = abiertas.find((t) => obtenerHojasSubtareas(t.subtareas).some((h) => !h.hecha && h.fecha === ctl.hoy));
     return (conHoy || abiertas[0])?.id ?? null;
@@ -50,6 +50,64 @@ export const TareasEscritorio: React.FC<{
   const elegida = creando ? null : abiertas.find((t) => t.id === elegidaId) ?? abiertas[0] ?? null;
 
   const elegir = (id: string) => { if (creando) closeTareaEditor(); setElegidaId(id); };
+
+  // Arrastrar una tarea de la lista dentro de su grupo, con el mouse (DESIGN.md › Tareas 2 › Escritorio, cambiar de lugar).
+  // destino = el lugar que tendría dentro del grupo (el índice que usa colocarTareaEnGrupo).
+  const [arrastreDk, setArrastreDk] = useState<{ id: string; dy: number; destino: number } | null>(null);
+  const arrastreRef = useRef<{ id: string; y0: number; x0: number; activo: boolean; grupoIds: string[]; ul: HTMLElement | null; destino: number } | null>(null);
+  const [anuncioDk, setAnuncioDk] = useState('');
+  const huboArrastreDk = useRef(false);
+
+  const alBajar = (e: React.PointerEvent, t: Tarea, grupoIds: string[]) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    arrastreRef.current = {
+      id: t.id, y0: e.clientY, x0: e.clientX, activo: false, grupoIds,
+      ul: (e.currentTarget as HTMLElement).closest('ul'), destino: grupoIds.indexOf(t.id),
+    };
+    huboArrastreDk.current = false;
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { }
+  };
+
+  const alMover = (e: React.PointerEvent) => {
+    const a = arrastreRef.current;
+    if (!a) return;
+    if (!a.activo) {
+      if (Math.abs(e.clientY - a.y0) > 4 || Math.abs(e.clientX - a.x0) > 4) {
+        a.activo = true; huboArrastreDk.current = true;
+      } else return;
+    }
+    // Cae antes de la primera tarea del grupo cuyo centro quede debajo del mouse (sin contar la que se arrastra).
+    // Fuera del grupo queda de primera o de última: nunca cambia de grupo.
+    const otras = a.ul ? Array.from(a.ul.querySelectorAll<HTMLElement>(':scope > li[data-tid]')).filter((li) => li.dataset.tid !== a.id) : [];
+    let destino = otras.findIndex((li) => { const r = li.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
+    if (destino < 0) destino = otras.length;
+    a.destino = destino;
+    setArrastreDk({ id: a.id, dy: e.clientY - a.y0, destino });
+  };
+
+  const alSoltar = () => {
+    const a = arrastreRef.current;
+    arrastreRef.current = null;
+    setArrastreDk(null);
+    if (!a || !a.activo) return;
+    const res = colocarTareaEnGrupo(tareas.map(x => x.id), a.grupoIds, a.id, a.destino);
+    if (res) reordenarTareas(res);
+  };
+
+  const onTeclaFilas = (e: React.KeyboardEvent, t: Tarea, grupoTitulo: string, grupoIds: string[]) => {
+    if (!e.altKey) return;
+    let dir: 'arriba' | 'abajo' | null = null;
+    if (e.key === 'ArrowUp') dir = 'arriba';
+    if (e.key === 'ArrowDown') dir = 'abajo';
+    if (!dir) return;
+    e.preventDefault();
+    const res = moverTareaEnGrupo(tareas.map(x => x.id), grupoIds, t.id, dir);
+    if (res) {
+      reordenarTareas(res);
+      const newIndex = res.filter(id => grupoIds.includes(id)).indexOf(t.id);
+      setAnuncioDk(`${t.nombre}, ${newIndex + 1} de ${grupoIds.length} en ${grupoTitulo}`);
+    }
+  };
 
   if (abiertas.length === 0 && terminadas.length === 0 && !creando) {
     return (
@@ -72,24 +130,61 @@ export const TareasEscritorio: React.FC<{
         </div>
         {resumen && <p className="sub" style={{ margin: '6px 0 14px' }}>{resumen}</p>}
         {!resumen && <div style={{ height: 14 }} />}
-        <ul className="tlist">
-          {abiertas.map((t) => {
-            const on = elegida?.id === t.id;
-            const sig = siguientePaso(t);
+        {(() => {
+          const grupos = agruparTareas(abiertas, ctl.hoy, ctl.fijos);
+          return grupos.map((g) => {
+            const grupoIds = g.tareas.map(x => x.id);
+            const unico = grupos.length === 1;
             return (
-              <li key={t.id}>
-                <button type="button" className={`tli${on ? ' on' : ''}`} aria-current={on ? 'true' : undefined} title={t.nombre} onClick={() => elegir(t.id)}>
-                  <span className="tico" aria-hidden="true"><HabitIcon name={t.icono} size={18} /></span>
-                  <span className="tmain">
-                    <span className="tname2">{t.nombre}</span>
-                    {sig && <span className="tsub">Sigue: {sig.texto}</span>}
-                    <Barra tarea={t} className="sm" corta />
-                  </span>
-                </button>
-              </li>
+              <section key={g.grupo} className="tgrupo" aria-label={g.titulo}>
+                {!unico && <h2 className="tsec">{g.titulo} <span className="num">{g.tareas.length}</span></h2>}
+                <ul className="tlist">
+                  {(() => {
+                    // La línea de 2px marca dónde caería la que se arrastra (no sale si cae en el mismo lugar)
+                    const enEste = arrastreDk && grupoIds.includes(arrastreDk.id) ? arrastreDk : null;
+                    const otras = enEste ? grupoIds.filter((x) => x !== enEste.id) : [];
+                    const k = enEste ? Math.min(enEste.destino, otras.length) : -1;
+                    const conLinea = enEste && k !== grupoIds.indexOf(enEste.id) ? (k < otras.length ? otras[k] : 'fin') : null;
+                    const linea = (key: string) => <li key={key} className="tdk-mov" aria-hidden="true"><div className="tlinea" /></li>;
+                    const elements: React.ReactNode[] = [];
+                    g.tareas.forEach((t) => {
+                      if (conLinea === t.id) elements.push(linea('linea'));
+                      const on = elegida?.id === t.id;
+                      const l = lineaTarea(t, ctl.hoy);
+                      const isDrag = arrastreDk?.id === t.id;
+                      elements.push(
+                        <li key={t.id} data-tid={t.id} className={isDrag ? 'tdk-mov' : undefined} style={isDrag ? { transform: `translateY(${arrastreDk.dy}px)`, zIndex: 5 } : undefined}>
+                          <span className="tasa-dk" aria-hidden="true"><GripVertical size={16} /></span>
+                          <button type="button" className={`tli${on ? ' on' : ''}${isDrag ? ' drag' : ''}`} aria-current={on ? 'true' : undefined} title={t.nombre}
+                            onClickCapture={(e) => {
+                              // El clic que llega al soltar después de arrastrar no elige la tarea
+                              if (huboArrastreDk.current) { e.preventDefault(); e.stopPropagation(); huboArrastreDk.current = false; }
+                            }}
+                            onClick={() => { ctl.fijar(t.id); elegir(t.id); }}
+                            onPointerDown={(e) => alBajar(e, t, grupoIds)}
+                            onPointerMove={alMover}
+                            onPointerUp={alSoltar}
+                            onPointerCancel={alSoltar}
+                            onKeyDown={(e) => onTeclaFilas(e, t, g.titulo, grupoIds)}>
+                            <span className="tico" aria-hidden="true"><HabitIcon name={t.icono} size={18} /></span>
+                            <span className="tmain">
+                              <span className="tname2">{t.nombre}</span>
+                              {l.paso && <span className="tsub">{l.dia ? <><b className="tcuando">{l.dia}</b> · {l.paso.texto}</> : `Sigue: ${l.paso.texto}`}</span>}
+                              <Barra tarea={t} className="sm" corta />
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    });
+                    if (conLinea === 'fin') elements.push(linea('linea'));
+                    return elements;
+                  })()}
+                </ul>
+              </section>
             );
-          })}
-        </ul>
+          });
+        })()}
+        <div className="sr-only" aria-live="polite">{anuncioDk}</div>
         <Terminadas terminadas={terminadas} abierto={verTerminadas} onAlternar={() => setVerTerminadas((v) => !v)}
           onReabrir={(t) => { reabrirTarea(t.id); elegir(t.id); }} onBorrar={ctl.borrar} />
       </section>
@@ -255,7 +350,7 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
                 {opcionesPaso === s.id && (
                   <div className="tpop" role="menu" aria-label={`Opciones de ${s.texto}`}>
                     <button type="button" role="menuitem" onClick={() => { setOpcionesPaso(null); setPlegadoManual((m) => ({ ...m, [s.id]: false })); setDentroDe(s.id); setTextoDentro(''); }}>
-                      <Split size={16} />Dividir en pasos más pequeños
+                      {esPadre ? <><Plus size={16} />Agregar un paso adentro</> : <><Split size={16} />Dividir en pasos más pequeños</>}
                     </button>
                     {!esPadre && (
                       <button type="button" role="menuitem" onClick={() => { setOpcionesPaso(null); ctl.abrirHoja(t.id, s.id); }}>
@@ -278,8 +373,8 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
         {esPadre && !plegado && (
           <ul className="tarbol tsubl">
             {hijos.map(renderPaso)}
-            <li className="tpaso">
-              {dentroDe === s.id ? (
+            {dentroDe === s.id && (
+              <li className="tpaso">
                 <div className="tfila tnuevo" style={{ paddingLeft: '8px' }}>
                   <span className="tchk" aria-hidden="true" />
                   <input className="tinput tinput-on" autoFocus placeholder="Escribe un paso más pequeño" aria-label={`Nuevo paso dentro de ${s.texto}`}
@@ -291,12 +386,8 @@ const DetalleTarea: React.FC<{ tarea: Tarea; ctl: ControlTareas }> = ({ tarea: t
                     onBlur={() => { guardarDentro(s); setDentroDe(null); }} />
                   <span className="tenter" aria-hidden="true">Enter para guardar</span>
                 </div>
-              ) : (
-                <button type="button" className="t3add" onClick={() => { setDentroDe(s.id); setTextoDentro(''); }}>
-                  <Plus size={15} />Agregar dentro de “{s.texto}”
-                </button>
-              )}
-            </li>
+              </li>
+            )}
           </ul>
         )}
         {!esPadre && dentroDe === s.id && (
