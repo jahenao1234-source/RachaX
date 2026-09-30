@@ -167,7 +167,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center bg-black/60 sm:bg-transparent pointer-events-auto">
-      <div className="w-full max-w-[430px] h-full bg-bg relative flex flex-col shadow-2xl overflow-hidden sm:rounded-[36px] sm:h-[850px] sm:max-h-[920px] sm:my-auto sm:border sm:border-line">
+      <div className="w-full max-w-[430px] h-full bg-bg relative flex flex-col shadow-2xl overflow-hidden sm:rounded-[36px] sm:h-[min(850px,calc(100dvh-32px))] sm:my-auto sm:border sm:border-line">
         
         {/* Header Fijo */}
         <header className={`absolute top-0 inset-x-0 z-20 h-14 flex items-center px-4 transition-colors ${scrolled ? 'bg-bg/90 backdrop-blur border-b border-line' : 'bg-transparent'}`}>

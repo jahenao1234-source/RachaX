@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { BadgeIcon } from '../badges/BadgeIcon';
-import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target, Info, Focus, Gift, Clock, Repeat } from 'lucide-react';
+import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target, Info, Focus, Gift, Clock, Repeat, Feather } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { HabitIcon } from '../common/HabitIcon';
@@ -36,6 +36,7 @@ import {
 } from '../../utils/compromisosUtils';
 import { CompromisoProximo } from '../../utils/compromisosUtils';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
+import { ariaChip, entradaDificil, pendientesParaDificil, ayerSinMarcar } from '../../utils/dificilUtils';
 
 const SubtareaTreeNode: React.FC<{
   sub: Subtarea;
@@ -679,6 +680,19 @@ export const TodayScreen: React.FC = () => {
   const [compromisoEditando, setCompromisoEditando] = useState<any>(undefined);
   const [fechaOcurrencia, setFechaOcurrencia] = useState<string | undefined>(undefined);
 
+  const [avisoDificil, setAvisoDificil] = useState<{ contenido: string; accion: string; alHacer: () => void } | null>(null);
+  const timerAvisoDificil = useRef<number | null>(null);
+  useEffect(() => () => { if (timerAvisoDificil.current) window.clearTimeout(timerAvisoDificil.current); }, []);
+
+  const { activarDiaDificil, quitarDiaDificil, esDificilHoy, abrirComodines, abrirDificil } = useHabitStore();
+
+  const onQuitarDificil = () => {
+    quitarDiaDificil();
+    setAvisoDificil({ contenido: 'Quitaste el día difícil.', accion: 'Deshacer', alHacer: () => activarDiaDificil({}) });
+    if (timerAvisoDificil.current) window.clearTimeout(timerAvisoDificil.current);
+    timerAvisoDificil.current = window.setTimeout(() => setAvisoDificil(null), 6000);
+  };
+
   // Mock variable for cajas
   const cajasPorAbrir = 0;
 
@@ -939,9 +953,14 @@ export const TodayScreen: React.FC = () => {
           </a>
         </div>
         <div className="flex gap-3 shrink-0">
-          <div className="h-[40px] px-3.5 rounded-full bg-surface border border-line flex items-center gap-1.5 text-[14px] font-semibold">
-            <ShieldCheck size={16} className="text-lila-text" /> {comodines === 1 ? '1 comodín' : `${comodines ?? 0} comodines`}
-          </div>
+          <button type="button" className="ddchip" aria-label={ariaChip(comodines)} onClick={abrirComodines}>
+            <ShieldCheck size={16} />{comodines}<span className="dcw">{comodines === 1 ? 'comodín' : 'comodines'}</span><ChevronRight size={14} />
+          </button>
+          {entradaDificil({ activo: esDificilHoy, pendientes: pendientesParaDificil(habitosActivos, registros, hoy).length, hechos: completadosHoy(), total: habitosDeHoy.length, hora: new Date().getHours() }) !== 'nada' && (
+            <button type="button" className={`ddbtn${esDificilHoy ? ' on' : ''}`} title="Día difícil" aria-haspopup="dialog" aria-label={esDificilHoy ? 'Día difícil, activo' : 'Día difícil'} onClick={abrirDificil}>
+              <Feather size={16} /><span className="dcw">Día difícil</span>
+            </button>
+          )}
           <button
             type="button"
             onClick={() => openFocusMode({ tipo: 'dia' })}
@@ -951,6 +970,15 @@ export const TodayScreen: React.FC = () => {
           </button>
         </div>
       </div>
+      {esDificilHoy && (
+        <div style={{ marginTop: 14 }}>
+          <div className="ddon" style={{ maxWidth: 640 }}>
+            <Feather size={16} />
+            <span><b>Día difícil.</b> Hoy basta con lo mínimo: cada hábito en su versión mínima cuenta como cumplido.</span>
+            <button type="button" aria-label="Quitar el día difícil" onClick={onQuitarDificil}>Quitar</button>
+          </div>
+        </div>
+      )}
       {esDiaRegreso && (
         <p className="bono mt-3 inline-flex self-start">
           <ShieldCheck size={16} strokeWidth={2.2} />
@@ -1076,7 +1104,7 @@ export const TodayScreen: React.FC = () => {
 
       <div className="cabtop">
         <p className="saludo">{saludo}</p>
-        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-line text-text text-[13px] font-semibold shrink-0 whitespace-nowrap"><ShieldCheck size={14} className="text-[var(--lila)]" />{comodines === 1 ? '1 comodín' : `${comodines ?? 0} comodines`}</span>
+        <button type="button" className="ddchip" aria-label={ariaChip(comodines)} onClick={abrirComodines}><ShieldCheck size={14}/>{comodines}<span className="dcw">{comodines === 1 ? 'comodín' : 'comodines'}</span><ChevronRight size={14}/></button>
       </div>
 
       <div className="cabcomp">
@@ -1156,6 +1184,18 @@ export const TodayScreen: React.FC = () => {
               <span className="text-[13px] font-bold text-ambar-text">¡Día completo!</span>
             ) : null}
           </div>
+          {ayerSinMarcar(habitosActivos, registros, diasCongelados, hoy) && comodines !== undefined && comodines > 0 && (
+            <button type="button" className="ddlink" onClick={abrirComodines}>
+              <ShieldCheck size={14} />Ayer quedó sin marcar.<b>¿Lo congelas?<ChevronRight size={14} /></b>
+            </button>
+          )}
+          {(() => {
+            const ent = entradaDificil({ activo: esDificilHoy, pendientes: pendientesParaDificil(habitosActivos, registros, hoy).length, hechos: completadosHoy(), total: habitosDeHoy.length, hora: new Date().getHours() });
+            if (ent === 'enlace') return <button type="button" className="ddlink" onClick={abrirDificil}><Feather size={14}/>¿Día pesado?<b>Haz solo lo mínimo<ChevronRight size={14}/></b></button>;
+            if (ent === 'noche') return <div className="ddsug"><b><Feather size={16}/>¿Día pesado?</b><p>Haz la versión mínima de lo que te falta: cuenta como cumplido.</p><button type="button" onClick={abrirDificil}>Hacer solo lo mínimo</button></div>;
+            if (ent === 'activo') return <div className="ddon"><Feather size={16}/><span><b>Día difícil.</b> Hoy basta con lo mínimo.</span><button type="button" aria-label="Quitar el día difícil" onClick={onQuitarDificil}>Quitar</button></div>;
+            return null;
+          })()}
         </div>
       </section>
 
@@ -1271,6 +1311,14 @@ export const TodayScreen: React.FC = () => {
         fechaOcurrencia={fechaOcurrencia}
         fechaInicial={hoy}
       />
+      {avisoDificil && (
+        <div className="tareas">
+          <div className="ttoast cttoast" role="status">
+            <span>{avisoDificil.contenido}</span>
+            <button type="button" onClick={() => { avisoDificil.alHacer(); setAvisoDificil(null); }}>{avisoDificil.accion}</button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -14,6 +14,7 @@ import {
 import { tasaPeriodo, calcularMejorRachaGlobal } from '../../utils/progresoUtils';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 import { useEsEscritorio } from './TodayScreen';
+import { ariaChip } from '../../utils/dificilUtils';
 
 const ordenMomentos = ['manana', 'tarde', 'noche', 'flexible'];
 
@@ -29,6 +30,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
     congelarDia,
     descongelarDia,
     openHabitDetail,
+    abrirComodines,
   } = useHabitStore();
 
   const [viewDate, setViewDate] = useState<Date>(() => new Date());
@@ -256,10 +258,9 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
       <div className="flex justify-between items-center mb-3 min-h-[32px]">
         <span className="text-[13px] text-text-muted">Toca un día para cambiarlo</span>
         {isCurrentMonth && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-line text-[13px] font-semibold text-text">
-            <ShieldCheck size={14} className="text-lila-text" strokeWidth={2} />
-            {comodines} comodines
-          </span>
+          <button type="button" className="ddchip" aria-label={ariaChip(comodines)} onClick={abrirComodines}>
+            <ShieldCheck size={14} />{comodines}<span className="dcw">{comodines === 1 ? 'comodín' : 'comodines'}</span><ChevronRight size={14} />
+          </button>
         )}
       </div>
 
