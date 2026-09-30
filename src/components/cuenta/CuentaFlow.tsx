@@ -104,10 +104,13 @@ export const CuentaFlow: React.FC = () => {
   const cambiarCorreo = () => { setPaso('correo'); setError(''); setCodigo(''); };
 
   const marco = (atras: (() => void) | null, cuerpo: React.ReactNode, pie: React.ReactNode) => (
-    <div className="onb fixed inset-0 z-[80] bg-bg flex flex-col h-dvh" role="dialog" aria-modal="true" aria-label="Entra a tu Racha">
-      {atras && <div className="obtop"><button className="obback" onClick={atras} aria-label="Atrás"><ChevronLeft size={22} strokeWidth={2.2} /></button></div>}
-      <div className="flex-1 overflow-y-auto"><div className="obbody" style={atras ? undefined : { paddingTop: '34px' }}>{cuerpo}</div></div>
-      <div className="obfoot">{pie}</div>
+    <div className="onb cuenta fixed inset-0 z-[80] bg-bg flex flex-col h-dvh" role="dialog" aria-modal="true" aria-label="Entra a tu Racha">
+      {/* En escritorio, la misma columna del celular centrada (440px), sin estirarse (index.css › .onb.cuenta) */}
+      <div className="cuenta-caja flex flex-col h-full min-h-0">
+        {atras && <div className="obtop"><button className="obback" onClick={atras} aria-label="Atrás"><ChevronLeft size={22} strokeWidth={2.2} /></button></div>}
+        <div className="flex-1 overflow-y-auto"><div className="obbody" style={atras ? undefined : { paddingTop: '34px' }}>{cuerpo}</div></div>
+        <div className="obfoot">{pie}</div>
+      </div>
     </div>
   );
 

@@ -31,11 +31,9 @@ export const TasksScreen: React.FC = () => {
   const hoy = getTodayString();
   const desk = useEsEscritorio();
 
-  // Al entrar se abre la primera tarea con un paso para hoy (si no hay, todas plegadas)
-  const [abierta, setAbierta] = useState<string | null>(() => {
-    const conHoy = tareas.find((t) => !t.completada && obtenerHojasSubtareas(t.subtareas).some((h) => !h.hecha && h.fecha === hoy));
-    return conHoy ? conHoy.id : null;
-  });
+  // En el celular, al entrar todas las tareas están plegadas (lo pidió Johnatan el 29 sep: así se entiende la lista).
+  // En escritorio, TareasEscritorio elige la suya.
+  const [abierta, setAbierta] = useState<string | null>(null);
   const [verTerminadas, setVerTerminadas] = useState(false);
   const [hoja, setHoja] = useState<HojaAbierta | null>(null);
   const [recien, setRecien] = useState<{ tareaId: string; pasoId: string } | null>(null);

@@ -677,6 +677,13 @@ html:not(.dark) .fill-logro {
 .onb .card { background:var(--surface); border:1px solid var(--line); border-radius:18px; }
 
 /* Tu cuenta (solo dentro de .onb) */
+/* En escritorio no se estira: la misma columna del celular, centrada (corrección de Johnatan, 29 sep) */
+@media (min-width:1024px){
+  .onb.cuenta { align-items:center; justify-content:center; }
+  .onb.cuenta .cuenta-caja { width:440px; height:auto; max-height:100dvh; }
+  .onb.cuenta .cuenta-caja > .flex-1 { flex:0 1 auto; }
+  .onb.cuenta .obfoot { border-top:none; background:transparent; padding-bottom:22px; }
+}
 .onb .cmarca { display:flex; align-items:center; gap:8px; }
 .onb .ctit { display:flex; align-items:center; gap:10px; }
 .onb .ctiti { display:flex; color:var(--text); flex-shrink:0; }
