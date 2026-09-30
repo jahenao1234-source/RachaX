@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Check, X, Calendar } from 'lucide-react';
 import { formatDateToString, parseDateString } from '../../utils/habitUtils';
 import { CalendarioMes } from '../common/CalendarioMes';
+import { useEsEscritorio } from '../screens/TodayScreen';
 
 const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
@@ -25,6 +26,7 @@ export const HojaDiaPaso: React.FC<{
 }> = ({ pasoTexto, tareaNombre, fecha, hoy, onElegir, onCerrar }) => {
   const [verCalendario, setVerCalendario] = React.useState(false);
   const cerrarRef = useRef<HTMLButtonElement>(null);
+  const desk = useEsEscritorio();
 
   const alCerrar = useRef(onCerrar);
   alCerrar.current = onCerrar;
@@ -41,10 +43,10 @@ export const HojaDiaPaso: React.FC<{
     const d = parseDateString(valor);
     const on = fecha === valor;
     return (
-      <button type="button" role="radio" aria-checked={on} className={`topt${on ? ' on' : ''}`} onClick={() => onElegir(valor)}>
+      <button type="button" role="radio" aria-checked={on} onClick={() => onElegir(valor)}>
         <span>{titulo}</span>
         <span className="sub">{DIAS[d.getDay()]} {d.getDate()}</span>
-        {on ? <Check size={18} strokeWidth={2.6} /> : <span />}
+        {on && <Check size={18} strokeWidth={2.6} />}
       </button>
     );
   };
@@ -52,7 +54,7 @@ export const HojaDiaPaso: React.FC<{
   return createPortal(
     <div className="tareas">
       <div className="tscrim" onClick={onCerrar} aria-hidden="true" />
-      <div className="tsheet" role="dialog" aria-modal="true" aria-labelledby="tdh">
+      <div className={`tsheet${desk ? ' tventana' : ''}`} role="dialog" aria-modal="true" aria-labelledby="tdh">
         <div className="tgrab" aria-hidden="true" />
         <div className="tsheet-h">
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -62,8 +64,10 @@ export const HojaDiaPaso: React.FC<{
           <button ref={cerrarRef} type="button" className="closeb" aria-label="Cerrar" onClick={onCerrar}><X size={16} /></button>
         </div>
         <div role="radiogroup" aria-labelledby="tdh">
-          {fila(hoy, 'Hoy')}
-          {fila(manana, 'Mañana')}
+          <div className="tdos">
+            {fila(hoy, 'Hoy')}
+            {fila(manana, 'Mañana')}
+          </div>
           <p className="tsem-l">Otro día</p>
           <div className="tsem">
             {otros.map((v) => {
@@ -71,8 +75,7 @@ export const HojaDiaPaso: React.FC<{
               const on = fecha === v;
               return (
                 <button key={v} type="button" role="radio" aria-checked={on} onClick={() => onElegir(v)}
-                  aria-label={`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`}
-                  style={on ? { borderColor: 'var(--text)', borderWidth: 1.5 } : undefined}>
+                  aria-label={`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`}>
                   <span>{DIAS_CORTOS[d.getDay()]}</span><b className="num">{d.getDate()}</b>
                 </button>
               );

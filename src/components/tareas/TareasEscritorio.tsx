@@ -4,7 +4,7 @@ import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
 import { obtenerHojasSubtareas } from '../../utils/habitUtils';
-import { siguientePaso } from '../../utils/tareasUtils';
+import { siguientePaso, GrupoTarea } from '../../utils/tareasUtils';
 import { Barra, Casilla, ChipDia, Terminadas } from './piezas';
 import { TAREA_ICONOS, TareaEditar } from './TareaEditar';
 import { DirTeclado, destinoConTeclado, useArrastrePasos } from './arrastrePasos';
@@ -20,6 +20,9 @@ export interface ControlTareas {
   recien: { tareaId: string; pasoId: string } | null;
   deshacerTerminar: () => void;
   avisar: (antes: string, texto: string, deshacer: () => void) => void;
+  /** Grupos por cuándo (DESIGN.md › Tareas 2): la tarea que elegiste o en la que marcaste un paso no salta de grupo hasta salir de Tareas. */
+  fijos: Record<string, GrupoTarea>;
+  fijar: (tareaId: string) => void;
 }
 
 const PISTA_VISTA = 'racha-tareas-pista-arrastre';

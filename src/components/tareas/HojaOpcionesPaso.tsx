@@ -43,8 +43,8 @@ export const HojaOpcionesPaso: React.FC<{
           <button type="button" onClick={() => { onCerrar(); onDividir(); }}>
             <Split size={20} />
             <div className="flex flex-col items-start gap-[1px]">
-              <span>Dividir en pasos más pequeños</span>
-              <span className="t3ayuda">Para partirlo en partes</span>
+              <span>{esGrande ? 'Agregar un paso adentro' : 'Dividir en pasos más pequeños'}</span>
+              {!esGrande && <span className="t3ayuda">Para partirlo en partes</span>}
             </div>
           </button>
           {!esGrande && (

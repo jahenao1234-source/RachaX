@@ -9,17 +9,17 @@ import { avanceTarea, fechaTerminada, textoDiaCorto, textoDiaLargo, textoFechaLa
 export const Barra: React.FC<{ tarea: Tarea; className?: string; style?: React.CSSProperties; corta?: boolean }> = ({ tarea, className, style, corta }) => {
   const { hechos, total } = avanceTarea(tarea);
   return (
-    <div className={`tavance${className ? ` ${className}` : ''}`} style={style}>
+    <span className={`tavance${className ? ` ${className}` : ''}`} style={style}>
       <i aria-hidden="true"><b style={{ width: `${total ? Math.round((hechos / total) * 100) : 0}%` }} /></i>
       {corta
         ? <span className="num">{hechos} de {total}</span>
         : <span><span className="num">{hechos} de {total}</span> pasos</span>}
-    </div>
+    </span>
   );
 };
 
-export const Casilla: React.FC<{ paso: Subtarea; onToggle: () => void }> = ({ paso, onToggle }) => (
-  <span className={`tchk${paso.hecha ? ' on' : ''}`} role="checkbox" tabIndex={0} aria-checked={paso.hecha} aria-label={paso.texto}
+export const Casilla: React.FC<{ paso: Subtarea; onToggle: () => void; etiqueta?: string }> = ({ paso, onToggle, etiqueta }) => (
+  <span className={`tchk${paso.hecha ? ' on' : ''}`} role="checkbox" tabIndex={0} aria-checked={paso.hecha} aria-label={etiqueta ?? paso.texto}
     onClick={onToggle}
     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}>
     {paso.hecha && <Check size={15} strokeWidth={3} />}

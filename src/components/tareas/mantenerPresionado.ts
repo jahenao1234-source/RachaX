@@ -46,6 +46,11 @@ export function useMantenerPresionado(alMantener: () => void) {
     },
     onPointerUp: cancelar,
     onPointerCancel: cancelar,
+    // Al soltar el dedo después de abrir el menú, el navegador manda un toque donde quedó el dedo, que ya es el velo
+    // de la hoja y la cerraba. Cancelar el touchend evita ese toque.
+    onTouchEnd: (e: React.TouchEvent) => {
+      if (estado.current.disparado && e.cancelable) e.preventDefault();
+    },
     onPointerLeave: cancelar,
     // Android manda contextmenu al mantener; clic derecho y Shift+F10 también llegan aquí
     onContextMenu: (e: React.MouseEvent) => {

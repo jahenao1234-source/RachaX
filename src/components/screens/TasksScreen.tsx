@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { CalendarRange, Check, ChevronDown, ChevronRight, ListChecks, MoreHorizontal, Pencil, Play, Plus, RotateCcw } from 'lucide-react';
+import { CalendarRange, Check, ChevronDown, ChevronRight, ListChecks, MoreHorizontal, Pencil, Play, Plus, RotateCcw, ArrowUp, ArrowDown, GripVertical, X } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Subtarea, Tarea } from '../../types';
 import { getTodayString, obtenerHojasSubtareas } from '../../utils/habitUtils';
-import { siguientePaso, fechaTerminada, resumenTareas, buscarPaso } from '../../utils/tareasUtils';
+import { siguientePaso, fechaTerminada, resumenTareas, buscarPaso, agruparTareas, grupoTarea, lineaTarea, moverTareaEnGrupo, colocarTareaEnGrupo, GrupoTarea, avanceTarea } from '../../utils/tareasUtils';
 import { HojaDiaPaso } from '../tareas/HojaDiaPaso';
 import { TareaEditar } from '../tareas/TareaEditar';
 import { Barra, Casilla, ChipDia, Terminadas } from '../tareas/piezas';
@@ -14,6 +14,8 @@ import { HojaOpcionesPaso } from '../tareas/HojaOpcionesPaso';
 import { HojaPegarLista } from '../tareas/HojaPegarLista';
 import { leerListaPegada, aSubtareas, ListaPegada, contarPegados } from '../../utils/pegarLista';
 import { useEsEscritorio } from './TodayScreen';
+import { useMantenerPresionado } from '../tareas/mantenerPresionado';
+import { HojaMenuTarea } from '../tareas/HojaMenuTarea';
 
 /** Pestaña Tareas. design/maqueta-tareas.html (celular: marcos 1 a 9; escritorio: 10 a 13) · DESIGN.md › Tareas. */
 
@@ -26,7 +28,7 @@ export const TasksScreen: React.FC = () => {
   const {
     tareas, toggleSubtarea, ponerFechaPaso, reabrirTarea, eliminarTarea, restaurarTarea,
     openFocusMode, navigateToTab, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor,
-    editarTextoPaso, agregarPasoTarea, borrarPasoTarea, quitarPasosTarea
+    editarTextoPaso, agregarPasoTarea, borrarPasoTarea, quitarPasosTarea, reordenarTareas
   } = useHabitStore();
   const hoy = getTodayString();
   const desk = useEsEscritorio();
@@ -44,13 +46,48 @@ export const TasksScreen: React.FC = () => {
   const [dentroDe, setDentroDe] = useState<string | null>(null);
   const [textoDentro, setTextoDentro] = useState('');
   
+  // Grupos por cuándo (DESIGN.md › Tareas 2): la tarea que abriste o en la que marcaste un paso no salta de grupo hasta salir de Tareas
+  const [fijos, setFijos] = useState<Record<string, GrupoTarea>>({});
+  const [mostrarPista, setMostrarPista] = useState(false);
+  const [menuTarea, setMenuTarea] = useState<string | null>(null);
+  const [ordenando, setOrdenando] = useState<{ elegida: string; antes: string[] } | null>(null);
+  const [anuncioLive, setAnuncioLive] = useState('');
+
   const timerRecien = useRef<number | null>(null);
   const timerAviso = useRef<number | null>(null);
 
-  useEffect(() => () => {
-    if (timerRecien.current) window.clearTimeout(timerRecien.current);
-    if (timerAviso.current) window.clearTimeout(timerAviso.current);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('racha_pista_mantener') !== '1') {
+        setMostrarPista(true);
+      }
+    } catch (e) {}
+    return () => {
+      if (timerRecien.current) window.clearTimeout(timerRecien.current);
+      if (timerAviso.current) window.clearTimeout(timerAviso.current);
+    };
   }, []);
+
+  useEffect(() => {
+    if (ordenando) {
+      document.body.classList.add('sin-barra');
+    } else {
+      document.body.classList.remove('sin-barra');
+    }
+    return () => document.body.classList.remove('sin-barra');
+  }, [ordenando]);
+
+  const fijar = (tId: string) => {
+    const t = tareas.find(x => x.id === tId);
+    if (!t) return;
+    const g = grupoTarea(t, hoy).grupo;
+    setFijos(prev => ({ ...prev, [t.id]: prev[t.id] ?? g }));
+  };
+
+  const cerrarPista = () => {
+    setMostrarPista(false);
+    try { localStorage.setItem('racha_pista_mantener', '1'); } catch (e) {}
+  };
 
   const mostrarAviso = (a: Aviso) => {
     if (timerAviso.current) window.clearTimeout(timerAviso.current);
@@ -60,6 +97,7 @@ export const TasksScreen: React.FC = () => {
 
   // Marcar un paso; si con eso se termina la tarea, se queda a la vista con "Deshacer"
   const marcar = (t: Tarea, paso: Subtarea) => {
+    fijar(t.id);
     const pendientes = obtenerHojasSubtareas(t.subtareas).filter((h) => h.texto?.trim() && !h.hecha);
     const dentro = paso.subtareas?.length ? obtenerHojasSubtareas(paso.subtareas).map((h) => h.id) : [paso.id];
     const termina = !paso.hecha && pendientes.length > 0 && pendientes.every((h) => dentro.includes(h.id));
@@ -157,21 +195,15 @@ export const TasksScreen: React.FC = () => {
         {esPadre && !plegado && (
           <ul className="tarbol tsubl">
             {hijos.map((h) => renderPaso(t, h, sigId))}
-            {abierta === t.id && (
+            {abierta === t.id && dentroDe === s.id && (
               <li className="tpaso">
-                {dentroDe === s.id ? (
-                  <div className="tagrega-in" style={{ borderTop: 'none', padding: '0 0 0 10px' }}>
-                    <Plus size={16} strokeWidth={2.4} />
-                    <input className="tinput tinput-on" autoFocus placeholder="Escribe un paso más pequeño" aria-label={`Nuevo paso dentro de ${s.texto}`}
-                      value={textoDentro} onChange={(e) => setTextoDentro(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === 'Enter') guardarDentro(); if (e.key === 'Escape') { setTextoDentro(''); setDentroDe(null); } }}
-                      onBlur={() => { guardarDentro(); setDentroDe(null); }} />
-                  </div>
-                ) : (
-                  <button type="button" className="t3add" onClick={() => { setDentroDe(s.id); setTextoDentro(''); }}>
-                    <Plus size={15} />Agregar dentro de “{s.texto}”
-                  </button>
-                )}
+                <div className="tagrega-in" style={{ borderTop: 'none', padding: '0 0 0 10px' }}>
+                  <Plus size={16} strokeWidth={2.4} />
+                  <input className="tinput tinput-on" autoFocus placeholder="Escribe un paso más pequeño" aria-label={`Nuevo paso dentro de ${s.texto}`}
+                    value={textoDentro} onChange={(e) => setTextoDentro(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') guardarDentro(); if (e.key === 'Escape') { setTextoDentro(''); setDentroDe(null); } }}
+                    onBlur={() => { guardarDentro(); setDentroDe(null); }} />
+                </div>
               </li>
             )}
           </ul>
@@ -195,7 +227,7 @@ export const TasksScreen: React.FC = () => {
 
   const encabezado = (t: Tarea, open: boolean) => (
     <h2 className="thh" id={`tarea-${t.id}`}>
-      <button type="button" className="thead" aria-expanded={open} onClick={() => setAbierta(open ? null : t.id)} title={t.nombre}>
+      <button type="button" className="thead" aria-expanded={open} onClick={() => { fijar(t.id); setAbierta(open ? null : t.id); }} title={t.nombre}>
         <span className="tico" aria-hidden="true"><HabitIcon name={t.icono} size={19} /></span>
         <span className="tmain"><span className="tname">{t.nombre}</span><Barra tarea={t} /></span>
         <span className="tchev" aria-hidden="true"><ChevronDown size={18} className={open ? 'rotate-180' : ''} /></span>
@@ -203,64 +235,134 @@ export const TasksScreen: React.FC = () => {
     </h2>
   );
 
-  const tarjeta = (t: Tarea) => {
-    // Editando esta tarea
+  const renderItemCelular = (t: Tarea) => {
     if (isTareaEditorOpen && tareaBeingEdited?.id === t.id) {
-      return <TareaEditar key={t.id} tarea={t} onListo={closeTareaEditor} onBorrar={borrar} />;
+      // Editando esta tarea
+      return <li key={t.id} className="tfc-open"><TareaEditar tarea={t} onListo={closeTareaEditor} onBorrar={borrar} /></li>;
     }
     // Acabas de terminarla
     if (recien?.tareaId === t.id) {
       return (
-        <section key={t.id} className="card tcard tfin" aria-labelledby={`tarea-${t.id}`}>
-          <h2 className="thh" id={`tarea-${t.id}`}>
-            <div className="thead">
-              <span className="tico ok" aria-hidden="true"><Check size={20} strokeWidth={3} /></span>
-              <span className="tmain"><span className="tname">{t.nombre}</span><Barra tarea={t} /></span>
+        <li key={t.id} className="tfc-open">
+          <section className="card tcard tfin" aria-labelledby={`tarea-${t.id}`}>
+            <h2 className="thh" id={`tarea-${t.id}`}>
+              <div className="thead">
+                <span className="tico ok" aria-hidden="true"><Check size={20} strokeWidth={3} /></span>
+                <span className="tmain"><span className="tname">{t.nombre}</span><Barra tarea={t} /></span>
+              </div>
+            </h2>
+            <div className="tfinbody" role="status">
+              <p className="tfintit">Terminaste {t.nombre}</p>
+              <p className="sub" style={{ fontSize: 13 }}>Paso a paso, llegaste. En unos segundos baja a Terminadas.</p>
+              <button type="button" className="tbtnq" onClick={deshacerTerminar}><RotateCcw size={15} />Deshacer</button>
             </div>
-          </h2>
-          <div className="tfinbody" role="status">
-            <p className="tfintit">Terminaste {t.nombre}</p>
-            <p className="sub" style={{ fontSize: 13 }}>Paso a paso, llegaste. En unos segundos baja a Terminadas.</p>
-            <button type="button" className="tbtnq" onClick={deshacerTerminar}><RotateCcw size={15} />Deshacer</button>
-          </div>
-        </section>
+          </section>
+        </li>
       );
     }
+    
     const open = abierta === t.id;
-    const sig = siguientePaso(t);
-    return (
-      <section key={t.id} className={`card tcard${open ? ' open' : ''}`} aria-labelledby={`tarea-${t.id}`}>
-        {encabezado(t, open)}
-        {open ? (
-          <>
+    if (open) {
+      const sig = siguientePaso(t);
+      return (
+        <li key={t.id} className="tfc-open">
+          <section className={`card tcard open`} aria-labelledby={`tarea-${t.id}`}>
+            {encabezado(t, true)}
             <div className="tacciones">
               <button type="button" className="tbtn2" onClick={() => openFocusMode({ tipo: 'tarea', tareaId: t.id })}><Play size={12} className="fill-current" />Empezar en Foco</button>
-              <button type="button" className="tbtnq" onClick={() => openTareaEditor(t)}><Pencil size={15} />Mover pasos</button>
+              <button type="button" className="tbtnq" onClick={() => openTareaEditor(t)}><Pencil size={15} />Editar tarea</button>
             </div>
             <ul className="tarbol">{t.subtareas.map((s) => renderPaso(t, s, sig?.id ?? null))}</ul>
             <AgregarPaso tareaId={t.id} onPegado={(tId, ids, n) => {
               mostrarAviso({ antes: 'Agregaste', texto: `${n} ${n === 1 ? 'paso' : 'pasos'}`, deshacer: () => quitarPasosTarea(tId, ids) });
             }} />
-          </>
-        ) : sig ? (
-          <div className="tsig">
-            <div className="tfila">
-              <Casilla paso={sig} onToggle={() => marcar(t, sig)} />
-              <span className="ttxt"><span className="tnom">{sig.texto}</span><span className="tsigchip">Sigue</span></span>
-              <ChipDia paso={sig} hoy={hoy} onAbrir={() => setHoja({ tareaId: t.id, pasoId: sig.id })} />
-            </div>
-          </div>
-        ) : null}
-      </section>
-    );
+          </section>
+        </li>
+      );
+    }
+
+    return <FilaCompacta key={t.id} t={t} hoy={hoy} alAbrir={() => { fijar(t.id); setAbierta(t.id); }} onMarcar={(paso) => marcar(t, paso)} onMenu={() => { setMenuTarea(t.id); cerrarPista(); }} alzada={menuTarea === t.id} />;
   };
 
   const nada = abiertas.length === 0 && terminadas.length === 0 && !creando;
   const ctl: ControlTareas = {
     hoy, marcar, borrar,
     abrirHoja: (tareaId, pasoId) => setHoja({ tareaId, pasoId }), recien, deshacerTerminar,
-    avisar: (antes, texto, deshacer) => mostrarAviso({ antes, texto, deshacer })
+    avisar: (antes, texto, deshacer) => mostrarAviso({ antes, texto, deshacer }),
+    fijos, fijar,
   };
+
+  const gruposAbiertos = agruparTareas(abiertas, hoy, fijos);
+
+  const moveUp = (id: string, idsGrupo: string[], titulo: string) => {
+    const idsActuales = tareas.map(x => x.id);
+    const nuevo = moverTareaEnGrupo(idsActuales, idsGrupo, id, 'arriba');
+    if (nuevo) {
+      reordenarTareas(nuevo);
+      const t = tareas.find(x => x.id === id);
+      const idx = idsGrupo.indexOf(id);
+      setAnuncioLive(`${t?.nombre}, ${idx} de ${idsGrupo.length} en ${titulo}`);
+    }
+  };
+  const moveDown = (id: string, idsGrupo: string[], titulo: string) => {
+    const idsActuales = tareas.map(x => x.id);
+    const nuevo = moverTareaEnGrupo(idsActuales, idsGrupo, id, 'abajo');
+    if (nuevo) {
+      reordenarTareas(nuevo);
+      const t = tareas.find(x => x.id === id);
+      const idx = idsGrupo.indexOf(id) + 2;
+      setAnuncioLive(`${t?.nombre}, ${idx} de ${idsGrupo.length} en ${titulo}`);
+    }
+  };
+  const salirOrden = () => {
+    if (!ordenando) return;
+    const ordenActual = tareas.map(x => x.id);
+    if (JSON.stringify(ordenActual) !== JSON.stringify(ordenando.antes)) {
+      const antes = ordenando.antes;
+      mostrarAviso({ antes: 'Cambiaste el orden', texto: '', deshacer: () => reordenarTareas(antes) });
+    }
+    setOrdenando(null);
+  };
+
+  if (!desk && ordenando) {
+    return (
+      <div id="screen-tareas" className="tareas pb-28 lg:pb-0 animate-fadeIn text-text font-body">
+        <div className="torden-h">
+          <h1 className="font-heading font-bold m-0" style={{ fontSize: 32, lineHeight: 1.05 }}>Cambiar de lugar</h1>
+          <p className="sub" style={{ marginTop: 6, fontSize: 14 }}>Toca una tarea y muévela con las flechas, o arrástrala desde ⋮⋮. Se mueve dentro de su grupo.</p>
+        </div>
+        <div className="sr-only" aria-live="polite">{anuncioLive}</div>
+        
+        {gruposAbiertos.map((g) => (
+          <section key={g.grupo} className="tgrupo" aria-label={g.titulo}>
+            {gruposAbiertos.length > 1 && <h2 className="tsec">{g.titulo} <span className="num">{g.tareas.length}</span></h2>}
+            <ul className="tlist tcel">
+              {g.tareas.map((t, idx) => {
+                const sel = ordenando.elegida === t.id;
+                const idsGrupo = g.tareas.map(x => x.id);
+                return (
+                  <FilaOrden key={t.id} t={t} sel={sel} idsGrupo={idsGrupo}
+                    onSelect={() => setOrdenando(o => o ? { ...o, elegida: t.id } : null)}
+                    moveUp={() => moveUp(t.id, idsGrupo, g.titulo)}
+                    moveDown={() => moveDown(t.id, idsGrupo, g.titulo)}
+                    onDrop={(newIdx) => {
+                      const idsActuales = tareas.map(x => x.id);
+                      const nuevo = colocarTareaEnGrupo(idsActuales, idsGrupo, t.id, newIdx);
+                      if (nuevo) reordenarTareas(nuevo);
+                    }}
+                  />
+                );
+              })}
+            </ul>
+          </section>
+        ))}
+        
+        <div className="torden-pie">
+          <button type="button" className="btnp full" style={{margin:0}} onClick={salirOrden}>Listo</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div id="screen-tareas" className="tareas pb-28 lg:pb-0 animate-fadeIn text-text font-body">
@@ -272,8 +374,14 @@ export const TasksScreen: React.FC = () => {
         </div>
         {!nada && <button type="button" className="tnueva" onClick={() => openTareaEditor(null)}><Plus size={18} strokeWidth={2.4} />Nueva tarea</button>}
       </div>
-      {/* Entrada a Tu semana en el celular (DESIGN.md › Tu semana 2) */}
       {!nada && <button type="button" className="tasemana" onClick={() => navigateToTab('semana')}><CalendarRange size={18} /><span>Planea tu semana</span><ChevronRight size={18} /></button>}
+
+      {mostrarPista && abiertas.length > 0 && (
+        <div className="tpista1" role="note">
+          <span>Mantén presionada una tarea para editarla, moverla o borrarla.</span>
+          <button type="button" className="tpista1-x" aria-label="Entendido, no mostrar más" onClick={cerrarPista}><X size={16}/></button>
+        </div>
+      )}
 
       {creando && <TareaEditar tarea={null} onListo={closeTareaEditor} />}
 
@@ -287,7 +395,14 @@ export const TasksScreen: React.FC = () => {
         </div>
       ) : (
         <>
-          {abiertas.map(tarjeta)}
+          {gruposAbiertos.map((g) => (
+            <section key={g.grupo} className="tgrupo" aria-label={g.titulo}>
+              {gruposAbiertos.length > 1 && <h2 className="tsec">{g.titulo} <span className="num">{g.tareas.length}</span></h2>}
+              <ul className="tlist tcel">
+                {g.tareas.map(renderItemCelular)}
+              </ul>
+            </section>
+          ))}
           <Terminadas terminadas={terminadas} abierto={verTerminadas} onAlternar={() => setVerTerminadas((v) => !v)}
             onReabrir={(t) => { reabrirTarea(t.id); setAbierta(t.id); }} onBorrar={borrar} />
         </>
@@ -329,10 +444,27 @@ export const TasksScreen: React.FC = () => {
         );
       })()}
 
+      {menuTarea && (() => {
+        const t = tareas.find(x => x.id === menuTarea);
+        if (!t) return null;
+        const g = gruposAbiertos.find(x => x.tareas.some(y => y.id === t.id));
+        const puedeMover = g ? g.tareas.length > 1 : false;
+        return (
+          <HojaMenuTarea
+            tarea={t}
+            puedeMover={puedeMover}
+            onCerrar={() => setMenuTarea(null)}
+            onEditar={() => { setMenuTarea(null); fijar(t.id); setAbierta(t.id); openTareaEditor(t); }}
+            onMover={() => { setMenuTarea(null); setOrdenando({ elegida: t.id, antes: tareas.map(x => x.id) }); }}
+            onBorrar={() => { setMenuTarea(null); borrar(t); }}
+          />
+        );
+      })()}
+
       {aviso && createPortal(
         <div className="tareas">
           <div className="ttoast" role="status">
-            <span>{aviso.antes} <b>{aviso.texto}</b></span>
+            <span>{aviso.antes}{aviso.texto && <> <b>{aviso.texto}</b></>}</span>
             <button type="button" onClick={() => { aviso.deshacer(); setAviso(null); }}>Deshacer</button>
           </div>
         </div>,
@@ -387,5 +519,106 @@ const AgregarPaso: React.FC<{ tareaId: string; onPegado: (tId: string, ids: stri
         onKeyDown={(e) => { if (e.key === 'Enter') guardar(); if (e.key === 'Escape') { setTexto(''); setActivo(false); } }}
         onBlur={() => { guardar(); setActivo(false); }} />
     </div>
+  );
+};
+
+const FilaCompacta: React.FC<{ t: Tarea; hoy: string; alAbrir: () => void; onMarcar: (paso: Subtarea) => void; onMenu: () => void; alzada?: boolean }> = ({ t, hoy, alAbrir, onMarcar, onMenu, alzada }) => {
+  const { props } = useMantenerPresionado(onMenu);
+  const linea = lineaTarea(t, hoy);
+
+  return (
+    <li className={`tfc${alzada ? ' alzada' : ''}`} {...props}>
+      <button type="button" className="tfc-a" aria-expanded={false} onClick={alAbrir} title={t.nombre}>
+        <span className="tico" aria-hidden="true"><HabitIcon name={t.icono} size={19} /></span>
+        <span className="tmain">
+          <span className="tname2">{t.nombre}</span>
+          <span className="tsub">
+            {linea.paso ? (
+              linea.dia ? <><b className="tcuando">{linea.dia}</b> · {linea.paso.texto}</> : <>Sigue: {linea.paso.texto}</>
+            ) : null}
+          </span>
+          <Barra tarea={t} className="sm" corta={true} />
+        </span>
+      </button>
+      {linea.paso && (
+        <Casilla paso={linea.paso} etiqueta={`Marcar ${linea.paso.texto}`} onToggle={() => onMarcar(linea.paso!)} />
+      )}
+    </li>
+  );
+};
+
+const FilaOrden: React.FC<{ t: Tarea; sel: boolean; onSelect: () => void; idsGrupo: string[]; moveUp: () => void; moveDown: () => void; onDrop: (idx: number) => void }> = ({ t, sel, onSelect, idsGrupo, moveUp, moveDown, onDrop }) => {
+  const masDeUna = idsGrupo.length > 1;
+  const liRef = useRef<HTMLLIElement>(null);
+  const [offset, setOffset] = useState(0);
+  const idx = idsGrupo.indexOf(t.id);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    const asa = e.currentTarget as HTMLElement;
+    asa.setPointerCapture(e.pointerId);
+    
+    const startY = e.clientY;
+    const parent = liRef.current?.parentElement;
+    if (!parent || !liRef.current) return;
+    
+    // Lo que hay de una fila a la siguiente (alto + espacio de la lista)
+    const itemHeight = liRef.current.offsetHeight + (parseFloat(getComputedStyle(parent).rowGap) || 0);
+    const origIdx = idx;
+    
+    onSelect();
+    
+    const onMove = (em: PointerEvent) => {
+      const dy = em.clientY - startY;
+      setOffset(dy);
+    };
+    
+    const onUp = (eu: PointerEvent) => {
+      asa.releasePointerCapture(eu.pointerId);
+      asa.removeEventListener('pointermove', onMove);
+      asa.removeEventListener('pointerup', onUp);
+      asa.removeEventListener('pointercancel', onUp);
+      
+      const dy = eu.clientY - startY;
+      setOffset(0);
+      
+      const steps = Math.round(dy / itemHeight);
+      let newIdx = origIdx + steps;
+      newIdx = Math.max(0, Math.min(newIdx, idsGrupo.length - 1));
+      
+      if (newIdx !== origIdx) {
+        onDrop(newIdx);
+      }
+    };
+    
+    asa.addEventListener('pointermove', onMove);
+    asa.addEventListener('pointerup', onUp);
+    asa.addEventListener('pointercancel', onUp);
+  };
+
+  return (
+    <li ref={liRef} className={`tord${sel ? ' sel' : ''}`} onClick={onSelect} style={{ transform: offset ? `translateY(${offset}px)` : 'none', zIndex: offset ? 10 : 1 }}>
+      <div className="tli">
+        <span className="tico" aria-hidden="true"><HabitIcon name={t.icono} size={19} /></span>
+        <span className="tmain"><span className="tname2">{t.nombre}</span></span>
+        {sel && (
+          <span className="tflechas">
+            <button type="button" aria-label={`Subir ${t.nombre}`} aria-disabled={idx === 0}
+              onClick={(e) => { e.stopPropagation(); moveUp(); }}>
+              <ArrowUp size={20} />
+            </button>
+            <button type="button" aria-label={`Bajar ${t.nombre}`} aria-disabled={idx === idsGrupo.length - 1}
+              onClick={(e) => { e.stopPropagation(); moveDown(); }}>
+              <ArrowDown size={20} />
+            </button>
+          </span>
+        )}
+        {masDeUna && (
+          <button type="button" className="tasa" aria-label={`Arrastrar ${t.nombre}`} onPointerDown={onPointerDown}>
+            <GripVertical size={20} />
+          </button>
+        )}
+      </div>
+    </li>
   );
 };

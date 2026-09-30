@@ -1220,7 +1220,11 @@ body.sin-barra #bottom-navigation-bar{display:none}
   .tareas .tsheet.tventana .tgrab{display:none}
   .tareas .tdk-lista .tgrupo .tlist{gap:8px}
   .tareas .tdk-mov{position:relative}
-  .tareas .tasa-dk{position:absolute;left:-26px;top:50%;transform:translateY(-50%);color:var(--text);display:flex}
+  .tareas .tasa-dk{position:absolute;left:-26px;top:50%;transform:translateY(-50%);color:var(--text);display:flex;pointer-events:none}
+  /* El ⋮⋮ de la lista solo se ve con el mouse encima de la fila o mientras se arrastra */
+  .tareas .tdk-lista .tlist>li{position:relative}
+  .tareas .tdk-lista .tlist>li:not(.tdk-mov) .tasa-dk{opacity:0}
+  .tareas .tdk-lista .tlist>li:hover .tasa-dk{opacity:1}
   .tareas .tli.drag{background:var(--surface);border:1.5px dashed var(--text-muted);transform:rotate(-1.5deg);opacity:.95}
   .tareas .tdk-lista .tlinea{margin:0 0 -4px}
 }
