@@ -71,6 +71,10 @@ interface HabitContextType {
   activeTab: TabRoute;
   setActiveTab: (tab: TabRoute) => void;
   navigateToTab: (tab: TabRoute) => void;
+  /** Hoy › "Tareas de hoy": tocar un paso abre su tarea en Tareas (DESIGN.md › Foco 2). Tareas la abre al entrar y llama yaAbriTarea(). */
+  tareaPorAbrir: string | null;
+  abrirTareaEnLista: (tareaId: string) => void;
+  yaAbriTarea: () => void;
   openCreateModal: () => void;
   closeCreateModal: () => void;
 
@@ -246,6 +250,7 @@ const HabitContext = createContext<HabitContextType | undefined>(undefined);
 
 export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTab] = useState<TabRoute>('hoy');
+  const [tareaPorAbrir, setTareaPorAbrir] = useState<string | null>(null);
   const [previousTab, setPreviousTab] = useState<TabRoute>('hoy');
   const [lastRegistroUpdate, setLastRegistroUpdate] = useState<number>(Date.now());
 
@@ -692,6 +697,12 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setSelectedHabitIdForDetail(null);
     setActiveTab(tab);
   };
+
+  const abrirTareaEnLista = (tareaId: string) => {
+    setTareaPorAbrir(tareaId);
+    navigateToTab('tareas');
+  };
+  const yaAbriTarea = () => setTareaPorAbrir(null);
 
   const openHabitDetail = (habitId: string) => {
     setSelectedHabitIdForDetail(habitId);
@@ -1454,6 +1465,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         activeTab,
         setActiveTab,
         navigateToTab,
+        tareaPorAbrir,
+        abrirTareaEnLista,
+        yaAbriTarea,
         openCreateModal,
         closeCreateModal,
         rutinas,

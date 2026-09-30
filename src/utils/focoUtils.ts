@@ -1,5 +1,6 @@
-import { FocusTarget } from '../types';
+import { FocusTarget, Subtarea } from '../types';
 import { formatDateToString, getSemanaDates } from './habitUtils';
+import { textoDiaCorto } from './tareasUtils';
 
 // ---------- Modo Foco: reloj, sesiones y tiempo en Foco (design/maqueta-foco.html, DESIGN.md › Modo Foco) ----------
 
@@ -49,6 +50,29 @@ export function relojNuevo(modo: RelojFoco['modo'], ahora: number, minutos?: num
   return { modo, inicioMs: ahora, acumuladoMs: 0, empezoMs: ahora, ...(modo === 'crono' ? {} : { duracionMs: (minutos ?? DURACION_POR_DEFECTO) * 60000 }) };
 }
 export const corriendo = (r: RelojFoco) => r.inicioMs !== null;
+
+// ---------- Foco 2 (design/maqueta-foco-2.html): el reloj espera a que toques Empezar ----------
+
+/** Reloj listo en 0:00 (o en 25:00), sin correr, hasta que la persona toque Empezar. No tiene empezoMs. */
+export function relojEnEspera(modo: RelojFoco['modo'], minutos?: number): RelojFoco {
+  return { modo, inicioMs: null, acumuladoMs: 0, ...(modo === 'crono' ? {} : { duracionMs: (minutos ?? DURACION_POR_DEFECTO) * 60000 }) };
+}
+/** Todavía no se ha tocado Empezar. */
+export const sinEmpezar = (r: RelojFoco) => r.inicioMs === null && r.acumuladoMs === 0 && r.empezoMs === undefined;
+/** "Empezar": arranca el reloj en espera (si ya andaba o estaba en pausa, es como "Seguir"). */
+export function empezar(r: RelojFoco, ahora: number): RelojFoco {
+  return { ...r, inicioMs: r.inicioMs ?? ahora, empezoMs: r.empezoMs ?? ahora };
+}
+/** "Empezar de nuevo" sale a partir de los 10 segundos. */
+export const SEG_PARA_REINICIAR = 10;
+export const puedeReiniciar = (r: RelojFoco, ahora: number) => !sinEmpezar(r) && transcurridoMs(r, ahora) >= SEG_PARA_REINICIAR * 1000;
+/**
+ * "Empezar de nuevo": el mismo reloj (cronómetro o pomodoro de la misma duración) otra vez desde cero, corriendo.
+ * Lo que llevaba se guarda aparte con cerrarBloque ANTES de llamar esto (DESIGN.md › Foco 2: "quedan guardados").
+ */
+export function reiniciar(r: RelojFoco, ahora: number): RelojFoco {
+  return { modo: r.modo, inicioMs: ahora, acumuladoMs: 0, empezoMs: ahora, ...(r.duracionMs !== undefined ? { duracionMs: r.duracionMs } : {}) };
+}
 export function transcurridoMs(r: RelojFoco, ahora: number): number {
   const t = r.acumuladoMs + (r.inicioMs !== null ? Math.max(0, ahora - r.inicioMs) : 0);
   return r.duracionMs !== undefined ? Math.min(t, r.duracionMs) : t;
@@ -93,6 +117,73 @@ export function cerrarBloque(
     etiqueta: datos.etiqueta,
     ...(r.modo === 'pomodoro' ? { pomodoro: true } : {}),
   };
+}
+
+// ---------- Foco 2: elegir en qué paso de la tarea trabajar ----------
+
+/** Los pasos de Foco en una tarea: los pasos pequeños (hojas) con texto, en orden, con el camino de pasos grandes. */
+function hojasFoco(lista: Subtarea[], ruta: string[] = [], res: { paso: Subtarea; ruta: string[] }[] = []) {
+  for (const s of lista) {
+    if (s.subtareas && s.subtareas.length) hojasFoco(s.subtareas, [...ruta, s.texto], res);
+    else if (s.texto?.trim()) res.push({ paso: s, ruta });
+  }
+  return res;
+}
+
+/**
+ * El siguiente pendiente después de `actual`, dando la vuelta: primero los de más abajo y luego los de arriba
+ * (si elegiste el paso 3 de 4, al terminarlo siguen el 4 y después el 1 y el 2). -1 si no queda ninguno.
+ */
+export function siguientePendienteCircular(hechos: boolean[], actual: number): number {
+  const n = hechos.length;
+  for (let k = 1; k < n; k++) {
+    const i = (actual + k) % n;
+    if (i >= 0 && !hechos[i]) return i;
+  }
+  return -1;
+}
+
+/**
+ * Dónde empieza Foco en una tarea: el paso pedido (desde el ▶ de "Tareas de hoy") si está pendiente; si es un paso
+ * grande, su primer paso pequeño pendiente; si no, el primer pendiente. Si no hay pendientes, 0.
+ * Es el índice dentro de las hojas con texto (lo mismo que recorre FocusModeScreen).
+ */
+export function indiceInicialFoco(subtareas: Subtarea[], pasoId?: string): number {
+  const hojas = hojasFoco(subtareas).map((x) => x.paso);
+  const primero = (lista: Subtarea[]) => { const p = lista.find((h) => !h.hecha); return p ? hojas.indexOf(p) : -1; };
+  if (pasoId) {
+    const i = hojas.findIndex((h) => h.id === pasoId);
+    if (i >= 0 && !hojas[i].hecha) return i;
+    const buscar = (lista: Subtarea[]): Subtarea | null => {
+      for (const s of lista) { if (s.id === pasoId) return s; const r = s.subtareas ? buscar(s.subtareas) : null; if (r) return r; }
+      return null;
+    };
+    const grande = buscar(subtareas);
+    if (grande?.subtareas?.length) {
+      const j = primero(hojasFoco(grande.subtareas).map((x) => x.paso));
+      if (j >= 0) return j;
+    }
+  }
+  return Math.max(0, primero(hojas));
+}
+
+/** Una fila de la hoja "¿En qué paso trabajas?": "Dentro de {dentro} · {dia}". dia es "Hoy", "Mañana", "Sáb 3"… o "Sin día". */
+export interface OpcionPasoFoco { id: string; indice: number; texto: string; dentro: string | null; dia: string; conDia: boolean }
+
+/** Los pasos que faltan, en orden, para elegir en cuál hacer el pomodoro. `indice` es el de las hojas de Foco. */
+export function opcionesPasoFoco(subtareas: Subtarea[], hoy: string): OpcionPasoFoco[] {
+  return hojasFoco(subtareas)
+    .map(({ paso, ruta }, indice) => ({ paso, ruta, indice }))
+    .filter(({ paso }) => !paso.hecha)
+    .map(({ paso, ruta, indice }) => {
+      const c = paso.fecha ? textoDiaCorto(paso.fecha, hoy) : '';
+      return {
+        id: paso.id, indice, texto: paso.texto,
+        dentro: ruta.length ? ruta.join(' › ') : null,
+        dia: c ? c.charAt(0).toUpperCase() + c.slice(1) : 'Sin día',
+        conDia: !!c,
+      };
+    });
 }
 
 // ---------- Textos del reloj ----------
@@ -186,10 +277,13 @@ export interface FocoEnCurso {
   pasoId?: string;
 }
 const CLAVE_EN_CURSO = 'racha_foco_en_curso';
-/** Se escribe al empezar, pausar, seguir o cambiar de fase; nunca cada segundo. No viaja a la nube. */
+/**
+ * Se escribe al empezar, pausar, seguir o cambiar de fase; nunca cada segundo. No viaja a la nube.
+ * Un reloj que todavía no se empezó no se guarda: si la app se cierra, no hay nada que retomar.
+ */
 export function guardarFocoEnCurso(f: FocoEnCurso | null): void {
   try {
-    if (f) localStorage.setItem(CLAVE_EN_CURSO, JSON.stringify(f));
+    if (f && !sinEmpezar(f.reloj)) localStorage.setItem(CLAVE_EN_CURSO, JSON.stringify(f));
     else localStorage.removeItem(CLAVE_EN_CURSO);
   } catch { /* sin almacenamiento: no se puede retomar */ }
 }

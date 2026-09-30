@@ -42,6 +42,27 @@ export function programarSonido(enMs: number): void {
   } catch { /* sin audio */ }
 }
 
+/**
+ * Un toque suave al empezar (Empezar, Empezar pomodoro, Empezar de nuevo; no al seguir tras una pausa).
+ * Llamar DESPUÉS de prepararSonido() dentro del mismo toque. No usa `programados`: no cancela el aviso del final.
+ */
+export function sonarInicio(): void {
+  if (!ctx) return;
+  try {
+    const t = ctx.currentTime + 0.05;
+    const osc = ctx.createOscillator();
+    const vol = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 523;
+    vol.gain.setValueAtTime(0.0001, t);
+    vol.gain.exponentialRampToValueAtTime(0.14, t + 0.02);
+    vol.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    osc.connect(vol).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.35);
+  } catch { /* sin audio */ }
+}
+
 /** Al pausar, terminar o salir: que no suene después. */
 export function cancelarSonido(): void {
   for (const o of programados) { try { o.stop(); } catch { /* ya sonó */ } }

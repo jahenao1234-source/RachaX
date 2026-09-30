@@ -262,7 +262,8 @@ export interface Tarea {
 export type FocusTarget =
   | { tipo: 'dia' }
   | { tipo: 'rutina'; nombre: string; habitoIds: string[] }
-  | { tipo: 'tarea'; tareaId: string }
+  /** pasoId: el paso en que empieza (el ▶ de "Tareas de hoy"); si es un paso grande, su primer paso pequeño pendiente. */
+  | { tipo: 'tarea'; tareaId: string; pasoId?: string }
   /** Pomodoro solo, sin hábito ni tarea (el + › "Empezar un pomodoro"). etiqueta: lo que escribió, opcional. */
   | { tipo: 'libre'; etiqueta?: string };
 

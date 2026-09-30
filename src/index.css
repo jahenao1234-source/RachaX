@@ -1352,3 +1352,55 @@ html:not(.dark) .foco .dlista li.ok .c{background:var(--ambar-text);border-color
 .foco .dlista .sigue{margin-left:auto;padding:2px 7px;border-radius:6px;background:var(--text);color:var(--bg);font-size:11px;font-weight:700;flex:none}
 @media (prefers-reduced-motion:reduce){.foco .fanillo .arco{transition:none}}
 
+
+/* ---------- Foco 2 (design/maqueta-foco-2.html, DESIGN.md › Foco 2) ---------- */
+/* Hoy: ▶ en cada hábito pendiente y en cada paso de "Tareas de hoy" (abre Foco). Discreto: no compite con la casilla. */
+#screen-today .hplay,.hoyd .hplay{position:relative;width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:999px;border:none;background:var(--surface-raised);color:var(--text);padding:0}
+#screen-today .hplay::after,.hoyd .hplay::after{content:'';position:absolute;inset:-4px}
+#screen-today .hplay svg,.hoyd .hplay svg{margin-left:2px}
+.hoyd .hplay{margin-left:12px}
+#screen-today .htarea,.hoyd .htarea{border:none;background:none;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+
+/* Foco: el reloj antes de empezar y "Empezar de nuevo" */
+.foco .fnuevo{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-top:6px;padding:0 12px;border:none;border-radius:10px;background:none;color:var(--text-muted);font:inherit;font-size:14px;font-weight:600}
+
+/* Foco: la tarjeta del paso con "Cambiar" */
+.foco .fpaso-h{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:20px}
+.foco .fcambiar{position:relative;height:30px;margin:-6px -4px -6px 0;padding:0 12px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:13px;font-weight:700}
+.foco .fcambiar::after{content:'';position:absolute;inset:-7px -2px}
+html:not(.dark) .foco .fcambiar{border-color:var(--text-muted)}
+
+/* Foco: hoja "¿En qué paso trabajas?" */
+.foco .fhoja.fpasos{gap:0;max-height:78vh;overflow-y:auto}
+.foco .fhoja.fpasos{padding-top:0}
+.foco .fhoja.fpasos .fhoja-h{position:sticky;top:0;z-index:1;display:flex;align-items:flex-start;gap:12px;margin:0 0 6px;padding:22px 0 8px;background:var(--surface)}
+.foco .fhoja.fpasos .fhoja-h>div{flex:1;min-width:0}
+.foco .fhoja.fpasos .fhoja-h p{margin:4px 0 0;font-size:14px}
+.foco .fhoja .fcerrar{width:44px;height:44px;flex:none;border-radius:999px;border:none;background:var(--surface-raised);color:var(--text-muted);display:flex;align-items:center;justify-content:center}
+.foco .fopt{display:grid;grid-template-columns:1fr 22px;align-items:center;gap:10px;width:100%;min-height:60px;padding:10px 4px;border:none;border-top:1px solid var(--line);background:none;color:var(--text);font:inherit;text-align:left}
+.foco .fopt:first-of-type{border-top:none}
+.foco .fopt .t{display:block;font-size:16px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.foco .fopt .s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px;font-size:13px;color:var(--text-muted)}
+.foco .fopt .s b{font-weight:700;color:var(--text)}
+.foco .fopt[aria-current=true] .t{font-weight:700}
+.foco .fopt svg{color:var(--text)}
+
+/* Escritorio: en la lista de la derecha se toca un paso para hacerlo ahora */
+.foco .dlista .dayuda{margin:2px 0 0;font-size:13px;color:var(--text-muted)}
+.foco .dlista li.elegible{padding:0;border-top:1px solid var(--line)}
+.foco .dlista li.elegible:first-child{border-top:none}
+.foco .dlista .dpaso{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:44px;margin:0 -10px;padding:10px;width:calc(100% + 20px);border:none;border-radius:12px;background:none;color:inherit;font:inherit;font-size:15px;text-align:left;cursor:pointer}
+.foco .dlista .dpaso:hover{background:var(--surface-raised)}
+.foco .dlista li.now{padding:0}
+.foco .dlista li.now .dpaso{margin:0;width:100%;padding:10px;background:none}
+.foco .dlista .dpaso .r{width:20px;height:20px;margin:2px 1px 0;flex:none;border-radius:999px;border:2px solid var(--text-muted)}
+.foco .dlista .dpaso[aria-checked=true] .r{border-color:var(--text);box-shadow:inset 0 0 0 3px var(--surface-raised),inset 0 0 0 10px var(--text)}
+.foco .dlista .dpaso>span:nth-child(2){flex:1;min-width:0;overflow-wrap:anywhere}
+
+/* Hoy (celular): con el ▶, el nombre del hábito puede ir en 2 renglones en vez de cortarse */
+#screen-today .hnom{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* Textos largos sin espacios */
+#screen-today .htarea p,.hoyd .htarea p,.foco .fpaso .sig,.foco .fpaso .txt{overflow-wrap:anywhere}
+/* Celular angosto: con el ▶, el "+10" se esconde para que el nombre respire */
+@media (max-width:359px){#screen-today [id^="habito-"] .font-number:has(+ .hplay){display:none}}
