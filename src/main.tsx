@@ -1,4 +1,4 @@
-import {StrictMode} from 'react';
+import {StrictMode, Suspense, lazy} from 'react';
 import {createRoot} from 'react-dom/client';
 import '@fontsource/barlow/400.css';
 import '@fontsource/barlow/500.css';
@@ -23,8 +23,21 @@ try {
   }
 } catch (e) {}
 
+const PanelApp = lazy(() => import('./panel/PanelApp'));
+const isPanel = window.location.pathname === '/panel' || window.location.pathname.startsWith('/panel/');
+
+if (isPanel) {
+  document.title = 'Panel de pagos · Racha';
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    {isPanel ? (
+      <Suspense fallback={null}>
+        <PanelApp />
+      </Suspense>
+    ) : (
+      <App />
+    )}
   </StrictMode>,
 );

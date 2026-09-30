@@ -7,7 +7,7 @@ import { SOPORTE_URL, VENTA_URL } from '../../lib/config';
 // Maqueta aprobada: design/maqueta-cuenta.html (DESIGN.md, "Tu cuenta")
 const PASO = 'racha_cuenta_paso';
 const CORREO = 'racha_cuenta_correo';
-const DOMINIOS: Record<string, string> = {
+export const DOMINIOS: Record<string, string> = {
   'gmial.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gmail.co': 'gmail.com',
   'hotmial.com': 'hotmail.com', 'hotmal.com': 'hotmail.com',
   'outlok.com': 'outlook.com', 'yaho.com': 'yahoo.com',
