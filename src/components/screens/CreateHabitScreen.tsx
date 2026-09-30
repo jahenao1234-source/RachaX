@@ -317,16 +317,14 @@ export const CreateHabitScreen: React.FC = () => {
               <button 
                 role="radio" aria-checked={tipo === 'positivo'}
                 onClick={() => setTipo('positivo')}
-                className={`flex-1 h-11 rounded-[9px] text-[13px] transition-colors ${tipo === 'positivo' ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_var(--text)] opacity-[0.2]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
-                style={{ boxShadow: tipo === 'positivo' ? 'inset 0 0 0 1px rgba(241,243,245,0.6)' : undefined }} // Approximation for --sel 
+                className={`flex-1 h-11 rounded-[9px] text-[13px] transition-colors ${tipo === 'positivo' ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--text)_60%,transparent)]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
               >
                 Hacerlo
               </button>
               <button 
                 role="radio" aria-checked={tipo === 'negativo'}
                 onClick={() => setTipo('negativo')}
-                className={`flex-1 h-11 rounded-[9px] text-[13px] transition-colors ${tipo === 'negativo' ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_var(--text)] opacity-[0.2]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
-                style={{ boxShadow: tipo === 'negativo' ? 'inset 0 0 0 1px rgba(241,243,245,0.6)' : undefined }}
+                className={`flex-1 h-11 rounded-[9px] text-[13px] transition-colors ${tipo === 'negativo' ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--text)_60%,transparent)]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
               >
                 Evitarlo
               </button>
@@ -402,7 +400,7 @@ export const CreateHabitScreen: React.FC = () => {
                   key={f.id}
                   role="radio" aria-checked={frecuencia === f.id}
                   onClick={() => setFrecuencia(f.id as FrecuenciaHabito)}
-                  className={`flex-1 min-w-[70px] h-11 px-2 rounded-[9px] text-[13px] transition-colors whitespace-nowrap ${frecuencia === f.id ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_rgba(241,243,245,0.6)]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
+                  className={`flex-1 min-w-[70px] h-11 px-2 rounded-[9px] text-[13px] transition-colors whitespace-nowrap ${frecuencia === f.id ? 'bg-surface-raised text-text font-bold shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--text)_60%,transparent)]' : 'text-text-muted font-semibold hover:bg-surface-raised'}`}
                 >
                   {f.label}
                 </button>
