@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, Link2, ArrowRight, Pause, Play, Coffee, Timer } from 'lucide-react';
+import { X, Check, Link2, ArrowRight, Pause, Play, Coffee, Timer, RotateCcw } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
@@ -9,8 +9,9 @@ import {
   RelojFoco, relojNuevo, corriendo, transcurridoMs, restanteMs, terminado, pausar, seguir, avance, cerrarBloque,
   formatoReloj, formatoDuracion, guardarFocoEnCurso, leerFocoEnCurso, revisarFocoEnCurso, DURACIONES_POMODORO,
   DURACION_POR_DEFECTO, descansoPara, subtituloLibre, MINIMO_GUARDAR_SEG,
+  relojEnEspera, sinEmpezar, empezar, puedeReiniciar, reiniciar, siguientePendienteCircular, indiceInicialFoco, opcionesPasoFoco, SesionFoco
 } from '../../utils/focoUtils';
-import { prepararSonido, programarSonido, cancelarSonido, vibrar, usePantallaEncendida } from '../../utils/focoAviso';
+import { prepararSonido, programarSonido, cancelarSonido, vibrar, usePantallaEncendida, sonarInicio } from '../../utils/focoAviso';
 import { FocusTarget, Habito, Subtarea } from '../../types';
 
 /** Modo Foco. design/maqueta-foco.html · DESIGN.md › Modo Foco. Cálculos del reloj en utils/focoUtils.ts. */
@@ -32,7 +33,7 @@ export const FocusModeScreen: React.FC = () => {
   const {
     isFocusModeOpen, closeFocusMode, focusTarget, openFocusMode,
     habitos, habitosDeHoy, habitosActivos, tareas,
-    esHabitoCompletado, toggleCompletado, setValor, toggleSubtarea, guardarSesionFoco, sesionesFoco,
+    esHabitoCompletado, toggleCompletado, setValor, toggleSubtarea, guardarSesionFoco, sesionesFoco, quitarSesionFoco,
   } = useHabitStore();
   const desk = useEsEscritorio();
   const hoy = getTodayString();
@@ -47,8 +48,10 @@ export const FocusModeScreen: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [sinReloj, setSinReloj] = useState(false);
   const [salir, setSalir] = useState(false);
+  const [pidiendoNuevo, setPidiendoNuevo] = useState(false);
+  const [verPasos, setVerPasos] = useState(false);
   const [deFondo, setDeFondo] = useState(false);
-  const [deshacer, setDeshacer] = useState<{ tareaId: string; pasoId: string; texto: string; index: number } | null>(null);
+  const [aviso, setAviso] = useState<{ texto: string; deshacer?: () => void } | null>(null);
   // Resumen de esta vez
   const [segGuardados, setSegGuardados] = useState(0);
   const [pomodorosHechos, setPomodorosHechos] = useState(0);
@@ -58,6 +61,7 @@ export const FocusModeScreen: React.FC = () => {
   const abierto = useRef(false);
   const retomado = useRef(false);
   const btnHecho = useRef<HTMLButtonElement>(null);
+  const btnCambiar = useRef<HTMLButtonElement>(null);
   const tituloFin = useRef<HTMLHeadingElement>(null);
   const timerDeshacer = useRef<number | null>(null);
 
@@ -74,7 +78,6 @@ export const FocusModeScreen: React.FC = () => {
   const total = pasos.length;
   const pasoHecho = (p: Paso) => (p.kind === 'sub' ? p.sub.hecha : esHabitoCompletado(p.habito.id));
   const paso = index < total ? pasos[index] : null;
-  const siguientePendiente = (desde: number) => { for (let i = desde; i < total; i++) if (!pasoHecho(pasos[i])) return i; return -1; };
   const tareaTerminada = focusTarget?.tipo === 'tarea' && total > 0 && pasos.every(pasoHecho);
 
   const nombre =
@@ -95,7 +98,7 @@ export const FocusModeScreen: React.FC = () => {
   };
   const relojHabito = (i: number) => {
     const p = i < total ? pasos[i] : null;
-    if (p && p.kind === 'habito' && !esHabitoCompletado(p.habito.id)) { setReloj(relojNuevo('crono', Date.now())); setBloqueId(nuevoId()); }
+    if (p && p.kind === 'habito' && !esHabitoCompletado(p.habito.id)) { setReloj(relojEnEspera('crono')); setBloqueId(nuevoId()); }
     else setReloj(null);
   };
 
@@ -132,12 +135,12 @@ export const FocusModeScreen: React.FC = () => {
     if (!isFocusModeOpen) { abierto.current = false; return; }
     if (abierto.current) return;
     abierto.current = true;
-    setSalir(false); setDeshacer(null); setDeFondo(false);
+    setSalir(false); setAviso(null); setDeFondo(false); setPidiendoNuevo(false); setVerPasos(false);
     setSegGuardados(0); setPomodorosHechos(0); setPasosMarcados(0); setPasosEnPomodoro(0);
     // Índice: el primer pendiente (o el paso guardado si se retomó)
     const guardado = retomado.current ? leerFocoEnCurso()?.pasoId : undefined;
     const iGuardado = guardado ? pasos.findIndex((p) => p.key === guardado) : -1;
-    const inicio = iGuardado >= 0 ? iGuardado : focusTarget?.tipo === 'tarea' ? Math.max(0, siguientePendiente(0)) : 0;
+    const inicio = iGuardado >= 0 ? iGuardado : (focusTarget?.tipo === 'tarea' && tareaActual) ? indiceInicialFoco(tareaActual.subtareas, focusTarget.pasoId) : 0;
     setIndex(inicio);
     if (retomado.current) { retomado.current = false; return; }
     setSinReloj(false); setPomodoro(1); setMinutos(leerMinutos());
@@ -204,6 +207,12 @@ export const FocusModeScreen: React.FC = () => {
   }, [desk, isFocusModeOpen, reloj, ahora, nombre]);
 
   // ---------- Acciones ----------
+  const mostrarAviso = (texto: string, deshacerFn?: () => void) => {
+    setAviso({ texto, deshacer: deshacerFn });
+    setAnuncio(texto);
+    if (timerDeshacer.current) window.clearTimeout(timerDeshacer.current);
+    timerDeshacer.current = window.setTimeout(() => setAviso(null), 5000);
+  };
   const cerrarFoco = () => {
     cancelarSonido();
     guardarFocoEnCurso(null);
@@ -220,13 +229,25 @@ export const FocusModeScreen: React.FC = () => {
   };
   const pedirSalir = () => {
     if (salir) { setSalir(false); return; }
-    if (fase === 'foco' && reloj) setSalir(true);
+    if (fase === 'foco' && reloj && !sinEmpezar(reloj)) setSalir(true);
     else if (fase === 'descanso' || ((fase === 'finPomodoro' || fase === 'finDescanso') && (segGuardados > 0 || pasosMarcados > 0))) terminarPorAhora();
     else if (fase === 'foco' && (segGuardados > 0 || pasosMarcados > 0)) terminarPorAhora();
     else cerrarFoco();
   };
+  const empezarReloj = () => {
+    if (!reloj) return;
+    prepararSonido();
+    sonarInicio();
+    setReloj(empezar(reloj, Date.now()));
+    setAhora(Date.now());
+    setAnuncio('Empezó');
+  };
   const pausarOSeguir = () => {
     if (!reloj) return;
+    if (sinEmpezar(reloj)) {
+      empezarReloj();
+      return;
+    }
     const t = Date.now();
     if (corriendo(reloj)) { setReloj(pausar(reloj, t)); cancelarSonido(); setAnuncio('En pausa'); }
     else {
@@ -237,8 +258,44 @@ export const FocusModeScreen: React.FC = () => {
     }
     setAhora(t);
   };
+  const reiniciarAhora = (como: 'guardar' | 'borrar' | 'nada') => {
+    if (!reloj) return;
+    const t = Date.now();
+    const antes = { reloj, bloqueId };
+    const seg = Math.floor(transcurridoMs(reloj, t) / 1000);
+    const n = formatoDuracion(seg);
+    let guardado: SesionFoco | null = null;
+    if (como === 'guardar') {
+      const s = cerrarBloque(reloj, t, datosBloque(bloqueId, paso?.kind === 'habito' ? paso.habito : undefined));
+      if (s) { guardarSesionFoco(s); setSegGuardados((v) => v + s.seg); guardado = s; }
+    }
+    const r = reiniciar(reloj, t);
+    setReloj(r);
+    setBloqueId(nuevoId());
+    setAhora(t);
+    prepararSonido();
+    sonarInicio();
+    if (r.modo === 'pomodoro') programarSonido(restanteMs(r, t));
+    setPidiendoNuevo(false);
+    
+    let texto = 'Empezaste de nuevo.';
+    if (como === 'guardar') texto = `Empezaste de nuevo. Los ${n} quedaron guardados.`;
+    else if (como === 'borrar') texto = `Empezaste de nuevo. Borraste ${n}.`;
+    
+    mostrarAviso(texto, () => {
+      if (como === 'guardar' && guardado) { quitarSesionFoco(guardado.id); setSegGuardados((v) => v - guardado!.seg); }
+      setReloj(antes.reloj);
+      setBloqueId(antes.bloqueId);
+      setAhora(Date.now());
+      if (antes.reloj.modo === 'pomodoro') {
+        if (corriendo(antes.reloj)) programarSonido(restanteMs(antes.reloj, Date.now()));
+        else cancelarSonido();
+      }
+    });
+  };
   const empezarPomodoro = (n: number) => {
     prepararSonido();
+    sonarInicio();
     const t = Date.now();
     const r = relojNuevo('pomodoro', t, minutos);
     setReloj(r); setAhora(t); setBloqueId(nuevoId()); setPomodoro(n); setPasosEnPomodoro(0); setDeFondo(false);
@@ -280,41 +337,52 @@ export const FocusModeScreen: React.FC = () => {
   };
 
   // Tareas
+  const elegirPaso = (i: number) => {
+    setVerPasos(false);
+    if (i === index) return;
+    setIndex(i);
+    if (fase === 'foco' && reloj) {
+      mostrarAviso(`Ahora trabajas en ${(pasos[i] as { sub: Subtarea }).sub.texto}.`);
+    }
+  };
   const hechoPaso = () => {
     if (!paso || paso.kind !== 'sub' || !tareaActual) return;
     if (!paso.sub.hecha) {
       toggleSubtarea(tareaActual.id, paso.key);
       setPasosMarcados((n) => n + 1);
       setPasosEnPomodoro((n) => n + 1);
-      setDeshacer({ tareaId: tareaActual.id, pasoId: paso.key, texto: paso.sub.texto, index });
-      if (timerDeshacer.current) window.clearTimeout(timerDeshacer.current);
-      timerDeshacer.current = window.setTimeout(() => setDeshacer(null), 5000);
+      const antes = { tareaId: tareaActual.id, pasoId: paso.key, index };
+      mostrarAviso(`Marcaste ${paso.sub.texto}.`, () => {
+        toggleSubtarea(antes.tareaId, antes.pasoId);
+        setPasosMarcados((v) => Math.max(0, v - 1));
+        setPasosEnPomodoro((v) => Math.max(0, v - 1));
+        setIndex(antes.index);
+        // Si con ese paso se terminó todo (fin), vuelve a Foco (sin leer la fase vieja del cierre)
+        setFase((f) => (f === 'fin' ? 'foco' : f));
+      });
     }
-    const sig = siguientePendiente(index + 1);
+    const sig = siguientePendienteCircular(pasos.map(pasoHecho), index);
     setIndex(sig >= 0 ? sig : total);
     if (sig < 0 && !reloj) setFase('fin');
     window.setTimeout(() => btnHecho.current?.focus(), 0);
   };
   const saltarPaso = () => {
-    const sig = siguientePendiente(index + 1);
+    const sig = siguientePendienteCircular(pasos.map(pasoHecho), index);
     if (sig >= 0) setIndex(sig);
-  };
-  const deshacerPaso = () => {
-    if (!deshacer) return;
-    toggleSubtarea(deshacer.tareaId, deshacer.pasoId);
-    setPasosMarcados((n) => Math.max(0, n - 1));
-    setPasosEnPomodoro((n) => Math.max(0, n - 1));
-    setIndex(deshacer.index);
-    if (fase === 'fin') setFase('foco');
-    setDeshacer(null);
   };
 
   // Teclas: Espacio pausa o sigue, H marca Hecho, Esc sale. Nunca actúan sobre un botón o campo enfocado.
   useEffect(() => {
     if (!isFocusModeOpen) return;
     const alTeclear = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { e.preventDefault(); pedirSalir(); return; }
-      if (e.repeat || salir || fase !== 'foco') return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        if (verPasos) { setVerPasos(false); btnCambiar.current?.focus(); return; }
+        if (pidiendoNuevo) { setPidiendoNuevo(false); return; }
+        pedirSalir();
+        return;
+      }
+      if (e.repeat || salir || pidiendoNuevo || verPasos || fase !== 'foco') return;
       if ((e.target as HTMLElement)?.closest?.('button,input,textarea,select,[role=radio],a')) return;
       if (e.key === ' ') { e.preventDefault(); pausarOSeguir(); }
       else if (e.key === 'h' || e.key === 'H') {
@@ -367,11 +435,26 @@ export const FocusModeScreen: React.FC = () => {
 
   const tarjetaPaso = paso && paso.kind === 'sub' && !paso.sub.hecha && (
     <div className="fpaso">
-      <span className="lab">Ahora</span>
+      {pasos.filter(p => !pasoHecho(p)).length >= 2 ? (
+        <div className="fpaso-h">
+          <span className="lab">Ahora</span>
+          {!desk && <button type="button" className="fcambiar" ref={btnCambiar} onClick={() => setVerPasos(true)} aria-haspopup="dialog" aria-label={`Cambiar el paso (ahora: ${paso.sub.texto})`}>Cambiar</button>}
+        </div>
+      ) : (
+        <span className="lab">Ahora</span>
+      )}
       <span className="txt">{paso.sub.texto}</span>
-      {(() => { const s = siguientePendiente(index + 1); return s >= 0 ? <span className="sig">Después: {(pasos[s] as { sub: Subtarea }).sub.texto}</span> : null; })()}
+      {(() => { const s = siguientePendienteCircular(pasos.map(pasoHecho), index); return s >= 0 ? <span className="sig">Después: {(pasos[s] as { sub: Subtarea }).sub.texto}</span> : null; })()}
     </div>
   );
+
+  const btnNuevo = fase === 'foco' && reloj && reloj.modo !== 'descanso' && puedeReiniciar(reloj, ahora) ? (
+    <button type="button" className="fnuevo" onClick={() => {
+      const seg = Math.floor(transcurridoMs(reloj, Date.now()) / 1000);
+      if (seg < MINIMO_GUARDAR_SEG) reiniciarAhora('nada');
+      else setPidiendoNuevo(true);
+    }}><RotateCcw size={16} />Empezar de nuevo</button>
+  ) : null;
 
   const duracion = (
     <div className="fdur">
@@ -448,19 +531,28 @@ export const FocusModeScreen: React.FC = () => {
         ) : reloj && (
           <>
             <p className={`freloj${corriendo(reloj) ? '' : ' pausa'}`} role="timer" aria-label="Tiempo">{formatoReloj(transcurridoMs(reloj, ahora))}</p>
-            <p className="fcap">{corriendo(reloj) ? 'Tu tiempo se guarda al marcar Hecho o al salir.' : 'En pausa'}</p>
+            <p className="fcap">{sinEmpezar(reloj) ? 'El reloj empieza cuando toques Empezar.' : corriendo(reloj) ? 'Tu tiempo se guarda al marcar Hecho o al salir.' : 'En pausa'}</p>
+            {btnNuevo}
           </>
         )}
       </>
     );
     pie = hechoYa ? (
       <button type="button" className="fbtn" onClick={saltarHabito}>Siguiente<ArrowRight size={18} /></button>
+    ) : reloj && sinEmpezar(reloj) ? (
+      <>
+        <button type="button" className="fbtn" onClick={empezarReloj}><Play size={16} fill="currentColor" />Empezar</button>
+        <div className="ffila">
+          <button type="button" className="fsec" onClick={hechoHabito}><Check size={18} />Hecho</button>
+          {total > 1 && <button type="button" className="fsec" onClick={saltarHabito}>Saltar<ArrowRight size={16} /></button>}
+        </div>
+      </>
     ) : (
       <>
         <button type="button" ref={btnHecho} className="fbtn" onClick={hechoHabito}><Check size={20} strokeWidth={3} />Hecho</button>
         <div className="ffila">
           <button type="button" className="fsec" onClick={pausarOSeguir}>{reloj && corriendo(reloj) ? <><Pause size={16} />Pausar</> : <><Play size={16} />Seguir</>}</button>
-          <button type="button" className="fsec" onClick={saltarHabito}>Saltar<ArrowRight size={16} /></button>
+          {total > 1 && <button type="button" className="fsec" onClick={saltarHabito}>Saltar<ArrowRight size={16} /></button>}
         </div>
       </>
     );
@@ -470,6 +562,7 @@ export const FocusModeScreen: React.FC = () => {
     cuerpo = (
       <>
         {reloj ? anillo(reloj) : esTarea && !hayPendiente ? <span className="fok"><Check size={30} strokeWidth={3} /></span> : null}
+        {btnNuevo}
         {tarjetaPaso}
       </>
     );
@@ -555,16 +648,44 @@ export const FocusModeScreen: React.FC = () => {
   const minHoyTarea = esTarea && tareaActual
     ? sesionesFoco.filter((s) => s.fecha === hoy && s.tareaId === tareaActual.id).reduce((n, s) => n + s.seg, 0)
     : 0;
+  const interactivoDesktop = (fase === 'elegir' || fase === 'foco') && pasos.filter(p => !pasoHecho(p)).length >= 2;
   const listaPasos = desk && esTarea && tareaActual && total > 0 && (
     <section className="dlista" aria-labelledby="foco-lista-t">
       <h2 className="cond" id="foco-lista-t">{tareaActual.nombre}</h2>
       <p className="dmin">{pasos.filter(pasoHecho).length} de {total} pasos{minHoyTarea >= MINIMO_GUARDAR_SEG ? ` · ${formatoDuracion(minHoyTarea)} en Foco hoy` : ''}</p>
-      <ol>
+      {interactivoDesktop && <p className="dayuda">Toca un paso para hacerlo ahora.</p>}
+      <ol
+        role={interactivoDesktop ? "radiogroup" : undefined}
+        aria-label={interactivoDesktop ? "Paso para hacer ahora" : undefined}
+        onKeyDown={(e) => {
+          if (!interactivoDesktop || (e.key !== 'ArrowDown' && e.key !== 'ArrowUp')) return;
+          e.preventDefault();
+          const pendientes = pasos.map((p, i) => !pasoHecho(p) ? i : -1).filter(i => i >= 0);
+          if (!pendientes.length) return;
+          const currentIdx = pendientes.indexOf(index);
+          const nextIdx = pendientes[(currentIdx + (e.key === 'ArrowDown' ? 1 : pendientes.length - 1)) % pendientes.length];
+          elegirPaso(nextIdx);
+          (e.currentTarget.querySelector(`[data-p="${nextIdx}"]`) as HTMLElement | null)?.focus();
+        }}
+      >
         {pasos.map((p, i) => {
           const ok = pasoHecho(p);
           const ahoraEs = !ok && i === index && fase !== 'fin';
+          
+          if (interactivoDesktop && !ok) {
+            return (
+              <li key={p.key} className={ahoraEs ? 'now' : 'elegible'} role="none">
+                <button type="button" role="radio" aria-checked={ahoraEs} tabIndex={ahoraEs ? 0 : -1} className="dpaso" data-p={i} onClick={() => elegirPaso(i)}>
+                  <span className="r" aria-hidden="true" />
+                  <span>{p.kind === 'sub' ? p.sub.texto : ''}</span>
+                  {ahoraEs && <span className="sigue">Ahora</span>}
+                </button>
+              </li>
+            );
+          }
+          
           return (
-            <li key={p.key} className={ok ? 'ok' : ahoraEs ? 'now' : ''}>
+            <li key={p.key} className={ok ? 'ok' : ahoraEs ? 'now' : ''} role={interactivoDesktop ? "none" : undefined}>
               <span className="c" aria-hidden="true">{ok && <Check size={14} strokeWidth={3} />}</span>
               <span>{p.kind === 'sub' ? p.sub.texto : ''}</span>
               {ahoraEs && <span className="sigue">Sigue</span>}
@@ -596,11 +717,44 @@ export const FocusModeScreen: React.FC = () => {
         {listaPasos}
       </div>
 
-      {deshacer && fase === 'foco' && (
+      {aviso && (fase === 'foco' || fase === 'fin') && (
         <div className="toastf" role="status">
-          <span>Marcaste {deshacer.texto}.</span>
-          <button type="button" onClick={deshacerPaso}>Deshacer</button>
+          <span>{aviso.texto}</span>
+          {aviso.deshacer && <button type="button" onClick={() => { aviso.deshacer!(); setAviso(null); }}>Deshacer</button>}
         </div>
+      )}
+
+      {verPasos && tareaActual && (
+        <>
+          <div className="fscrim" onClick={() => { setVerPasos(false); btnCambiar.current?.focus(); }} aria-hidden="true" />
+          <div className="fhoja fpasos" role="dialog" aria-modal="true" aria-labelledby="fpasos-t">
+            <div className="fhoja-h">
+              <div><h2 className="cond" id="fpasos-t">¿En qué paso trabajas?</h2><p>{tareaActual.nombre}</p></div>
+              <button type="button" className="fcerrar" aria-label="Cerrar" onClick={() => { setVerPasos(false); btnCambiar.current?.focus(); }}><X size={18} /></button>
+            </div>
+            <div className="fopts">
+              {opcionesPasoFoco(tareaActual.subtareas, hoy).map((o) => (
+                <button key={o.id} type="button" className="fopt" aria-current={o.indice === index ? 'true' : undefined} onClick={() => { elegirPaso(o.indice); btnCambiar.current?.focus(); }}>
+                  <span><span className="t">{o.texto}</span><span className="s">{o.dentro ? `Dentro de ${o.dentro} · ` : ''}{o.conDia ? <b>{o.dia}</b> : o.dia}</span></span>
+                  {o.indice === index ? <Check size={18} strokeWidth={2.6} /> : <span />}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {pidiendoNuevo && (
+        <>
+          <div className="fscrim" onClick={() => setPidiendoNuevo(false)} aria-hidden="true" />
+          <div className="fhoja" role="alertdialog" aria-modal="true" aria-labelledby="fnuevo-t" aria-describedby="fnuevo-d">
+            <h2 className="cond" id="fnuevo-t">¿Empezar de nuevo?</h2>
+            <p id="fnuevo-d">Llevas {formatoDuracion(Math.floor(transcurridoMs(reloj!, ahora) / 1000))} en {nombre}. ¿Los guardas o los borras?</p>
+            <button type="button" className="fbtn" autoFocus onClick={() => reiniciarAhora('guardar')}><Check size={18} />Guardar y empezar de nuevo</button>
+            <button type="button" className="fsec" onClick={() => reiniciarAhora('borrar')}>Borrar y empezar de nuevo</button>
+            <button type="button" className="fq" onClick={() => setPidiendoNuevo(false)}>Seguir como iba</button>
+          </div>
+        </>
       )}
 
       {salir && (
