@@ -1153,6 +1153,78 @@ html:not(.dark) .semana .tscomp-dias i b{background:var(--ambar-text)}
 .tareas .tlist > li{min-width:0}
 .tareas .tli{min-width:0;overflow:hidden}
 
+/* Mientras se edita una tarea o se cambia el orden, se esconde la barra de abajo (TasksScreen pone la clase en body) */
+body.sin-barra #bottom-navigation-bar{display:none}
+/* ---- Tareas 2 (design/maqueta-tareas-2.html, DESIGN.md › Tareas 2): grupos, filas compactas, menú, Cambiar de lugar, barra Mover y ¿Qué día lo haces? ---- */
+
+/* Grupos por cuándo: "Para hoy", "Esta semana", "Más adelante", "Sin día" (títulos como "Terminadas") */
+.tareas .tsec{display:flex;align-items:baseline;gap:8px;margin:22px 2px 10px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;line-height:1.1;color:var(--text)}
+.tareas .tsec .num{font-size:16px;color:var(--text-muted);font-variant-numeric:tabular-nums}
+.tareas .tgrupo:first-of-type .tsec{margin-top:6px}
+.tareas .tgrupo .tcard{margin-bottom:10px}
+
+/* Pista de una sola vez */
+.tareas .tpista1{display:flex;align-items:center;gap:6px;margin:0 0 4px;padding:6px 4px 6px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:13px;line-height:1.4;color:var(--text-muted)}
+.tareas .tpista1 span{flex:1}
+.tareas .tpista1-x{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;border-radius:999px;background:none;color:var(--text-muted)}
+
+/* Fila compacta del celular: el cuerpo abre la tarea; la casilla marca el paso que se ve */
+.tareas .tfc{display:flex;align-items:center;padding-right:10px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface)}
+.tareas .tfc-a{flex:1;min-width:0;min-height:68px;display:flex;align-items:center;gap:12px;padding:12px 8px 12px 12px;border:none;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tareas .tfc .tname2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.tareas .tfc .tchk{margin:0 4px}
+.tareas .tfc.alzada{background:var(--surface-raised);border-color:var(--text)}
+.tareas .tfc-open>.tcard{margin:0}
+.tareas .tsub .tcuando,.tareas .tli .tcuando{font-weight:700;color:var(--text)}
+.tareas .tfc .tsub,.tareas .tli .tsub{display:block;margin-top:1px;font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Cambiar de lugar (se esconde la barra de abajo; "Listo" queda abajo, a la mano) */
+.tareas .torden-h{margin:18px 0 4px}
+.tareas .tord .tli{cursor:default;padding:10px 4px 10px 12px;min-height:64px}
+.tareas .tord .tli .tname2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tareas .tord.sel .tli{border:2px solid var(--text);background:var(--surface-raised);padding:9px 3px 9px 11px}
+.tareas .tord .tasa{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;border-radius:10px;background:none;color:var(--text-muted);touch-action:none;cursor:grab}
+.tareas .tflechas{display:flex;gap:2px;flex-shrink:0}
+.tareas .tflechas button{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:none;background:none;color:var(--text)}
+.tareas .tflechas button[aria-disabled=true]{color:var(--text-muted);opacity:.45}
+.tareas .torden-pie{position:fixed;left:0;right:0;bottom:0;padding:12px 20px max(20px,env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);z-index:40}
+
+/* Editar tarea: ⋮⋮ es un botón; al tocarlo se marca el paso con todo lo de adentro y sale la barra para moverlo */
+.tareas button.tasam{width:44px;height:44px;margin-left:-10px;border:none;border-radius:10px;background:none;padding:0}
+.tareas .tpaso.movil{padding-right:4px;border-radius:12px;background:var(--surface-raised);box-shadow:inset 0 0 0 2px var(--text)}
+.tareas .tpaso.movil .tasam{color:var(--text)}
+.tareas .tediting.moviendo{padding-bottom:230px}
+.tareas .tmueve{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));width:calc(100% - 24px);max-width:406px;padding:8px 8px 10px;border-radius:18px;background:var(--surface-raised);box-shadow:0 10px 28px rgba(0,0,0,.5);z-index:60}
+.tareas .tmueve-h{display:flex;align-items:center;gap:8px;padding:0 0 4px 8px}
+.tareas .tmueve-h>span{flex:1;min-width:0}
+.tareas .tmueve-t,.tareas .tmueve-s{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tareas .tmueve-t{font-size:14px;color:var(--text-muted)}
+.tareas .tmueve-t b{color:var(--text)}
+.tareas .tmueve-s{font-size:12px;color:var(--text-muted)}
+.tareas .tmueve-x{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;border-radius:999px;background:none;color:var(--text-muted)}
+.tareas .tmueve-b{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tareas .tmueve-b button{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:12px;border:none;background:none;color:var(--text);font:inherit;font-size:12px;font-weight:700}
+.tareas .tmueve-b button[aria-disabled=true]{color:var(--text-muted);opacity:.45}
+
+/* "¿Qué día lo haces?": Hoy y Mañana como botones; lo elegido se marca igual en todos (borde de 2px) */
+.tareas .tdos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tareas .tdos button{position:relative;min-height:64px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:10px 14px;border-radius:14px;border:1px solid var(--text-muted);background:var(--surface);color:var(--text);font:inherit;font-size:16px;font-weight:700;text-align:left}
+.tareas .tdos button .sub{font-size:13px;font-weight:500}
+.tareas .tdos button[aria-checked=true]{border:2px solid var(--text);background:var(--surface-raised);padding:9px 13px}
+.tareas .tdos button svg{position:absolute;top:10px;right:10px;color:var(--text)}
+.tareas .tsem button[aria-checked=true]{border:2px solid var(--text);background:var(--surface-raised);color:var(--text)}
+
+/* Escritorio */
+@media (min-width:1024px){
+  .tareas .tsheet.tventana{top:50%;bottom:auto;transform:translate(-50%,-50%);max-width:480px;max-height:90vh;border-radius:20px;border:none;box-shadow:0 24px 60px rgba(0,0,0,.5);padding-top:18px}
+  .tareas .tsheet.tventana .tgrab{display:none}
+  .tareas .tdk-lista .tgrupo .tlist{gap:8px}
+  .tareas .tdk-mov{position:relative}
+  .tareas .tasa-dk{position:absolute;left:-26px;top:50%;transform:translateY(-50%);color:var(--text);display:flex}
+  .tareas .tli.drag{background:var(--surface);border:1.5px dashed var(--text-muted);transform:rotate(-1.5deg);opacity:.95}
+  .tareas .tdk-lista .tlinea{margin:0 0 -4px}
+}
+
 /* Progreso › Qué hacer ahora (design/maqueta-progreso-informe.html, DESIGN.md › Progreso 2) */
 .progreso .qha{margin-bottom:26px}
 .progreso .qha .cardhead h2{margin:0;font-size:22px;color:var(--text)}

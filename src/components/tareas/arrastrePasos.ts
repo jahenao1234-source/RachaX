@@ -4,7 +4,7 @@ import { Subtarea, Tarea } from '../../types';
 
 /**
  * Arrastrar pasos de una tarea (DESIGN.md › Tareas). Lo usan Editar tarea (celular) y la tarea abierta (escritorio).
- * Con el dedo: mantener presionado el asa 350 ms. Con el mouse: basta con empezar a mover.
+ * Con el dedo o el mouse: basta con empezar a mover el asa (con el dedo, también se levanta si se mantiene quieta 350 ms).
  * Arriba o abajo de un paso lo pone antes o después; hacia la derecha (más de 32 px) lo mete dentro del de arriba.
  */
 
@@ -79,6 +79,23 @@ export function destinoConTeclado(lista: Subtarea[], id: string, dir: DirTeclado
   return { padreId: up.padreId, indice: up.hermanos.indexOf(u.padreId) + 1, mensaje: `${nombre}: salió de ${t.get(u.padreId)}` };
 }
 
+/**
+ * Barra "Mover {paso}" de Editar tarea (design/maqueta-tareas-2.html, pantalla 7): qué botones se pueden usar
+ * y dentro de qué paso está ("Está dentro de “…”"; null si está suelto en la tarea).
+ * Cada botón hace moverPasoTarea con destinoConTeclado(lista, id, dir), igual que las teclas del escritorio.
+ */
+export function movimientosPaso(lista: Subtarea[], id: string): { arriba: boolean; abajo: boolean; dentro: boolean; fuera: boolean; padre: string | null } {
+  const u = ubicar(lista).get(id);
+  const padre = u?.padreId ? textos(lista).get(u.padreId) ?? null : null;
+  return {
+    arriba: !!destinoConTeclado(lista, id, 'arriba'),
+    abajo: !!destinoConTeclado(lista, id, 'abajo'),
+    dentro: !!destinoConTeclado(lista, id, 'dentro'),
+    fuera: !!destinoConTeclado(lista, id, 'fuera'),
+    padre,
+  };
+}
+
 export function useArrastrePasos(tarea: Tarea | null, alEmpezar?: () => void) {
   const { moverPasoTarea } = useHabitStore();
   const [arrastre, setArrastreEstado] = useState<Arrastre | null>(null);
@@ -100,8 +117,12 @@ export function useArrastrePasos(tarea: Tarea | null, alEmpezar?: () => void) {
     document.body.style.userSelect = '';
   }, []);
 
+  // Si hubo arrastre, el toque que llega al soltar no debe abrir la barra "Mover" (ver asa().onClickCapture)
+  const huboArrastre = useRef(false);
+
   const activar = (i: Inicio) => {
     i.activo = true;
+    huboArrastre.current = true;
     document.body.style.userSelect = 'none';
     setArrastre({ id: i.id, dy: 0, destino: null });
     if (!i.raton) navigator.vibrate?.(10);
@@ -110,6 +131,7 @@ export function useArrastrePasos(tarea: Tarea | null, alEmpezar?: () => void) {
 
   const alBajar = (e: React.PointerEvent<HTMLElement>, id: string) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    huboArrastre.current = false;
     try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* sin captura el arrastre igual funciona */ }
     // La caja que se desplaza (en la app, el contenedor con overflow-y-auto)
     let caja: HTMLElement | null = e.currentTarget.parentElement;
@@ -150,13 +172,11 @@ export function useArrastrePasos(tarea: Tarea | null, alEmpezar?: () => void) {
     const i = inicio.current;
     if (!i || !tarea) return;
     if (!i.activo) {
-      if (i.raton) {
-        if (Math.abs(e.clientY - i.y) > 4 || Math.abs(e.clientX - i.x) > 4) activar(i);
-        else return;
-      } else {
-        if (Math.abs(e.clientY - i.y) > 10) cancelar();
-        return;
-      }
+      // El asa no deja desplazar la página (touch-action: none): moverla ya es arrastrar, con dedo o con mouse.
+      // Antes, con el dedo, moverse antes de 350 ms cancelaba todo y no pasaba nada (se sentía torpe).
+      const umbral = i.raton ? 4 : 6;
+      if (Math.abs(e.clientY - i.y) > umbral || Math.abs(e.clientX - i.x) > umbral) activar(i);
+      else return;
     }
     i.ux = e.clientX; i.uy = e.clientY;
     // Cerca del borde de arriba o de abajo, la pantalla se desplaza sola
@@ -194,12 +214,19 @@ export function useArrastrePasos(tarea: Tarea | null, alEmpezar?: () => void) {
 
   return {
     arrastre,
-    /** Eventos para el asa ⋮⋮ de un paso. */
+    /**
+     * Eventos para el asa ⋮⋮ de un paso. Tocarla sin moverla deja pasar el clic (en Editar tarea abre la barra "Mover");
+     * moverla arrastra el paso (con el dedo también sale solo si se mantiene quieta 350 ms), y ese clic se descarta.
+     */
     asa: (id: string) => ({
       onPointerDown: (e: React.PointerEvent<HTMLElement>) => alBajar(e, id),
       onPointerMove: alMover,
       onPointerUp: alSoltar,
       onPointerCancel: cancelar,
+      onClickCapture: (e: React.MouseEvent) => {
+        if (huboArrastre.current) { e.preventDefault(); e.stopPropagation(); huboArrastre.current = false; }
+      },
+      onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
     }),
     /** Dónde caería el paso que se arrastra, respecto a este paso. */
     destinoEn: (id: string): PosSoltar | null => (arrastre?.destino?.id === id ? arrastre.destino.pos : null),

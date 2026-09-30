@@ -247,3 +247,87 @@ export function resumenTareas(tareas: Tarea[], hoy: string): string {
   if (atrasados) partes.push(atrasados === deAyer ? `${atrasados} de ayer` : `${atrasados} de días pasados`);
   return partes.join(' · ');
 }
+
+// ---------------- Tareas 2: grupos por cuándo y orden (design/maqueta-tareas-2.html) ----------------
+
+export type GrupoTarea = 'hoy' | 'semana' | 'despues' | 'sinDia';
+export const TITULO_GRUPO: Record<GrupoTarea, string> = { hoy: 'Para hoy', semana: 'Esta semana', despues: 'Más adelante', sinDia: 'Sin día' };
+const ORDEN_GRUPOS: GrupoTarea[] = ['hoy', 'semana', 'despues', 'sinDia'];
+
+/**
+ * A qué grupo va una tarea y qué paso la representa en la lista.
+ * Manda el paso pendiente con el día más cercano (si hay empate, el primero del árbol):
+ * hoy o atrasado → 'hoy'; de mañana hasta el domingo de esta semana → 'semana'; después → 'despues'.
+ * Si ningún paso pendiente tiene día → 'sinDia', y el paso es el siguiente en orden (siguientePaso).
+ */
+export function grupoTarea(t: Tarea, hoy: string): { grupo: GrupoTarea; paso: Subtarea | null } {
+  let mejor: Subtarea | null = null;
+  for (const h of hojasConTexto(t)) {
+    if (h.hecha || !h.fecha) continue;
+    if (!mejor || h.fecha < (mejor.fecha as string)) mejor = h;
+  }
+  if (!mejor) return { grupo: 'sinDia', paso: siguientePaso(t) };
+  const n = diasEntre(hoy, mejor.fecha as string);
+  if (n <= 0) return { grupo: 'hoy', paso: mejor };
+  const dow = parseDateString(hoy).getDay(); // 0 = domingo
+  const hastaDomingo = dow === 0 ? 0 : 7 - dow;
+  return { grupo: n <= hastaDomingo ? 'semana' : 'despues', paso: mejor };
+}
+
+/**
+ * La línea de la fila: con día, { dia: "Hoy" | "Mañana" | "Vie 2" | "12 oct" | "De ayer" | "Del 22 sep", paso };
+ * sin día, { dia: null, paso } y la pantalla escribe "Sigue: {paso}". paso = null si no quedan pasos.
+ */
+export function lineaTarea(t: Tarea, hoy: string): { dia: string | null; paso: Subtarea | null } {
+  const { paso } = grupoTarea(t, hoy);
+  if (!paso || !paso.fecha) return { dia: null, paso };
+  const c = textoDiaCorto(paso.fecha, hoy);
+  return { dia: c.charAt(0).toUpperCase() + c.slice(1), paso };
+}
+
+/**
+ * Las tareas abiertas en sus grupos, en el orden de la persona (el del arreglo). Solo los grupos con tareas.
+ * `fijos`: tareas que no deben saltar de grupo mientras están abiertas o con el aviso de Deshacer (id → grupo de antes).
+ */
+export function agruparTareas(tareas: Tarea[], hoy: string, fijos: Record<string, GrupoTarea> = {}): { grupo: GrupoTarea; titulo: string; tareas: Tarea[] }[] {
+  const por = new Map<GrupoTarea, Tarea[]>(ORDEN_GRUPOS.map((g) => [g, []]));
+  for (const t of tareas) {
+    const g = fijos[t.id] ?? grupoTarea(t, hoy).grupo;
+    por.get(g)!.push(t);
+  }
+  return ORDEN_GRUPOS.filter((g) => por.get(g)!.length > 0).map((g) => ({ grupo: g, titulo: TITULO_GRUPO[g], tareas: por.get(g)! }));
+}
+
+/**
+ * Sube o baja una tarea DENTRO de su grupo: la cambia de lugar con la vecina del mismo grupo.
+ * orden = ids de TODAS las tareas en su orden; grupo = ids del grupo en ese mismo orden.
+ * Devuelve el orden nuevo completo (para reordenarTareas) o null si no se puede (primera/última del grupo).
+ */
+export function moverTareaEnGrupo(orden: string[], grupo: string[], id: string, dir: 'arriba' | 'abajo'): string[] | null {
+  const i = grupo.indexOf(id);
+  const j = dir === 'arriba' ? i - 1 : i + 1;
+  if (i < 0 || j < 0 || j >= grupo.length) return null;
+  const a = orden.indexOf(id), b = orden.indexOf(grupo[j]);
+  if (a < 0 || b < 0) return null;
+  const nuevo = [...orden];
+  [nuevo[a], nuevo[b]] = [nuevo[b], nuevo[a]];
+  return nuevo;
+}
+
+/**
+ * Deja una tarea en el lugar `indice` de su grupo (al soltarla después de arrastrar).
+ * Las tareas de los otros grupos no se mueven de su lugar relativo. Devuelve el orden nuevo completo, o null si no cambia.
+ */
+export function colocarTareaEnGrupo(orden: string[], grupo: string[], id: string, indice: number): string[] | null {
+  const desde = grupo.indexOf(id);
+  if (desde < 0) return null;
+  const k = Math.max(0, Math.min(indice, grupo.length - 1));
+  if (k === desde) return null;
+  const sinElla = grupo.filter((x) => x !== id);
+  const nuevoGrupo = [...sinElla.slice(0, k), id, ...sinElla.slice(k)];
+  // Los lugares que ocupaba el grupo en el orden completo se llenan con el grupo en su orden nuevo
+  const lugares = orden.map((x, i) => (grupo.includes(x) ? i : -1)).filter((i) => i >= 0);
+  const nuevo = [...orden];
+  lugares.forEach((pos, n) => { nuevo[pos] = nuevoGrupo[n]; });
+  return nuevo;
+}
