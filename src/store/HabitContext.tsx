@@ -37,6 +37,7 @@ import {
   DestinoPaso,
 } from '../utils/tareasUtils';
 import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
+import { activarDificil, aplicarMinimos, comodinesAutomaticos, congelarVarios, limpiarMinimo, marcarHabito, pasarACompleto as registrosACompleto, puedeTenerMinimo, quitarDificil, recalcularConMeta, registroConValor } from '../utils/dificilUtils';
 import { hastaOcultarConsejo, limpiarConsejosOcultos } from '../utils/consejosUtils';
 import { SesionFoco, sanearSesiones } from '../utils/focoUtils';
 import { InsigniaDef, calcularInsignias } from '../utils/badgeUtils';
@@ -56,6 +57,10 @@ const STORAGE_SESIONES_FOCO_KEY = 'racha_sesiones_foco';
 const STORAGE_PREMIOS_KEY = 'racha_premios';
 const STORAGE_CAJAS_KEY = 'racha_cajas';
 const STORAGE_RETO_SEMANAL_KEY = 'racha_reto_semanal';
+const STORAGE_DIFICILES_KEY = 'racha_dias_dificiles';
+const STORAGE_COMODIN_AUTO_KEY = 'racha_comodin_auto';
+const STORAGE_CONGELADOS_AUTO_KEY = 'racha_congelados_auto';
+const STORAGE_AUTO_REVISADO_KEY = 'racha_comodin_auto_revisado';
 const COMODINES_MAX = 3;
 // Las 10 llamas raras (imágenes en public/llamas/raras/<id>.jpg)
 const RARAS_IDS = ['cristal', 'galaxia', 'obsidiana', 'arcoiris', 'neon', 'magma', 'perla', 'rubi', 'sakura', 'espiritu'];
@@ -242,6 +247,35 @@ interface HabitContextType {
   sumarComodines: (n: number) => void;
   setRetoSemanal: (reto: RetoSemanal | null) => void;
 
+  // Comodines y día difícil (design/maqueta-dia-dificil.html)
+  /** Días ('YYYY-MM-DD') en que se activó el día difícil. */
+  diasDificiles: string[];
+  esDificilHoy: boolean;
+  /** Guarda las mínimas escritas en la hoja (id del hábito → texto; vacío = sin mínima) y activa el día difícil de hoy. */
+  activarDiaDificil: (minimos: Record<string, string>) => void;
+  /** Quita el día difícil de hoy; lo ya marcado con la mínima se queda así. */
+  quitarDiaDificil: () => void;
+  /** "Lo hice completo": un hábito hecho con la mínima pasa a completo (10 puntos). */
+  pasarACompleto: (habitoId: string, fecha?: string) => void;
+  /** Comodín automático (Perfil), apagado de entrada. */
+  comodinAuto: boolean;
+  setComodinAuto: (v: boolean) => void;
+  /** Días que congeló el comodín automático (para "· automático" en Tus comodines). */
+  congeladosAuto: string[];
+  /** Revisa una vez por día si el comodín automático debe congelar días. Se llama cuando la nube ya está lista. */
+  revisarComodinAutomatico: () => void;
+  /** Días que acaba de congelar el comodín automático (el aviso con Deshacer). null = sin aviso. */
+  avisoComodinAuto: string[] | null;
+  cerrarAvisoComodinAuto: () => void;
+  deshacerComodinAuto: () => void;
+  /** Las hojas "Tus comodines" y "Día difícil" se abren desde varios lugares. */
+  verComodines: boolean;
+  abrirComodines: () => void;
+  cerrarComodines: () => void;
+  verDificil: boolean;
+  abrirDificil: () => void;
+  cerrarDificil: () => void;
+
   // Computed Utilities
   rachaActual: (habitoId: string) => number;
   mejorRacha: (habitoId: string) => number;
@@ -391,6 +425,21 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } catch {}
     return [];
   });
+
+  const leerLista = (clave: string): string[] => {
+    try {
+      const v = JSON.parse(localStorage.getItem(clave) || '[]');
+      return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+    } catch { return []; }
+  };
+  const [diasDificiles, setDiasDificiles] = useState<string[]>(() => leerLista(STORAGE_DIFICILES_KEY));
+  const [congeladosAuto, setCongeladosAuto] = useState<string[]>(() => leerLista(STORAGE_CONGELADOS_AUTO_KEY));
+  const [comodinAuto, setComodinAuto] = useState<boolean>(() => {
+    try { return localStorage.getItem(STORAGE_COMODIN_AUTO_KEY) === '1'; } catch { return false; }
+  });
+  const [avisoComodinAuto, setAvisoComodinAuto] = useState<string[] | null>(null);
+  const [verComodines, setVerComodines] = useState(false);
+  const [verDificil, setVerDificil] = useState(false);
 
   const [premios, setPremios] = useState<Premio[]>(() => {
     try {
@@ -562,6 +611,18 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     try { localStorage.setItem(STORAGE_CONGELADOS_KEY, JSON.stringify(diasCongelados)); } catch {}
   }, [diasCongelados]);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_DIFICILES_KEY, JSON.stringify(diasDificiles)); } catch {}
+  }, [diasDificiles]);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_CONGELADOS_AUTO_KEY, JSON.stringify(congeladosAuto)); } catch {}
+  }, [congeladosAuto]);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_COMODIN_AUTO_KEY, comodinAuto ? '1' : '0'); } catch {}
+  }, [comodinAuto]);
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_PREMIOS_KEY, JSON.stringify(premios)); } catch {}
@@ -766,7 +827,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         if (h.id === id) {
           const m = updates.momento || h.momento || 'flexible';
           const updatedColor = COLOR_POR_MOMENTO[m];
-          return { ...h, ...updates, color: updatedColor };
+          const nuevo: Habito = { ...h, ...updates, color: updatedColor };
+          const minimo = puedeTenerMinimo(nuevo) ? limpiarMinimo(nuevo.minimo) : undefined;
+          if (minimo) nuevo.minimo = minimo; else delete nuevo.minimo;
+          return nuevo;
         }
         return h;
       })
@@ -776,9 +840,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const hoy = getTodayString();
       const meta = updates.metaDiaria;
       setRegistros((prev) => prev.map((r) =>
-        r.habitoId === id && r.fecha === hoy && typeof r.valor === 'number'
-          ? { ...r, completado: meta ? r.valor >= meta : r.valor > 0 }
-          : r));
+        r.habitoId === id && r.fecha === hoy ? recalcularConMeta(r, meta) : r));
       setLastRegistroUpdate(Date.now());
     }
   };
@@ -793,54 +855,29 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   // Action: Toggle Completado
+  // Marcar o desmarcar. Si ese día es un día difícil y el hábito tiene mínima, queda hecho con la mínima (5 puntos).
   const toggleCompletado = (habitoId: string, fecha = getTodayString()) => {
-    setRegistros((prev) => {
-      const existingIdx = prev.findIndex((r) => r.habitoId === habitoId && r.fecha === fecha);
-      if (existingIdx >= 0) {
-        const existing = prev[existingIdx];
-        if (existing.completado) {
-          // Desmarcar
-          setLastRegistroUpdate(Date.now());
-          return prev.filter((_, idx) => idx !== existingIdx);
-        } else {
-          // Marcar completado
-          setLastRegistroUpdate(Date.now());
-          const updated = [...prev];
-          updated[existingIdx] = { ...existing, completado: true };
-          return updated;
-        }
-      } else {
-        // Nuevo registro completado
-        setLastRegistroUpdate(Date.now());
-        return [
-          ...prev,
-          {
-            habitoId,
-            fecha,
-            completado: true,
-          },
-        ];
-      }
-    });
+    const habito = habitos.find((h) => h.id === habitoId) ?? ({ id: habitoId } as Habito);
+    const dificil = diasDificiles.includes(fecha);
+    setRegistros((prev) => marcarHabito(prev, habito, fecha, dificil));
+    setLastRegistroUpdate(Date.now());
   };
 
   // Action: Set Valor para cuantificables
   const setValor = (habitoId: string, fecha: string, valor: number) => {
+    const habito = habitos.find((h) => h.id === habitoId) ?? ({ id: habitoId } as Habito);
     setRegistros((prev) => {
       const existingIdx = prev.findIndex((r) => r.habitoId === habitoId && r.fecha === fecha);
-      if (valor <= 0) {
-        return existingIdx >= 0 ? prev.filter((_, idx) => idx !== existingIdx) : prev;
-      }
-      const habito = habitos.find((h) => h.id === habitoId);
-      const isCompleted = habito?.metaDiaria ? valor >= habito.metaDiaria : valor > 0;
-      setLastRegistroUpdate(Date.now());
+      const nuevo = registroConValor(existingIdx >= 0 ? prev[existingIdx] : undefined, habito, fecha, valor);
+      if (!nuevo) return existingIdx >= 0 ? prev.filter((_, idx) => idx !== existingIdx) : prev;
       if (existingIdx >= 0) {
         const updated = [...prev];
-        updated[existingIdx] = { ...updated[existingIdx], valor, completado: isCompleted };
+        updated[existingIdx] = nuevo;
         return updated;
       }
-      return [...prev, { habitoId, fecha, valor, completado: isCompleted }];
+      return [...prev, nuevo];
     });
+    setLastRegistroUpdate(Date.now());
   };
 
   const reiniciarTodo = () => {
@@ -865,6 +902,14 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem(STORAGE_COMODINES_KEY);
     localStorage.removeItem(STORAGE_CONGELADOS_KEY);
     localStorage.removeItem(STORAGE_COMODINES_MES_KEY);
+    setDiasDificiles([]);
+    setCongeladosAuto([]);
+    setComodinAuto(false);
+    setAvisoComodinAuto(null);
+    localStorage.removeItem(STORAGE_DIFICILES_KEY);
+    localStorage.removeItem(STORAGE_CONGELADOS_AUTO_KEY);
+    localStorage.removeItem(STORAGE_COMODIN_AUTO_KEY);
+    localStorage.removeItem(STORAGE_AUTO_REVISADO_KEY);
     localStorage.removeItem(STORAGE_PREMIOS_KEY);
     premiosEntregados.current.clear();
     localStorage.removeItem(STORAGE_CAJAS_KEY);
@@ -910,6 +955,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       sesionesFoco,
       comodines,
       diasCongelados,
+      diasDificiles,
+      comodinAuto,
+      congeladosAuto,
       ordenMomentos,
       premios,
       cajasPorAbrir,
@@ -953,6 +1001,9 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     sesionesFoco?: SesionFoco[];
     comodines?: number;
     diasCongelados?: string[];
+    diasDificiles?: string[];
+    comodinAuto?: boolean;
+    congeladosAuto?: string[];
     ordenMomentos?: MomentoDia[];
     premios?: Premio[];
     cajasPorAbrir?: number;
@@ -1005,6 +1056,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (Array.isArray(datos.sesionesFoco)) setSesionesFoco(sanearSesiones(datos.sesionesFoco));
       if (typeof datos.comodines === 'number') setComodines(Math.max(0, Math.min(COMODINES_MAX, datos.comodines)));
       if (Array.isArray(datos.diasCongelados)) setDiasCongelados(datos.diasCongelados);
+      const soloTextos = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+      setDiasDificiles(soloTextos(datos.diasDificiles));
+      setCongeladosAuto(soloTextos(datos.congeladosAuto));
+      setComodinAuto(datos.comodinAuto === true);
       if (Array.isArray(datos.ordenMomentos)) setOrdenMomentos(datos.ordenMomentos);
       if (Array.isArray(datos.premios)) {
         setPremios(datos.premios);
@@ -1040,6 +1095,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // Computed: Hábitos de hoy
   const hoyStr = getTodayString();
+  const esDificilHoy = diasDificiles.includes(hoyStr);
   const habitosDeHoy = useMemo(() => {
     return habitosActivos.filter((h) => isHabitScheduledForDate(h, hoyStr));
   }, [habitosActivos, hoyStr]);
@@ -1169,6 +1225,57 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (!diasCongelados.includes(fecha)) return;
     setDiasCongelados((prev) => prev.filter((d) => d !== fecha));
     setComodines((c) => Math.min(COMODINES_MAX, c + 1));
+    setCongeladosAuto((prev) => (prev.includes(fecha) ? prev.filter((d) => d !== fecha) : prev));
+  };
+
+  // ---- Día difícil ----
+  const activarDiaDificil = (minimos: Record<string, string>) => {
+    setHabitos((prev) => aplicarMinimos(prev, minimos));
+    setDiasDificiles((prev) => activarDificil(prev, getTodayString()));
+  };
+  const quitarDiaDificil = () => setDiasDificiles((prev) => quitarDificil(prev, getTodayString()));
+  const pasarACompleto = (habitoId: string, fecha = getTodayString()) => {
+    const habito = habitos.find((h) => h.id === habitoId);
+    if (!habito) return;
+    setRegistros((prev) => registrosACompleto(prev, habito, fecha));
+    setLastRegistroUpdate(Date.now());
+  };
+  const abrirComodines = () => setVerComodines(true);
+  const cerrarComodines = () => setVerComodines(false);
+  const abrirDificil = () => { setVerComodines(false); setVerDificil(true); };
+  const cerrarDificil = () => setVerDificil(false);
+
+  // ---- Comodín automático: una vez por día, cuando la nube ya está lista (AppShell) ----
+  const autoRevisando = useRef(false);
+  const revisarComodinAutomatico = () => {
+    if (!comodinAuto || autoRevisando.current) return;
+    const hoy = getTodayString();
+    let revisado: string | null = null;
+    try { revisado = localStorage.getItem(STORAGE_AUTO_REVISADO_KEY); } catch {}
+    if (revisado === hoy) return;
+    autoRevisando.current = true;
+    try { localStorage.setItem(STORAGE_AUTO_REVISADO_KEY, hoy); } catch {}
+    const fechas = comodinesAutomaticos(habitos, registros, diasCongelados, comodines, hoy);
+    if (fechas.length > 0) {
+      const r = congelarVarios(diasCongelados, comodines, fechas);
+      if (r.congeladas.length > 0) {
+        setDiasCongelados(r.diasCongelados);
+        setComodines(r.comodines);
+        setCongeladosAuto((prev) => [...prev, ...r.congeladas.filter((f) => !prev.includes(f))]);
+        setAvisoComodinAuto(r.congeladas);
+      }
+    }
+    autoRevisando.current = false;
+  };
+  const cerrarAvisoComodinAuto = () => setAvisoComodinAuto(null);
+  const deshacerComodinAuto = () => {
+    const fechas = avisoComodinAuto;
+    if (!fechas || fechas.length === 0) return;
+    const quitar = fechas.filter((f) => diasCongelados.includes(f));
+    setDiasCongelados((prev) => prev.filter((d) => !quitar.includes(d)));
+    setComodines((c) => Math.min(COMODINES_MAX, c + quitar.length));
+    setCongeladosAuto((prev) => prev.filter((d) => !quitar.includes(d)));
+    setAvisoComodinAuto(null);
   };
 
   // Claves ya entregadas: se revisan de forma síncrona para que un efecto que corre
@@ -1591,6 +1698,24 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         sumarCajas,
         sumarComodines,
         setRetoSemanal,
+        diasDificiles,
+        esDificilHoy,
+        activarDiaDificil,
+        quitarDiaDificil,
+        pasarACompleto,
+        comodinAuto,
+        setComodinAuto,
+        congeladosAuto,
+        revisarComodinAutomatico,
+        avisoComodinAuto,
+        cerrarAvisoComodinAuto,
+        deshacerComodinAuto,
+        verComodines,
+        abrirComodines,
+        cerrarComodines,
+        verDificil,
+        abrirDificil,
+        cerrarDificil,
         rachaActual,
         mejorRacha,
         mejorRachaGlobalHabitos,

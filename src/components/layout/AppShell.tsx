@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useCuenta } from '../../store/CuentaContext';
 import { getTodayString, contarProgresoReto } from '../../utils/habitUtils';
@@ -35,11 +35,25 @@ export const AppShell: React.FC = () => {
     habitos,
     habitoRecienCreadoId,
     setHabitoRecienCreadoId,
-    closeCreateModal
+    closeCreateModal,
+    revisarComodinAutomatico
   } = useHabitStore();
   const { estado } = useCuenta();
   // Sin Supabase configurado (por ejemplo, un despliegue sin las variables), la app funciona solo en el celular
   const [nubeLista, setNubeLista] = useState(!supabaseListo);
+
+  // Comodín automático (design/maqueta-dia-dificil.html): se revisa cuando la nube ya trajo los datos,
+  // y otra vez al volver a la app (por si cambió el día). Solo actúa una vez por día.
+  const revisarRef = useRef(revisarComodinAutomatico);
+  revisarRef.current = revisarComodinAutomatico;
+  const puedeRevisar = nubeLista && (estado === 'dentro' || !supabaseListo);
+  useEffect(() => { if (puedeRevisar) revisarRef.current(); });
+  useEffect(() => {
+    if (!puedeRevisar) return;
+    const alVolver = () => { if (document.visibilityState === 'visible') revisarRef.current(); };
+    document.addEventListener('visibilitychange', alVolver);
+    return () => document.removeEventListener('visibilitychange', alVolver);
+  }, [puedeRevisar]);
 
   // Al entrar a la cuenta (también después de salir desde Perfil) se abre siempre en Hoy
   const [estadoAntes, setEstadoAntes] = useState(estado);

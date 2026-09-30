@@ -70,6 +70,8 @@ export type Habito = {
   diasPersonalizados?: number[];   // 0=Dom ... 6=Sáb, si es personalizado
   recordatorio?: string | null;      // "08:00" o null
   metaDiaria?: number;        // opcional (ej. 8 vasos); si no, es sí/no
+  /** Versión mínima: lo más pequeño que cuenta como cumplido en un día difícil ("1 página"). Solo hábitos a hacer. */
+  minimo?: string;
   reto?: { meta: number; inicio: string; cumplidoEn?: string }; // meta = días o semanas, inicio = YYYY-MM-DD
   creadoEn: string;           // ISO date
 };
@@ -79,6 +81,8 @@ export type Registro = {
   fecha: string;              // "YYYY-MM-DD"
   completado: boolean;
   valor?: number;             // para hábitos cuantificables
+  /** Hecho en su versión mínima (día difícil): cuenta como cumplido, con 5 puntos en vez de 10. */
+  minimo?: boolean;
 };
 
 export interface ColorHabitoOpcion {

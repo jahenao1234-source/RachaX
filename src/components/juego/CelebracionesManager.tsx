@@ -31,6 +31,7 @@ export const CelebracionesManager: React.FC = () => {
     insignias,
     abrirCajas,
     diasCongelados,
+    diasDificiles,
     setAbrirColeccion,
     setActiveTab,
     completadosHoy,
@@ -105,7 +106,7 @@ export const CelebracionesManager: React.FC = () => {
 
     const hoyDC = getTodayString();
     if (!diaCompletoYaMostrado(hoyDC)) {
-      const resumen = resumenDiaCompleto(habitosActivos, registros, hoyDC);
+      const resumen = resumenDiaCompleto(habitosActivos, registros, hoyDC, diasDificiles.includes(hoyDC));
       if (resumen) { setActiveCeleb({ tipo: 'dia', resumen }); return; }
     }
 

@@ -346,7 +346,7 @@ Esquinas suavemente redondeadas y consistentes por tamaño: pastillas de nivel 6
 - **Hover / Focus / Active:** hover aclara el fondo un paso; foco visible con anillo de 2px en lila separado 2px; al presionar escala 0.97. Transiciones de 150–200ms con ease-out.
 
 ### Chips
-- **Comodines** (chip): surface con borde line, ícono escudo en lila, texto "2 comodines".
+- **Comodines** (chip): surface con borde line-strong, ícono escudo en lila, texto "2 comodines" y chevrón; es un botón que abre "Tus comodines" (ver "### Comodines y día difícil").
 - **Insignia en progreso**: surface-raised con ícono de medalla en ámbar.
 
 ### Cards / Containers
@@ -541,6 +541,57 @@ Correcciones de Johnatan del 29 sep: no había dónde verlos todos, no se podía
   - El aviso de Deshacer sale dentro de la pantalla, abajo (sin barra de navegación).
   - A 320px la columna de la hora baja a 60px y la casilla se alinea con la primera línea del título.
 
+### Comodines y día difícil (aprobado el 30 sep, design/maqueta-dia-dificil.html)
+Para los peores días: el chip de comodines se puede tocar, cada hábito puede tener su **versión mínima**, un **día difícil** hace que la mínima cuente como cumplido, y un **comodín automático** opcional. CSS en src/index.css › "Comodines y día difícil" (clases `dd…`: `.ddchip`, `.ddbtn`, `.ddlink`, `.ddsug`, `.ddon`, `.ddmin`, `.ddesc`, `.ddtxt`, `.ddsec`, `.ddusado`, `.ddalt`, `.ddfila`, `.ddcuerpo`, `.ddpie`, `.ddno`, `.ddnota`, `.ddcampo`/`.dcx`, `.ddpluma`, `.ddsw`, `.dcw`; las de Hoy van bajo `#screen-today` y `.hoyd`, las de las hojas bajo `.tareas`). Lila = comodines y rescate. El ícono del día difícil es la pluma (`Feather`).
+Datos en src/utils/dificilUtils.ts (83 pruebas): puntosDeRegistro, puedeTenerMinimo, tieneMinimo, limpiarMinimo, aplicarMinimos, activarDificil, quitarDificil, pendientesParaDificil, entradaDificil, marcarHabito, pasarACompleto, registroConValor, recalcularConMeta, puntosDeHoy, puntosAlMarcar, puntosPorGanar, ayerSinMarcar, textoAyerSinMarcar, diasRotosSeguidos, comodinesAutomaticos, congelarVarios, textoAvisoAuto, textoChip, ariaChip, subtituloComodines, textoCongelarAyer, proximoComodin, usadosDelMes. `Habito.minimo` (texto) y `Registro.minimo` (hecho con la mínima). En HabitContext: diasDificiles, esDificilHoy, activarDiaDificil(minimos), quitarDiaDificil, pasarACompleto, comodinAuto/setComodinAuto, congeladosAuto, revisarComodinAutomatico (lo llama AppShell), avisoComodinAuto/cerrarAvisoComodinAuto/deshacerComodinAuto, verComodines/abrirComodines/cerrarComodines, verDificil/abrirDificil/cerrarDificil. Todo viaja en la copia a la nube.
+
+**Reglas (decididas por Johnatan el 30 sep):**
+- Hecho con la mínima = **cumplido, con 5 puntos** en vez de 10 (el doble el día de regreso). Cuenta en todo: racha, constancia, Tu mes, Día completo, retos, reto de la semana e insignias.
+- Con el día difícil activo, **marcar un hábito que tiene mínima lo deja hecho con la mínima**; los que no tienen mínima cuentan completos, como siempre. En los de meta (8 vasos), **un toque a la casilla basta**; con el contador, llegar a la meta lo deja completo.
+- Los hábitos **a evitar no tienen mínima** (ni en la hoja ni en Editar). Los semanales salen en la hoja si hoy no se han hecho y no llegaron a su meta de la semana; hechos con la mínima cuentan como 1 vez.
+- **Quitar** el día difícil no cambia lo ya marcado con la mínima. El día difícil es solo de hoy: a medianoche se apaga solo y en el calendario queda la pluma.
+- **Comodín automático:** solo si **salva la racha**: al abrir la app (o al volver a ella) una vez por día, después de que la nube trae los datos. Congela los días rotos seguidos justo antes de hoy (con algo sin marcar y sin comodín; los días sin hábitos no cuentan), solo si alcanzan los comodines para **todos** y la racha de antes iba en más de 0. Si no, no gasta ninguno.
+
+**Hoy (celular):**
+- **Chip de comodines** → botón (`.ddchip`, 36px + zona de 44): escudo lila, "{N} comodines" / "1 comodín" (textoChip) y chevrón; aria-label ariaChip ("Tus comodines: te quedan 2"). Abre la hoja "Tus comodines". El chip del calendario hace lo mismo.
+- **En la tarjeta "Tu día"**, debajo de "2 de 7 · te quedan 5 / Siguiente", según entradaDificil:
+  - 'enlace': una línea con raya arriba (`.ddlink`): pluma lila, "¿Día pesado?" (text-muted) y a la derecha "Haz solo lo mínimo ›" (text, 700). Abre la hoja "Día difícil".
+  - 'noche' (desde las 7 p. m., con la mitad o menos hecha): recuadro comodin-bg (`.ddsug`): "¿Día pesado?" con la pluma, "Haz la versión mínima de lo que te falta: cuenta como cumplido." y el botón con borde lila "Hacer solo lo mínimo" (abre la hoja).
+  - 'activo': el aviso (`.ddon`, comodin-bg): pluma, "**Día difícil.** Hoy basta con lo mínimo." y "Quitar" (aria-label "Quitar el día difícil"). Quitar muestra el aviso "Quitaste el día difícil." con Deshacer.
+  - 'nada': no sale nada (no falta ningún hábito que se pueda hacer en mínima).
+  - **El día después de un día en blanco** (ayerSinMarcar, con comodines y ayer sin congelar), encima: otra línea `.ddlink` con el escudo: "Ayer quedó sin marcar." y "¿Lo congelas? ›", que abre "Tus comodines".
+- **Con el día difícil activo:**
+  - Los hábitos pendientes con mínima muestran debajo del nombre "Mínimo: {mínima}" (`.ddmin`, lila 13px 600) en vez del anclaje, y "+5" en vez de "+10".
+  - Hecho con la mínima: "+5 ganados · versión mínima" (ambar-text 13px 700). Tocar esa línea vuelve a mostrar el aviso.
+  - Al marcar: aviso "**{hábito}** en su versión mínima: +5." con el botón "Lo hice completo" (pasarACompleto).
+  - "+N pts hoy" = puntosDeHoy; "+N pts por ganar" = puntosPorGanar; "Siguiente" pasa al siguiente pendiente.
+- **Aviso del comodín automático** (al abrir la app, si congeló): textoAvisoAuto, por ejemplo "Congelamos ayer, martes 29, con un comodín. Te queda 1.", "Congelamos el domingo 27 con un comodín. Te quedan 2." o "Congelamos 2 días con comodines: lunes 28 y martes 29. Era el último.", con "Deshacer" (deshacerComodinAuto). La tira de 7 días muestra el día congelado.
+
+**Hoy (escritorio):** en la franja, a la derecha: el chip, el botón **"Día difícil"** (`.ddbtn`, 44px, surface-raised con borde line-strong, pluma lila; aria-haspopup="dialog") y "Modo Foco". Activo: clase `on` (comodin-bg con borde lila) y aria-label "Día difícil, activo"; tocarlo abre la hoja con "Quitar día difícil". El aviso `.ddon` va debajo de la franja (máx. 640px): "**Día difícil.** Hoy basta con lo mínimo: cada hábito en su versión mínima cuenta como cumplido." y "Quitar". Por debajo de 1440px el chip queda en escudo + número (la palabra, solo para lectores); por debajo de 1152px el botón queda solo con la pluma (title "Día difícil"). Las hojas son ventanas centradas (`tventana` / `hcomp`).
+
+**Hoja "Tus comodines"** (`.tsheet`, dentro de `.tareas`):
+- "Tus comodines" y el subtítulo subtituloComodines ("Tienes 2 · guardas hasta 3" / "No te quedan comodines"); X de 44px.
+- Los 3 escudos de 52px (`.ddesc`): los que tienes en comodin-bg con borde lila; los que faltan con borde discontinuo (`vacio`). role="img", aria-label "{N} de 3 comodines".
+- "Un comodín congela un día que no pudiste: **ese día no cuenta como fallado.** Te llega uno cada mes y ganas más con los retos."
+- Si ayer quedó sin marcar y tienes comodines: textoAyerSinMarcar ("Ayer, martes 29, quedaron 6 hábitos sin marcar. Si sí los hiciste, márcalos en el calendario.") y el botón secundario (`.ddsec`, escudo lila) textoCongelarAyer ("Congelar ayer · te quedan 2"). Sin comodines: "Te llega uno nuevo {el 1 de octubre}." (proximoComodin), sin botón.
+- "Usados este mes" (usadosDelMes): cada día "Viernes 25 de septiembre" / "Congelaste 7 hábitos" (o "… · automático") y "Quitar" (aria-label "Quitar el comodín del viernes 25"), que lo devuelve y deja el aviso "Quitaste el comodín del viernes 25." con Deshacer. Si no hay: "Todavía no usas ninguno este mes."
+- "Para congelar otro día, tócalo en el calendario ›" (el enlace, aria-label "Abrir el calendario", va a Progreso › Calendario) y "¿Hoy es un día pesado? Un día difícil también cuenta ›" (abre la hoja Día difícil; no sale si el día difícil ya está activo o no falta nada).
+
+**Hoja "Día difícil"** (`.tsheet.hcomp`: el cuerpo se desplaza y el pie queda a la vista):
+- "Día difícil", "Hoy basta con lo mínimo."; "Haz la versión más pequeña de cada hábito. **Cuenta como cumplido.** Cada uno suma 5 puntos."
+- "Lo mínimo de hoy" y la ayuda "Se guarda para el próximo día difícil. Si dejas uno vacío, ese hábito se hace completo, como siempre."
+- Una fila por hábito de pendientesParaDificil (`.ddfila`): su ícono en el tinte del momento, el nombre, y el campo "Mínimo:" (16px; placeholder 400 en text-muted, sin "por ejemplo") con la mínima guardada si la tiene. aria-label "Mínimo de {hábito}". Máximo 60 letras.
+- Pie: "Ahora no" y el botón primario "Activar día difícil" (activarDiaDificil con lo escrito). Al activar, el foco vuelve a la tarjeta y sale el aviso `.ddon`.
+- Si el día difícil ya está activo (escritorio), el pie es "Quitar día difícil" y "Guardar".
+
+**Editar hábito:** después de "¿Después de qué?", el campo "Tu versión mínima **opcional**" (`.ddcampo .dcx`, 48px, pluma lila, 16px), placeholder "Por ejemplo, 1 página o 5 minutos", ayuda "Para un día difícil: lo mínimo que cuenta como cumplido.". No sale en los hábitos a evitar.
+
+**Calendario:** los días difíciles (diasDificiles) llevan la pluma de 10px arriba a la derecha (`.ddpluma`; ink sobre ámbar) y su aria-label termina en ", día difícil". Si el día también tiene comodín, gana el escudo. En la leyenda, después de "Comodín": pluma lila + "Día difícil". La hoja del día sin comodines dice "Te llega uno nuevo el 1 de {mes siguiente}. Puedes marcar lo que sí cumpliste." (antes "Se recargan…": solo llega uno).
+
+**Perfil › Tus hábitos:** debajo de "Gestionar hábitos", el interruptor (`.ddsw`, role="switch", 64px) "Comodín automático" / "Si un día se te queda algo sin marcar, lo congelamos con un comodín. Te avisamos y puedes deshacerlo." Apagado de entrada.
+
+**Día completo:** si hoy es un día difícil, el subtítulo es "En un día difícil, vale igual" y el mensaje "Hiciste lo que pudiste y cumpliste todo." (después de "Tu primer día completo", que gana).
+
 ### Barra de agua y metas numéricas
 Hábitos con meta diaria (ej. 8 vasos) muestran segmentos de 16×6px (llenos en text, vacíos en track-empty) y un botón secundario "+1".
 
@@ -602,7 +653,7 @@ Pestaña principal con un solo trabajo: ver el mes completo de todos los hábito
   - **Sin nada cumplido en el mes:** en vez de la cifra, "Retoma hoy" en display y "Cada día que marques se suma aquí." Nunca un 0 como dato principal.
 - **Hoja del día** (al tocar un día pasado o hoy): título con el día ("Martes 15 de septiembre") y "N de M cumplidos · se guarda al tocar". La hoja se abre por encima de la barra inferior. Lista plana de los hábitos que tocaban ese día, en el mismo orden que en Hoy (momentos y luego su orden): tocar la fila entera marca o desmarca (aro de 44px con borde en text-muted; marcado en ámbar con ✓ en ink, nombre tachado y "+10 ganados" en ámbar); los de meta llevan −/+ de 44px (el − se apaga en 0); una flecha de 44px a la derecha abre el Detalle del hábito. Los cambios se guardan al instante.
 - **Hábitos semanales ("N por semana"):** no tocan un día fijo, así que no pintan el color ni la barrita de ningún día ni cuentan en Tu mes. En la hoja del día aparecen aparte, al final, bajo "Esta semana, cuando quieras" (13px, 600, text-muted), con "N de M esta semana" debajo del nombre, y se marcan igual que los demás. Solo si el hábito ya existía ese día.
-- **Comodín en la hoja:** solo en días pasados con algo pendiente. Botón secundario "Congelar los N que faltan · te quedan M" (con 1: "Congelar el que falta · te quedan M") (congela el día; lo ya cumplido sigue cumplido) y la ayuda "Si ese día no pudiste, congélalos: no cuentan como fallados." Día congelado: recuadro lila "Congelaste lo que faltaba, así que no cuenta como fallado. Si al final sí lo cumpliste, márcalo igual." y el enlace "Quitar el comodín · vuelve a tu saldo". Sin comodines: botón deshabilitado "No te quedan comodines este mes" y "Se recargan el 1 de {mes siguiente}. Puedes marcar lo que sí cumpliste."
+- **Comodín en la hoja:** solo en días pasados con algo pendiente. Botón secundario "Congelar los N que faltan · te quedan M" (con 1: "Congelar el que falta · te quedan M") (congela el día; lo ya cumplido sigue cumplido) y la ayuda "Si ese día no pudiste, congélalos: no cuentan como fallados." Día congelado: recuadro lila "Congelaste lo que faltaba, así que no cuenta como fallado. Si al final sí lo cumpliste, márcalo igual." y el enlace "Quitar el comodín · vuelve a tu saldo". Sin comodines: botón deshabilitado "No te quedan comodines este mes" y "Te llega uno nuevo el 1 de {mes siguiente}. Puedes marcar lo que sí cumpliste."
 
 ### Progreso
 Pestaña que responde "¿voy mejorando?" y "¿qué me cuesta?". Referencia exacta: design/maqueta-progreso.html. Todo se cuenta hasta ayer ("sin contar hoy"). Sin categorías, sin selector de periodo y sin gráficos de barras por día (si cumples siempre, se ven todas iguales).

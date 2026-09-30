@@ -490,6 +490,11 @@ export function getDiasDeRegreso(habitos: Habito[], registros: Registro[], diasC
   return diasRegreso;
 }
 
+/** Puntos de un registro: 10 si está hecho, 5 si se hizo con la versión mínima (día difícil), 0 si no. */
+export function puntosDeRegistro(r: Registro): number {
+  return r.completado ? (r.minimo ? 5 : 10) : 0;
+}
+
 export function calcularPuntosTotales(
   registros: Registro[],
   habitos: Habito[] = [],
@@ -498,8 +503,7 @@ export function calcularPuntosTotales(
 ): number {
   let puntos = 0;
   // 1. Puntos base
-  const completados = registros.filter((r) => r.completado).length;
-  puntos += completados * 10;
+  puntos += registros.reduce((s, r) => s + puntosDeRegistro(r), 0);
   
   // 2. Premios
   puntos += premios.reduce((acc, p) => acc + (p.puntos || 0), 0);
@@ -507,8 +511,7 @@ export function calcularPuntosTotales(
   // 3. Bono de regreso
   const diasRegreso = getDiasDeRegreso(habitos, registros, diasCongelados);
   for (const dia of diasRegreso) {
-    const completadosEseDia = registros.filter(r => r.fecha === dia && r.completado).length;
-    puntos += completadosEseDia * 10;
+    puntos += registros.filter((r) => r.fecha === dia).reduce((s, r) => s + puntosDeRegistro(r), 0);
   }
   
   return puntos;

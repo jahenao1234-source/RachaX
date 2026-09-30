@@ -1538,3 +1538,91 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 /* Tu semana: el enlace "Tus compromisos ›" (como "Ver tareas ›" en Hoy) */
 .semana .s4ver{display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 4px;border:none;background:none;color:var(--ambar-text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap}
 .semana .s4ver:hover{text-decoration:underline}
+
+/* ===================== Comodines y día difícil (design/maqueta-dia-dificil.html, DESIGN.md › "#### Comodines y día difícil") ===================== */
+
+/* Hoy: el chip de comodines ahora es un botón */
+#screen-today .ddchip,#screen-stats .ddchip,.hoyd .ddchip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px 0 12px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:inherit;font-size:13px;font-weight:600;white-space:nowrap;position:relative}
+#screen-today .ddchip::after,#screen-stats .ddchip::after{content:'';position:absolute;inset:-4px 0}
+#screen-today .ddchip svg:first-child,#screen-stats .ddchip svg:first-child,.hoyd .ddchip svg:first-child{color:var(--lila-text)}
+#screen-today .ddchip svg:last-child,#screen-stats .ddchip svg:last-child,.hoyd .ddchip svg:last-child{color:var(--text-muted)}
+.hoyd .ddchip{min-height:44px;padding:0 12px 0 14px;font-size:14px}
+.hoyd .dcw{white-space:nowrap}
+
+@media (max-width:1439px){.hoyd .ddchip .dcw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hoyd .ddchip{padding:0 8px 0 12px}}
+@media (max-width:1151px){.hoyd .ddbtn .dcw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hoyd .ddbtn{width:44px;padding:0;justify-content:center}}
+.hoyd .ddbtn{height:44px;padding:0 16px;border-radius:12px;background:var(--surface-raised);border:1px solid var(--line-strong);display:flex;align-items:center;gap:8px;color:var(--text);font:inherit;font-size:14px;font-weight:700}
+.hoyd .ddbtn svg{color:var(--lila-text)}
+.hoyd .ddbtn.on{background:var(--comodin-bg);border-color:var(--lila-text)}
+
+/* Tu día: la entrada al día difícil (de día, un enlace; en la noche, una sugerencia) */
+#screen-today .ddlink{display:flex;align-items:center;gap:6px;width:100%;min-height:44px;margin:2px 0 -8px;padding:4px 0 0;border:none;border-top:1px solid var(--line);background:none;color:var(--text-muted);font:inherit;font-size:13px;font-weight:500;text-align:left}
+#screen-today .ddlink svg{color:var(--lila-text)}
+#screen-today .ddlink b{margin-left:auto;display:inline-flex;align-items:center;gap:2px;color:var(--text);font-weight:700}
+#screen-today .ddlink b svg{color:var(--text-muted)}
+#screen-today .ddlink + .ddlink{margin-top:0}
+#screen-today .ddsug,.hoyd .ddsug{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:14px;background:var(--comodin-bg);border:1px solid var(--line)}
+#screen-today .ddsug b,.hoyd .ddsug b{display:flex;align-items:center;gap:6px;font-size:15px;color:var(--text)}
+#screen-today .ddsug b svg,.hoyd .ddsug b svg{color:var(--lila-text)}
+#screen-today .ddsug p,.hoyd .ddsug p{margin:0;font-size:13px;line-height:1.45;color:var(--text-muted)}
+#screen-today .ddsug button,.hoyd .ddsug button{align-self:flex-start;min-height:44px;margin-top:2px;padding:0 14px;border-radius:12px;border:1.5px solid var(--lila-text);background:none;color:var(--text);font:inherit;font-size:14px;font-weight:700}
+/* Día difícil activo */
+#screen-today .ddon,.hoyd .ddon{display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 4px 4px 12px;border-radius:12px;background:var(--comodin-bg);font-size:13px;line-height:1.35;color:var(--text-muted)}
+#screen-today .ddon svg,.hoyd .ddon svg{flex-shrink:0;color:var(--lila-text)}
+#screen-today .ddon span,.hoyd .ddon span{flex:1;min-width:0}
+#screen-today .ddon b,.hoyd .ddon b{color:var(--text)}
+#screen-today .ddon button,.hoyd .ddon button{min-height:44px;padding:0 10px;border:none;background:none;color:var(--text);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+#screen-today .ddmin,.hoyd .ddmin{display:flex;align-items:center;gap:4px;margin:1px 0 0;font-size:13px;font-weight:600;color:var(--lila-text)}
+
+/* Hojas "Tus comodines" y "Día difícil" (dentro de .tareas, con .tsheet) */
+.tareas .ddesc{display:flex;gap:8px;margin:14px 0 4px}
+.tareas .ddesc i{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--comodin-bg);border:1.5px solid var(--lila-text);color:var(--lila-text)}
+.tareas .ddesc i.vacio{background:none;border:1.5px dashed var(--line-strong);color:var(--text-muted)}
+.tareas .ddtxt{margin:10px 0 6px;font-size:14px;line-height:1.5;color:var(--text-muted)}
+.tareas .ddtxt b{color:var(--text)}
+.tareas .ddusado{display:flex;align-items:center;gap:10px;min-height:52px;padding:4px 0;border-top:1px solid var(--line)}
+.tareas .ddusado:first-of-type{border-top:none}
+.tareas .ddusado span{flex:1;font-size:15px;font-weight:600}
+.tareas .ddusado small{display:block;font-size:12px;font-weight:500;color:var(--text-muted)}
+.tareas .ddusado button{min-height:44px;padding:0 8px;border:none;background:none;color:var(--text-muted);font:inherit;font-size:14px;font-weight:700}
+.tareas .ddalt{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--text-muted)}
+.tareas .ddalt button{display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 2px;border:none;background:none;color:var(--lila-text);font:inherit;font-size:14px;font-weight:700}
+.tareas .ddfila{display:grid;grid-template-columns:36px minmax(0,1fr);gap:4px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.tareas .ddfila:first-of-type{border-top:none}
+.tareas .ddfila .ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.tareas .ddfila b{font-size:15px;font-weight:700;overflow-wrap:anywhere}
+.tareas .ddfila label{grid-column:2;min-width:0;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--text-muted);background:var(--surface);font-size:14px;color:var(--text-muted)}
+.tareas .ddfila label input{flex:1;width:0;min-width:0;border:none;background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;outline:none}
+.tareas .ddfila label input::placeholder{color:var(--text-muted);font-weight:400}
+.tareas .ddfila label:focus-within{border-color:var(--text)}
+.tareas .ddpie .btnp{margin-top:0}
+.tareas .ddno{min-height:44px;padding:0 12px;border:none;background:none;color:var(--text-muted);font:inherit;font-size:15px;font-weight:700}
+.tareas .ddnota{margin:10px 0 0;font-size:13px;color:var(--text-muted)}
+
+.tareas .ddsec{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:16px;font-weight:700}
+.tareas .ddsec svg{color:var(--lila-text)}
+.tareas .ddsec[disabled]{color:var(--text-muted);border-color:var(--line)}
+.tareas .ddsec[disabled] svg{color:var(--text-muted)}
+.tareas .hcomp .ddcuerpo{flex:1 1 auto;min-height:0;overflow-y:auto}
+
+/* Editar hábito: "Tu versión mínima" */
+.ddcampo .dcx{display:flex;align-items:center;gap:6px;min-height:48px;padding:0 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.ddcampo .dcx svg{color:var(--lila-text);flex-shrink:0}
+.ddcampo .dcx input{flex:1;width:0;min-width:0;border:none;background:none;color:var(--text);font:inherit;font-size:16px;font-weight:600;outline:none}
+.ddcampo .dcx input::placeholder{color:var(--text-muted);font-weight:400}
+.ddcampo .dcx:focus-within{border-color:color-mix(in srgb,var(--text) 60%,transparent)}
+
+/* Calendario: el día difícil lleva una pluma arriba a la derecha (como el escudo del comodín) */
+.ddpluma{position:absolute;top:3px;right:4px;display:flex;color:var(--lila-text)}
+.fill-logro .ddpluma{color:var(--ink)}
+
+/* Perfil: interruptor del comodín automático */
+.ddsw{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:8px 0;border:none;border-bottom:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left}
+.ddsw .t{flex:1;min-width:0}
+.ddsw .t b{display:block;font-size:15px;font-weight:600;color:var(--text)}
+.ddsw .t small{display:block;margin-top:2px;font-size:13px;line-height:1.4;color:var(--text-muted)}
+.ddsw i{width:48px;height:28px;flex-shrink:0;border-radius:999px;background:var(--track-empty);position:relative;border:1.5px solid var(--text-muted)}
+.ddsw i::after{content:'';position:absolute;top:2.5px;left:3px;width:20px;height:20px;border-radius:999px;background:var(--text-muted);transition:left .15s}
+.ddsw[aria-checked=true] i{background:var(--lila-text);border-color:var(--lila-text)}
+.ddsw[aria-checked=true] i::after{left:22px;background:var(--bg)}
+#screen-today .ddchip .dcw,#screen-stats .ddchip .dcw{margin-left:-2px}

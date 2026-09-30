@@ -17,7 +17,7 @@ export function esDiaCompleto(habitos: Habito[], registros: Registro[], fecha: s
   return tocan.length > 0 && tocan.every((h) => isHabitCompletedOnDate(h.id, fecha, registros));
 }
 
-export type TipoDiaCompleto = 'primera' | 'volviste' | 'domingo' | 'seguidos' | 'otro';
+export type TipoDiaCompleto = 'primera' | 'dificil' | 'volviste' | 'domingo' | 'seguidos' | 'otro';
 
 export interface ResumenDiaCompleto {
   tipo: TipoDiaCompleto;
@@ -35,8 +35,8 @@ export interface ResumenDiaCompleto {
   habitos: number;
 }
 
-/** null si hoy no es un día completo. */
-export function resumenDiaCompleto(habitos: Habito[], registros: Registro[], hoy: string): ResumenDiaCompleto | null {
+/** null si hoy no es un día completo. `dificil`: hoy es un día difícil (design/maqueta-dia-dificil.html). */
+export function resumenDiaCompleto(habitos: Habito[], registros: Registro[], hoy: string, dificil = false): ResumenDiaCompleto | null {
   // Los registros hechos, una sola vez (para no buscarlos día por día)
   const hechos = new Set(registros.filter((r) => r.completado).map((r) => `${r.habitoId}|${r.fecha}`));
   const completoEl = (fecha: string) => { const tocan = programados(habitos, fecha); return tocan.length > 0 && tocan.every((h) => hechos.has(`${h.id}|${fecha}`)); };
@@ -71,6 +71,7 @@ export function resumenDiaCompleto(habitos: Habito[], registros: Registro[], hoy
 
   let tipo: TipoDiaCompleto;
   if (!ultimoAntes) tipo = 'primera';
+  else if (dificil) tipo = 'dificil';
   else if (perdidos >= 2) tipo = 'volviste';
   else if (d.getDay() === 0) tipo = 'domingo';
   else if (seguidos >= 2) tipo = 'seguidos';
@@ -78,6 +79,7 @@ export function resumenDiaCompleto(habitos: Habito[], registros: Registro[], hoy
 
   const textos: Record<TipoDiaCompleto, [string, string]> = {
     primera: ['Tu primer día completo', 'Cumpliste todos tus hábitos de hoy. Así se empieza.'],
+    dificil: ['En un día difícil, vale igual', 'Hiciste lo que pudiste y cumpliste todo.'],
     volviste: ['Volviste y completaste el día', 'No importa cuántos días pasaron. Hoy cumpliste todo.'],
     domingo: ['Cerraste la semana con el día completo', `Esta semana tuviste ${semana} ${semana === 1 ? 'día completo' : 'días completos'} de 7.`],
     seguidos: [`${seguidos} días completos seguidos`, 'Vas construyendo algo que se nota.'],
