@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
 import { getTodayString, getFrecuenciaLegible, isHabitScheduledForDate } from '../../utils/habitUtils';
 import { 
@@ -15,7 +15,13 @@ import {
   Franja,
   textoCargaDia,
   rutaDePaso,
-  diaLargo
+  diaLargo,
+  mismoDiaEnSemana,
+  semanaMasAntigua,
+  nombreSemana,
+  sePuedePlanear,
+  textoPasosSinDia,
+  textoHabitos
 } from '../../utils/semanaUtils';
 import { HabitIcon } from '../common/HabitIcon';
 import { Casilla } from '../tareas/piezas';
@@ -25,7 +31,7 @@ import { PlanSemana } from '../semana/PlanSemana';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
 import { HojaCuando } from '../semana/HojaCuando';
 import { useEsEscritorio } from './TodayScreen';
-import { GripVertical, Clock, Repeat, Sunrise, Sun, Moon, Plus, Calendar, CalendarPlus } from 'lucide-react';
+import { GripVertical, Clock, Repeat, Sunrise, Sun, Moon, Plus, Calendar, CalendarPlus, ChevronLeft, ChevronRight, Check, ListChecks } from 'lucide-react';
 import { momentoDeHora } from '../../utils/compromisosUtils';
 import { textoDiaLargo } from '../../utils/tareasUtils';
 import { Subtarea, Compromiso } from '../../types';
@@ -45,16 +51,18 @@ export const SemanaScreen: React.FC = () => {
     navigateToTab,
     editarCompromiso,
     restaurarCompromisos,
-    sesionesFoco
+    sesionesFoco,
+    habitos
   } = useHabitStore();
   
   const hoy = getTodayString();
   const dHoy = new Date(hoy + 'T00:00:00');
   const esDomingo = dHoy.getDay() === 0;
   
-  const [pestaña, setPestaña] = useState<'esta' | 'proxima'>(esDomingo ? 'proxima' : 'esta');
+  const [semana, setSemana] = useState<number>(esDomingo ? 1 : 0);
   const esEscritorio = useEsEscritorio();
   const [diaMovilElegido, setDiaMovilElegido] = useState<string>(hoy);
+  const refSemana = useRef<HTMLDivElement>(null);
 
   // Estados modales y notificaciones
   const [mensajeRescate, setMensajeRescate] = useState(false);
@@ -85,14 +93,19 @@ export const SemanaScreen: React.FC = () => {
   }, [mensajeRescate]);
 
   useEffect(() => {
-    const fechasTab = diasDeSemana(hoy, pestaña);
+    const fechasTab = diasDeSemana(hoy, semana);
     if (!fechasTab.includes(diaMovilElegido)) {
-      setDiaMovilElegido(pestaña === 'esta' ? hoy : fechasTab[0]);
+      setDiaMovilElegido(mismoDiaEnSemana(diaMovilElegido, fechasTab));
     }
-  }, [pestaña, hoy, diaMovilElegido]);
+  }, [semana, hoy]);
 
-  const fechas = diasDeSemana(hoy, pestaña);
+  const fechas = diasDeSemana(hoy, semana);
   const rango = rangoSemana(fechas);
+  // Hasta dónde se puede ir hacia atrás: la semana en que empezaste (con todos los hábitos, también los archivados)
+  const minima = semanaMasAntigua(habitos, tareas, hoy);
+  
+  const semanaPasada = fechas[6] < hoy;
+  
   const vas = comoVasSemana(habitosActivos, registros, diasCongelados, hoy);
   const rescate = rescateSemana(habitosActivos, registros, diasCongelados, hoy);
   const psd = pasosSinDia(tareas);
@@ -196,9 +209,11 @@ export const SemanaScreen: React.FC = () => {
             <Plus size={16} strokeWidth={2.4} />Compromiso
           </button>
         </div>
-        <div className="s3tabs grid grid-cols-2 gap-[4px] p-[4px] rounded-[14px] bg-surface border border-line mb-[8px]" role="tablist">
-          <button type="button" role="tab" aria-selected={pestaña === 'esta'} onClick={() => setPestaña('esta')} className={`min-h-[40px] border-none rounded-[10px] bg-transparent text-text-muted font-bold text-[14px] ${pestaña === 'esta' ? 'bg-surface-raised text-text' : ''}`}>Esta semana</button>
-          <button type="button" role="tab" aria-selected={pestaña === 'proxima'} onClick={() => setPestaña('proxima')} className={`min-h-[40px] border-none rounded-[10px] bg-transparent text-text-muted font-bold text-[14px] ${pestaña === 'proxima' ? 'bg-surface-raised text-text' : ''}`}>La próxima</button>
+        <div className={`s4sem${semana !== 0 ? ' otra' : ''}`} role="group" aria-label="Semana">
+          <button type="button" className="s4fl" aria-label={`Semana anterior, ${rangoSemana(diasDeSemana(hoy, semana - 1))}`} aria-disabled={semana <= minima ? 'true' : undefined} onClick={semana > minima ? () => setSemana(semana - 1) : undefined}><ChevronLeft size={22} /></button>
+          <div className="s4rng" aria-live="polite" tabIndex={-1} ref={refSemana}><b>{nombreSemana(semana)}</b><span className="sr-only">, </span><span>{rango}</span></div>
+          {semana !== 0 && <button type="button" className="s4hoy" onClick={() => { setSemana(0); setDiaMovilElegido(hoy); refSemana.current?.focus(); }}>Hoy</button>}
+          <button type="button" className="s4fl" aria-label={`Semana siguiente, ${rangoSemana(diasDeSemana(hoy, semana + 1))}`} onClick={() => setSemana(semana + 1)}><ChevronRight size={22} /></button>
         </div>
       </div>}
 
@@ -206,13 +221,13 @@ export const SemanaScreen: React.FC = () => {
       <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
       <div className="flex items-center gap-2 flex-wrap">
       <button type="button" className="tsnuevo" onClick={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}><Plus size={16} strokeWidth={2.4} />Compromiso</button>
-      <div role="tablist" aria-label="Qué semana planear">
-        <button type="button" role="tab" aria-selected={pestaña === 'esta'} onClick={() => setPestaña('esta')}>
-          Esta semana <span className="tab-range">{rangoSemana(diasDeSemana(hoy, 'esta'))}</span>
-        </button>
-        <button type="button" role="tab" aria-selected={pestaña === 'proxima'} onClick={() => setPestaña('proxima')}>
-          La próxima <span className="tab-range">{rangoSemana(diasDeSemana(hoy, 'proxima'))}</span>
-        </button>
+      <div role="group" aria-label="Qué semana planear">
+        <div className={`s4sem dk${semana !== 0 ? ' otra' : ''}`}>
+          <button type="button" className="s4fl" aria-label={`Semana anterior, ${rangoSemana(diasDeSemana(hoy, semana - 1))}`} aria-disabled={semana <= minima ? 'true' : undefined} onClick={semana > minima ? () => setSemana(semana - 1) : undefined}><ChevronLeft size={22} /></button>
+          <div className="s4rng" aria-live="polite" tabIndex={-1} ref={refSemana}><b>{nombreSemana(semana)}</b><span className="sr-only">, </span><span>{rango}</span></div>
+          {semana !== 0 && <button type="button" className="s4hoy" onClick={() => { setSemana(0); setDiaMovilElegido(hoy); refSemana.current?.focus(); }}>Hoy</button>}
+          <button type="button" className="s4fl" aria-label={`Semana siguiente, ${rangoSemana(diasDeSemana(hoy, semana + 1))}`} onClick={() => setSemana(semana + 1)}><ChevronRight size={22} /></button>
+        </div>
       </div>
       </div>
       </div>}
@@ -233,7 +248,7 @@ export const SemanaScreen: React.FC = () => {
         ) : (
           <div className="flex flex-col w-full">
             {/* Móvil: tira horizontal de días */}
-            <div className="s3tira grid grid-cols-7 gap-[4px] mb-[10px]" role="tablist" aria-label="Días">
+            <div className="s3tira grid grid-cols-7 gap-[4px] mb-[10px]" aria-label="Días">
               {fechas.map(f => {
                 const r = etiquetaDia(f);
                 const isSelected = f === diaMovilElegido;
@@ -244,11 +259,12 @@ export const SemanaScreen: React.FC = () => {
                   <button 
                     key={f} 
                     onClick={() => setDiaMovilElegido(f)}
-                    role="tab" aria-selected={isSelected}
+                    aria-pressed={isSelected} aria-current={f === hoy ? 'date' : undefined}
+                    aria-label={`${diaLargo(f)}${f === hoy ? ', hoy' : ''}, ${textoCargaDia(dmInfo)}`}
                     className={`min-h-[56px] flex flex-col items-center justify-center gap-[1px] rounded-[12px] border font-inherit text-[12px] font-semibold transition-colors ${isSelected ? 'border-text border-[1.5px] bg-surface-raised text-text' : 'border-line bg-surface text-text'} ${f < hoy && !isSelected ? 'text-text-muted' : ''}`}
                   >
-                    <span>{r.corto.charAt(0)}</span>
-                    <b className="text-[18px]">{r.numero}</b>
+                    <span aria-hidden="true">{r.corto.charAt(0)}</span>
+                    <b className="text-[18px]" aria-hidden="true">{r.numero}</b>
                     <i className="not-italic h-[10px] leading-[8px] tracking-[1px] text-text-muted text-[14px]" aria-hidden="true">{puntitos}</i>
                   </button>
                 );
@@ -271,23 +287,47 @@ export const SemanaScreen: React.FC = () => {
                       <span className="text-[12px] text-text-muted">{textoCargaDia(dm)}{totalHabitos > 0 ? ` · ${totalHabitos} hábitos` : ''}</span>
                     </div>
 
+                    {(() => {
+                      const totalSinDia = psd.reduce((a, g) => a + g.pasos.length, 0);
+                      const sePuede = sePuedePlanear(diaMovilElegido, hoy);
+                      if (semanaPasada) {
+                        return <p className="s4sd">Esta semana ya pasó. Aquí ves lo que hiciste.</p>;
+                      } else if (sePuede && totalSinDia > 0) {
+                        return (
+                          <p className="s4sd">
+                            <CalendarPlus size={18} />
+                            <span><b>{textoPasosSinDia(totalSinDia)}</b>. Ponle uno con el + de un momento.</span>
+                          </p>
+                        );
+                      }
+                      return null;
+                    })()}
+
                     {FRANJAS.map(franja => {
-                      if (franja === 'cualquiera' && dm.franjas[franja].length === 0) return null;
+                      // "Todo el día" sale si tiene pasos, compromisos o hábitos
+                      if (franja === 'cualquiera' && dm.franjas[franja].length === 0 && dm.habitosDe.cualquiera.length === 0) return null;
                       const items = dm.franjas[franja];
+                      // "Libre": sin pasos ni compromisos (aunque tenga hábitos)
                       const vacio = items.length === 0;
+                      
+                      const tile = franja === 'manana' ? 'bg-manana-tint text-manana-text' : franja === 'tarde' ? 'bg-coral-tint text-coral-text' : franja === 'noche' ? 'bg-lila-tint text-lila-text' : 'bg-surface-raised text-text-muted';
                       
                       return (
                         <div key={franja} className={`s3mom py-[4px] pb-[8px] border-t border-line${vacio ? ' py-[2px]' : ''}`}>
                           <div className="s3mh m-0 flex items-center gap-[8px] min-h-[44px] text-[14px] font-bold">
-                            <span className={`flex ${colorFranja(franja)}`} aria-hidden="true">{iconForFranja(franja)}</span>
-                            <span className={`s3mn ${vacio ? "flex-none" : "flex-1"}`}>{franja === 'manana' ? 'Mañana' : franja === 'tarde' ? 'Tarde' : franja === 'noche' ? 'Noche' : 'Cualquier momento'}</span>
-                            {vacio && <span className="s3libre flex-1 text-[13px] font-medium text-text-muted">Libre</span>}
+                            <span className={`s4mi ${tile}`} aria-hidden="true">{iconForFranja(franja)}</span>
+                            <span className={`s3mn ${vacio ? "flex-none" : "flex-1"}`}>{franja === 'manana' ? 'Mañana' : franja === 'tarde' ? 'Tarde' : franja === 'noche' ? 'Noche' : 'Todo el día'}</span>
+                            {vacio && franja !== 'cualquiera' && <span className="s3libre flex-1 text-[13px] font-medium text-text-muted">Libre</span>}
                             {!pasado && franja !== 'cualquiera' && (
                               <button type="button" className="s3add w-[44px] h-[44px] mr-[-6px] border-none bg-transparent text-text flex items-center justify-center relative before:content-[''] before:absolute before:inset-[6px] before:rounded-[99px] before:bg-surface-raised before:z-0" aria-label={`Agregar a la ${franja === 'manana' ? 'mañana' : franja}`} onClick={() => setFechaPonerPaso({ fecha: diaMovilElegido, diaCorto: `${r.corto} ${r.numero}`, franja })}>
                                 <Plus size={18} strokeWidth={2.4} className="relative" />
                               </button>
                             )}
                           </div>
+                          
+                          {dm.habitosDe[franja].length > 0 && (
+                            <p className="s4hab"><Repeat size={13} /><span><b>Hábitos:</b> {textoHabitos(dm.habitosDe[franja].map(h => h.nombre))}</span></p>
+                          )}
                           
                           {items.length > 0 && (
                             <ul className="s2items list-none m-0 p-0 grid grid-cols-1 gap-[5px]">
@@ -299,13 +339,16 @@ export const SemanaScreen: React.FC = () => {
                                       onClick={(e) => { if (!pasado && !(e.target as HTMLElement).closest('.tchk')) setPasoEligiendo({ tareaId: it.dato.tareaId, paso: it.dato.paso, tareaNombre: it.dato.tareaNombre, ruta: rutaDePaso(tareas.find(t => t.id === it.dato.tareaId), it.dato.paso.id) }); }}>
                                       <span className="s2pt block text-[13px] font-semibold leading-[1.3] text-text" style={it.dato.paso.hecha ? { textDecoration: 'line-through', color: 'var(--text-muted)' } : undefined}>{it.dato.paso.texto}</span>
                                       <span className="s2pie flex items-start gap-[6px] mt-[5px] min-w-0">
-                                        <Casilla paso={it.dato.paso} onToggle={() => toggleSubtarea(it.dato.tareaId, it.dato.paso.id)} />
-                                        <span className="s2tarea text-[12px] leading-[1.3] text-text-muted min-w-0 break-words">{it.dato.tareaNombre}{it.dato.atraso ? ` · ${it.dato.atraso}` : ''}</span>
+                                        {!semanaPasada && <Casilla paso={it.dato.paso} onToggle={() => toggleSubtarea(it.dato.tareaId, it.dato.paso.id)} />}
+                                        <span className="s2tarea text-[12px] leading-[1.3] text-text-muted min-w-0 break-words"><span className="s4tico"><HabitIcon name={it.dato.tareaIcono || 'ListChecks'} size={13} /></span>{it.dato.tareaNombre}{it.dato.atraso ? ` · ${it.dato.atraso}` : ''}</span>
                                       </span>
                                       {!pasado && (
                                         <button className="s3cambiar absolute right-0 top-1/2 -translate-y-1/2 w-[44px] h-[44px] border-none bg-none text-text-muted flex items-center justify-center" aria-label={`Cambiar el día o el momento de ${it.dato.paso.texto}`} onClick={(e) => { e.stopPropagation(); setPasoEligiendo({ tareaId: it.dato.tareaId, paso: it.dato.paso, tareaNombre: it.dato.tareaNombre, ruta: rutaDePaso(tareas.find(t => t.id === it.dato.tareaId), it.dato.paso.id) }); }}>
                                           <Calendar size={16} />
                                         </button>
+                                      )}
+                                      {semanaPasada && it.dato.paso.hecha && (
+                                        <span className="s4hecho" aria-label="Hecho"><Check size={14} /></span>
                                       )}
                                     </li>
                                   );
@@ -313,8 +356,8 @@ export const SemanaScreen: React.FC = () => {
                                   const c = it.dato as Compromiso;
                                   return (
                                     <li key={`c-${c.id}`}
-                                      className={`s2comp p-[7px] px-[8px] rounded-[10px] border border-line-strong bg-transparent ${pasado ? 'opacity-60' : ''}`}
-                                      onClick={() => { setCompromisoEditando(c); setFechaOcurrencia(diaMovilElegido); setHojaCompromisoAbierta(true); }}>
+                                      className={`s2comp p-[7px] px-[8px] rounded-[10px] border border-line-strong bg-transparent ${semanaPasada ? 'opacity-60' : ''}`}
+                                      onClick={() => { if (!semanaPasada) { setCompromisoEditando(c); setFechaOcurrencia(diaMovilElegido); setHojaCompromisoAbierta(true); } }}>
                                       <span className="s2hora flex items-center gap-[4px] font-heading font-bold text-[14px] text-text">
                                         <Clock size={12} className="text-text-muted" />
                                         {c.hora ? textoHora(c.hora) : 'Sin hora'}
@@ -335,37 +378,8 @@ export const SemanaScreen: React.FC = () => {
                         </div>
                       );
                     })}
-                    {dm.pasos > 0 && <p className="s3pista m-0 mt-[8px] text-[12px] text-text-muted">Toca un paso para cambiarlo de día o de momento.</p>}
+                    {!semanaPasada && dm.pasos > 0 && sePuedePlanear(diaMovilElegido, hoy) && <p className="s4sin">Toca un paso para cambiarlo de día o de momento.</p>}
                   </div>
-
-                  {psd.length > 0 && (
-                    <section className="s3sin-card mt-[12px] p-[12px] px-[14px] pb-[8px] rounded-[16px] bg-surface border border-line" aria-labelledby="s3sd">
-                      <p className="s3sd-h m-0 flex items-baseline gap-[8px]"><b id="s3sd" className="font-heading text-[20px] text-text">Pasos sin día</b><span className="num tscnt text-[15px] text-text-muted">{psd.reduce((a, g) => a + g.pasos.length, 0)}</span></p>
-                      <p className="s3sd-sub m-0 mt-[2px] mb-[6px] text-[13px] text-text-muted">Toca uno para ponerlo en el día que estás mirando.</p>
-                      
-                      {psd.map(g => (
-                        <div key={g.tareaId} className="s3sd-grupo py-[4px] pb-[6px] border-t border-line">
-                          <p className="tsgt flex items-center gap-[6px] my-[8px] mb-[4px] text-[12px] font-bold text-text-muted">
-                            <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: g.tareaIcono || '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' }} />
-                            {g.tareaNombre}
-                          </p>
-                          {g.ramas.map((rama, i) => (
-                            <div key={i} className={rama.ruta.length > 0 ? "s3rama m-0 my-[2px] ml-[6px] pl-[10px] border-l border-line-strong" : ""}>
-                              {rama.ruta.length > 0 && <p className="s3rama-h m-0 mt-[6px] text-[13px] font-bold text-text">{rama.ruta.join(' › ')}</p>}
-                              <div>
-                                {rama.pasos.map(p => (
-                                  <button type="button" key={p.id} className="s3sd-paso flex items-center gap-[10px] w-full min-h-[48px] py-[6px] border-none bg-none text-text text-[15px] font-semibold text-left border-t border-line first:border-none" aria-label={`${p.texto}, de ${g.tareaNombre}. Ponerle día`} onClick={() => setPasoEligiendo({ tareaId: g.tareaId, paso: p, tareaNombre: g.tareaNombre, ruta: rama.ruta })}>
-                                    <CalendarPlus size={16} className="text-text-muted flex-shrink-0" />
-                                    {p.texto}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </section>
-                  )}
                 </div>
               );
             })()}
@@ -423,6 +437,7 @@ export const SemanaScreen: React.FC = () => {
           fecha={fechaPonerPaso.fecha}
           pasosSinDia={psd}
           titulo={fechaPonerPaso.franja ? `${fechaPonerPaso.diaCorto} en la ${fechaPonerPaso.franja === 'manana' ? 'mañana' : fechaPonerPaso.franja}` : undefined}
+          franjaStr={fechaPonerPaso.franja ? (fechaPonerPaso.franja === 'manana' ? 'mañana' : fechaPonerPaso.franja) : undefined}
           onCompromiso={fechaPonerPaso.franja ? () => {
             setCompromisoEditando(undefined);
             setFechaOcurrencia(undefined);

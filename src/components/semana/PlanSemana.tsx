@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GripVertical, X, Sunrise, Sun, Moon, Clock, Repeat } from 'lucide-react';
+import { GripVertical, X, Sunrise, Sun, Moon, Clock, Repeat, Check } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { Casilla } from '../tareas/piezas';
@@ -23,6 +23,8 @@ export const PlanSemana: React.FC<{
   onMoverCompromiso: (c: Compromiso, fechaDestino: string, franjaDestino: Franja, fechaOriginal: string) => void;
 }> = ({ fechas, hoy, onElegirDia, avisar, onEditarCompromiso, onMoverCompromiso }) => {
   const { tareas, habitosActivos, compromisos, toggleSubtarea, ponerFechaPaso } = useHabitStore();
+  // Una semana que ya pasó es solo para mirar (DESIGN.md › Tu semana 4)
+  const semanaPasada = fechas[6] < hoy;
   const [elegido, setElegido] = useState<Item | null>(null);
   const [arrastre, setArrastre] = useState<{ item: Item; x: number; y: number } | null>(null);
   const [sobre, setSobre] = useState<Destino | null>(null);
@@ -169,7 +171,7 @@ export const PlanSemana: React.FC<{
                 <p className="tsgrupo-h">
                   <span className="w-5 h-5 rounded-[6px] bg-surface-raised flex items-center justify-center text-text shrink-0" aria-hidden="true"><HabitIcon name={g.tareaIcono} size={12} /></span>
                   <span className="truncate" title={g.tareaNombre}>{g.tareaNombre}</span>
-                  <span className="tsgrupo-n">{g.pasos.length}</span>
+                  <span className="tsgrupo-n">{g.pasos.length} {g.pasos.length === 1 ? 'paso' : 'pasos'}</span>
                 </p>
                 {/* Cada rama: el camino de sus pasos grandes como subtítulo y sus pasos pequeños con sangría */}
                 {(() => {
@@ -244,7 +246,7 @@ export const PlanSemana: React.FC<{
                         <div className="flex items-center justify-between mb-1">
                           <div className={`flex items-center gap-1.5 text-[12px] font-bold${colorFranja(franja)}`}>
                             {iconForFranja(franja)}
-                            {franja === 'manana' ? 'Mañana' : franja === 'tarde' ? 'Tarde' : franja === 'noche' ? 'Noche' : 'Cualquier momento'}
+                            {franja === 'manana' ? 'Mañana' : franja === 'tarde' ? 'Tarde' : franja === 'noche' ? 'Noche' : 'Todo el día'}
                           </div>
                           {dm.habitos[franja] > 0 && <span className="text-[11px] text-text-muted">{dm.habitos[franja]} {dm.habitos[franja] === 1 ? 'hábito' : 'hábitos'}</span>}
                         </div>
@@ -263,7 +265,9 @@ export const PlanSemana: React.FC<{
                               {...(movible ? { ...asa({ tipo: 'paso', tareaId: it.dato.tareaId, paso: it.dato.paso }), role: 'button', tabIndex: 0, 'aria-label': `${it.dato.paso.texto}, de ${it.dato.tareaNombre}. Mover a otro día` } : {})}>
                               <span className="text-[13px] font-semibold leading-tight break-words whitespace-normal" style={it.dato.paso.hecha ? { textDecoration: 'line-through', color: 'var(--text-muted)' } : undefined}>{it.dato.paso.texto}</span>
                               <div className="flex items-center gap-2">
-                                <Casilla paso={it.dato.paso} onToggle={() => toggleSubtarea(it.dato.tareaId, it.dato.paso.id)} />
+                                {/* Semana pasada: solo para mirar (los días pasados de esta semana siguen con su casilla) */}
+                                {!semanaPasada && <Casilla paso={it.dato.paso} onToggle={() => toggleSubtarea(it.dato.tareaId, it.dato.paso.id)} />}
+                                {semanaPasada && it.dato.paso.hecha && <span className="s4hecho text-text-muted" aria-label="Hecho"><Check size={14} /></span>}
                                 <span className="text-[12px] text-text-muted flex-1 min-w-0 leading-tight break-words">{it.dato.tareaNombre}{it.dato.atraso ? ` · ${it.dato.atraso}` : ''}</span>
                               </div>
                             </div>
@@ -274,7 +278,7 @@ export const PlanSemana: React.FC<{
                           return (
                             <div key={`c-${c.id}`}
                               className={`compro-card rounded-lg border border-line-strong p-2 flex flex-col gap-1 ${comun} ${pasado ? 'opacity-60' : ''}`}
-                              {...(movible ? { ...asa({ tipo: 'compromiso', dato: c, fechaOriginal: f }), role: 'button', tabIndex: 0, 'aria-label': `Compromiso: ${c.titulo}` } : { onClick: () => onEditarCompromiso(c, f), role: 'button', tabIndex: 0 })}>
+                              {...(movible ? { ...asa({ tipo: 'compromiso', dato: c, fechaOriginal: f }), role: 'button', tabIndex: 0, 'aria-label': `Compromiso: ${c.titulo}` } : semanaPasada ? {} : { onClick: () => onEditarCompromiso(c, f), role: 'button', tabIndex: 0 })}>
                               <div className="flex items-center gap-1.5 text-[14px] font-heading font-bold text-text">
                                 <Clock size={14} />
                                 {c.hora ? textoHora(c.hora) : 'Sin hora'}

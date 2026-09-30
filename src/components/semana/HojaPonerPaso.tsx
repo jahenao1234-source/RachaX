@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, CalendarPlus, Clock } from 'lucide-react';
-import { GrupoSinDia } from '../../utils/semanaUtils';
+import { X, CalendarPlus, Clock, ChevronDown } from 'lucide-react';
+import { GrupoSinDia, textoPasosSinDia, diaLargo } from '../../utils/semanaUtils';
 import { HabitIcon } from '../common/HabitIcon';
 
 export const HojaPonerPaso: React.FC<{
@@ -13,9 +13,11 @@ export const HojaPonerPaso: React.FC<{
   onIrATareas: () => void;
   /** Si viene, el título es este ("Lun 28 en la tarde") y arriba sale "Un compromiso". */
   titulo?: string;
+  franjaStr?: string;
   onCompromiso?: () => void;
-}> = ({ diaCorto, fecha, pasosSinDia, onElegir, onCerrar, onIrATareas, titulo, onCompromiso }) => {
+}> = ({ diaCorto, fecha, pasosSinDia, onElegir, onCerrar, onIrATareas, titulo, franjaStr, onCompromiso }) => {
   const cerrarRef = useRef<HTMLButtonElement>(null);
+  const [abiertas, setAbiertas] = React.useState<Set<string>>(() => new Set(pasosSinDia.length === 1 ? [pasosSinDia[0].tareaId] : []));
 
   const alCerrar = useRef(onCerrar);
   alCerrar.current = onCerrar;
@@ -35,7 +37,7 @@ export const HojaPonerPaso: React.FC<{
           <div style={{ flex: 1, minWidth: 0 }}>
             <h2 className="font-heading font-bold text-[24px] m-0" id="hpp">{titulo ?? `¿Qué haces el ${diaCorto}?`}</h2>
             <p className="sub" style={{ marginTop: 4, fontSize: 13 }}>
-              {pasosSinDia.length > 0 ? "Toca un paso para ponerlo ese día." : "No tienes pasos sin día. Agrégalos en Tareas."}
+              {pasosSinDia.length > 0 ? (franjaStr ? `Toca un paso para hacerlo el ${diaLargo(fecha).toLowerCase().split(' ')[0]} en la ${franjaStr}.` : "Toca un paso para ponerlo ese día.") : "No tienes pasos sin día. Agrégalos en Tareas."}
             </p>
           </div>
           <button ref={cerrarRef} type="button" className="closeb" aria-label="Cerrar" onClick={onCerrar}><X size={16} /></button>
@@ -49,33 +51,50 @@ export const HojaPonerPaso: React.FC<{
             </button>
           </div>
         )}
-        {onCompromiso && pasosSinDia.length > 0 && <p className="text-[13px] font-bold text-text-muted" style={{ margin: '14px 0 0' }}>O ponle un paso de tus tareas</p>}
+        {onCompromiso && pasosSinDia.length > 0 && <p className="s4lbl">O ponle un paso de tus tareas</p>}
         {pasosSinDia.length > 0 ? (
           <div className="panel-sin-dia w-full px-1">
-            {pasosSinDia.map(g => (
-              <div key={g.tareaId} className="panel-hab-grp mt-4">
-                <div className="panel-hab-name mb-1 flex items-center gap-2 text-[13px] font-bold text-text-muted">
-                  <div className="w-6 h-6 rounded-md bg-surface-raised flex items-center justify-center text-text">
-                    <HabitIcon name={g.tareaIcono} size={14} />
-                  </div>
-                  {g.tareaNombre}
+            {pasosSinDia.map(g => {
+              const abierta = abiertas.has(g.tareaId);
+              const alternar = () => {
+                const next = new Set(abiertas);
+                if (next.has(g.tareaId)) next.delete(g.tareaId);
+                else next.add(g.tareaId);
+                setAbiertas(next);
+              };
+              return (
+                <div key={g.tareaId} className="s4grp" role="group" aria-label={g.tareaNombre}>
+                  <h3 className="s4grp-t">
+                    <button type="button" className="s4grp-h" aria-expanded={abierta} onClick={alternar}>
+                      <span className="ic" aria-hidden="true"><HabitIcon name={g.tareaIcono || 'ListChecks'} size={16} /></span>
+                      <b>{g.tareaNombre}</b>
+                      <span>{textoPasosSinDia(g.pasos.length)}</span>
+                      <i className="chev" aria-hidden="true"><ChevronDown size={20} /></i>
+                    </button>
+                  </h3>
+                  {abierta && (
+                    <>
+                      {g.ramas.map((rama, ri) => {
+                        const sub = rama.ruta.length > 0;
+                        return (
+                          <div key={ri} className={sub ? 'tsrama' : undefined}>
+                            {sub && <p className="tsrama-h">{rama.ruta.join(' › ')}</p>}
+                            <div className="tmenu">
+                              {rama.pasos.map(p => (
+                                <button key={p.id} type="button" aria-label={`${p.texto}${sub ? `, dentro de ${rama.ruta[rama.ruta.length - 1]}` : ''}`} onClick={() => onElegir(g.tareaId, p.id, fecha)}>
+                                  <CalendarPlus size={18} />
+                                  <span className="flex-1 text-left">{p.texto}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
                 </div>
-                {/* Pasos pequeños bajo el camino de su paso grande */}
-                {g.ramas.map((rama, ri) => (
-                  <div key={ri} className={rama.ruta.length ? 'tsrama' : undefined}>
-                    {rama.ruta.length > 0 && <p className="tsrama-h">{rama.ruta.join(' › ')}</p>}
-                    <div className="tmenu">
-                      {rama.pasos.map(p => (
-                        <button key={p.id} type="button" onClick={() => onElegir(g.tareaId, p.id, fecha)}>
-                          <CalendarPlus size={18} />
-                          <span className="flex-1 text-left">{p.texto}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="mt-4 pb-2">
