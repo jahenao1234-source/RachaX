@@ -81,6 +81,31 @@ export function isHabitCompletedOnDate(habitoId: string, dateStr: string, regist
 }
 
 /**
+ * Estado de un día en la tira de 7 días y en "N/30 del mes" (Hoy):
+ * 'comodin' si se protegió; 'cumplido' si se hicieron TODOS los hábitos que le tocaban ESE día
+ * (según su frecuencia y desde que se crearon: un hábito nuevo no daña los días de antes);
+ * 'nada' si faltó alguno o ese día no le tocaba ninguno.
+ */
+export function estadoDiaHoy(habitos: Habito[], registros: Registro[], fecha: string, diasCongelados: string[] = []): 'cumplido' | 'comodin' | 'nada' {
+  if (diasCongelados.includes(fecha)) return 'comodin';
+  const tocan = habitos.filter((h) => !h.archivado && isHabitScheduledForDate(h, fecha));
+  if (tocan.length === 0) return 'nada';
+  return tocan.every((h) => isHabitCompletedOnDate(h.id, fecha, registros)) ? 'cumplido' : 'nada';
+}
+
+/** "N/M del mes" en Hoy: días cumplidos (o protegidos) del mes de `hoy`, hasta hoy; M = los días que tiene ese mes. */
+export function constanciaMes(habitos: Habito[], registros: Registro[], hoy: string, diasCongelados: string[] = []): { cumplidos: number; diasMes: number } {
+  const [y, m, d] = hoy.split('-').map(Number);
+  const diasMes = new Date(y, m, 0).getDate();
+  let cumplidos = 0;
+  for (let dia = 1; dia <= d; dia++) {
+    const fecha = `${hoy.slice(0, 8)}${String(dia).padStart(2, '0')}`;
+    if (estadoDiaHoy(habitos, registros, fecha, diasCongelados) !== 'nada') cumplidos++;
+  }
+  return { cumplidos, diasMes };
+}
+
+/**
  * Calculates current consecutive streak for a habit, respecting its frequency.
  * Non-scheduled days do not break the streak.
  */

@@ -23,6 +23,8 @@ import {
   ETAPAS,
   getSemanaDates,
   isHabitScheduledForDate,
+  estadoDiaHoy,
+  constanciaMes,
   parseDateString,
   formatDateToString
 } from '../../utils/habitUtils';
@@ -693,16 +695,9 @@ export const TodayScreen: React.FC = () => {
       const label = labelStr.charAt(0).toUpperCase() + labelStr.slice(1, 2);
       const dayNum = dateObj.getDate();
 
-      const habitsScheduled = habitosActivos.filter(h => h.frecuencia !== 'semanal');
-      const completedToday = habitsScheduled.filter(h => isHabitCompletedOnDate(h.id, d, registros)).length;
-      const scheduledCount = habitsScheduled.length;
-
-      let estado = 0;
-      if (diasCongelados?.includes(d)) {
-        estado = 2;
-      } else if (scheduledCount > 0 && completedToday === scheduledCount) {
-        estado = 1;
-      }
+      // Solo los hábitos que tocaban ESE día (un hábito nuevo no pinta de gris los días de antes)
+      const e = estadoDiaHoy(habitosActivos, registros, d, diasCongelados || []);
+      const estado = e === 'comodin' ? 2 : e === 'cumplido' ? 1 : 0;
 
       days.push({
         dateStr: d,
@@ -715,24 +710,9 @@ export const TodayScreen: React.FC = () => {
     return days;
   }, [hoy, registros, habitosActivos, diasCongelados]);
 
-  const constancia30 = useMemo(() => {
-    let cumplidos = 0;
-    for (let i = 0; i < 30; i++) {
-      const d = subtractDays(hoy, i);
-      if (diasCongelados?.includes(d)) {
-        cumplidos++;
-      } else {
-        const habitsScheduled = habitosActivos.filter(h => h.frecuencia !== 'semanal');
-        if (habitsScheduled.length > 0) {
-          const completed = habitsScheduled.filter(h => isHabitCompletedOnDate(h.id, d, registros)).length;
-          if (completed === habitsScheduled.length) {
-            cumplidos++;
-          }
-        }
-      }
-    }
-    return cumplidos;
-  }, [hoy, registros, habitosActivos, diasCongelados]);
+  // "N/M del mes": los días de ESTE mes (hasta hoy) cumplidos o protegidos; M = los días que tiene el mes
+  const constanciaDelMes = useMemo(() => constanciaMes(habitosActivos, registros, hoy, diasCongelados || []),
+    [hoy, registros, habitosActivos, diasCongelados]);
 
   const hayRegistrosCompletados = useMemo(() => registros.some(r => r.completado), [registros]);
   const [primerDiaVisto, setPrimerDiaVisto] = useState(() => {
@@ -1088,7 +1068,7 @@ export const TodayScreen: React.FC = () => {
         </div>
         <p className="m-0 flex justify-between text-[13px] text-text-muted">
           <span>Un día sin cumplir no borra los demás.</span>
-          <span className="text-text font-semibold">{constancia30}/30 del mes</span>
+          <span className="text-text font-semibold">{constanciaDelMes.cumplidos}/{constanciaDelMes.diasMes} del mes</span>
         </p>
       </section>
 
