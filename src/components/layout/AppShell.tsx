@@ -12,6 +12,7 @@ import { CreateHabitScreen } from '../screens/CreateHabitScreen';
 import { HabitDetailScreen } from '../screens/HabitDetailScreen';
 import { ManageHabitsModal } from '../screens/ManageHabitsModal';
 import { FocusModeScreen } from '../screens/FocusModeScreen';
+import { TusCompromisosPantalla } from '../compromisos/TusCompromisosPantalla';
 import { TasksScreen } from '../screens/TasksScreen';
 import { SemanaScreen } from '../screens/SemanaScreen';
 import { RutinaEditorModal } from '../screens/RutinaEditorModal';
@@ -133,6 +134,7 @@ export const AppShell: React.FC = () => {
         {/* Global Modals */}
         <ManageHabitsModal />
         <FocusModeScreen />
+        <TusCompromisosPantalla />
         <CreateMenu />
         <RutinaEditorModal />
         <CuentaFlow />

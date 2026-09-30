@@ -35,7 +35,7 @@ import { GripVertical, Clock, Repeat, Sunrise, Sun, Moon, Plus, Calendar, Calend
 import { momentoDeHora } from '../../utils/compromisosUtils';
 import { textoDiaLargo } from '../../utils/tareasUtils';
 import { Subtarea, Compromiso } from '../../types';
-import { textoHora, momentoDe } from '../../utils/compromisosUtils';
+import { textoHora, momentoDe, estaHecho } from '../../utils/compromisosUtils';
 import { focoSemana, formatoDuracion } from '../../utils/focoUtils';
 
 export const SemanaScreen: React.FC = () => {
@@ -51,6 +51,7 @@ export const SemanaScreen: React.FC = () => {
     navigateToTab,
     editarCompromiso,
     restaurarCompromisos,
+    abrirCompromisos,
     sesionesFoco,
     habitos
   } = useHabitStore();
@@ -205,9 +206,13 @@ export const SemanaScreen: React.FC = () => {
       {!esEscritorio && <div className="s3plan mt-[18px]">
         <div className="s3ph flex items-center justify-between gap-[10px] mb-[10px]">
           <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
-          <button type="button" className="s3mas min-h-[44px] inline-flex items-center gap-[6px] px-[12px] rounded-[12px] border border-line-strong bg-surface-raised text-text font-bold text-[14px]" onClick={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}>
-            <Plus size={16} strokeWidth={2.4} />Compromiso
-          </button>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {/* Ir a la pantalla "Tus compromisos": enlace (como "Ver tareas ›" en Hoy), no otro botón de crear */}
+            <button type="button" className="s4ver" onClick={abrirCompromisos}>Tus compromisos<ChevronRight size={16} strokeWidth={2.5} /></button>
+            <button type="button" className="s3mas min-h-[44px] inline-flex items-center gap-[6px] px-[12px] rounded-[12px] border border-line-strong bg-surface-raised text-text font-bold text-[14px]" onClick={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}>
+              <Plus size={16} strokeWidth={2.4} />Compromiso
+            </button>
+          </div>
         </div>
         <div className={`s4sem${semana !== 0 ? ' otra' : ''}`} role="group" aria-label="Semana">
           <button type="button" className="s4fl" aria-label={`Semana anterior, ${rangoSemana(diasDeSemana(hoy, semana - 1))}`} aria-disabled={semana <= minima ? 'true' : undefined} onClick={semana > minima ? () => setSemana(semana - 1) : undefined}><ChevronLeft size={22} /></button>
@@ -220,6 +225,7 @@ export const SemanaScreen: React.FC = () => {
       {esEscritorio && <div className="tsplanh">
       <h2 className="font-heading font-bold text-[26px] m-0">Planea</h2>
       <div className="flex items-center gap-2 flex-wrap">
+      <button type="button" className="s4ver" onClick={abrirCompromisos}>Tus compromisos<ChevronRight size={16} strokeWidth={2.5} /></button>
       <button type="button" className="tsnuevo" onClick={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setFechaCompromisoNuevo(hoy); setHojaCompromisoAbierta(true); }}><Plus size={16} strokeWidth={2.4} />Compromiso</button>
       <div role="group" aria-label="Qué semana planear">
         <div className={`s4sem dk${semana !== 0 ? ' otra' : ''}`}>
@@ -354,15 +360,16 @@ export const SemanaScreen: React.FC = () => {
                                   );
                                 } else {
                                   const c = it.dato as Compromiso;
+                                  const hecho = estaHecho(c, diaMovilElegido);
                                   return (
                                     <li key={`c-${c.id}`}
                                       className={`s2comp p-[7px] px-[8px] rounded-[10px] border border-line-strong bg-transparent ${semanaPasada ? 'opacity-60' : ''}`}
                                       onClick={() => { if (!semanaPasada) { setCompromisoEditando(c); setFechaOcurrencia(diaMovilElegido); setHojaCompromisoAbierta(true); } }}>
-                                      <span className="s2hora flex items-center gap-[4px] font-heading font-bold text-[14px] text-text">
+                                      <span className={`s2hora flex items-center gap-[4px] font-heading font-bold text-[14px] ${hecho ? 'text-text-muted line-through' : 'text-text'}`}>
                                         <Clock size={12} className="text-text-muted" />
                                         {c.hora ? textoHora(c.hora) : 'Sin hora'}
                                       </span>
-                                      <span className="s2ct block text-[13px] font-semibold leading-[1.3] mt-[2px] text-text">{c.titulo}</span>
+                                      <span className={`s2ct block text-[13px] font-semibold leading-[1.3] mt-[2px] ${hecho ? 'text-text-muted line-through' : 'text-text'}`}>{c.titulo}</span>
                                       {c.repetirSemanal && (
                                         <span className="s2rep flex items-center gap-[4px] mt-[3px] text-[11px] text-text-muted">
                                           <Repeat size={11} />

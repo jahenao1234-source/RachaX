@@ -7,7 +7,7 @@ import { Compromiso, Subtarea, MomentoPlan } from '../../types';
 import { isHabitScheduledForDate } from '../../utils/habitUtils';
 import { diaPorMomentos, etiquetaDia, FRANJAS, Franja, pasosSinDia, textoCargaDia } from '../../utils/semanaUtils';
 import { textoDiaLargo } from '../../utils/tareasUtils';
-import { textoHora } from '../../utils/compromisosUtils';
+import { textoHora, estaHecho } from '../../utils/compromisosUtils';
 
 interface ItemPaso { tipo: 'paso'; tareaId: string; paso: Subtarea }
 interface ItemCompromiso { tipo: 'compromiso'; dato: Compromiso; fechaOriginal: string }
@@ -275,15 +275,16 @@ export const PlanSemana: React.FC<{
                         } else {
                           const c = it.dato as Compromiso;
                           const movible = !pasado;
+                          const hecho = estaHecho(c, f);
                           return (
                             <div key={`c-${c.id}`}
                               className={`compro-card rounded-lg border border-line-strong p-2 flex flex-col gap-1 ${comun} ${pasado ? 'opacity-60' : ''}`}
                               {...(movible ? { ...asa({ tipo: 'compromiso', dato: c, fechaOriginal: f }), role: 'button', tabIndex: 0, 'aria-label': `Compromiso: ${c.titulo}` } : semanaPasada ? {} : { onClick: () => onEditarCompromiso(c, f), role: 'button', tabIndex: 0 })}>
-                              <div className="flex items-center gap-1.5 text-[14px] font-heading font-bold text-text">
+                              <div className={`flex items-center gap-1.5 text-[14px] font-heading font-bold ${hecho ? 'text-text-muted line-through' : 'text-text'}`}>
                                 <Clock size={14} />
                                 {c.hora ? textoHora(c.hora) : 'Sin hora'}
                               </div>
-                              <span className="text-[13px] font-semibold leading-tight break-words whitespace-normal">{c.titulo}</span>
+                              <span className={`text-[13px] font-semibold leading-tight break-words whitespace-normal ${hecho ? 'text-text-muted line-through' : ''}`}>{c.titulo}</span>
                               {c.repetirSemanal && (
                                 <div className="flex items-center gap-1 text-[11px] text-text-muted mt-1">
                                   <Repeat size={12} />

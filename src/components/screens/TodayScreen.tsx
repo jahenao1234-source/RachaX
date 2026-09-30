@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { BadgeIcon } from '../badges/BadgeIcon';
 import { Plus, Check, Sparkles, Trophy, ChevronDown, ShieldCheck, Pencil, ListChecks, Play, Zap, ChevronRight, Target, Info, Focus, Gift, Clock, Repeat } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
@@ -30,7 +30,10 @@ import {
 } from '../../utils/habitUtils';
 import { idsEnRutinasDeHoy, tareasDeHoy, RutinaDeHoy } from '../../utils/hoyUtils';
 import { getLunesActual } from '../../utils/retoSemanal';
-import { compromisosDelDia, proximosCompromisos, tituloDiaCompromiso, textoCuando, yaPaso, momentoDe, textoHora } from '../../utils/compromisosUtils';
+import {
+  compromisosDelDia, proximosCompromisos, tituloDiaCompromiso, textoCuando,
+  yaPaso, momentoDe, textoHora, estaHecho, compromisosDeHoy, hayCompromisos
+} from '../../utils/compromisosUtils';
 import { CompromisoProximo } from '../../utils/compromisosUtils';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
 
@@ -316,27 +319,42 @@ const renderRutina = ({ r, mom, minfo, desk, isNextInside, openRutinaEditor, ope
 }
 
 
-/** "Tus compromisos" (design/maqueta-compromisos.html): cada compromiso una vez, en su próxima fecha, agrupados por día. */
-const TusCompromisos: React.FC<{ lista: CompromisoProximo[]; desk: boolean; hoy: string; onAbrir: (c: Compromiso, fecha: string) => void; onAgregar: () => void }> = ({ lista, desk, hoy, onAbrir, onAgregar }) => {
-  const [verTodos, setVerTodos] = useState(false);
-  if (lista.length === 0) return null;
+/** "Tus compromisos" (design/maqueta-compromisos-2.html) */
+const TusCompromisos: React.FC<{ compromisos: Compromiso[]; desk: boolean; hoy: string; onAbrir: (c: Compromiso, fecha: string) => void; onAgregar: () => void }> = ({ compromisos, desk, hoy, onAbrir, onAgregar }) => {
+  const { marcarCompromiso, abrirCompromisos } = useHabitStore();
+  const [aviso, setAviso] = useState<{ titulo: string; deshacer: () => void } | null>(null);
+  const timerAviso = useRef<number | null>(null);
+  useEffect(() => () => { if (timerAviso.current) window.clearTimeout(timerAviso.current); }, []);
+
+  if (!hayCompromisos(compromisos, hoy)) return null;
+
   const ahora = new Date();
   const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
-  // Los de hoy que ya pasaron no cuentan en los 5 que se ven.
-  let vienen = 0;
-  const base = lista.filter(({ c, fecha }) => yaPaso(c, fecha, hoy, minutosAhora) || vienen++ < 5);
-  const aMostrar = verTodos ? lista : base;
-  const hayMas = base.length < lista.length;
+  const losDeHoy = compromisosDeHoy(compromisos, hoy);
+  const todosLosProximos = proximosCompromisos(compromisos, hoy).filter(x => x.fecha > hoy);
+  
+  const hoyVisibles = losDeHoy.filter(x => !x.hecho && !yaPaso(x.c, x.fecha, hoy, minutosAhora));
+  const maxProximos = Math.max(0, 5 - hoyVisibles.length);
+  const aMostrarProximos = todosLosProximos.slice(0, maxProximos);
 
-  const grupos: { fecha: string; items: CompromisoProximo[] }[] = [];
-  for (const x of aMostrar) {
-    const g = grupos[grupos.length - 1];
-    if (g && g.fecha === x.fecha) g.items.push(x); else grupos.push({ fecha: x.fecha, items: [x] });
+  // Marcar: tachado hoy, con el aviso y Deshacer (Deshacer lo desmarca)
+  const marcar = (c: Compromiso, fecha: string, hecho: boolean) => {
+    marcarCompromiso(c.id, fecha, hecho);
+    if (timerAviso.current) window.clearTimeout(timerAviso.current);
+    if (!hecho) { setAviso(null); return; }
+    setAviso({ titulo: c.titulo, deshacer: () => marcarCompromiso(c.id, fecha, false) });
+    timerAviso.current = window.setTimeout(() => setAviso(null), 6000);
+  };
+
+  const gruposProximos: { fecha: string; items: CompromisoProximo[] }[] = [];
+  for (const x of aMostrarProximos) {
+    const g = gruposProximos[gruposProximos.length - 1];
+    if (g && g.fecha === x.fecha) g.items.push(x); else gruposProximos.push({ fecha: x.fecha, items: [x] });
   }
 
   return (
-    <section aria-labelledby="compromisos-hoy-titulo" className={`bg-surface border border-line rounded-[18px] p-3.5 ${!desk ? 'mt-4' : ''}`}>
+    <section aria-labelledby="compromisos-hoy-titulo" className={`tcomp bg-surface border border-line rounded-[18px] p-3.5 ${!desk ? 'mt-4' : ''}`}>
       <div className="flex flex-wrap items-center justify-between min-h-[44px]">
         <h2 id="compromisos-hoy-titulo" className="m-0 font-heading font-bold text-[22px]">Tus compromisos</h2>
         <button type="button" onClick={onAgregar} aria-label="Agregar un compromiso" className="flex items-center gap-1 min-h-[44px] text-[15px] font-semibold text-ambar-text hover:underline">
@@ -344,41 +362,77 @@ const TusCompromisos: React.FC<{ lista: CompromisoProximo[]; desk: boolean; hoy:
         </button>
       </div>
       <div id="compromisos-hoy-lista">
-        {grupos.map((g, gi) => (
-          <div key={g.fecha}>
-            <p className={`m-0 text-[13px] font-bold text-text-muted ${gi === 0 ? 'mt-1' : 'mt-3'}`}>{tituloDiaCompromiso(g.fecha, hoy)}</p>
-            <ul className="m-0 p-0 list-none">
-              {g.items.map(({ c, fecha }, i) => {
+        {losDeHoy.length > 0 && (
+          <div>
+            <p className="m-0 text-[13px] font-bold text-text-muted mt-1">{tituloDiaCompromiso(hoy, hoy)}</p>
+            <ul className="clist m-0 p-0 list-none">
+              {losDeHoy.map(({ c, fecha, hecho }, i) => {
                 const paso = yaPaso(c, fecha, hoy, minutosAhora);
+                const liClass = `${hecho ? 'hecho ' : ''}${paso ? 'cpasado ' : ''}${i > 0 ? 'border-t border-line' : ''}`.trim();
                 return (
-                  <li key={`${c.id}-${fecha}`} className={i > 0 ? 'border-t border-line' : ''}>
-                    <button type="button" onClick={() => onAbrir(c, fecha)}
-                      className="w-full min-h-[52px] py-2 flex items-center gap-3 text-left"
-                      aria-label={`${tituloDiaCompromiso(fecha, hoy)}, ${textoCuando(c)}: ${c.titulo}${c.repetirSemanal ? ', cada semana' : ''}${paso ? ', ya pasó' : ''}. Editar`}>
-                      <span className="w-[74px] shrink-0 flex flex-col">
-                        {c.hora
-                          ? <span className={`font-heading font-bold text-[16px] ${paso ? 'text-text-muted' : 'text-text'}`}>{textoCuando(c)}</span>
-                          : <span className="text-[13px] font-semibold leading-tight text-text-muted">{textoCuando(c)}</span>}
-                        {paso && <span className="text-[12px] font-semibold text-text-muted">ya pasó</span>}
-                      </span>
-                      <span className="flex-1 min-w-0">
-                        <span className={`block text-[15px] font-semibold leading-[1.3] break-words ${paso ? 'text-text-muted' : 'text-text'}`}>{c.titulo}</span>
-                        {c.repetirSemanal && <span className="flex items-center gap-1 mt-0.5 text-[12px] text-text-muted"><Repeat size={12} aria-hidden="true" />cada semana</span>}
-                      </span>
-                      <ChevronRight size={16} className="text-text-muted shrink-0" aria-hidden="true" />
-                    </button>
+                  <li key={`${c.id}-${fecha}`} className={liClass}>
+                    <div className="ccfila">
+                      <button type="button" className="ccchk" role="checkbox" aria-checked={hecho} aria-label={`${c.titulo}, ${textoCuando(c).toLowerCase()}`} onClick={() => marcar(c, fecha, !hecho)}>
+                        <i>{hecho && <Check size={16} strokeWidth={3} />}</i>
+                      </button>
+                      <button type="button" className="ccb" onClick={() => onAbrir(c, fecha)} aria-label={`${tituloDiaCompromiso(fecha, hoy)}, ${textoCuando(c).toLowerCase()}: ${c.titulo}${c.repetirSemanal ? ', cada semana' : ''}${paso ? ', ya pasó' : ''}${hecho ? ', hecho' : ''}. Editar`}>
+                        <span className={`cch ${c.hora ? '' : 'suave'}`}>
+                          {textoCuando(c)}
+                          {paso && <small>ya pasó</small>}
+                        </span>
+                        <span className="ccm">
+                          <span className="cct">{c.titulo}</span>
+                          {c.repetirSemanal && <span className="ccp"><Repeat size={12} aria-hidden="true" />cada semana</span>}
+                        </span>
+                        <span className="ccv"><ChevronRight size={18} /></span>
+                      </button>
+                    </div>
                   </li>
                 );
               })}
             </ul>
           </div>
+        )}
+
+        {gruposProximos.map((g, gi) => (
+          <div key={g.fecha}>
+            <p className={`m-0 text-[13px] font-bold text-text-muted ${gi === 0 && losDeHoy.length === 0 ? 'mt-1' : 'mt-3'}`}>{tituloDiaCompromiso(g.fecha, hoy)}</p>
+            <ul className="clist m-0 p-0 list-none">
+              {g.items.map(({ c, fecha }, i) => (
+                <li key={`${c.id}-${fecha}`} className={i > 0 ? 'border-t border-line' : ''}>
+                  <div className="ccfila">
+                    {/* El hueco de la casilla solo si arriba hay compromisos de hoy (para alinear las horas) */}
+                    {losDeHoy.length > 0 && <span className="ccsp" aria-hidden="true" />}
+                    <button type="button" className="ccb" onClick={() => onAbrir(c, fecha)} aria-label={`${tituloDiaCompromiso(fecha, hoy)}, ${textoCuando(c).toLowerCase()}: ${c.titulo}${c.repetirSemanal ? ', cada semana' : ''}. Editar`}>
+                      <span className={`cch ${c.hora ? '' : 'suave'}`}>
+                        {textoCuando(c)}
+                      </span>
+                      <span className="ccm">
+                        <span className="cct">{c.titulo}</span>
+                        {c.repetirSemanal && <span className="ccp"><Repeat size={12} aria-hidden="true" />cada semana</span>}
+                      </span>
+                      <span className="ccv"><ChevronRight size={18} /></span>
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
       </div>
-      {hayMas && (
-        <button type="button" aria-expanded={verTodos} aria-controls="compromisos-hoy-lista" onClick={() => setVerTodos(!verTodos)}
-          className="mt-2 w-full min-h-[44px] rounded-xl border border-line-strong bg-transparent text-[14px] font-bold text-text">
-          {verTodos ? 'Ver menos' : `Ver todos (${lista.length})`}
-        </button>
+      
+      <button type="button" onClick={abrirCompromisos}
+        className="mt-2 w-full min-h-[44px] rounded-xl border border-line-strong bg-transparent text-[14px] font-bold text-text">
+        Ver todos
+      </button>
+
+      {aviso && (
+        <div className="tareas">
+          <div className="ttoast" role="status">
+            <span>Marcaste <b>{aviso.titulo}</b>.</span>
+            <button type="button" onClick={() => { aviso.deshacer(); setAviso(null); }}>Deshacer</button>
+          </div>
+        </div>
       )}
     </section>
   );
@@ -969,7 +1023,7 @@ export const TodayScreen: React.FC = () => {
         {/* Right Column */}
         <div className="flex flex-col gap-4">
           {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab, abrirTareaEnLista, openFocusMode })}
-          <TusCompromisos lista={proximosCompromisos(compromisos, hoy)} desk={desk} hoy={hoy} onAbrir={(c, fecha) => { setCompromisoEditando(c); setFechaOcurrencia(fecha); setHojaCompromisoAbierta(true); }} onAgregar={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setHojaCompromisoAbierta(true); }} />
+          <TusCompromisos compromisos={compromisos} desk={desk} hoy={hoy} onAbrir={(c, fecha) => { setCompromisoEditando(c); setFechaOcurrencia(fecha); setHojaCompromisoAbierta(true); }} onAgregar={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setHojaCompromisoAbierta(true); }} />
 
           <EstaSemanaDesk
             habitosActivos={habitosActivos}
@@ -1178,7 +1232,7 @@ export const TodayScreen: React.FC = () => {
       </div>
 
       {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab, abrirTareaEnLista, openFocusMode })}
-          <TusCompromisos lista={proximosCompromisos(compromisos, hoy)} desk={desk} hoy={hoy} onAbrir={(c, fecha) => { setCompromisoEditando(c); setFechaOcurrencia(fecha); setHojaCompromisoAbierta(true); }} onAgregar={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setHojaCompromisoAbierta(true); }} />
+          <TusCompromisos compromisos={compromisos} desk={desk} hoy={hoy} onAbrir={(c, fecha) => { setCompromisoEditando(c); setFechaOcurrencia(fecha); setHojaCompromisoAbierta(true); }} onAgregar={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setHojaCompromisoAbierta(true); }} />
 
       {proximaInsignia && (
         <div className="mt-4 flex items-center gap-3">

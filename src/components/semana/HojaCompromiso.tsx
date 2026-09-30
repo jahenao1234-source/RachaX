@@ -24,6 +24,8 @@ interface HojaCompromisoProps {
   fechaOcurrencia?: string;
   /** Día elegido al crear uno nuevo. */
   fechaInicial: string;
+  /** Si es 'todos', no pregunta al guardar/borrar una serie. */
+  alcance?: 'todos';
 }
 
 const sumarDias = (fecha: string, n: number) => {
@@ -37,7 +39,7 @@ const proximaHoraEnPunto = () => `${String((new Date().getHours() + 1) % 24).pad
 
 const BORDE_ELEGIDO: React.CSSProperties = { borderColor: 'var(--text)', borderWidth: 2, background: 'var(--surface-raised)' };
 
-export const HojaCompromiso: React.FC<HojaCompromisoProps> = ({ isOpen, onClose, compromiso, fechaOcurrencia, fechaInicial }) => {
+export const HojaCompromiso: React.FC<HojaCompromisoProps> = ({ isOpen, onClose, compromiso, fechaOcurrencia, fechaInicial, alcance }) => {
   const { compromisos, crearCompromiso, editarCompromiso, borrarCompromiso } = useHabitStore();
 
   const [titulo, setTitulo] = useState('');
@@ -114,8 +116,8 @@ export const HojaCompromiso: React.FC<HojaCompromisoProps> = ({ isOpen, onClose,
     onClose();
   };
 
-  const onIntentarGuardar = () => (compromiso?.repetirSemanal ? setConfirmarAlcance('editar') : handleGuardar('uno'));
-  const onIntentarBorrar = () => (compromiso?.repetirSemanal ? setConfirmarAlcance('borrar') : handleBorrar('uno'));
+  const onIntentarGuardar = () => (compromiso?.repetirSemanal && alcance !== 'todos' ? setConfirmarAlcance('editar') : handleGuardar(alcance || 'uno'));
+  const onIntentarBorrar = () => (compromiso?.repetirSemanal && alcance !== 'todos' ? setConfirmarAlcance('borrar') : handleBorrar(alcance || 'uno'));
 
   const alternarSelectorHora = () => {
     if (!verSelectorHora && !hora) setHora(proximaHoraEnPunto());
