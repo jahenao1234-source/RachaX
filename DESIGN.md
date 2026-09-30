@@ -484,6 +484,29 @@ Cálculos: src/utils/semanaUtils.ts (diaPorMomentos, textoCargaDia) y src/utils/
   - Se entra desde Tareas ("Planea tu semana ›").
 - **En Hoy** (cambiado el 28 sep a pedido de Johnatan): los compromisos NO van dentro de los momentos de los hábitos. Van en su propia tarjeta, justo debajo de "Tareas de hoy". Desde el 28 sep es "Tus compromisos" (ver abajo), que reemplaza a "Compromisos de hoy".
 
+#### Tu semana 4 (aprobada el 30 sep, design/maqueta-tu-semana-4.html; reemplaza lo anterior donde choque)
+Correcciones de Johnatan del 29 sep: la pantalla se alargaba sin fin con "Pasos sin día" abajo, en la hoja del + todo se veía "plano y gris" y no se entendía qué paso era de qué tarea, y solo había 2 semanas. CSS en src/index.css › "Tu semana 4". Datos en src/utils/semanaUtils.ts (diasDeSemana con número de semana, nombreSemana, semanaMasAntigua, mismoDiaEnSemana, sePuedePlanear, textoHabitos, textoPasosSinDia y `habitosDe` en diaPorMomentos; 30 pruebas).
+- **Semanas con flechas (celular y escritorio):** las pestañas "Esta semana | La próxima" se cambian por una barra: flecha ‹ (44px, aria-label "Semana anterior, {rango}"), en el centro el nombre ("Esta semana", "La próxima semana", "La semana pasada", "En {n} semanas", "Hace {n} semanas"; 15px 700) y el rango debajo ("28 sep al 4 oct"; 13px text-muted), y flecha › ("Semana siguiente, {rango}"). En otra semana aparece, antes de la flecha ›, el botón **"Hoy"** (44px, surface-raised, borde line-strong), que vuelve a esta semana y a hoy; la barra no cambia de alto. El centro es aria-live; al tocar "Hoy" el foco pasa al centro. En escritorio va en la fila de "Planea", al lado de "+ Compromiso", con el nombre y el rango en un renglón.
+  - Hacia adelante no hay tope. Hacia atrás, la flecha ‹ se apaga (aria-disabled, 45%) en la semana en que empezaste (semanaMasAntigua).
+  - Al cambiar de semana queda elegido el **mismo día de la semana** (mismoDiaEnSemana). El domingo se entra en la próxima semana, como antes.
+  - **Semanas pasadas: solo para mirar** (sePuedePlanear = fecha ≥ hoy): sin + en los momentos, sin casillas (los pasos hechos van tachados con una ✓ gris de 20px), sin cambiar pasos ni editar compromisos, y debajo del título del día "Esta semana ya pasó. Aquí ves lo que hiciste." Los días pasados de esta semana siguen como antes.
+  - "Cómo vas" y "Rescate" son siempre de esta semana.
+- **La tira de 7 días** no se desborda a 320px (7 columnas iguales).
+- **La agenda del día (celular):**
+  - "Cualquier momento" se llama **"Todo el día"** (como en Hoy) y sale si tiene hábitos, pasos o compromisos. Va primero, sin +.
+  - Cada momento lleva su cuadrito de color de 26px (el de Hoy: mañana, tarde, noche; Todo el día en surface-raised con reloj).
+  - Debajo del nombre del momento, sus hábitos de ese día: "Hábitos: {Tomar agua, Ayuno}" (ícono de repetir 13px, 12px text-muted, "Hábitos:" en 700; hasta 3 nombres y "y {n} más"; máximo 2 renglones). Los de "N veces por semana" no salen (no tienen día).
+  - Si el momento no tiene pasos ni compromisos, "Libre" en la fila del nombre (aunque tenga hábitos).
+  - Cada paso muestra el ícono de su tarea (13px) antes del nombre de la tarea; el texto del paso sube a 14px.
+  - Debajo del título del día, en hoy y los días que vienen, si hay pasos sin día: el recuadro (surface-raised, 13px) con calendario "**{11 pasos sin día}**. Ponle uno con el + de un momento." Si no hay, no sale.
+  - Al final, "Toca un paso para cambiarlo de día o de momento." solo si ese día tiene pasos.
+  - **Ya no está la tarjeta "Pasos sin día" abajo** (tampoco su error, que escribía el nombre del ícono como texto): los pasos se ponen desde el + de cada momento.
+- **La hoja del + ("{Mié 30} en la {mañana}")**: debajo del título, "Toca un paso para hacerlo el {miércoles} en la {mañana}." Luego "Un compromiso" y "O ponle un paso de tus tareas".
+  - Cada tarea es un grupo **plegable** (lo pidió Johnatan): una fila de 56px (botón, aria-expanded) con el cuadrito del ícono de la tarea (30px, surface-raised), el nombre (15px 700) y a la derecha "{n} pasos sin día" (12px text-muted) y una flecha que gira al abrir. Entre tareas, una línea.
+  - **Al abrir la hoja todas empiezan plegadas; si solo hay una tarea, empieza abierta.** Cada una se abre y se cierra sola (se pueden tener varias abiertas).
+  - Abierta: la rama es un subtítulo gris ("Revisar opciones", 12px 600 text-muted, con la línea guía de siempre) y cada paso una fila de 48px con calendario (15px 500), con aria-label "{paso}, dentro de {rama}". Grupos planos: sin tarjetas dentro de la hoja.
+- **Escritorio:** las flechas en vez de las pestañas; en "Pasos sin día" la tarea manda (14px text, cuadrito de 24px) y a la derecha "{n} pasos"; la rama es gris (600 text-muted). En el tablero, "Cualquier momento" pasa a "Todo el día". Todo lo demás del tablero queda igual.
+
 #### Compromisos: "Tus compromisos", la hora y el calendario (aprobado el 28 sep, design/maqueta-compromisos.html)
 Cálculos en src/utils/compromisosUtils.ts: proximosCompromisos, proximaFecha, yaPaso, tituloDiaCompromiso, textoCuando, textoRepetir (probados).
 - **"Tus compromisos" (Hoy, celular y escritorio):** tarjeta surface (18px de esquinas) debajo de "Tareas de hoy"; en escritorio, en la columna derecha. Solo si hay al menos un compromiso que venga (proximosCompromisos no vacío); si no, no aparece.

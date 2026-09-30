@@ -17,10 +17,57 @@ const sumarDias = (fecha: string, n: number) => {
   return formatDateToString(d);
 };
 
-/** Las 7 fechas (lunes a domingo) de esta semana o de la próxima. */
-export function diasDeSemana(hoy: string, cual: 'esta' | 'proxima'): string[] {
-  return getSemanaDates(cual === 'esta' ? hoy : sumarDias(hoy, 7));
+/**
+ * Las 7 fechas (lunes a domingo) de una semana. `cual`: 'esta', 'proxima' o cuántas semanas desde esta
+ * (0 = esta, 1 = la próxima, -1 = la pasada…; Tu semana 4 navega con flechas).
+ */
+export function diasDeSemana(hoy: string, cual: 'esta' | 'proxima' | number): string[] {
+  const n = cual === 'esta' ? 0 : cual === 'proxima' ? 1 : cual;
+  return getSemanaDates(sumarDias(hoy, 7 * n));
 }
+
+// ---------- Tu semana 4 (design/maqueta-tu-semana-4.html): semanas con flechas ----------
+
+/** "Esta semana", "La próxima semana", "La semana pasada", "En 3 semanas", "Hace 2 semanas". */
+export function nombreSemana(n: number): string {
+  if (n === 0) return 'Esta semana';
+  if (n === 1) return 'La próxima semana';
+  if (n === -1) return 'La semana pasada';
+  return n > 1 ? `En ${n} semanas` : `Hace ${-n} semanas`;
+}
+
+/**
+ * Hasta dónde se puede ir hacia atrás: la semana en que empezaste (el hábito o la tarea más antigua).
+ * Devuelve cuántas semanas desde esta (0 o negativo). Sin nada guardado, 0.
+ */
+export function semanaMasAntigua(habitos: Habito[], tareas: Tarea[], hoy: string): number {
+  const fechas = [...habitos, ...tareas].map((x) => x.creadoEn).filter(Boolean).map((c) => formatDateToString(new Date(c)));
+  if (!fechas.length) return 0;
+  const primera = fechas.reduce((a, b) => (a < b ? a : b));
+  if (primera >= hoy) return 0;
+  const lunesPrimera = getSemanaDates(primera)[0];
+  const lunesHoy = getSemanaDates(hoy)[0];
+  const dias = Math.round((parseDateString(lunesHoy).getTime() - parseDateString(lunesPrimera).getTime()) / 86400000);
+  return -Math.round(dias / 7);
+}
+
+/** Al cambiar de semana se queda el mismo día de la semana (el miércoles sigue siendo miércoles). */
+export function mismoDiaEnSemana(fecha: string, fechasSemana: string[]): string {
+  const d = parseDateString(fecha).getDay();
+  return fechasSemana[(d + 6) % 7];
+}
+
+/** Un día se puede planear (poner o mover pasos, marcar, +, compromisos) si es hoy o viene. Las semanas pasadas son solo para mirar. */
+export const sePuedePlanear = (fecha: string, hoy: string) => fecha >= hoy;
+
+/** "Hábitos: Tomar agua, Ayuno" — hasta 3 nombres; si hay más, "A, B, C y 2 más". */
+export function textoHabitos(nombres: string[], max = 3): string {
+  if (nombres.length <= max) return nombres.join(', ');
+  return `${nombres.slice(0, max).join(', ')} y ${nombres.length - max} más`;
+}
+
+/** "11 pasos sin día" / "1 paso sin día" */
+export const textoPasosSinDia = (n: number) => `${n} ${n === 1 ? 'paso sin día' : 'pasos sin día'}`;
 
 /** "21 al 27 sep" / "28 sep al 4 oct" */
 export function rangoSemana(fechas: string[]): string {
@@ -185,7 +232,14 @@ export function diaLargo(fecha: string): string {
 export type Franja = 'cualquiera' | MomentoPlan;
 export const FRANJAS: Franja[] = ['cualquiera', 'manana', 'tarde', 'noche'];
 export type ItemFranja = { tipo: 'paso'; dato: PasoDelDia } | { tipo: 'compromiso'; dato: Compromiso };
-export interface DiaPorMomentos { fecha: string; franjas: Record<Franja, ItemFranja[]>; habitos: Record<Franja, number>; pasos: number; compromisos: number; lleno: boolean }
+export interface DiaPorMomentos {
+  fecha: string; franjas: Record<Franja, ItemFranja[]>;
+  /** Cuántos hábitos tocan en cada momento (escritorio). */
+  habitos: Record<Franja, number>;
+  /** Los hábitos que tocan en cada momento, en el orden de la persona (celular: "Hábitos: …"). "Todo el día" = 'cualquiera'. */
+  habitosDe: Record<Franja, Habito[]>;
+  pasos: number; compromisos: number; lleno: boolean;
+}
 
 /**
  * Un día de Tu semana: pasos (con su momento, o "cualquiera") y compromisos (por su hora o momento),
@@ -197,13 +251,15 @@ export function diaPorMomentos(tareas: Tarea[], compromisos: Compromiso[], habit
   const delDia = compromisosDelDia(compromisos, fecha);
   for (const c of delDia) franjas[momentoDe(c) ?? 'cualquiera'].push({ tipo: 'compromiso', dato: c });
   const habitosPor: Record<Franja, number> = { cualquiera: 0, manana: 0, tarde: 0, noche: 0 };
+  const habitosDe: Record<Franja, Habito[]> = { cualquiera: [], manana: [], tarde: [], noche: [] };
   for (const h of activos(habitos)) {
     if (!isHabitScheduledForDate(h, fecha)) continue;
     const m = h.momento === 'manana' || h.momento === 'tarde' || h.momento === 'noche' ? h.momento : 'cualquiera';
     habitosPor[m]++;
+    habitosDe[m].push(h);
   }
   const pasos = Object.values(franjas).flat().filter((i) => i.tipo === 'paso' && !i.dato.paso.hecha).length;
-  return { fecha, franjas, habitos: habitosPor, pasos, compromisos: delDia.length, lleno: pasos + delDia.length >= 4 };
+  return { fecha, franjas, habitos: habitosPor, habitosDe, pasos, compromisos: delDia.length, lleno: pasos + delDia.length >= 4 };
 }
 
 /** "3 pasos · 1 compromiso" / "Libre" */
