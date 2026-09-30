@@ -36,7 +36,7 @@ import {
 } from '../../utils/compromisosUtils';
 import { CompromisoProximo } from '../../utils/compromisosUtils';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
-import { ariaChip, entradaDificil, pendientesParaDificil, ayerSinMarcar } from '../../utils/dificilUtils';
+import { ariaChip, entradaDificil, pendientesParaDificil, ayerSinMarcar, tieneMinimo, puntosAlMarcar, puntosDeHoy, puntosPorGanar, textoAvisoAuto } from '../../utils/dificilUtils';
 
 const SubtareaTreeNode: React.FC<{
   sub: Subtarea;
@@ -119,8 +119,11 @@ const nombreDia = (d: string) => { const f = new Date(d + 'T12:00:00'); return `
 const renderFilaHabito = ({
   habito, isHecho, isNext, minfo, progressReto, anchorText, desk, inRutina,
   openHabitDetail, setValor, valorDe, hoy, toggleCompletado, openFocusMode,
-  registros, diasCongelados, fechasSemana
+  registros, diasCongelados, fechasSemana, esDificilHoy, esDiaRegreso, mostrarAvisoCompletado
 }: any) => {
+  const regHoy = registros.find((r: any) => r.habitoId === habito.id && r.fecha === hoy);
+  const hechoConMinima = isHecho && regHoy?.minimo;
+
   if (desk) {
     return (
       <div
@@ -142,10 +145,18 @@ const renderFilaHabito = ({
           </div>
           <div className="flex items-center gap-2 text-[13px] text-text-muted mt-0.5">
             {isHecho ? (
-              <span className="font-bold text-ambar-text">+10 ganados</span>
+              hechoConMinima ? (
+                <button type="button" onClick={(e) => { e.stopPropagation(); mostrarAvisoCompletado(habito); }} className="font-bold text-ambar-text text-left hover:underline">+5 ganados · versión mínima</button>
+              ) : (
+                <span className="font-bold text-ambar-text">+10 ganados</span>
+              )
             ) : (
               <>
-                {anchorText && <span className="truncate">{anchorText}</span>}
+                {esDificilHoy && tieneMinimo(habito) ? (
+                  <span className="ddmin">Mínimo: {habito.minimo}</span>
+                ) : anchorText ? (
+                  <span className="truncate">{anchorText}</span>
+                ) : null}
                 {isNext && <span className={`inline-block px-[7px] py-[1px] rounded-[6px] ${minfo.bg} ${minfo.text} text-[11px] font-bold shrink-0 ml-1`}>Sigue</span>}
               </>
             )}
@@ -182,7 +193,7 @@ const renderFilaHabito = ({
           <button type="button" className="hplay" aria-label={`Empezar ${habito.nombre} en Foco`} onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }}><Play size={14} className="fill-current" /></button>
         )}
 
-        {habito.metaDiaria && !isHecho ? (
+        {habito.metaDiaria && !isHecho && !(esDificilHoy && tieneMinimo(habito)) ? (
            <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}. Llevas ${valorDe(habito.id)} de ${habito.metaDiaria}`} className="relative w-[44px] h-[44px] ml-3 rounded-[10px] border border-text-muted bg-surface-raised text-text text-[15px] font-bold active:scale-95 transition-transform flex items-center justify-center shrink-0">+1</button>
         ) : (
            <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} aria-pressed={isHecho} className={`relative after:absolute after:-inset-[5px] after:content-[''] w-[34px] h-[34px] ml-3 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'logro border-none' : 'bg-transparent border-2 border-text-muted'}`} style={isNext && !isHecho ? { borderColor: minfo.varColor } : undefined}>
@@ -219,7 +230,13 @@ const renderFilaHabito = ({
             )}
           </div>
           {isHecho ? (
-            <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">+10 ganados</p>
+            hechoConMinima ? (
+              <button type="button" onClick={(e) => { e.stopPropagation(); mostrarAvisoCompletado(habito); }} className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate text-left hover:underline">+5 ganados · versión mínima</button>
+            ) : (
+              <p className="m-0 mt-[1px] text-[13px] font-bold text-ambar-text truncate">+10 ganados</p>
+            )
+          ) : esDificilHoy && tieneMinimo(habito) ? (
+            <p className="ddmin m-0 mt-[1px]">Mínimo: {habito.minimo}</p>
           ) : anchorText ? (
             <p className="m-0 mt-[1px] text-[13px] text-text-muted truncate">{anchorText}</p>
           ) : null}
@@ -237,11 +254,11 @@ const renderFilaHabito = ({
             )
           )}
         </div>
-        {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
+        {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+{puntosAlMarcar(habito, esDificilHoy, esDiaRegreso)}</span>}
         {!isHecho && (
           <button type="button" className="hplay" aria-label={`Empezar ${habito.nombre} en Foco`} onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }}><Play size={14} className="fill-current" /></button>
         )}
-        {habito.metaDiaria && !isHecho ? (
+        {habito.metaDiaria && !isHecho && !(esDificilHoy && tieneMinimo(habito)) ? (
            <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="relative after:absolute after:-inset-[6px] after:content-[''] h-[32px] px-3 rounded-[10px] border border-text-muted bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
         ) : (
            <button type="button" onClick={(e) => { e.stopPropagation(); toggleCompletado(habito.id); }} aria-label={`Marcar ${habito.nombre}`} className={`relative after:absolute after:-inset-[6px] after:content-[''] w-[32px] h-[32px] rounded-full flex items-center justify-center transition-transform duration-180 scale-100 hover:scale-105 active:scale-90 shrink-0 ${isHecho ? 'logro border-none' : 'bg-transparent border-2 border-text-muted'}`} style={isNext && !isHecho ? { borderColor: minfo.varColor } : undefined}>
@@ -667,7 +684,11 @@ export const TodayScreen: React.FC = () => {
     etapaLlama,
     companera,
     compromisos,
-    abrirTareaEnLista
+    abrirTareaEnLista,
+    pasarACompleto,
+    avisoComodinAuto,
+    cerrarAvisoComodinAuto,
+    deshacerComodinAuto
   } = useHabitStore();
 
   const desk = useEsEscritorio();
@@ -680,7 +701,7 @@ export const TodayScreen: React.FC = () => {
   const [compromisoEditando, setCompromisoEditando] = useState<any>(undefined);
   const [fechaOcurrencia, setFechaOcurrencia] = useState<string | undefined>(undefined);
 
-  const [avisoDificil, setAvisoDificil] = useState<{ contenido: string; accion: string; alHacer: () => void } | null>(null);
+  const [avisoDificil, setAvisoDificil] = useState<{ contenido: React.ReactNode; accion: string; alHacer: () => void } | null>(null);
   const timerAvisoDificil = useRef<number | null>(null);
   useEffect(() => () => { if (timerAvisoDificil.current) window.clearTimeout(timerAvisoDificil.current); }, []);
 
@@ -692,6 +713,32 @@ export const TodayScreen: React.FC = () => {
     if (timerAvisoDificil.current) window.clearTimeout(timerAvisoDificil.current);
     timerAvisoDificil.current = window.setTimeout(() => setAvisoDificil(null), 6000);
   };
+
+  const mostrarAvisoCompletado = (habito: Habito) => {
+    setAvisoDificil({
+      contenido: <React.Fragment><b>{habito.nombre}</b> en su versión mínima: +{puntosAlMarcar(habito, true, esDiaRegreso)}.</React.Fragment>,
+      accion: 'Lo hice completo',
+      alHacer: () => { pasarACompleto(habito.id, hoy); setAvisoDificil(null); }
+    });
+    if (timerAvisoDificil.current) window.clearTimeout(timerAvisoDificil.current);
+    timerAvisoDificil.current = window.setTimeout(() => setAvisoDificil(null), 6000);
+  };
+
+  const localToggleCompletado = (habitoId: string) => {
+    const wasDone = esHabitoCompletado(habitoId);
+    toggleCompletado(habitoId);
+    if (!wasDone && esDificilHoy) {
+      const hab = habitosActivos.find(h => h.id === habitoId);
+      if (hab && tieneMinimo(hab)) mostrarAvisoCompletado(hab);
+    }
+  };
+
+  useEffect(() => {
+    if (avisoComodinAuto) {
+      const t = window.setTimeout(cerrarAvisoComodinAuto, 8000);
+      return () => window.clearTimeout(t);
+    }
+  }, [avisoComodinAuto, cerrarAvisoComodinAuto]);
 
   // Mock variable for cajas
   const cajasPorAbrir = 0;
@@ -917,8 +964,8 @@ export const TodayScreen: React.FC = () => {
 
     return renderFilaHabito({
       habito, isHecho, isNext, minfo, progressReto, anchorText, desk, inRutina,
-      openHabitDetail, setValor, valorDe, hoy, toggleCompletado, openFocusMode,
-      registros, diasCongelados, fechasSemana
+      openHabitDetail, setValor, valorDe, hoy, toggleCompletado: localToggleCompletado, openFocusMode,
+      registros, diasCongelados, fechasSemana, esDificilHoy, esDiaRegreso, mostrarAvisoCompletado
     });
   };
 
@@ -933,7 +980,7 @@ export const TodayScreen: React.FC = () => {
           <p className="hcsal">{saludo}</p>
           <div className="flex items-baseline gap-3">
             <h1 className="cond text-[36px] xl:text-[40px] leading-none m-0">{displayDate}</h1>
-            <span className="font-heading font-bold text-[18px] text-ambar-text whitespace-nowrap">+{completedCount * (esDiaRegreso ? 20 : 10)} pts hoy</span>
+            <span className="font-heading font-bold text-[18px] text-ambar-text whitespace-nowrap">+{puntosDeHoy(registros, hoy, esDiaRegreso)} pts hoy</span>
           </div>
         </div>
         <div className="hcprog">
@@ -952,7 +999,7 @@ export const TodayScreen: React.FC = () => {
             <span className="hcnum">{progresoNivel.actual} / {ptosMeta}</span>
           </a>
         </div>
-        <div className="flex gap-3 shrink-0">
+        <div className="flex gap-3 shrink-0 ml-3">
           <button type="button" className="ddchip" aria-label={ariaChip(comodines)} onClick={abrirComodines}>
             <ShieldCheck size={16} />{comodines}<span className="dcw">{comodines === 1 ? 'comodín' : 'comodines'}</span><ChevronRight size={14} />
           </button>
@@ -999,7 +1046,7 @@ export const TodayScreen: React.FC = () => {
           <div className="flex justify-between items-baseline -mb-2">
             <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
             <span className="text-[14px] text-text-muted font-medium">
-              +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar-text hover:underline min-h-[44px] -my-3">Gestionar</button>
+              +{puntosPorGanar(habitosPendientes, esDificilHoy, esDiaRegreso)} pts por ganar · <button onClick={openManageHabits} className="font-semibold text-ambar-text hover:underline min-h-[44px] -my-3">Gestionar</button>
             </span>
           </div>
 
@@ -1147,7 +1194,7 @@ export const TodayScreen: React.FC = () => {
         <div className="p-3.5 rounded-[18px] bg-surface border border-line flex flex-col gap-2.5">
           <div className="flex justify-between items-baseline">
             <h2 className="m-0 font-heading font-bold text-[22px]">Tu día</h2>
-            <span className="font-heading font-bold text-[18px] text-ambar-text">+{completedCount * (esDiaRegreso ? 20 : 10)} pts hoy</span>
+            <span className="font-heading font-bold text-[18px] text-ambar-text">+{puntosDeHoy(registros, hoy, esDiaRegreso)} pts hoy</span>
           </div>
           {esDiaRegreso && (
             <p className="bono">
@@ -1210,7 +1257,7 @@ export const TodayScreen: React.FC = () => {
       <div className="mt-4.5 flex justify-between items-baseline mb-1">
         <h2 className="m-0 font-heading font-bold text-[22px]">Misiones</h2>
         <span className="text-[13px] text-text-muted">
-          +{habitosPendientes.length * 10} pts por ganar · <button onClick={openManageHabits} className="inline-flex min-h-[44px] -my-3 items-center font-semibold text-ambar-text hover:underline">Gestionar</button>
+          +{puntosPorGanar(habitosPendientes, esDificilHoy, esDiaRegreso)} pts por ganar · <button onClick={openManageHabits} className="inline-flex min-h-[44px] -my-3 items-center font-semibold text-ambar-text hover:underline">Gestionar</button>
         </span>
       </div>
 
@@ -1311,12 +1358,20 @@ export const TodayScreen: React.FC = () => {
         fechaOcurrencia={fechaOcurrencia}
         fechaInicial={hoy}
       />
-      {avisoDificil && (
+      {(avisoComodinAuto || avisoDificil) && (
         <div className="tareas">
-          <div className="ttoast cttoast" role="status">
-            <span>{avisoDificil.contenido}</span>
-            <button type="button" onClick={() => { avisoDificil.alHacer(); setAvisoDificil(null); }}>{avisoDificil.accion}</button>
-          </div>
+          {avisoComodinAuto && (
+            <div className="ttoast cttoast" role="status">
+              <span>{textoAvisoAuto(avisoComodinAuto, comodines ?? 0, hoy)}</span>
+              <button type="button" onClick={() => { deshacerComodinAuto(); cerrarAvisoComodinAuto(); }}>Deshacer</button>
+            </div>
+          )}
+          {!avisoComodinAuto && avisoDificil && (
+            <div className="ttoast cttoast" role="status">
+              <span>{avisoDificil.contenido}</span>
+              <button type="button" onClick={() => { avisoDificil.alHacer(); setAvisoDificil(null); }}>{avisoDificil.accion}</button>
+            </div>
+          )}
         </div>
       )}
     </>

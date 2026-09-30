@@ -74,6 +74,8 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
   const currentStreak = rachaActual(habit.id);
   const recordStreak = mejorRacha(habit.id);
   const isHechoHoy = isHabitCompletedOnDate(habit.id, todayStr, registros);
+  const regHoy = registros.find(r => r.habitoId === habit.id && r.fecha === todayStr);
+  const hechoConMinima = isHechoHoy && regHoy?.minimo === true;
   const valorHoy = valorDe(habit.id, todayStr);
   
   // Constancia
@@ -234,7 +236,7 @@ export const HabitDetailScreen: React.FC<HabitDetailScreenProps> = ({ habitId, o
                   {isHechoHoy ? 'Cumplido hoy' : 'Pendiente hoy'}
                 </p>
                 {isHechoHoy ? (
-                  <p className="text-[13px] font-bold text-ambar-text m-0 mt-0.5 truncate">+10 ganados</p>
+                  <p className="text-[13px] font-bold text-ambar-text m-0 mt-0.5 truncate">{hechoConMinima ? "+5 ganados · versión mínima" : "+10 ganados"}</p>
                 ) : habit.metaDiaria ? (
                   <p className="text-[13px] text-text-muted m-0 mt-0.5 truncate">{valorHoy} de {habit.metaDiaria} hoy</p>
                 ) : (

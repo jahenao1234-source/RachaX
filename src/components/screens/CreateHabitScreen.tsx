@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShieldCheck, Check, Edit3, Target, CheckCircle2, Archive, Plus } from 'lucide-react';
+import { X, ShieldCheck, Check, Edit3, Target, CheckCircle2, Archive, Plus, Feather } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { Habito, MomentoDia, FrecuenciaHabito, ICONOS_DISPONIBLES, MOMENTOS, PLANTILLAS_HABITOS } from '../../types';
 import { HabitIcon } from '../common/HabitIcon';
 import { HabitPreviewRow, getMomentoColorTokens } from '../common/HabitPreviewRow';
 import { getTodayString, semanasEstimadasReto, contarProgresoReto } from '../../utils/habitUtils';
+import { limpiarMinimo } from '../../utils/dificilUtils';
 
 const DIAS_CORTOS = [
   { index: 1, label: 'L', full: 'Lunes' },
@@ -58,6 +59,7 @@ export const CreateHabitScreen: React.FC = () => {
   const [anclaje, setAnclaje] = useState(h?.anclaje || '');
   const [frecuencia, setFrecuencia] = useState<FrecuenciaHabito>(h?.frecuencia || 'diario');
   const [diasPersonalizados, setDiasPersonalizados] = useState<number[]>(h?.diasPersonalizados || [1,2,3,4,5]);
+  const [minimo, setMinimo] = useState(h?.minimo || '');
   const [vecesPorSemana, setVecesPorSemana] = useState<number>(h?.vecesPorSemana || 3);
   
   const [showMeta, setShowMeta] = useState(!!h?.metaDiaria);
@@ -98,7 +100,8 @@ export const CreateHabitScreen: React.FC = () => {
       (frecuencia === 'personalizado' && !arrEqual(diasPersonalizados, h.diasPersonalizados || [])) ||
       (frecuencia === 'semanal' && vecesPorSemana !== (h.vecesPorSemana || 3)) ||
       metaA !== metaB ||
-      reto !== (h.reto?.meta || null);
+      reto !== (h.reto?.meta || null) ||
+      (tipo !== 'negativo' && limpiarMinimo(minimo) !== h.minimo);
   };
 
   const getChangesList = () => {
@@ -122,6 +125,7 @@ export const CreateHabitScreen: React.FC = () => {
     
     if (metaA !== metaB) list.push('la meta');
     if (reto !== (h.reto?.meta || null)) list.push('el reto');
+    if (limpiarMinimo(minimo) !== h.minimo) list.push('la mínima');
     return list;
   };
 
@@ -145,6 +149,7 @@ export const CreateHabitScreen: React.FC = () => {
 
     const finalAnclaje = anclaje.trim() || undefined;
     const finalMeta = (showMeta && tipo !== 'negativo') ? metaDiaria : undefined;
+    const finalMinimo = (tipo !== 'negativo') ? limpiarMinimo(minimo) : undefined;
     
     const payload: Partial<Habito> = {
       nombre: nombre.trim(),
@@ -157,6 +162,7 @@ export const CreateHabitScreen: React.FC = () => {
       vecesPorSemana: frecuencia === 'semanal' ? vecesPorSemana : undefined,
       metaDiaria: finalMeta,
       reto: reto ? { meta: reto, inicio: h?.reto?.inicio || getTodayString() } : undefined,
+      minimo: finalMinimo,
     };
 
     if (isEditing && h) {
@@ -386,6 +392,17 @@ export const CreateHabitScreen: React.FC = () => {
               {tipo === 'positivo' ? 'Atarlo a algo que ya haces ayuda a no olvidarlo.' : 'Saber cuándo llega la tentación ayuda a no caer.'}
             </p>
           </div>
+
+          {tipo !== 'negativo' && (
+            <div className="ddcampo">
+              <p className="text-[13px] font-medium text-text-muted mb-2"><label htmlFor="dd-min">Tu versión mínima</label> <span className="font-semibold text-text-muted text-[12px]">opcional</span></p>
+              <div className="dcx">
+                <Feather size={16}/>
+                <input id="dd-min" aria-describedby="dd-min-a" maxLength={60} placeholder="Por ejemplo, 1 página o 5 minutos" value={minimo} onChange={(e) => setMinimo(e.target.value)}/>
+              </div>
+              <p id="dd-min-a" className="text-[13px] text-text-muted leading-snug mt-1.5">Para un día difícil: lo mínimo que cuenta como cumplido.</p>
+            </div>
+          )}
 
           <div>
             <p className="text-[13px] font-medium text-text-muted mb-2" id="lbl-freq">Frecuencia</p>

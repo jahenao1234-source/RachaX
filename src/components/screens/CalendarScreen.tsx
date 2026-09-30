@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, Check, X, ShieldCheck, ChevronRight as ChevronRightIcon, Plus, Minus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, X, ShieldCheck, ChevronRight as ChevronRightIcon, Plus, Minus, Feather } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import {
@@ -31,6 +31,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
     descongelarDia,
     openHabitDetail,
     abrirComodines,
+    diasDificiles,
   } = useHabitStore();
 
   const [viewDate, setViewDate] = useState<Date>(() => new Date());
@@ -176,6 +177,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
     }).map((h) => ({
       ...h,
       isCompleted: isHabitCompletedOnDate(h.id, selectedDateForModal, registros),
+      hechoConMinima: registros.find(r => r.habitoId === h.id && r.fecha === selectedDateForModal)?.minimo === true,
     }));
 
     regular.sort((a, b) => {
@@ -324,6 +326,11 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
               break;
           }
 
+          const esDiaDificil = diasDificiles?.includes(day.dateStr);
+          if (esDiaDificil && state !== 'como' && state !== 'fut') {
+            ariaLabel += `, día difícil`;
+          }
+
           if (isFirstHabitInCurrentMonth && day.dateStr === firstHabitDateStr) {
             btnClass += " ring-inset ring-[1.5px] ring-ambar-text";
           }
@@ -343,6 +350,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
               onClick={() => setSelectedDateForModal(day.dateStr)}
             >
               {state === 'como' && <span className="absolute top-[3px] right-[4px]"><ShieldCheck size={10} strokeWidth={3} /></span>}
+              {esDiaDificil && state !== 'como' && <span className="ddpluma" aria-hidden="true"><Feather size={10} strokeWidth={3} /></span>}
               <span className={hasBar && !grande ? 'pb-1' : ''}>{day.dayNumber}</span>
               {hasBar && (
                 <i className={`absolute ${grande ? 'left-2.5 right-2.5 bottom-2.5 h-[5px]' : 'left-[6px] right-[6px] bottom-[6px] h-1'} rounded-full bg-track-empty block overflow-hidden`} aria-hidden="true">
@@ -363,6 +371,9 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i className="w-3 h-3 rounded-[3px] border border-lila-text bg-comodin-bg" /> Comodín
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="text-lila-text flex" aria-hidden="true"><Feather size={14}/></span> Día difícil
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i className="w-3 h-3 rounded-[3px] border-[1.5px] border-dashed border-text-muted bg-transparent" /> Día libre
@@ -476,7 +487,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
                           <div className="flex-1 min-w-0 text-left">
                             <span className={`block text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[1.5px]' : 'text-text'}`}>{h.nombre}</span>
                             <span className={`block text-[13px] mt-px ${isHecho ? 'text-ambar-text font-semibold' : 'text-text-muted'}`}>
-                              {isHecho ? '+10 ganados' : (h.momento === 'manana' ? 'Mañana' : h.momento === 'tarde' ? 'Tarde' : h.momento === 'noche' ? 'Noche' : 'Todo el día')}
+                              {isHecho ? (h.hechoConMinima ? '+5 ganados · versión mínima' : '+10 ganados') : (h.momento === 'manana' ? 'Mañana' : h.momento === 'tarde' ? 'Tarde' : h.momento === 'noche' ? 'Noche' : 'Todo el día')}
                               {!isHecho && isNeg && <span className="ml-1.5 text-[11px] font-bold px-1.5 py-px rounded bg-surface-raised text-text-muted">Evitar</span>}
                             </span>
                           </div>
@@ -494,7 +505,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
                         <div className="flex-1 min-w-0 text-left">
                           <span className={`block text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-[1.5px]' : 'text-text'}`}>{h.nombre}</span>
                           <span className={`block text-[13px] mt-px ${isHecho ? 'text-ambar-text font-semibold' : 'text-text-muted'}`}>
-                            {isHecho ? '+10 ganados' : (h.momento === 'manana' ? 'Mañana' : h.momento === 'tarde' ? 'Tarde' : h.momento === 'noche' ? 'Noche' : 'Todo el día')}
+                            {isHecho ? (h.hechoConMinima ? '+5 ganados · versión mínima' : '+10 ganados') : (h.momento === 'manana' ? 'Mañana' : h.momento === 'tarde' ? 'Tarde' : h.momento === 'noche' ? 'Noche' : 'Todo el día')}
                             {!isHecho && isNeg && <span className="ml-1.5 text-[11px] font-bold px-1.5 py-px rounded bg-surface-raised text-text-muted">Evitar</span>}
                           </span>
                         </div>
@@ -625,7 +636,7 @@ export const CalendarScreen: React.FC<{ incrustado?: boolean; abrirFecha?: strin
                         )}
                       </button>
                       <p className="text-[13px] text-text-muted text-center mt-2">
-                        {comodines > 0 ? 'Si ese día no pudiste, congélalos: no cuentan como fallados.' : `Se recargan el 1 de ${monthNames[(new Date().getMonth() + 1) % 12]}. Puedes marcar lo que sí cumpliste.`}
+                        {comodines > 0 ? 'Si ese día no pudiste, congélalos: no cuentan como fallados.' : `Te llega uno nuevo el 1 de ${monthNames[(new Date().getMonth() + 1) % 12]}. Puedes marcar lo que sí cumpliste.`}
                       </p>
                     </>
                   );

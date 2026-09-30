@@ -1546,10 +1546,12 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 #screen-today .ddchip::after,#screen-stats .ddchip::after{content:'';position:absolute;inset:-4px 0}
 #screen-today .ddchip svg:first-child,#screen-stats .ddchip svg:first-child,.hoyd .ddchip svg:first-child{color:var(--lila-text)}
 #screen-today .ddchip svg:last-child,#screen-stats .ddchip svg:last-child,.hoyd .ddchip svg:last-child{color:var(--text-muted)}
-.hoyd .ddchip{min-height:44px;padding:0 12px 0 14px;font-size:14px}
+.hoyd .ddchip{min-height:44px;padding:0 14px;gap:8px;font-size:14px;font-weight:700;border-radius:12px;background:var(--surface-raised);border-color:var(--line-strong)}
+.hoyd .ddchip svg:last-child{display:none}
+.hoyd .ddchip .dcw{margin-left:-4px}
 .hoyd .dcw{white-space:nowrap}
 
-@media (max-width:1439px){.hoyd .ddchip .dcw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hoyd .ddchip{padding:0 8px 0 12px}}
+@media (max-width:1439px){.hoyd .ddchip .dcw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 @media (max-width:1151px){.hoyd .ddbtn .dcw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hoyd .ddbtn{width:44px;padding:0;justify-content:center}}
 .hoyd .ddbtn{height:44px;padding:0 16px;border-radius:12px;background:var(--surface-raised);border:1px solid var(--line-strong);display:flex;align-items:center;gap:8px;color:var(--text);font:inherit;font-size:14px;font-weight:700}
 .hoyd .ddbtn svg{color:var(--lila-text)}

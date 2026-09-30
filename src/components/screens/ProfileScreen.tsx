@@ -244,7 +244,9 @@ export const ProfileScreen: React.FC = () => {
     abrirColeccion,
     setAbrirColeccion,
     avatarPreferido,
-    setAvatarPreferido
+    setAvatarPreferido,
+    comodinAuto,
+    setComodinAuto
   } = useHabitStore();
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
@@ -678,6 +680,7 @@ export const ProfileScreen: React.FC = () => {
             </span>
           </button>
         </div>
+        <button type="button" className="ddsw" role="switch" aria-checked={comodinAuto} aria-labelledby="ddsw-t" aria-describedby="ddsw-a" onClick={() => setComodinAuto(!comodinAuto)}><span className="t"><b id="ddsw-t">Comodín automático</b><small id="ddsw-a">Si un día se te queda algo sin marcar, lo congelamos con un comodín. Te avisamos y puedes deshacerlo.</small></span><i aria-hidden="true"></i></button>
       </section>
 
       {/* Apariencia */}
@@ -860,9 +863,9 @@ export const ProfileScreen: React.FC = () => {
         />
       )}
 
-      {showAllBadges && (
+      {showAllBadges && createPortal(
         <div className="fixed inset-0 bg-bg z-50 flex flex-col animate-slideUp overflow-hidden">
-          <div className="flex items-center gap-2 p-3.5 border-b border-line">
+          <div className="flex items-center gap-2 p-3.5 lg:px-[max(14px,calc((100%-760px)/2))] border-b border-line">
             <button
               onClick={() => setShowAllBadges(false)}
               className="w-11 h-11 rounded-[12px] bg-surface border border-line text-text flex items-center justify-center shrink-0 cursor-pointer"
@@ -871,7 +874,7 @@ export const ProfileScreen: React.FC = () => {
               <ArrowLeft size={22} strokeWidth={2.2} />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto px-5 pb-24 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto px-5 lg:px-[max(20px,calc((100%-760px)/2))] pb-24 custom-scrollbar">
             <h1 className="font-heading font-bold text-[44px] leading-none m-0 mt-4 text-text">Insignias</h1>
             <p className="m-0 mt-1.5 text-[13px] text-text-muted leading-snug">
               {insignias.filter(b => b.desbloqueada).length} de {insignias.length} · ninguna se pierde · cada una trae una caja sorpresa
@@ -946,7 +949,8 @@ export const ProfileScreen: React.FC = () => {
               );
             })}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {showColoresSheet && (
