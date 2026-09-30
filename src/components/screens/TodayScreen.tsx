@@ -174,15 +174,8 @@ const renderFilaHabito = ({
           })}
         </ol>
 
-        {!isHecho && isNext && !inRutina && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }}
-            aria-label={`Empezar ${habito.nombre} en modo Foco`}
-            className="h-[40px] px-3.5 ml-3 rounded-[10px] bg-surface-raised border border-line-strong text-text font-bold flex items-center gap-1.5 shrink-0 text-[14px] active:scale-95 transition-transform relative after:absolute after:-inset-[2px] after:content-['']"
-          >
-            <Play size={12} className="fill-current" /> Empezar
-          </button>
+        {!isHecho && (
+          <button type="button" className="hplay" aria-label={`Empezar ${habito.nombre} en Foco`} onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }}><Play size={14} className="fill-current" /></button>
         )}
 
         {habito.metaDiaria && !isHecho ? (
@@ -212,7 +205,7 @@ const renderFilaHabito = ({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-x-2 min-w-0">
-            <p className={`m-0 min-w-0 text-[15px] font-semibold truncate ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
+            <p className={`m-0 min-w-0 text-[15px] font-semibold truncate hnom ${isHecho ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
               {habito.nombre}
             </p>
             {isNext && !isHecho && (
@@ -241,11 +234,8 @@ const renderFilaHabito = ({
           )}
         </div>
         {!habito.metaDiaria && !isHecho && !isNext && <span className="text-[13px] text-text-muted font-number">+10</span>}
-        {/* Sin reto, "Empezar" va en la misma línea (con reto baja junto a la barra del reto) */}
-        {isNext && !isHecho && !habito.reto && !inRutina && (
-          <button type="button" onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} aria-label={`Empezar ${habito.nombre} en modo Foco`} className="h-[44px] px-3 rounded-[12px] border bg-transparent text-[14px] font-bold flex items-center gap-1.5 shrink-0 active:scale-95 transition-transform" style={{ borderColor: minfo.varColor, color: minfo.varColor }}>
-            <Play size={12} className="fill-current" /> Empezar
-          </button>
+        {!isHecho && (
+          <button type="button" className="hplay" aria-label={`Empezar ${habito.nombre} en Foco`} onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }}><Play size={14} className="fill-current" /></button>
         )}
         {habito.metaDiaria && !isHecho ? (
            <button type="button" onClick={(e) => { e.stopPropagation(); setValor(habito.id, hoy, valorDe(habito.id) + 1); }} aria-label={`Sumar uno a ${habito.nombre}`} className="relative after:absolute after:-inset-[6px] after:content-[''] h-[32px] px-3 rounded-[10px] border border-text-muted bg-surface-raised text-text text-[14px] font-bold active:scale-95 transition-transform shrink-0">+1</button>
@@ -266,11 +256,6 @@ const renderFilaHabito = ({
                 {progressReto === 0 ? `Reto de ${habito.reto.meta} ${habito.frecuencia === 'semanal' ? 'semanas' : 'días'}` : `Reto · ${progressReto} de ${habito.reto.meta}`}
               </span>
             </div>
-          )}
-          {isNext && !isHecho && !inRutina && (
-            <button type="button" aria-label={`Empezar ${habito.nombre} en modo Foco`} onClick={(e) => { e.stopPropagation(); openFocusMode({ tipo: 'rutina', nombre: habito.nombre, habitoIds: [habito.id] }); }} className={`h-[44px] px-3.5 rounded-[12px] border bg-transparent text-[14px] font-bold flex items-center gap-1.5 shrink-0 ml-auto active:scale-95 transition-transform`} style={{ borderColor: minfo.varColor, color: minfo.varColor }}>
-              <Play size={12} className="fill-current" /> Empezar
-            </button>
           )}
         </div>
       )}
@@ -399,7 +384,7 @@ const TusCompromisos: React.FC<{ lista: CompromisoProximo[]; desk: boolean; hoy:
   );
 };
 
-const renderTareasBox = ({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab }: any) => {
+const renderTareasBox = ({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab, abrirTareaEnLista, openFocusMode }: any) => {
   if (th.modo === 'nada') return null;
   return (
     <section aria-labelledby="tareas-hoy-titulo" className={`bg-surface border border-line rounded-[18px] p-3.5 ${!desk ? 'mt-4' : ''}`}>
@@ -439,14 +424,17 @@ const renderTareasBox = ({ th, toggleSubtarea, desk, openTareaEditor, navigateTo
             >
               {p.paso.hecha && <Check size={15} strokeWidth={3} className="text-ink" />}
             </button>
-            <div className="flex-1 min-w-0">
+            <button type="button" className="flex-1 min-w-0 htarea text-left" aria-label={`${p.paso.texto}, de ${p.tareaNombre}. Abrir la tarea`} onClick={() => abrirTareaEnLista(p.tareaId)}>
               <p className={`m-0 text-[15px] font-semibold ${p.paso.hecha ? 'text-text-muted line-through decoration-text-muted decoration-[1.5px]' : 'text-text'}`}>
                 {p.paso.texto}
               </p>
               <p className="m-0 mt-0.5 text-[13px] text-text-muted">
                 {p.tareaNombre}{!p.paso.hecha && p.atraso ? ` · ${p.atraso}` : ''}
               </p>
-            </div>
+            </button>
+            {!p.paso.hecha && (
+              <button type="button" className="hplay self-center" aria-label={`Hacer un pomodoro con ${p.paso.texto}, de ${p.tareaNombre}`} onClick={() => openFocusMode({ tipo: 'tarea', tareaId: p.tareaId, pasoId: p.paso.id })}><Play size={14} className="fill-current" /></button>
+            )}
           </li>
         ))}
       </ul>
@@ -623,7 +611,8 @@ export const TodayScreen: React.FC = () => {
     progresoNivel,
     etapaLlama,
     companera,
-    compromisos
+    compromisos,
+    abrirTareaEnLista
   } = useHabitStore();
 
   const desk = useEsEscritorio();
@@ -979,7 +968,7 @@ export const TodayScreen: React.FC = () => {
 
         {/* Right Column */}
         <div className="flex flex-col gap-4">
-          {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
+          {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab, abrirTareaEnLista, openFocusMode })}
           <TusCompromisos lista={proximosCompromisos(compromisos, hoy)} desk={desk} hoy={hoy} onAbrir={(c, fecha) => { setCompromisoEditando(c); setFechaOcurrencia(fecha); setHojaCompromisoAbierta(true); }} onAgregar={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setHojaCompromisoAbierta(true); }} />
 
           <EstaSemanaDesk
@@ -1188,7 +1177,7 @@ export const TodayScreen: React.FC = () => {
         })}
       </div>
 
-      {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab })}
+      {renderTareasBox({ th, toggleSubtarea, desk, openTareaEditor, navigateToTab, abrirTareaEnLista, openFocusMode })}
           <TusCompromisos lista={proximosCompromisos(compromisos, hoy)} desk={desk} hoy={hoy} onAbrir={(c, fecha) => { setCompromisoEditando(c); setFechaOcurrencia(fecha); setHojaCompromisoAbierta(true); }} onAgregar={() => { setCompromisoEditando(undefined); setFechaOcurrencia(undefined); setHojaCompromisoAbierta(true); }} />
 
       {proximaInsignia && (

@@ -28,7 +28,8 @@ export const TasksScreen: React.FC = () => {
   const {
     tareas, toggleSubtarea, ponerFechaPaso, reabrirTarea, eliminarTarea, restaurarTarea,
     openFocusMode, navigateToTab, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor,
-    editarTextoPaso, agregarPasoTarea, borrarPasoTarea, quitarPasosTarea, reordenarTareas
+    editarTextoPaso, agregarPasoTarea, borrarPasoTarea, quitarPasosTarea, reordenarTareas,
+    tareaPorAbrir, yaAbriTarea
   } = useHabitStore();
   const hoy = getTodayString();
   const desk = useEsEscritorio();
@@ -76,6 +77,24 @@ export const TasksScreen: React.FC = () => {
     }
     return () => document.body.classList.remove('sin-barra');
   }, [ordenando]);
+
+  useEffect(() => {
+    if (!desk && tareaPorAbrir) {
+      const id = tareaPorAbrir;
+      const t = tareas.find((x) => x.id === id);
+      if (t && !t.completada) {
+        const g = grupoTarea(t, hoy).grupo;
+        setFijos((prev) => ({ ...prev, [id]: prev[id] ?? g }));
+        setAbierta(id);
+        yaAbriTarea();
+        setTimeout(() => {
+          document.getElementById(`tarea-${id}`)?.scrollIntoView({ block: 'start' });
+        }, 50);
+      } else {
+        yaAbriTarea();
+      }
+    }
+  }, [desk, tareaPorAbrir, tareas, hoy, yaAbriTarea]);
 
   const fijar = (tId: string) => {
     const t = tareas.find(x => x.id === tId);

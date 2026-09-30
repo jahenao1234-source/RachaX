@@ -40,7 +40,7 @@ export const TareasEscritorio: React.FC<{
   terminadas: Tarea[];
   resumen: string;
 }> = ({ ctl, abiertas, terminadas, resumen }) => {
-  const { tareas, reordenarTareas, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor, reabrirTarea } = useHabitStore();
+  const { tareas, reordenarTareas, isTareaEditorOpen, tareaBeingEdited, openTareaEditor, closeTareaEditor, reabrirTarea, tareaPorAbrir, yaAbriTarea } = useHabitStore();
   const [elegidaId, setElegidaId] = useState<string | null>(() => {
     const conHoy = abiertas.find((t) => obtenerHojasSubtareas(t.subtareas).some((h) => !h.hecha && h.fecha === ctl.hoy));
     return (conHoy || abiertas[0])?.id ?? null;
@@ -50,6 +50,18 @@ export const TareasEscritorio: React.FC<{
   const elegida = creando ? null : abiertas.find((t) => t.id === elegidaId) ?? abiertas[0] ?? null;
 
   const elegir = (id: string) => { if (creando) closeTareaEditor(); setElegidaId(id); };
+
+  useEffect(() => {
+    if (tareaPorAbrir) {
+      const id = tareaPorAbrir;
+      const t = abiertas.find((x) => x.id === id);
+      if (t) {
+        ctl.fijar(id);
+        setElegidaId(id);
+      }
+      yaAbriTarea();
+    }
+  }, [tareaPorAbrir, abiertas, ctl, yaAbriTarea]);
 
   // Arrastrar una tarea de la lista dentro de su grupo, con el mouse (DESIGN.md › Tareas 2 › Escritorio, cambiar de lugar).
   // destino = el lugar que tendría dentro del grupo (el índice que usa colocarTareaEnGrupo).
