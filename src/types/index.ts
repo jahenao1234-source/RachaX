@@ -247,6 +247,8 @@ export interface Compromiso {
   excepciones?: string[];
   /** Si se repite: último día en que aplica (al borrar "de aquí en adelante"). */
   hasta?: string;
+  /** Días ('YYYY-MM-DD') en que se marcó como hecho (design/maqueta-compromisos-2.html). En uno que se repite, cada día por separado. */
+  hechos?: string[];
   creadoEn: string;
 }
 export interface Tarea {

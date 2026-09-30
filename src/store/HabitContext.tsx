@@ -5,6 +5,7 @@ import {
   crearCompromiso as _crearCompromiso,
   editarCompromiso as _editarCompromiso,
   borrarCompromiso as _borrarCompromiso,
+  marcarHecho as _marcarHecho,
   nuevoIdCompromiso,
   Alcance,
   CambiosCompromiso,
@@ -118,6 +119,12 @@ interface HabitContextType {
   quitarSesionFoco: (id: string) => void;
   /** "Deshacer": vuelve la lista de compromisos a como estaba. */
   restaurarCompromisos: (lista: Compromiso[]) => void;
+  /** Marca o desmarca un compromiso ese día (Compromisos 2). Deshacer = llamarlo otra vez con el contrario. */
+  marcarCompromiso: (id: string, fecha: string, hecho: boolean) => void;
+  /** La pantalla "Tus compromisos" (se abre desde Hoy › "Ver todos" y desde Tu semana). */
+  verCompromisos: boolean;
+  abrirCompromisos: () => void;
+  cerrarCompromisos: () => void;
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
   editarTextoPaso: (tareaId: string, pasoId: string, texto: string) => void;
   borrarPasoTarea: (tareaId: string, pasoId: string) => void;
@@ -1268,6 +1275,11 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const borrarCompromiso = (id: string, alcance: Alcance, fechaDelDia: string) =>
     setCompromisos((prev) => _borrarCompromiso(prev, id, alcance, fechaDelDia));
   const restaurarCompromisos = (lista: Compromiso[]) => setCompromisos(lista);
+  const marcarCompromiso = (id: string, fecha: string, hecho: boolean) =>
+    setCompromisos((prev) => _marcarHecho(prev, id, fecha, hecho));
+  const [verCompromisos, setVerCompromisos] = useState(false);
+  const abrirCompromisos = () => setVerCompromisos(true);
+  const cerrarCompromisos = () => setVerCompromisos(false);
   const agregarPasoTarea = (tareaId: string, padreId: string | null, texto: string): string | null => {
     if (!texto.trim()) return null;
     const id = nuevoIdPaso();
@@ -1495,6 +1507,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         editarCompromiso,
         borrarCompromiso,
         restaurarCompromisos,
+        marcarCompromiso,
+        verCompromisos,
+        abrirCompromisos,
+        cerrarCompromisos,
         consejosOcultos,
         ocultarConsejo,
         mostrarConsejo,

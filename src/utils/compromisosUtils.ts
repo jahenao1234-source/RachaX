@@ -141,6 +141,11 @@ const limpiar = (c: Compromiso): Compromiso => {
   if (!r.hora) delete r.hora;
   if (!r.momento) delete r.momento;
   if (!r.repetirSemanal) { delete r.excepciones; delete r.hasta; }
+  // "Hecho" solo vale en los días en que aplica: si se movió a otro día, deja de estar hecho
+  if (r.hechos) {
+    const h = [...new Set(r.hechos)].filter((f) => aplicaEn(r, f));
+    if (h.length) r.hechos = h.sort(); else delete r.hechos;
+  }
   return r;
 };
 
@@ -158,8 +163,9 @@ export function editarCompromiso(lista: Compromiso[], id: string, cambios: Cambi
   if (!c.repetirSemanal || alcance === 'todos') {
     return lista.map((x) => (x.id === id ? limpiar({ ...x, ...cambios }) : x));
   }
-  const copia = limpiar({ ...c, ...cambios, id: idCopia, fecha: cambios.fecha ?? fechaDelDia, repetirSemanal: false, creadoEn: new Date().toISOString() });
-  return [...lista.map((x) => (x.id === id ? { ...x, excepciones: [...(x.excepciones || []), fechaDelDia] } : x)), copia];
+  // La copia de ese día se lleva su "hecho" (si lo tenía y sigue en ese día); la serie lo suelta
+  const copia = limpiar({ ...c, ...cambios, id: idCopia, fecha: cambios.fecha ?? fechaDelDia, repetirSemanal: false, hechos: c.hechos?.includes(fechaDelDia) ? [fechaDelDia] : undefined, creadoEn: new Date().toISOString() });
+  return [...lista.map((x) => (x.id === id ? limpiar({ ...x, excepciones: [...(x.excepciones || []), fechaDelDia] }) : x)), copia];
 }
 
 /** Borrar: el que no se repite (o "todos") se quita; "solo este día" deja una excepción. */
@@ -167,5 +173,78 @@ export function borrarCompromiso(lista: Compromiso[], id: string, alcance: Alcan
   const c = lista.find((x) => x.id === id);
   if (!c) return lista;
   if (!c.repetirSemanal || alcance === 'todos') return lista.filter((x) => x.id !== id);
-  return lista.map((x) => (x.id === id ? { ...x, excepciones: [...(x.excepciones || []), fechaDelDia] } : x));
+  return lista.map((x) => (x.id === id ? limpiar({ ...x, excepciones: [...(x.excepciones || []), fechaDelDia] }) : x));
 }
+
+// ---------- Compromisos 2 (design/maqueta-compromisos-2.html): marcarlos como hechos y "Tus compromisos" ----------
+
+/** ¿Está marcado como hecho ese día? */
+export const estaHecho = (c: Compromiso, fecha: string) => !!c.hechos?.includes(fecha);
+
+/** Marca o desmarca un compromiso ese día (solo si aplica ese día). En uno que se repite, solo ese día. */
+export function marcarHecho(lista: Compromiso[], id: string, fecha: string, hecho: boolean): Compromiso[] {
+  return lista.map((c) => {
+    if (c.id !== id || !aplicaEn(c, fecha)) return c;
+    const sin = (c.hechos || []).filter((f) => f !== fecha);
+    const hechos = hecho ? [...sin, fecha].sort() : sin;
+    const r = { ...c, hechos };
+    if (!hechos.length) delete r.hechos;
+    return r;
+  });
+}
+
+export interface CompromisoDelDia { c: Compromiso; fecha: string; hecho: boolean }
+
+const porHora = (a: Compromiso, b: Compromiso) => clave(a) - clave(b) || a.titulo.localeCompare(b.titulo);
+
+/** "Hoy" en "Tus compromisos" (y en la tarjeta de Hoy): los de hoy, por hora o momento, con su casilla. */
+export function compromisosDeHoy(lista: Compromiso[], hoy: string): CompromisoDelDia[] {
+  return lista.filter((c) => aplicaEn(c, hoy)).sort(porHora).map((c) => ({ c, fecha: hoy, hecho: estaHecho(c, hoy) }));
+}
+
+/**
+ * "Próximos": desde mañana, cada compromiso una vez en su próxima fecha (también los que se repiten, como en Hoy),
+ * agrupados por día.
+ */
+export function proximosAgrupados(lista: Compromiso[], hoy: string): { fecha: string; items: CompromisoProximo[] }[] {
+  const grupos: { fecha: string; items: CompromisoProximo[] }[] = [];
+  for (const x of proximosCompromisos(lista, hoy)) {
+    if (x.fecha <= hoy) continue;
+    const g = grupos[grupos.length - 1];
+    if (g && g.fecha === x.fecha) g.items.push(x); else grupos.push({ fecha: x.fecha, items: [x] });
+  }
+  return grupos;
+}
+
+/** "Cada semana": los que se repiten y siguen vigentes, del lunes al domingo y por hora. */
+export function seriesSemanales(lista: Compromiso[], hoy: string): Compromiso[] {
+  const dia = (c: Compromiso) => (parseDateString(c.fecha).getDay() + 6) % 7;
+  return lista.filter((c) => c.repetirSemanal && proximaFecha(c, hoy) !== null).sort((a, b) => dia(a) - dia(b) || porHora(a, b));
+}
+
+/** "Los miércoles · en la noche", "Los viernes · 7:00 p. m.", "Los sábados · todo el día". */
+export function textoCadaSemana(c: Pick<Compromiso, 'fecha' | 'hora' | 'momento'>): string {
+  const dia = DIAS_LARGOS[parseDateString(c.fecha).getDay()];
+  const plural = dia === 'sábado' || dia === 'domingo' ? `${dia}s` : dia;
+  return `Los ${plural} · ${textoCuando(c).replace(/^En la /, 'en la ').replace('Todo el día', 'todo el día')}`;
+}
+
+/**
+ * "Ya pasaron": los de UNA vez de los últimos `dias` días (sin hoy), del más reciente al más viejo, agrupados por día,
+ * con su casilla (si se te olvidó marcarlo, lo marcas aquí). Las veces pasadas de los que se repiten no salen.
+ */
+export function yaPasaron(lista: Compromiso[], hoy: string, dias = 30): { fecha: string; items: CompromisoDelDia[] }[] {
+  const desde = sumarDias(hoy, -dias);
+  const pasados = lista.filter((c) => !c.repetirSemanal && c.fecha < hoy && c.fecha >= desde)
+    .sort((a, b) => b.fecha.localeCompare(a.fecha) || porHora(a, b));
+  const grupos: { fecha: string; items: CompromisoDelDia[] }[] = [];
+  for (const c of pasados) {
+    const g = grupos[grupos.length - 1];
+    const item = { c, fecha: c.fecha, hecho: estaHecho(c, c.fecha) };
+    if (g && g.fecha === c.fecha) g.items.push(item); else grupos.push({ fecha: c.fecha, items: [item] });
+  }
+  return grupos;
+}
+
+/** ¿Hay algo que mostrar en "Tus compromisos"? (la tarjeta de Hoy sale mientras haya compromisos hoy o después). */
+export const hayCompromisos = (lista: Compromiso[], hoy: string) => lista.some((c) => proximaFecha(c, hoy) !== null);

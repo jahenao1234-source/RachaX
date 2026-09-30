@@ -1,5 +1,5 @@
 import { Compromiso, Habito, MomentoPlan, Registro, Subtarea, Tarea } from '../types';
-import { compromisosDelDia, momentoDe } from './compromisosUtils';
+import { compromisosDelDia, momentoDe, estaHecho } from './compromisosUtils';
 import { getSemanaDates, isHabitScheduledForDate, parseDateString, formatDateToString } from './habitUtils';
 import { textoAtraso } from './hoyUtils';
 
@@ -259,7 +259,8 @@ export function diaPorMomentos(tareas: Tarea[], compromisos: Compromiso[], habit
     habitosDe[m].push(h);
   }
   const pasos = Object.values(franjas).flat().filter((i) => i.tipo === 'paso' && !i.dato.paso.hecha).length;
-  return { fecha, franjas, habitos: habitosPor, habitosDe, pasos, compromisos: delDia.length, lleno: pasos + delDia.length >= 4 };
+  const pendientes = delDia.filter((c) => !estaHecho(c, fecha)).length;
+  return { fecha, franjas, habitos: habitosPor, habitosDe, pasos, compromisos: pendientes, lleno: pasos + pendientes >= 4 };
 }
 
 /** "3 pasos · 1 compromiso" / "Libre" */
