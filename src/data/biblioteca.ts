@@ -13,6 +13,44 @@ export const PACKS_BIBLIOTECA: PackBiblioteca[] = [
       { clave: 'tres-cosas', nombre: 'Escribir las 3 cosas importantes del día', icono: 'PenLine', momento: 'manana', anclaje: 'tomar café', minimo: 'escribir una sola' },
     ],
   },
+  {
+    tipo: 'pack', id: 'pack-estudiante', nombre: 'Estudiante', descripcion: '3 hábitos para estudiar un poco cada día', icono: 'GraduationCap',
+    habitos: [
+      { clave: 'estudiar', nombre: 'Estudiar 25 minutos', icono: 'GraduationCap', momento: 'tarde', anclaje: 'almorzar', minimo: 'abrir el cuaderno y leer un párrafo' },
+      { clave: 'repasar', nombre: 'Repasar lo de hoy', icono: 'BookOpen', momento: 'noche', anclaje: 'cenar', minimo: 'leer mis apuntes 2 minutos' },
+      { clave: 'manana-listo', nombre: 'Dejar listo lo de mañana', icono: 'Target', momento: 'noche', anclaje: 'lavarme los dientes', minimo: 'mirar qué tengo mañana' },
+    ],
+  },
+  {
+    tipo: 'pack', id: 'pack-celular-de-noche', nombre: 'Dejar el celular de noche', descripcion: '2 hábitos para soltar la pantalla antes de dormir', icono: 'Smartphone',
+    habitos: [
+      { clave: 'cargar-lejos', nombre: 'Dejar el celular cargando lejos de la cama', icono: 'Smartphone', momento: 'noche', anclaje: 'lavarme los dientes', minimo: 'ponerlo boca abajo' },
+      { clave: 'sin-pantalla', nombre: 'Hacer algo sin pantalla antes de dormir', icono: 'Bed', momento: 'noche', anclaje: 'poner a cargar el celular', minimo: '2 minutos sin pantalla' },
+    ],
+  },
+  {
+    tipo: 'pack', id: 'pack-cuerpo-activo', nombre: 'Cuerpo activo', descripcion: '3 hábitos para moverte todos los días', icono: 'Footprints',
+    habitos: [
+      { clave: 'estirar', nombre: 'Estirarme', icono: 'Zap', momento: 'manana', anclaje: 'despertarme', minimo: 'estirar los brazos una vez' },
+      { clave: 'caminar', nombre: 'Caminar 15 minutos', icono: 'Footprints', momento: 'tarde', anclaje: 'almorzar', minimo: 'caminar 2 minutos' },
+      { clave: 'sentadillas', nombre: 'Hacer 10 sentadillas', icono: 'Dumbbell', momento: 'tarde', anclaje: 'llegar a casa', minimo: 'una sentadilla' },
+    ],
+  },
+  {
+    tipo: 'pack', id: 'pack-leer-mas', nombre: 'Leer más', descripcion: '2 hábitos para leer un poco cada noche', icono: 'BookOpen',
+    habitos: [
+      { clave: 'leer', nombre: 'Leer 10 páginas', icono: 'BookOpen', momento: 'noche', anclaje: 'cenar', minimo: 'una página' },
+      { clave: 'idea', nombre: 'Anotar una idea de lo que leí', icono: 'PenLine', momento: 'noche', anclaje: 'leer', minimo: 'una frase' },
+    ],
+  },
+  {
+    tipo: 'pack', id: 'pack-tu-plata-al-dia', nombre: 'Tu plata al día', descripcion: '3 hábitos para saber en qué se te va la plata', icono: 'Wallet',
+    habitos: [
+      { clave: 'anotar-gasto', nombre: 'Anotar cada gasto', icono: 'PenLine', momento: 'flexible', anclaje: 'pagar algo', minimo: 'anotar solo el más grande' },
+      { clave: 'saldo', nombre: 'Mirar mi saldo', icono: 'Wallet', momento: 'noche', anclaje: 'cenar', minimo: 'abrir la app del banco' },
+      { clave: 'vuelto', nombre: 'Guardar el vuelto', icono: 'Star', momento: 'flexible', anclaje: 'llegar a casa', minimo: 'guardar una moneda' },
+    ],
+  },
 ];
 
 /** Los temas de Tareas, en el orden en que salen. */
