@@ -1732,3 +1732,79 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 #screen-today .insav .no{width:44px;height:44px;border:none;background:none;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
 #screen-today .insav button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
 @media (max-width:359px){#screen-today .insav > svg{display:none}}
+
+/* ==========================================================================
+   Avisos (design/maqueta-avisos.html)
+   Clases "av…": la hoja va dentro de .tareas (.tsheet.hcomp.avh), la pantalla es .avp,
+   la fila de Perfil es .avperfil y el recordatorio de Hoy va en #screen-today (.avav).
+   ========================================================================== */
+.tareas .avh .avcuerpo{flex:1 1 auto;min-height:0;overflow-y:auto}
+.tareas .avh .avlista{list-style:none;margin:8px 0 0;padding:0}
+.tareas .avh .avlista li{display:flex;align-items:center;gap:12px;min-height:44px;padding:6px 0;border-top:1px solid var(--line);font-size:15px}
+.tareas .avh .avlista li:first-child{border-top:none}
+.tareas .avh .avlista li > span:not(.avm){flex:1;min-width:0}
+.tareas .avh .avlista b{font-family:var(--font-number);font-size:18px;font-weight:700;white-space:nowrap}
+.tareas .avh .avnota{margin:12px 0 0;font-size:13px;line-height:1.45;color:var(--text-muted)}
+.tareas .avh .averror{margin:12px 0 0;font-size:14px;line-height:1.4;font-weight:600;color:var(--text)}
+.tareas .avh .avpasos{list-style:decimal;margin:10px 0 0;padding:0 0 0 22px;display:grid;gap:8px;font-size:15px;line-height:1.4}
+.tareas .avh .avpasos b{font-weight:600}
+.tareas .avh .avpie{flex-shrink:0;display:grid;gap:4px;padding:12px 0 18px;border-top:1px solid var(--line);padding-bottom:max(18px,env(safe-area-inset-bottom))}
+.tareas .avh .avpie .link{min-height:44px}
+/* Los íconos de cada momento, con su color de siempre */
+.avm{flex-shrink:0;display:flex}
+.avm.manana{color:var(--manana-text)}
+.avm.tarde{color:var(--coral-text)}
+.avm.noche,.avm.minima{color:var(--lila-text)}
+/* La pantalla "Avisos" (desde Perfil) */
+.avp{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;height:100dvh;color:var(--text)}
+.avp .avtop{display:flex;align-items:center;gap:4px;padding:10px 8px 6px;padding-top:max(10px,env(safe-area-inset-top))}
+.avp .avback{width:44px;height:44px;border:none;background:none;color:var(--text);display:flex;align-items:center;justify-content:center;border-radius:12px;cursor:pointer}
+.avp .avtop h1{margin:0;font-family:var(--font-heading);font-size:24px;font-weight:700}
+.avp .avbody{flex:1;min-height:0;overflow-y:auto;padding:4px 20px 32px}
+.avp .avg{margin:22px 0 0;font-size:13px;font-weight:700;color:var(--text-muted)}
+.avp .avg + .avfila{border-top:none}
+.avp .avfila{display:flex;align-items:center;gap:8px;min-height:64px;border-top:1px solid var(--line)}
+/* La zona de la izquierda: abre la hoja de la hora (o, sin hora, es parte del interruptor) */
+.avp .avz{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 0;border:none;background:none;color:inherit;font:inherit;text-align:left}
+.avp button.avz{cursor:pointer}
+.avp .avz .t{flex:1;min-width:0}
+.avp .avz .t b{display:block;font-size:15px;font-weight:600}
+.avp .avz .t small{display:block;margin-top:2px;font-size:13px;line-height:1.4;color:var(--text-muted)}
+.avp .avz .t small .h{font-family:var(--font-number);font-size:16px;font-weight:700;color:var(--text)}
+.avp .avz .t small u{text-underline-offset:3px;color:var(--text)}
+/* La fila entera es el interruptor cuando no hay hora */
+.avp button.avfila{width:100%;padding:0;border-left:none;border-right:none;border-bottom:none;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.avp .avsw{width:52px;height:44px;padding:0;border:none;background:none;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avp button.avsw{cursor:pointer}
+.avp .avsw i{width:48px;height:28px;border-radius:999px;background:var(--track-empty);position:relative;border:1.5px solid var(--text-muted);display:block}
+.avp .avsw i::after{content:'';position:absolute;top:2.5px;left:3px;width:20px;height:20px;border-radius:999px;background:var(--text-muted);transition:transform .15s}
+/* Encendido en el color del texto: el lila es solo de los comodines */
+.avp [aria-checked=true] .avsw i,.avp .avsw[aria-checked=true] i{background:var(--text);border-color:var(--text)}
+.avp [aria-checked=true] .avsw i::after,.avp .avsw[aria-checked=true] i::after{transform:translateX(19px);background:var(--bg)}
+@media (prefers-reduced-motion:reduce){.avp .avsw i::after{transition:none}}
+.avp .avfila.off .avz .t b,.avp .avfila.off .avz .t small .h{color:var(--text-muted)}
+.avp .avfila.off .avm{color:var(--text-muted)}
+.avp .avprin{border-top:none;border-bottom:1px solid var(--line);min-height:72px}
+.avp .avprin .avz .t b{font-size:17px}
+.avp .avsec{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.avp .avpie{margin:12px 0 0;font-size:13px;line-height:1.45;color:var(--text-muted)}
+/* Con el interruptor principal apagado: se ve lo que tenías elegido, sin controles */
+.avp .avquieto{opacity:.6}
+.avp .avquieto .avfila{min-height:52px}
+.avp .avquieto .avz{min-height:52px}
+.avp button:focus-visible,.tareas .avh button:focus-visible{outline:2px solid var(--lila);outline-offset:2px}
+/* La fila de Perfil (dentro de "Tus hábitos") */
+.avperfil{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:8px 0;border:none;border-bottom:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.avperfil .ic{width:36px;height:36px;border-radius:10px;background:var(--surface-raised);color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.avperfil .t{flex:1;min-width:0}
+.avperfil .t b{display:block;font-size:15px;font-weight:600;color:var(--text)}
+.avperfil .t small{display:block;margin-top:1px;font-size:13px;line-height:1.4;color:var(--text-muted)}
+.avperfil > svg{flex-shrink:0;color:var(--text-muted)}
+/* El recordatorio de Hoy (una vez, 3 días después de "Ahora no") */
+#screen-today .avav{display:flex;align-items:center;gap:10px;margin-top:14px;padding:6px 6px 6px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+#screen-today .avav > svg{flex-shrink:0;color:var(--text-muted)}
+#screen-today .avav p{flex:1;min-width:0;margin:0;font-size:14px;font-weight:600;line-height:1.3}
+#screen-today .avav .si{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+#screen-today .avav .no{width:44px;height:44px;border:none;background:none;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+#screen-today .avav button:focus-visible{outline:2px solid var(--lila);outline-offset:2px}
+@media (max-width:359px){#screen-today .avav > svg{display:none}}

@@ -1016,6 +1016,57 @@ Que Racha quede en la pantalla de inicio del celular. Solo se ofrece en celular 
 - "Racha ya está instalada · La estás usando…" solo cuando de verdad se abre desde la pantalla de inicio.
 - El ícono de la app es el cuadro ámbar con la llama oscura (`public/icon-*.png`, `apple-touch-icon.png`); el nombre instalado es "Racha".
 
+### Avisos (recordatorios push; aprobado el 1 oct, design/maqueta-avisos.html)
+Avisos que llegan al celular aunque Racha esté cerrada. Pocos y útiles: uno por momento del día y solo si queda algo por hacer. Sin culpa. Los cálculos y TODOS los textos de los avisos están en `src/utils/avisosUtils.ts` (129 pruebas); lo del navegador y la nube en `src/components/avisos/useAvisos.ts` (`useAvisos()`); el que recibe los avisos es `public/sw.js`; la base es `supabase/schema-7-avisos.sql` y los envía la función `supabase/functions/enviar-avisos`. El CSS está en index.css › "Avisos" (clases `av…`).
+
+**Los avisos**
+- **Por momento del día** (Mañana 7:00 a. m., Tarde 1:00 p. m., Noche 7:00 p. m.; la hora se cambia en Perfil): junta los hábitos de ese momento que faltan. Si no falta nada, no llega. Los hábitos a evitar no avisan. Los de "Todo el día" no tienen momento: solo entran en el de las 8.
+  - Varios: "Tu mañana: 3 hábitos" · "Tomar agua, Ayuno y Meditar. Empieza por uno." (más de 3: "…, Salir a correr y 3 más. Empieza por uno.")
+  - Uno con "después de…": "Después de cenar: Magnesio" · "Toca para abrir Racha y marcarlo."
+  - Uno sin "después de…": "Tu noche: Leer 20 min" · "Toca para abrir Racha y marcarlo."
+- **Versión mínima** (8:00 p. m., se cambia en Perfil), si queda algo de cualquier momento:
+  - Si alguno tiene versión mínima: "Hoy basta con lo mínimo" · "Quedan 2. Leer 20 min, mínimo: “Leer una página”. Cuenta como cumplido." Abre la hoja Día difícil.
+  - Si ninguno la tiene: "Quedan 2 por hoy" · "Magnesio y Finanzas. Con uno ya sumas." (uno solo: "Queda 1 por hoy" · "Magnesio. Todavía cuenta.")
+- **Regreso:** a la hora de la mañana. A los 2 días sin entrar: "Aquí sigue todo lo que llevas" · "Unos días sin cumplir no borran los demás. Hoy cada hábito vale el doble." A los 7: "¿Retomamos?" · "Empieza con un solo hábito. Lo demás puede esperar." Después, ninguno. **Desde el día 2 sin entrar los avisos de hábitos se callan** hasta que la persona vuelva.
+- **Compromisos** (solo los que tienen hora), 30 minutos antes, fijo: "En 30 min: Cita médica" · "Hoy a las 3:00 p. m." Abre Tus compromisos.
+- **Pomodoro:** al terminar, "Terminó tu pomodoro" · "25 min en “Revisar ventanas”. Te toca un descanso de 5."; al terminar el descanso, "Terminó el descanso" · "¿Otro pomodoro en “Revisar ventanas”?". Abre Foco. Necesita internet y puede llegar con hasta un minuto de retraso.
+- **Con "Mostrar los nombres en el aviso" apagado:** "Tu mañana: 3 hábitos por marcar" · "Toca para abrir Racha."; "Hoy basta con lo mínimo" · "Quedan 2. Toca para ver su versión mínima."; "Tienes un compromiso en 30 min"; "25 min. Te toca un descanso de 5."; "¿Otro pomodoro?".
+- Al activar llega uno de confirmación: "Así te llegan los avisos de Racha" · "Listo. Desde ahora te avisamos cuando toque."
+- Como máximo 4 avisos de hábitos al día. Al tocar un aviso se abre Hoy (o el lugar que dice arriba).
+
+**Dónde sale**
+- **La hoja "¿Te avisamos cuando toque?"** (`.tsheet.hcomp.avh` en `.tareas`): una sola vez, justo después de marcar el primer hábito (`debePreguntar`). No sale encima de una celebración: espera a que se cierre. Solo si dice "Sí, avísame" aparece el permiso del celular. Si en el permiso del celular dice que no, la hoja se cierra sin insistir.
+  - Subtítulo: "Un aviso por momento del día, y solo si queda algo por hacer."
+  - Lista (solo los momentos que tienen hábitos, cada uno con su ícono de color y su hora): "Hábitos de la mañana" · "Hábitos de la tarde" · "Hábitos de la noche" · "Si queda algo, una versión más corta".
+  - Nota: "También te avisamos de tus compromisos y cuando termina un pomodoro. Todo se cambia en Perfil › Avisos."
+  - Botones: "Sí, avísame" · "Ahora no".
+- **Después del permiso:** "Listo, te avisamos" · "El próximo te llega {hoy a las 7:00 p. m. | mañana a las 7:00 a. m.}" (`proximoAviso`) · "Entendido" · "Cambiar las horas" (abre la pantalla Avisos).
+- **Bloqueados en el celular:** "Tu celular tiene bloqueados los avisos de Racha" · "Para recibirlos hay que darles permiso en los ajustes:" con 3 pasos según el celular:
+  - Android con Racha instalada: "Mantén el dedo sobre el ícono de Racha." · "Toca **“Información de la app”**." · "Entra a **“Notificaciones”** y actívalas."
+  - Android en Chrome: "Toca el candado que está al lado de la dirección, arriba." · "Toca **“Permisos”**." · "Activa **“Notificaciones”**."
+  - iPhone: "Abre **Ajustes** en tu iPhone." · "Toca **“Notificaciones”** y busca **Racha**." · "Activa **“Permitir notificaciones”**."
+  - Nota: "Después vuelve aquí y toca “Ya los activé”." · Botones "Ya los activé" · "Ahora no". Si sigue bloqueado: "Todavía aparecen bloqueados. Revisa el paso 3."
+- **iPhone sin instalar** (`permiso === 'falta-instalar'`): "Para avisarte, Racha tiene que estar instalada" · "Es una regla del iPhone: solo las apps que están en la pantalla de inicio pueden mandar avisos. Cuando la abras desde ahí, te preguntamos otra vez." · "Instalar Racha" (abre la hoja de instalar) · "Ahora no".
+- **Recordatorio en Hoy** (`.avav`, debajo de "Tu día", solo celular): una vez, 3 días o más después de "Ahora no" (`debeRecordarAvisos`); no sale con "Volviste", "Ayer quedó sin marcar" ni junto al recordatorio de instalar (va primero el de instalar). "¿Te avisamos cuando toque?" · botón "Activar" (abre la hoja) · X con nombre "No volver a preguntar por los avisos".
+- **Perfil › Tus hábitos:** la fila "Avisos" (`.avperfil`), debajo de Comodín automático. Subtítulo (`subtituloPerfilAvisos`): "Activados · 4 al día como máximo" · "Apagados" · "Bloqueados en el celular" · "Para activarlos, instala Racha". No sale si el navegador no tiene avisos (`hayAvisos`).
+- **La pantalla "Avisos"** (`.avp`, pantalla completa; flecha "Volver a Perfil"):
+  - "Avisos en este celular" · "Activados" / "Apagados: no llega ninguno" (la fila entera es el interruptor).
+  - "Tus hábitos": Mañana, Tarde, Noche y Versión mínima. En cada fila, la izquierda (ícono de color, nombre y "7:00 a. m. · Cambiar") abre la hoja de la hora; a la derecha, el interruptor. Apagada: "1:00 p. m. · Apagado". Sin hábitos en ese momento: "No tienes hábitos de la tarde", sin controles.
+  - Debajo: "Como máximo llegan 4 al día. Si ya cumpliste lo de ese momento, no llega nada."
+  - "Otros avisos" (la fila entera es el interruptor): "Si dejas de entrar" · "Uno a los 2 días y otro a los 7. Después, ninguno." / "Compromisos" · "30 minutos antes de la hora" / "Pomodoro" · "Cuando termina, aunque Racha esté cerrada. Necesita internet."
+  - "Privacidad": "Mostrar los nombres en el aviso" · "El aviso dice qué hábitos o qué compromiso" / apagado: "El aviso solo dice cuántos faltan". Encendido de entrada.
+  - Al final: "Si tu celular está en No molestar, los avisos llegan en silencio."
+  - **Todo apagado:** debajo del interruptor, "Actívalos para elegir cuáles te llegan. Así los tenías:" y las 4 filas atenuadas, sin controles (`.avquieto`). Lo elegido se conserva.
+  - **Bloqueados:** en vez del interruptor, el botón "Cómo activarlos" (abre la hoja de bloqueados); subtítulo "Bloqueados en los ajustes del celular"; debajo "Cuando les des permiso, quedan así:" y las 4 filas atenuadas.
+- **La hoja de la hora** (el `SelectorHora` que ya existe): título "Aviso de la mañana" / "…de la tarde" / "…de la noche" / "Aviso de la versión mínima"; pregunta "¿A qué hora empiezas tu mañana?" (tarde, noche) / "¿A qué hora te proponemos lo mínimo?"; botón "Guardar" y enlace "Volver a las 7:00 a. m." (la hora de siempre). Si la hora no sirve (`errorDeHora`), "Guardar" se apaga y sale el motivo: "La mañana va de 4:00 a. m. a 11:55 a. m." · "La tarde va de 12:00 p. m. a 5:55 p. m." · "La noche va de 6:00 p. m. a 10:55 p. m." · "Tiene que ser después del aviso de la noche (7:00 p. m.)." · "Tiene que ser antes del aviso de la versión mínima (8:00 p. m.)." · "Tiene que ser antes de las 11:30 p. m."
+
+**Reglas**
+- Íconos de momento con su color de siempre (`.avm`): mañana ámbar fijo, tarde coral, noche y versión mínima lila.
+- El interruptor encendido va en el color del texto, no en lila: el lila es solo de los comodines.
+- Las horas y los interruptores son de la cuenta (valen en todos sus celulares); el permiso es de cada celular. Al salir de la cuenta, ese celular deja de recibir avisos.
+- La respuesta a la pregunta (`racha_avisos_pregunta`) es del celular: no se borra al salir.
+- En iPhone los avisos solo existen con Racha instalada (16.4 o más).
+
 ### Panel de pagos (aprobado el 29 sep, design/maqueta-panel-pagos.html)
 Solo para el dueño, **solo en computador**, en `tengoracha.com/panel`.
 - **Base de datos:** `supabase/schema-6-panel.sql`. Todo pasa por funciones que revisan `es_admin()`. Un comprador solo puede leer email, activo y estado_pago de su propia fila.

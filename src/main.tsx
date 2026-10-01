@@ -28,6 +28,9 @@ const isPanel = window.location.pathname === '/panel' || window.location.pathnam
 
 if (isPanel) {
   document.title = 'Panel de pagos · Racha';
+} else if ('serviceWorker' in navigator) {
+  // El que recibe los avisos (public/sw.js). No guarda nada en caché.
+  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });
 }
 
 createRoot(document.getElementById('root')!).render(

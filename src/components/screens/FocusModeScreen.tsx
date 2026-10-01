@@ -1,3 +1,5 @@
+import { useAvisos, programarPomodoro, cancelarPomodoro } from '../avisos/useAvisos';
+import { textoPomodoro, textoDescanso } from '../../utils/avisosUtils';
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Check, Link2, ArrowRight, Pause, Play, Coffee, Timer, RotateCcw } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
@@ -37,6 +39,7 @@ export const FocusModeScreen: React.FC = () => {
   } = useHabitStore();
   const desk = useEsEscritorio();
   const hoy = getTodayString();
+  const avisos = useAvisos();
 
   const [fase, setFase] = useState<Fase>('elegir');
   const [reloj, setReloj] = useState<RelojFoco | null>(null);
@@ -170,6 +173,17 @@ export const FocusModeScreen: React.FC = () => {
     } else guardarFocoEnCurso(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocusModeOpen, fase, reloj, bloqueId, minutos, pomodoro, paso?.key]);
+
+  // Aviso al celular cuando el pomodoro o el descanso llegue a cero (por si Racha está cerrada o la pantalla apagada)
+  useEffect(() => {
+    if (!isFocusModeOpen || !reloj || reloj.duracionMs === undefined || !corriendo(reloj) || (fase !== 'foco' && fase !== 'descanso')) { cancelarPomodoro(); return; }
+    const fin = Date.now() + restanteMs(reloj, Date.now());
+    const nombrePaso = paso?.kind === 'sub' ? paso.sub.texto : undefined;
+    if (fase === 'descanso') programarPomodoro('descanso', fin, textoDescanso(nombrePaso, avisos.config.nombres));
+    else programarPomodoro('pomodoro', fin, textoPomodoro(minutos, descansoPara(minutos), nombrePaso, avisos.config.nombres));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocusModeOpen, fase, reloj]);
+  useEffect(() => () => cancelarPomodoro(), []);
 
   // Pomodoro o descanso que llegó a cero
   useEffect(() => {

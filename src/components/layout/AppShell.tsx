@@ -28,6 +28,7 @@ import { CelebracionesManager } from '../juego/CelebracionesManager';
 import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
 import { Flame } from 'lucide-react';
 import { PantallaInstalar, HojaInstalar } from '../pwa/InstalarUI';
+import { AvisosSync } from '../avisos/AvisosSync';
 
 export const AppShell: React.FC = () => {
   const {
@@ -160,6 +161,7 @@ export const AppShell: React.FC = () => {
         <RutinaEditorModal />
         <CuentaFlow />
         {estado === 'dentro' && supabaseListo && <NubeSync onNubeLista={() => setNubeLista(true)} />}
+        {estado === 'dentro' && nubeLista && <AvisosSync />}
         {estado === 'dentro' && nubeLista && <OnboardingModal />}
         {/* Instalar la app: una vez, cuando ya entró y el onboarding está cerrado (o no hay cuenta configurada) */}
         {(estado === 'dentro' || !supabaseListo) && nubeLista && !isOnboardingOpen && <PantallaInstalar />}

@@ -1,4 +1,5 @@
 import { CLAVES_INSTALAR } from '../../utils/instalarUtils';
+import { CLAVES_AVISOS_CELULAR, quitarEsteCelular } from '../avisos/useAvisos';
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Flame, Cloud, CloudCheck } from 'lucide-react';
@@ -15,7 +16,7 @@ const SYNC_VERSION = 'racha_sync_version';
 const SYNC_PEND = 'racha_sync_pendientes';
 const SYNC_TIME = 'racha_sync_time';
 // Apariencia y lo de instalar son de este celular, no de la cuenta
-const MANTENER_AL_SALIR = ['racha_apariencia', 'racha_acento', ...CLAVES_INSTALAR];
+const MANTENER_AL_SALIR = ['racha_apariencia', 'racha_acento', ...CLAVES_INSTALAR, ...CLAVES_AVISOS_CELULAR];
 const ESPERA_MS = 2000;
 
 const leer = (k: string) => { try { return localStorage.getItem(k) || ''; } catch { return ''; } };
@@ -254,6 +255,8 @@ export const NubeSync: React.FC<{ onNubeLista: () => void }> = ({ onNubeLista })
 
   // 4) Salir de la cuenta (lo pide Perfil)
   const cerrarSesion = async () => {
+    // Antes de salir: este celular deja de recibir los avisos de esta cuenta
+    await quitarEsteCelular();
     await supabase.auth.signOut({ scope: 'local' });
     try {
       Object.keys(localStorage).forEach(k => { if (k.startsWith('racha_') && !MANTENER_AL_SALIR.includes(k)) localStorage.removeItem(k); });
