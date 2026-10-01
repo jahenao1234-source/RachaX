@@ -11,6 +11,9 @@ import {
   HelpCircle,
   CheckCircle2,
   Lock,
+  FileText,
+  Mail,
+  ExternalLink,
   AlertTriangle,
   X,
   Palette,
@@ -761,7 +764,7 @@ export const ProfileScreen: React.FC = () => {
         <h2 className="m-0 font-heading font-bold text-[22px] text-text">Tus datos</h2>
         <p className="flex gap-2.5 items-start m-0 mt-2.5 p-3 rounded-[12px] bg-surface border border-line text-[14px] leading-[1.45] text-text-muted">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-px"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
-          <span>Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.</span>
+          <span>{supabaseListo ? 'Tu Racha se guarda en tu cuenta. Si quieres, guarda también una copia para tenerla tú.' : 'Tus datos viven solo en este celular. Guarda una copia de vez en cuando para no perderlos si cambias de celular o borras el navegador.'}</span>
         </p>
 
         <div className="flex items-center gap-1.5 py-1.5 border-b border-line mt-2">
@@ -852,6 +855,37 @@ export const ProfileScreen: React.FC = () => {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </span>
           </button>
+        </div>
+        {/* Términos, privacidad y contacto (design/maqueta-terminos.html) */}
+        <div className="flex items-center gap-1.5 py-1.5 border-t border-line">
+          <a href="/terminos.html" target="_blank" rel="noopener" className="lgfila flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 text-left">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0"><FileText size={18} aria-hidden="true" /></span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Términos de uso</span>
+              <span className="block text-[13px] text-text-muted mt-px">Qué compras y los 7 días de prueba</span>
+            </span>
+            <span className="text-text-muted flex shrink-0"><ExternalLink size={16} strokeWidth={2.2} aria-hidden="true" /></span>
+          </a>
+        </div>
+        <div className="flex items-center gap-1.5 py-1.5 border-t border-line">
+          <a href="/privacidad.html" target="_blank" rel="noopener" className="lgfila flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 text-left">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0"><Lock size={18} aria-hidden="true" /></span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Privacidad</span>
+              <span className="block text-[13px] text-text-muted mt-px">Qué guardamos y cómo borrarlo</span>
+            </span>
+            <span className="text-text-muted flex shrink-0"><ExternalLink size={16} strokeWidth={2.2} aria-hidden="true" /></span>
+          </a>
+        </div>
+        <div className="flex items-center gap-1.5 py-1.5 border-t border-line">
+          <a href="mailto:hola@tengoracha.com" className="lgfila flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 text-left">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0"><Mail size={18} aria-hidden="true" /></span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Escríbenos</span>
+              <span className="block text-[13px] text-text-muted mt-px">hola@tengoracha.com</span>
+            </span>
+            <span className="text-text-muted flex shrink-0"><ExternalLink size={16} strokeWidth={2.2} aria-hidden="true" /></span>
+          </a>
         </div>
         {filaInstalar === 'instalada' && (
           <div className="flex items-center gap-3 min-h-[64px] py-1.5 border-t border-line">

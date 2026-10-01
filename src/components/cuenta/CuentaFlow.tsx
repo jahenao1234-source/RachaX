@@ -239,6 +239,8 @@ export const CuentaFlow: React.FC = () => {
     <>
       <button type="submit" form="cu-form" className="btnp full" style={{ margin: 0 }} aria-disabled={ocupado}>{ocupado ? 'Enviando…' : 'Enviarme el código'}</button>
       {VENTA_URL && <a className="link quiet center" href={VENTA_URL} target="_blank" rel="noopener noreferrer">¿Todavía no la tienes? Mira cómo conseguirla</a>}
+      {/* El permiso de datos (design/maqueta-terminos.html). Abren en otra pestaña para no perder el correo escrito. */}
+      <p className="lgacepta">Al tocar “Enviarme el código” autorizas el uso de tus datos según la <a href="/privacidad.html" target="_blank" rel="noopener">Política de privacidad</a> y aceptas los <a href="/terminos.html" target="_blank" rel="noopener">Términos</a>.</p>
     </>
   );
 };

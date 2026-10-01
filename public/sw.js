@@ -28,7 +28,7 @@ self.addEventListener('notificationclick', (e) => {
   const destino = (e.notification.data && e.notification.data.destino) || 'hoy';
   e.waitUntil((async () => {
     const todas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-    const abierta = todas.find((c) => { try { return new URL(c.url).pathname.indexOf('/panel') !== 0; } catch (_) { return false; } });
+    const abierta = todas.find((c) => { try { const p = new URL(c.url).pathname; return p.indexOf('/panel') !== 0 && p.indexOf('/terminos') !== 0 && p.indexOf('/privacidad') !== 0; } catch (_) { return false; } });
     if (abierta) {
       try {
         const w = await abierta.focus();

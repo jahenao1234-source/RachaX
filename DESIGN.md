@@ -1067,6 +1067,39 @@ Avisos que llegan al celular aunque Racha esté cerrada. Pocos y útiles: uno po
 - La respuesta a la pregunta (`racha_avisos_pregunta`) es del celular: no se borra al salir.
 - En iPhone los avisos solo existen con Racha instalada (16.4 o más).
 
+### Términos, privacidad y contacto (aprobado el 1 oct, design/maqueta-terminos.html)
+Dos páginas públicas, sin cuenta, para que se puedan mandar por WhatsApp antes de cobrar: `tengoracha.com/terminos` y `tengoracha.com/privacidad`. Son archivos sueltos, sin la app: `public/terminos.html`, `public/privacidad.html` y `public/legal.css` (con las letras en `public/fuentes/`; no cargan nada de terceros). Siguen el modo claro u oscuro del celular, o el que la persona eligió en Racha. `vercel.json` tiene `cleanUrls` para las direcciones sin `.html`. **Los textos los escribe Claude, no Gemini.** No reemplazan la revisión de un abogado.
+
+**Forma de las páginas**
+- Cabecera con la marca y el botón "Ir a Racha". Título, "Vigente(s) desde el … · versión N" y la tarjeta **"En corto"** con lo más importante; cada punto lleva a su sección.
+- Diez secciones numeradas, cortas, de tú y sin jerga ("quien responde por tus datos", no "responsable del tratamiento"). Columna de lectura de 640 px.
+- Pie: Términos · Privacidad · hola@tengoracha.com.
+- Cada cambio importante sube el número de versión y la fecha, y se guarda la versión anterior.
+
+**Lo que dicen (decisiones de Johnatan)**
+- El responsable aparece con nombre completo, ciudad (Bello, Antioquia), WhatsApp y correo. Sin dirección ni documento (decisión de Johnatan; el revisor avisó que la ley pide más: queda para consultarlo con un contador).
+- **El precio no va escrito:** "El precio es el que te informamos por WhatsApp antes de pagar… Es el precio total: no se suma nada más." Así puede haber promociones o cambios. Nunca "impuestos incluidos".
+- **7 días de prueba:** si no convence, se devuelve todo lo pagado por Bre-B, en máximo 5 días hábiles desde que escriben con su correo y su llave. Vale aunque ya la hayan usado. Si los 5 días hábiles del retracto de ley terminan después, vale la fecha que más favorezca a la persona. Después de los 7 días queda la garantía de ley.
+- El acceso "no se vence: dura mientras Racha exista", con **al menos 12 meses garantizados** y aviso de 60 días si se cierra. Nunca "de por vida".
+- Solo mayores de 18. Una compra es para una persona.
+- Una IA (Gemini) lee el comprobante y después lo revisa una persona; ningún programa quita el acceso por sí solo.
+- Los datos se guardan en servicios de otras empresas, en Estados Unidos (Supabase, Vercel, Resend, Google, Apple, WhatsApp/ManyChat). No se venden ni se usan para publicidad.
+- Desde Perfil se guarda una copia y se borra la Racha; para cerrar la cuenta completa hay que escribir a hola@tengoracha.com (se borra en máximo 15 días hábiles; el correo y la compra se guardan un año más).
+- Las páginas no deben prometer nada que la app no haga: si cambia lo que la app guarda o borra, se actualizan.
+
+**Dentro de la app** (CSS en index.css › "Términos y privacidad dentro de la app")
+- **Entra a tu Racha**, debajo de "Enviarme el código" (`.lgacepta`, 13 px, centrada): "Al tocar “Enviarme el código” autorizas el uso de tus datos según la **Política de privacidad** y aceptas los **Términos**." Los dos enlaces abren en otra pestaña (para no perder el correo escrito) y tienen zona de toque de 44 px.
+- **Perfil › Ayuda**, después de "Cómo funciona Racha" (enlaces `.lgfila`, con el ícono de "abre afuera"):
+  - "Términos de uso" · "Qué compras y los 7 días de prueba"
+  - "Privacidad" · "Qué guardamos y cómo borrarlo"
+  - "Escríbenos" · "hola@tengoracha.com" (abre el correo; cuando exista el WhatsApp de soporte, lo abre a él)
+- **Perfil › Tus datos:** la tarjeta dice "Tu Racha se guarda en tu cuenta. Si quieres, guarda también una copia para tenerla tú."
+
+**Lo que debe llevar ManyChat (para el paso de WhatsApp)**
+- Antes de cobrar: qué es Racha y qué incluye, el precio total, que es un solo pago, la llave Bre-B y a nombre de quién, los 7 días de prueba y los enlaces a las dos páginas.
+- Antes de recibir el comprobante, el permiso de datos con botón: "Para activar tu Racha necesito tu correo y la foto del comprobante. Una inteligencia artificial lee la foto y después la revisa una persona. Aquí está cómo cuidamos tus datos: tengoracha.com/privacidad. ¿Autorizas que usemos tus datos para eso?" · botón **"Sí, autorizo"**. ManyChat guarda la fecha: esa es la prueba del permiso.
+- Después de pagar: "Recibimos tu pago de $… el [fecha]. Tu acceso: tengoracha.com con el correo […]."
+
 ### Panel de pagos (aprobado el 29 sep, design/maqueta-panel-pagos.html)
 Solo para el dueño, **solo en computador**, en `tengoracha.com/panel`.
 - **Base de datos:** `supabase/schema-6-panel.sql`. Todo pasa por funciones que revisan `es_admin()`. Un comprador solo puede leer email, activo y estado_pago de su propia fila.

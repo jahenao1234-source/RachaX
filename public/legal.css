@@ -1,0 +1,47 @@
+/* Racha · páginas públicas de Términos y Privacidad (public/terminos.html y public/privacidad.html).
+   Son HTML sueltos, sin la app: por eso traen aquí los mismos colores y letras. Siguen el modo claro u oscuro del celular
+   (o el que la persona eligió en Racha). */
+@font-face{font-family:'Barlow';font-weight:400;font-display:swap;src:url('/fuentes/barlow-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:600;font-display:swap;src:url('/fuentes/barlow-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:700;font-display:swap;src:url('/fuentes/barlow-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-weight:700;font-display:swap;src:url('/fuentes/barlow-condensed-latin-700-normal.woff2') format('woff2')}
+
+:root{--bg:#F6F7F8;--surface:#FFFFFF;--surface-raised:#EEF0F2;--line:#E1E4E8;--line-strong:#C9CDD4;--text:#15181B;--text-muted:#5D6570;--foco:#5B5FCF}
+:root.dark{--bg:#0F1113;--surface:#181B1F;--surface-raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--text-muted:#98A0AA;--foco:#8E9BFF}
+/* Sin JavaScript (o si la persona no eligió nada en Racha), sigue el modo del celular */
+@media (prefers-color-scheme: dark){:root:not(.claro){--bg:#0F1113;--surface:#181B1F;--surface-raised:#22262C;--line:#2A2F36;--line-strong:#3A4048;--text:#F1F3F5;--text-muted:#98A0AA;--foco:#8E9BFF}}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:16px;line-height:1.6}
+.lg{max-width:640px;margin:0 auto;padding:0 20px 56px}
+.lgtop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.lgmarca{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px}
+.lgmarca > span{width:30px;height:30px;border-radius:9px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center}
+.lgir{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font-size:14px;font-weight:700;text-decoration:none}
+h1{margin:30px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:38px;line-height:1.1}
+.lgfecha{margin:8px 0 0;font-size:14px;color:var(--text-muted)}
+h2{margin:36px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:25px;line-height:1.2}
+h3{margin:20px 0 0;font-size:16px;font-weight:700}
+p{margin:10px 0 0}
+ul,ol{margin:10px 0 0;padding-left:22px}
+li{margin-top:6px}
+b,strong{font-weight:700}
+a{color:var(--text);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+a:focus-visible{outline:2px solid var(--foco);outline-offset:2px;border-radius:4px}
+/* "En corto": lo más importante, arriba */
+.lgcorto{margin:24px 0 0;padding:16px 18px 18px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.lgcorto h2{margin:0;font-size:20px}
+.lgcorto ul{margin-top:8px}
+/* Una tabla sencilla: qué guardamos y para qué */
+.lgtabla{margin:12px 0 0;border-top:1px solid var(--line)}
+.lgtabla div{padding:12px 0;border-bottom:1px solid var(--line)}
+.lgtabla b{display:block}
+.lgtabla span{display:block;color:var(--text-muted);font-size:15px}
+/* el "para qué", en su propio renglón y en el color del texto */
+.lgtabla span + span{margin-top:4px;color:var(--text)}
+.lgpie{margin:48px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:14px;color:var(--text-muted)}
+.lgpie nav{display:flex;flex-wrap:wrap;gap:4px 18px}
+h2[id],h3[id]{scroll-margin-top:16px}
+.lgpie a{display:inline-flex;align-items:center;min-height:44px;color:var(--text)}
+@media (max-width:380px){h1{font-size:32px}.lg{padding-left:16px;padding-right:16px}}
