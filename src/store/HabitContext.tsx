@@ -37,6 +37,7 @@ import {
   DestinoPaso,
 } from '../utils/tareasUtils';
 import { evaluarRetoSemanal, generarOpcionesReto, getLunesActual } from '../utils/retoSemanal';
+import { construirAgregado, ItemBiblioteca } from '../utils/bibliotecaUtils';
 import { activarDificil, aplicarMinimos, comodinesAutomaticos, congelarVarios, limpiarMinimo, marcarHabito, pasarACompleto as registrosACompleto, puedeTenerMinimo, quitarDificil, recalcularConMeta, registroConValor } from '../utils/dificilUtils';
 import { hastaOcultarConsejo, limpiarConsejosOcultos } from '../utils/consejosUtils';
 import { SesionFoco, sanearSesiones } from '../utils/focoUtils';
@@ -130,6 +131,14 @@ interface HabitContextType {
   verCompromisos: boolean;
   abrirCompromisos: () => void;
   cerrarCompromisos: () => void;
+  /** Biblioteca (DESIGN.md › "### Biblioteca"): pantalla completa en el celular, página en el escritorio. */
+  verBiblioteca: boolean;
+  abrirBiblioteca: () => void;
+  cerrarBiblioteca: () => void;
+  /** Agrega un pack, una tarea lista o un plan SIN tocar lo que ya hay. Devuelve los ids creados, para el Deshacer. */
+  agregarDeBiblioteca: (item: ItemBiblioteca, claves: string[]) => { habitoIds: string[]; tareaId: string | null };
+  /** El Deshacer: quita solo esos ids (con sus registros), nunca restaura una foto vieja. */
+  deshacerBiblioteca: (ids: { habitoIds: string[]; tareaId: string | null }) => void;
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
   editarTextoPaso: (tareaId: string, pasoId: string, texto: string) => void;
   borrarPasoTarea: (tareaId: string, pasoId: string) => void;
@@ -763,6 +772,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const navigateToTab = (tab: TabRoute) => {
     setHabitBeingEdited(null);
     setSelectedHabitIdForDetail(null);
+    setVerBiblioteca(false);
     setActiveTab(tab);
   };
 
@@ -1387,6 +1397,23 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [verCompromisos, setVerCompromisos] = useState(false);
   const abrirCompromisos = () => setVerCompromisos(true);
   const cerrarCompromisos = () => setVerCompromisos(false);
+
+  // ----- Biblioteca -----
+  const [verBiblioteca, setVerBiblioteca] = useState(false);
+  const abrirBiblioteca = () => { setHabitBeingEdited(null); setSelectedHabitIdForDetail(null); setVerBiblioteca(true); };
+  const cerrarBiblioteca = () => setVerBiblioteca(false);
+  const agregarDeBiblioteca = (item: ItemBiblioteca, claves: string[]) => {
+    const nuevoId = () => (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `b_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`);
+    const { habitos: nuevos, tarea } = construirAgregado(item, claves, habitos, { ahora: new Date().toISOString(), nuevoId });
+    // Un solo cambio por lista: así no se pisan los 'orden' ni se pierde nada de lo que ya había
+    if (nuevos.length) setHabitos((prev) => [...nuevos, ...prev]);
+    if (tarea) setTareas((prev) => [...prev, tarea]);
+    return { habitoIds: nuevos.map((h) => h.id), tareaId: tarea ? tarea.id : null };
+  };
+  const deshacerBiblioteca = (ids: { habitoIds: string[]; tareaId: string | null }) => {
+    ids.habitoIds.forEach((id) => eliminarHabito(id));
+    if (ids.tareaId) eliminarTarea(ids.tareaId);
+  };
   const agregarPasoTarea = (tareaId: string, padreId: string | null, texto: string): string | null => {
     if (!texto.trim()) return null;
     const id = nuevoIdPaso();
@@ -1618,6 +1645,11 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         verCompromisos,
         abrirCompromisos,
         cerrarCompromisos,
+        verBiblioteca,
+        abrirBiblioteca,
+        cerrarBiblioteca,
+        agregarDeBiblioteca,
+        deshacerBiblioteca,
         consejosOcultos,
         ocultarConsejo,
         mostrarConsejo,

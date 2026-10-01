@@ -74,6 +74,8 @@ export type Habito = {
   minimo?: string;
   reto?: { meta: number; inicio: string; cumplidoEn?: string }; // meta = días o semanas, inicio = YYYY-MM-DD
   creadoEn: string;           // ISO date
+  /** Si vino de la Biblioteca: el id del pack o del plan. Con él se sabe qué está "Agregado". */
+  origen?: string;
 };
 
 export type Registro = {
@@ -263,6 +265,8 @@ export interface Tarea {
   subtareas: Subtarea[];
   completada: boolean;
   creadoEn: string;
+  /** Si vino de la Biblioteca: el id de la tarea lista o del plan. */
+  origen?: string;
 }
 
 export type FocusTarget =

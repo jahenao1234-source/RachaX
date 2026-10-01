@@ -1175,6 +1175,55 @@ Solo para el dueño, **solo en computador**, en `tengoracha.com/panel`.
   - ámbar solo en lo que ya pagó y en los botones principales.
 - **Fechas y plata:** fechas siempre en hora de Colombia ("hoy, 10:14 a. m.", "ayer, 9:55 p. m.", "lun 21 sep, 6:02 p. m."); pesos como "$37.900".
 
+### Biblioteca (aprobado el 1 oct, design/maqueta-biblioteca.html)
+
+Los bonos que van dentro de la app: hábitos, tareas y planes de 30 días **listos para agregar con un toque**. Agregar nunca borra ni cambia nada de lo que la persona ya tiene. 18 pantallas en la maqueta. Los cálculos y **todos los textos que cambian con los datos** están en `src/utils/bibliotecaUtils.ts`; el contenido, en `src/data/biblioteca.ts` (cada pack, tarea y plan lo aprueba Johnatan antes de entrar). El CSS está en index.css › "Biblioteca" (todo dentro de `.biblio` o de `.bhoja`).
+
+**Por dónde se entra** (reemplaza "Navigation" donde choque):
+- **Celular:** en el menú Crear (el +), una fila nueva antes de "Empezar un pomodoro", con el ícono `Library`: **"Biblioteca"** / "Hábitos, tareas y planes listos para agregar". El orden queda: Nuevo hábito · Nuevo compromiso · Nueva tarea · (línea) · Biblioteca · Empezar un pomodoro.
+- **Escritorio:** un destino más en el menú lateral, después de Progreso: **Hoy · Tareas · Tu semana · Progreso · Biblioteca** (ícono `Library`). Queda marcado mientras se ve la Biblioteca; elegir otro destino la cierra.
+
+**La pantalla (celular):** pantalla completa, como Crear hábito (tapa la barra de arriba y la de abajo). Cabecera con "Biblioteca" (Barlow Condensed 24px) y el botón cerrar de 44px. Debajo, tres pestañas con la misma forma de las de Progreso: **Hábitos · Tareas · Planes**. Abre en **Hábitos** la primera vez y después recuerda la última pestaña (`racha_biblioteca_pestana`). Debajo de las pestañas, una línea de ayuda (14px, text-muted) y la lista.
+- Hábitos: "Grupos de hasta 3 hábitos. Cada uno va después de algo que ya haces y trae su versión mínima para los días pesados."
+- Tareas: "Pendientes típicos, ya divididos en pasos pequeños. Tú les pones el día."
+- Planes: "Un mes con un tema: pocos hábitos y una tarea repartida semana a semana."
+
+**Las filas de la lista** (`.bfila`: surface, borde line, esquinas 14px, mínimo 64px): cuadrito de ícono de 38px, nombre (15px, 600), una segunda línea (13px, text-muted) y la flecha.
+- **Pack de hábitos:** el cuadrito lleva el color del momento de su primer hábito (mañana, tarde, noche; neutro si es Todo el día). Segunda línea: "3 hábitos · Mañana", "3 hábitos · Tarde y noche", "3 hábitos · Todo el día y noche".
+- **Tarea:** **sin cuadrito de ícono** (el mismo ícono repetido en cada grupo chocaba). Van agrupadas por tema con un título (Barlow Condensed 17px): Trámites · Casa · Estudio · Trabajo · Plata · Salud. Segunda línea: "9 pasos".
+- **Plan:** cuadrito neutro (surface-raised, ícono en text). Segunda línea: "2 hábitos · 11 pasos".
+- **Ya agregado:** a la derecha, antes de la flecha, la marca "✓ Agregado" (en los planes, "✓ Empezado") en 13px, 600, **text-muted** (no ámbar: agregar no es lograr). La fila se sigue pudiendo abrir.
+
+**El detalle:** en el celular es una hoja (dentro de `.tareas`, `.tsheet.hcomp.bhoja`) con el cuerpo que se desplaza y el botón siempre a la vista en el pie; filas planas (Flat Sheet Rule). Título en 24px y debajo una línea (13px, text-muted).
+- **Pack:** línea "3 hábitos para empezar el día" (la descripción del pack). Cada hábito: cuadrito con el color de su momento, nombre, "Mañana · Después de despertarme" y "Mínimo: un sorbo", y a la derecha una **casilla** (28px, con zona de 44px; sin marcar: borde text-muted; marcada: fondo surface-raised, borde y ✓ en text, **neutra, no ámbar**). Llegan **todas marcadas**. Al final: "Después puedes cambiar lo que quieras en cada hábito." Botón: "Agregar 3 hábitos" / "Agregar 1 hábito".
+- **Tarea:** línea "9 pasos · tú les pones el día". Los pasos como lista con una raya a la izquierda; los pasos grandes en negrita y los pequeños adentro, en text-muted. Al final: "Después puedes cambiar, quitar o agregar pasos en Tareas." Botón: "Agregar a mis tareas".
+- **Plan:** línea "Plan de 30 días · 2 hábitos y 1 tarea de 11 pasos". Primero la descripción (15px, text): "Un mes para mirar tu plata de frente: cuánto entra, cuánto sale y a dónde se va." Enseguida, **arriba y no al final**: "Los hábitos quedan en Hoy y la tarea en Tareas. Los pasos llegan sin día: cada semana los pones en Tu semana." Luego la sección **"Hábitos"** (las mismas filas con casilla) y la sección **"La tarea, semana a semana"**: 4 filas plegables "Semana 1 · Saber dónde estoy" con "3 pasos" y una flecha; la Semana 1 llega abierta y las demás plegadas. Abierta, muestra su frase de "por qué" (13px, text-muted) y sus pasos. Botón: "Empezar este plan".
+- Los nombres dicen lo que la persona **hace**; ningún texto promete un resultado (ley 1480). Los planes se llaman "Plan de 30 días".
+
+**El aviso de los 3 hábitos** (sin culpa y **sin bloquear**): sale arriba del detalle cuando los hábitos activos que ya tiene **más los marcados** pasan de 3 (y ya tiene al menos uno). Los hábitos siguen llegando marcados; la persona decide. Texto: **"Ya llevas 6 hábitos. Con pocos es más fácil sostenerlos. Deja marcados solo los que quieras sumar ahora."** (con 1: "Ya llevas 1 hábito."). En la hoja es un recuadro surface-raised de 12px con el ícono de información; en el panel del escritorio va plano, entre dos líneas.
+
+**El botón del pie** (ámbar, 48px; apagado con `aria-disabled`: surface-raised y text-muted):
+- Pack sin nada marcado: apagado, **"Marca al menos un hábito"**.
+- Un plan sin hábitos marcados **sí se puede empezar**: entra solo la tarea.
+- Ya agregado: apagado, **"Ya lo agregaste"** (tarea: "Ya la agregaste"; plan: "Ya lo empezaste"), y encima una línea centrada (13px, text-muted) que dice dónde quedó: "Están en Hoy." / "Está en Hoy." / "Está en Tareas." / "Los hábitos están en Hoy y la tarea en Tareas." / "La tarea está en Tareas." **No se puede agregar dos veces.**
+- "Ya agregado" quiere decir que existe un hábito sin archivar o una tarea con ese `origen`. Si la persona lo deshace, lo borra o lo archiva, vuelve a estar disponible.
+
+**Al agregar:** la hoja se cierra y sale el aviso con **Deshacer** (dentro de la pantalla, abajo; `role="status"`; 6 segundos):
+- Pack: "Agregaste 3 hábitos. Ya están en Hoy." / "Agregaste 1 hábito. Ya está en Hoy."
+- Tarea: "Agregaste Declarar renta a tus tareas."
+- Plan: "Empezaste Ordenar tu plata: 2 hábitos y 1 tarea." / "…: 1 hábito y 1 tarea." / "…: 1 tarea."
+Deshacer quita **solo lo que se acaba de crear** (por sus ids), nunca devuelve una foto vieja del estado.
+
+**Lo que se crea:** cada hábito con su nombre, ícono, momento, el color de su momento, el anclaje, la versión mínima, la frecuencia y `origen`; en el orden del catálogo, después de los que ya había. La tarea con sus pasos anidados, sin día y sin hacer; en un plan, cada semana es un paso grande ("Semana 1 · Saber dónde estoy") con sus pasos adentro. Todos los ids son nuevos cada vez.
+
+**Escritorio:** una página (no una ventana): título "Biblioteca" (44px) con "Hábitos, tareas y planes listos para agregar." debajo; a la izquierda las pestañas y la lista; a la derecha un **panel** (tarjeta surface de 440px; 360px con menos de 1280px) con el detalle y su botón siempre a la vista. La fila elegida lleva el borde en text. Sin nada elegido, el panel dice: **"Elige uno de la lista para ver lo que trae."** El aviso con Deshacer va debajo de la lista, no encima del panel.
+
+**Accesibilidad:** pestañas con `tablist` / `tab` / `tabpanel`; la casilla es `role="checkbox"` con nombre fijo "Incluir {hábito}"; las semanas con `aria-expanded` y `aria-controls`; la pantalla del celular es un diálogo modal (el fondo queda inerte, el foco no se sale y vuelve al cerrar); todo lo tocable mide 44px; el foco se ve con el anillo de 2px en text.
+
+**Seguridad de los datos:** la Biblioteca solo se puede abrir cuando la nube ya trajo los datos (la misma condición que usa AppShell para el comodín automático); si se agregara antes, la copia de la nube lo borraría al llegar.
+
+**Para lanzar:** 6 packs (Mañana productiva, Estudiante, Dejar el celular de noche, Cuerpo activo, Leer más, Tu plata al día), 18 tareas (3 por tema) y 5 planes (Ordenar tu plata, Volver a estudiar, Poner la casa en orden, Moverte más, Dormir mejor).
+
 ## Do's and Don'ts
 
 ### Do:

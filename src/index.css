@@ -1820,3 +1820,86 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .onb.cuenta .lgacepta a{color:var(--text);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding:15px 2px;margin:-15px -2px;line-height:1.2}
 .onb.cuenta .lgacepta a:focus-visible,.lgfila:focus-visible{outline:2px solid var(--lila);outline-offset:2px;border-radius:6px}
 .lgfila{color:inherit;text-decoration:none}
+
+/* ===== Biblioteca (maqueta design/maqueta-biblioteca.html; DESIGN.md › "### Biblioteca") =====
+   Celular: pantalla completa (.biblio) y el detalle en una hoja (.tareas .tsheet.hcomp.bhoja).
+   Escritorio: página con la lista a la izquierda y el detalle en un panel a la derecha (.biblio.dk).
+   Todo vive dentro de .biblio o de .bhoja: ninguna regla suelta. */
+.biblio{position:fixed;inset:0;z-index:60;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+:is(.biblio,.bhoja) button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.biblio .bcab{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line);flex-shrink:0}
+.biblio .bcab h1{margin:0;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:24px;line-height:1.1}
+.biblio .bcerrar{width:44px;height:44px;border-radius:999px;border:none;background:var(--surface-raised);color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.biblio .bcuerpo{flex:1;overflow-y:auto;padding:14px 20px 32px}
+.biblio .btabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.biblio .btabs button{min-height:44px;border:none;border-radius:9px;background:transparent;color:var(--text-muted);font:inherit;font-size:15px;font-weight:700}
+.biblio .btabs button[aria-selected="true"]{background:var(--surface-raised);color:var(--text);box-shadow:inset 0 0 0 1.5px var(--text)}
+.biblio .bintro{margin:14px 0;font-size:14px;line-height:1.4;color:var(--text-muted)}
+.biblio .bgrupo{margin:18px 0 8px;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:17px;line-height:1.1}
+.biblio .bgrupo:first-of-type{margin-top:0}
+.biblio .blista{display:flex;flex-direction:column;gap:8px;list-style:none;margin:0;padding:0}
+.biblio .bfila{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:inherit;font:inherit;text-align:left}
+.biblio .bfila.sinico{min-height:56px;padding-left:14px}
+.biblio .bfila .btxt{flex:1;min-width:0}
+.biblio .bfila>svg{color:var(--text-muted);flex-shrink:0}
+.biblio .bfila[aria-current="true"]{border-color:var(--text)}
+:is(.biblio,.bhoja) .bico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface-raised);color:var(--text)}
+:is(.biblio,.bhoja) .bico.manana{background:var(--manana-tint);color:var(--manana-text)}
+:is(.biblio,.bhoja) .bico.tarde{background:var(--coral-tint);color:var(--coral-text)}
+:is(.biblio,.bhoja) .bico.noche{background:var(--lila-tint);color:var(--lila-text)}
+:is(.biblio,.bhoja) .bnom{display:block;font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+:is(.biblio,.bhoja) .bmeta{display:block;margin-top:2px;font-size:13px;line-height:1.35;color:var(--text-muted)}
+.biblio .bya{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--text-muted);white-space:nowrap;flex-shrink:0}
+
+/* El detalle: las mismas piezas en la hoja del celular y en el panel del escritorio */
+.tareas .tsheet.bhoja .bhsub{margin:4px 0 0;font-size:13px;color:var(--text-muted)}
+.tareas .tsheet.bhoja .bhcuerpo{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-bottom:10px}
+:is(.biblio,.bhoja) .bdet .bporque{margin:0 0 4px;font-size:15px;line-height:1.4;color:var(--text)}
+:is(.biblio,.bhoja) .bdet .bsec{margin:16px 0 2px;font-family:inherit;font-size:13px;font-weight:600;line-height:1.3;color:var(--text-muted)}
+:is(.biblio,.bhoja) .bdet .bh{display:flex;align-items:center;gap:12px;padding:12px 8px 12px 0;border-bottom:1px solid var(--line)}
+:is(.biblio,.bhoja) .bdet .bh:last-child{border-bottom:none}
+:is(.biblio,.bhoja) .bdet .bh .btxt{flex:1;min-width:0}
+:is(.biblio,.bhoja) .bdet .bchk{position:relative;width:28px;height:28px;border-radius:8px;border:1.5px solid var(--text-muted);background:transparent;color:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
+:is(.biblio,.bhoja) .bdet .bchk::after{content:'';position:absolute;inset:-8px}
+:is(.biblio,.bhoja) .bdet .bchk[aria-checked="true"]{background:var(--surface-raised);border-color:var(--text);color:var(--text)}
+:is(.biblio,.bhoja) .bdet .bnota{display:flex;gap:10px;margin:12px 0 4px;padding:12px;border-radius:12px;background:var(--surface-raised);font-size:14px;line-height:1.4;color:var(--text)}
+:is(.biblio,.bhoja) .bdet .bnota svg{flex-shrink:0;margin-top:2px;color:var(--text-muted)}
+:is(.biblio,.bhoja) .bdet .bayuda{margin:10px 0 0;font-size:13px;line-height:1.4;color:var(--text-muted)}
+:is(.biblio,.bhoja) .bdet .bsem{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:6px 0;border:none;border-top:1px solid var(--line);background:transparent;color:var(--text);font:inherit;text-align:left}
+:is(.biblio,.bhoja) .bdet .bsem.primera{border-top:none}
+:is(.biblio,.bhoja) .bdet .bsem b{flex:1;min-width:0;font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+:is(.biblio,.bhoja) .bdet .bsem small{font-size:13px;color:var(--text-muted);white-space:nowrap}
+:is(.biblio,.bhoja) .bdet .bsem svg{color:var(--text-muted);flex-shrink:0;transition:transform .15s ease-out}
+:is(.biblio,.bhoja) .bdet .bsem[aria-expanded="true"] svg{transform:rotate(180deg)}
+:is(.biblio,.bhoja) .bdet .bsemq{margin:0 0 8px;font-size:13px;line-height:1.4;color:var(--text-muted)}
+:is(.biblio,.bhoja) .bdet .bpasos{list-style:none;margin:0 0 10px;padding:0}
+:is(.biblio,.bhoja) .bdet .bpasos li{padding:7px 0 7px 14px;border-left:2px solid var(--line);font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+:is(.biblio,.bhoja) .bdet .bpasos li.grande{font-weight:600;padding-bottom:0}
+:is(.biblio,.bhoja) .bdet .bpasos ul{list-style:none;margin:6px 0 0;padding:0}
+:is(.biblio,.bhoja) .bdet .bpasos ul li{margin-left:2px;font-size:14px;font-weight:400;color:var(--text-muted)}
+:is(.biblio,.bhoja) .bpie{flex-shrink:0;margin:0 -20px;padding:12px 20px max(18px,env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+:is(.biblio,.bhoja) .bpie .bdonde{margin:0 0 10px;font-size:13px;line-height:1.4;color:var(--text-muted);text-align:center}
+:is(.biblio,.bhoja) .bprim{width:100%;min-height:48px;border:none;border-radius:12px;background:var(--ambar);color:var(--ink);font:inherit;font-size:15px;font-weight:700}
+:is(.biblio,.bhoja) .bprim[aria-disabled="true"]{background:var(--surface-raised);color:var(--text-muted)}
+
+/* Aviso con Deshacer (va dentro de .biblio) */
+.biblio .btoast{position:fixed;left:16px;right:16px;bottom:max(24px,env(safe-area-inset-bottom));z-index:80;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 14px;border-radius:14px;background:var(--surface-raised);border:1px solid var(--line-strong);color:var(--text);font-size:14px;line-height:1.35}
+.biblio .btoast span{flex:1;min-width:0}
+.biblio .btoast button{min-height:44px;padding:0 12px;border:none;border-radius:10px;background:transparent;color:var(--ambar-text);font:inherit;font-size:14px;font-weight:700;flex-shrink:0}
+
+/* Escritorio */
+.biblio.dk{position:static;inset:auto;z-index:auto;background:transparent;display:block}
+.biblio.dk .bdkcab h1{margin:0;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:44px;line-height:1}
+.biblio.dk .bdkcab p{margin:6px 0 0;font-size:15px;color:var(--text-muted)}
+.biblio.dk .bdkgrid{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:24px;align-items:start;margin-top:18px}
+.biblio.dk .btabs{max-width:420px}
+.biblio.dk .bfila{cursor:pointer}
+.biblio.dk .bpanel{position:sticky;top:0;display:flex;flex-direction:column;max-height:calc(100vh - 150px);padding:20px 20px 0;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.biblio.dk .bpanel h2{margin:0;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:24px;line-height:1.1}
+.biblio.dk .bpanel .bsub{margin:4px 0 10px;font-size:13px;color:var(--text-muted)}
+.biblio.dk .bpanel .bhcuerpo{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-bottom:10px}
+/* Dentro del panel (que ya es una tarjeta) el aviso va plano, entre dos líneas */
+.biblio.dk .bpanel .bnota{margin:4px 0;padding:12px 0;border-radius:0;background:transparent;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.biblio.dk .bpanel.vacio{padding-bottom:20px;min-height:220px;align-items:center;justify-content:center;text-align:center;color:var(--text-muted);font-size:15px;line-height:1.4}
+.biblio.dk .btoast{position:sticky;left:auto;right:auto;bottom:24px;max-width:420px;margin-top:12px}
+@media (max-width:1279px){.biblio.dk .bdkgrid{grid-template-columns:minmax(0,1fr) 360px}}
