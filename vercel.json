@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/panel",
-      "destination": "/index.html"
+      "destination": "/"
     },
     {
       "source": "/panel/(.*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [
