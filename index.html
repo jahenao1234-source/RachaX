@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Racha - Rastreador de Hábitos</title>
+    <title>Racha</title>
     
     <!-- Theme & Appariencia Script (Anti-flicker) -->
     <script>
@@ -15,19 +15,41 @@
           if (dark) document.documentElement.classList.add('dark');
           else document.documentElement.classList.remove('dark');
           document.documentElement.setAttribute('data-acento', ac);
+          document.addEventListener('DOMContentLoaded', function () {
+            var m = document.querySelector('meta[name="theme-color"]');
+            if (m) m.setAttribute('content', dark ? '#0F1113' : '#F6F7F8');
+          });
         } catch(e) {}
       })();
     </script>
 
     <!-- PWA & Mobile Web Meta -->
     <meta name="theme-color" content="#0F1113" />
-    <meta name="background-color" content="#0F1113" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="Racha" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" type="image/png" href="/icon-192.png" />
-    <link rel="apple-touch-icon" href="/icon-512.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Instalar la app: Chrome puede avisar que se puede instalar antes de que React arranque, así que se guarda aquí.
+         Lo lee src/components/pwa/useInstalar.ts. -->
+    <script>
+      window.__racha_bip = null;
+      addEventListener('beforeinstallprompt', function (e) {
+        if (location.pathname.indexOf('/panel') === 0) return;
+        e.preventDefault();
+        window.__racha_bip = e;
+        dispatchEvent(new Event('racha:instalable'));
+      });
+      addEventListener('appinstalled', function () {
+        window.__racha_bip = null;
+        try { localStorage.setItem('racha_instalar', 'instalada'); } catch (e) {}
+        dispatchEvent(new Event('racha:instalada'));
+      });
+    </script>
   </head>
   <body class="bg-bg text-text font-sans antialiased selection:bg-accent-tint selection:text-ink overflow-x-hidden">
     <div id="root"></div>

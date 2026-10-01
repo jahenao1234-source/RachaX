@@ -1,11 +1,14 @@
 {
+  "id": "/",
+  "name": "Racha",
   "short_name": "Racha",
-  "name": "Racha - Rastreador de H\u00e1bitos",
+  "description": "Tus hábitos, sin perder la racha.",
+  "lang": "es",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#8B5CF6",
-  "background_color": "#0C0D12",
-  "orientation": "portrait",
+  "theme_color": "#0F1113",
+  "background_color": "#0F1113",
   "icons": [
     {
       "src": "/icon-192.png",

@@ -1684,3 +1684,51 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .progreso .rdd:hover b{text-decoration:underline;text-underline-offset:3px}
 .progreso .rdver{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin-top:12px;border:1px solid var(--line-strong);border-radius:12px;background:none;color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .progreso .rdver:hover{background:var(--surface-raised)}
+/* ==========================================================================
+   Instalar la app (design/maqueta-instalar.html)
+   Clases "ins…": la pantalla va dentro de .onb (con .insp), la hoja dentro de .tareas
+   y el recordatorio en #screen-today.
+   ========================================================================== */
+.insw .inssub{margin:10px 0 0;font-size:15px;line-height:1.45;color:var(--text-muted)}
+.obbody.insw{padding-top:28px}
+/* Con poco contenido (Android, instalada, "ábrela desde tu inicio"), el bloque va centrado en el alto */
+.obbody.insw.centro{min-height:100%;display:flex;flex-direction:column;justify-content:center;padding-bottom:28px}
+/* El dibujo grande: la pantalla de inicio con el ícono de Racha */
+.insw .inshero{display:flex;justify-content:center;margin:0 0 26px}
+.insw .inscel{position:relative;padding:16px;border-radius:28px;background:var(--surface);border:1px solid var(--line-strong);display:grid;grid-template-columns:repeat(3,40px);gap:14px}
+.insw .inscel i{width:40px;height:40px;border-radius:12px;background:var(--surface-raised);display:block}
+.insw .inscel i.yo{background:#FFB547;display:flex;align-items:center;justify-content:center;color:#0F1113;box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--text)}
+.insw .inscel .ok{position:absolute;right:-10px;bottom:-10px;width:36px;height:36px;border-radius:999px;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px var(--bg)}
+/* La nota de volver a entrar: texto plano con una raya a la izquierda (no es tarjeta) */
+.insw .insnota{margin:14px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--line-strong);font-size:14px;line-height:1.45;color:var(--text-muted)}
+.insw .insnota b{color:var(--text);font-weight:600}
+/* Los pasos con dibujos */
+.insw .inspasos{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:16px}
+.insw .inspasos li{display:grid;grid-template-columns:28px 1fr;gap:4px 10px;align-items:start}
+.insw .inspasos .n{width:28px;height:28px;border-radius:999px;background:var(--surface-raised);border:1px solid var(--line-strong);color:var(--text);display:flex;align-items:center;justify-content:center;font-family:var(--font-number);font-size:17px;font-weight:700}
+.insw .inspasos b{display:block;font-size:16px;line-height:1.3;padding-top:3px}
+.insw .inspasos .sub{display:block;margin-top:2px;font-size:13px;line-height:1.4;color:var(--text-muted)}
+/* El dibujo: borde punteado y sin fondo, para que se lea como dibujo y no como botones de la app. No se puede tocar. */
+.insw .insdib{grid-column:2;margin-top:8px;border-radius:14px;border:1px dashed var(--line-strong);padding:8px 12px;color:var(--text-muted);font-size:13px;pointer-events:none;user-select:none}
+.insw .insdib .fila{display:flex;align-items:center;gap:10px;min-height:32px}
+.insw .insdib .url{flex:1;min-width:0;height:28px;border-radius:999px;background:var(--surface-raised);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-muted)}
+.insw .insdib .ic{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:8px}
+.insw .insdib .on{color:var(--text);font-weight:700}
+.insw .insdib .ic.on,.insw .insdib .fila.on{box-shadow:0 0 0 2px var(--text);border-radius:8px}
+.insw .insdib .fila.on{padding:0 8px;margin:4px -8px}
+.insw .insdib .der{margin-left:auto;display:flex}
+.insw .insdib .mini{width:26px;height:26px;border-radius:7px;background:#FFB547;color:#0F1113;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.insw .insdib .sep{height:1px;background:var(--line);margin:4px 0}
+/* "¿No te salió?" y el plan B de copiar */
+.insw .insayuda{margin:18px 0 0;font-size:14px;line-height:1.45;color:var(--text-muted)}
+.insw .insayuda a{color:var(--text);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
+.insw .inscopiado{margin:10px 0 0;font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px}
+.insw a:focus-visible,.insw button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+/* El aviso de Hoy (una vez, 3 días después de "Ahora no"), debajo de "Tu día" */
+#screen-today .insav{display:flex;align-items:center;gap:10px;margin-top:14px;padding:6px 6px 6px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+#screen-today .insav > svg{flex-shrink:0;color:var(--text-muted)}
+#screen-today .insav p{flex:1;min-width:0;margin:0;font-size:14px;font-weight:600;line-height:1.3}
+#screen-today .insav .si{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+#screen-today .insav .no{width:44px;height:44px;border:none;background:none;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+#screen-today .insav button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+@media (max-width:359px){#screen-today .insav > svg{display:none}}

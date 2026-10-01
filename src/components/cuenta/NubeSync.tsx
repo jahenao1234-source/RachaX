@@ -1,3 +1,4 @@
+import { CLAVES_INSTALAR } from '../../utils/instalarUtils';
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Flame, Cloud, CloudCheck } from 'lucide-react';
@@ -13,7 +14,8 @@ const SYNC_USER = 'racha_sync_user';
 const SYNC_VERSION = 'racha_sync_version';
 const SYNC_PEND = 'racha_sync_pendientes';
 const SYNC_TIME = 'racha_sync_time';
-const MANTENER_AL_SALIR = ['racha_apariencia', 'racha_acento'];
+// Apariencia y lo de instalar son de este celular, no de la cuenta
+const MANTENER_AL_SALIR = ['racha_apariencia', 'racha_acento', ...CLAVES_INSTALAR];
 const ESPERA_MS = 2000;
 
 const leer = (k: string) => { try { return localStorage.getItem(k) || ''; } catch { return ''; } };

@@ -965,6 +965,57 @@ Aprobado el 25 sep (design/maqueta-cuenta.html, 14 teléfonos). Supabase. Solo q
   - Botón "Escribir por WhatsApp" (SOPORTE_URL) y link "Probar con otro correo".
   - La app lo sabe porque lee `estado_pago = 'bloqueado'` de la propia fila de compradores. Sus datos en la nube no se tocan.
 
+### Instalar la app (aprobado el 1 oct, design/maqueta-instalar.html)
+Que Racha quede en la pantalla de inicio del celular. Solo se ofrece en celular (en computador no). Nunca se promete "modo sin conexión". Los cálculos están en `src/utils/instalarUtils.ts` (`casoInstalar`, `debeOfrecerPantalla`, `debeMostrarAviso`, `filaPerfilInstalar`, `textosPantalla`) y lo del navegador en `src/components/pwa/useInstalar.ts` (`useInstalar()`: `caso`, `estado`, `instalar()`, `decirAhoraNo()`, `decirYaLaAgregue()`, `cerrarAvisoInstalar()`). El CSS está en index.css › "Instalar la app" (clases `ins…`).
+
+**Dónde sale**
+- **La pantalla completa** (`.onb.insp`, mismas piezas del onboarding: `.obbody.insw`, `h1.cond.obh`, `.obfoot` con `btnp full` y `link quiet center`): una sola vez, cuando la persona ya entró, la nube ya cargó, el onboarding está cerrado y `debeOfrecerPantalla(caso, estado)` es verdadero. Para quien es nuevo sale justo después de "Así funciona Racha".
+- **Antes de pedir el correo** ("Entra a tu Racha"): si `hayQueCambiarDeNavegador(caso)`, sale primero la pantalla "Ábrela en Safari / Chrome para instalarla". "Seguir aquí por ahora" la quita y deja entrar (no vuelve a salir en esa visita).
+- **El recordatorio en Hoy** (`.insav`, debajo de "Tu día"): una sola vez, 3 días o más después de "Ahora no" (`debeMostrarAviso`). No sale el día que Hoy muestra "Volviste" o "Ayer quedó sin marcar". "Instalar" abre la hoja (o el aviso del celular en Android con botón) y la X lo quita para siempre.
+- **La hoja "Instalar Racha"** (`.tsheet.hcomp` dentro de `.tareas`): los mismos pasos, desde el recordatorio, desde Perfil y desde el botón "Instalar" de la cabecera. Pie: "Ya la agregué".
+- **Perfil › Ayuda**: la fila según `filaPerfilInstalar`.
+- **El botón "Instalar" de la cabecera** (celular) se queda: en Android con botón instala directo; en los demás casos abre la hoja. No sale si ya está instalada.
+
+**Textos exactos**
+- Título de la pantalla: "Lleva Racha en tu pantalla de inicio".
+- Android con botón: "Se abre de un toque y a pantalla completa, como cualquier app. Casi no ocupa espacio." · botón "Instalar Racha" · "Ahora no". Mientras instala: botón apagado "Instalando…" (sin "Ahora no"). Si cancela el aviso del celular, vuelve a la misma pantalla sin mensaje y cuenta como "Ahora no".
+- Android instalada: "Listo, ya está instalada" · "Búscala en tu pantalla de inicio: es el ícono de la llama. Desde ahora, ábrela desde ahí." · botón "Ir a mi día". El dibujo lleva un visto bueno (`.inscel .ok`).
+- iPhone: "En iPhone se hace en 3 pasos:"
+  - Nota (arriba, `.insnota`): "**Cuando la abras desde tu pantalla de inicio,** entra otra vez con tu correo: te llega un código nuevo. Tus hábitos están guardados."
+  - Paso 1, Safari 26 o más (`ios-nuevo`): "Toca ⋯ y luego “Compartir”" · "Los tres puntos están abajo, al lado de la dirección."
+  - Paso 1, Safari 18 o menos (`ios-viejo`): "Toca Compartir" · "El cuadrito con la flecha hacia arriba. Está abajo, en la barra de Safari."
+  - Paso 2: "Elige “Agregar a inicio”" · "Si no aparece, baja por la lista. En algunos iPhone dice “Añadir a pantalla de inicio”."
+  - Paso 3: "Toca “Agregar”" · "Arriba a la derecha."
+  - Botón "Ya la agregué" · "Ahora no".
+- Después de "Ya la agregué" (iPhone y Android por el menú): "Ahora ábrela desde tu pantalla de inicio" · "Busca el ícono de la llama. Te va a pedir tu correo otra vez: te llega un código nuevo. Tus hábitos están guardados." · botón "Entendido" · "No la encuentro" (vuelve a los pasos). En Android el texto es: "Busca el ícono de la llama. Desde ahora, ábrela desde ahí." Nunca se afirma que quedó instalada: la app no puede comprobarlo.
+- Android por el menú (`android-menu`): "En este navegador se hace desde el menú:"
+  - "Toca el menú del navegador" · "Los tres puntos ⋮ o las tres rayas ≡."
+  - "Elige “Instalar app” o “Agregar a la pantalla principal”" · "El nombre cambia según el navegador."
+  - "Confirma con “Instalar” o “Agregar”" · "Queda con el ícono de la llama."
+  - Botón "Ya la agregué" · "Ahora no".
+- Dentro de otra app: "Ábrela en Safari para instalarla" (iPhone) / "Ábrela en Chrome para instalarla" (Android) · "Estás viendo Racha dentro de otra app, como Instagram o Facebook, y desde aquí no se puede instalar."
+  - "Toca ⋯ y elige “Abrir en el navegador”" · "Los tres puntos están arriba. También puede decir “Abrir en Safari”." (o "…en Chrome")
+  - "Entra con tu correo" · "Ahí te mostramos cómo instalarla."
+  - "¿No ves esa opción? Copia el enlace y pégalo en Safari." (o Chrome)
+  - Botón "Copiar el enlace" (copia `https://www.tengoracha.com`) → debajo de los pasos "✓ Enlace copiado" (`.inscopiado`, `role="status"`). Si no se puede copiar: "Cópialo tú: www.tengoracha.com". Enlace "Seguir aquí por ahora".
+- iPhone con Chrome, Firefox o Edge (`ios-otro`): "Ábrela en Safari para instalarla" · "En iPhone, Racha se instala desde Safari." · solo "Copiar el enlace" y "Seguir aquí por ahora".
+- Ayuda al final de los pasos, solo si hay `SOPORTE_URL`: "¿No te salió? Escríbenos por WhatsApp".
+- Recordatorio de Hoy: "Instala Racha para abrirla de un toque" · botón "Instalar" · X con nombre "No volver a mostrar el aviso de instalar".
+- Hoja: título "Instalar Racha", subtítulo igual al de la pantalla ("En iPhone se hace en 3 pasos:" / "En este navegador se hace desde el menú:").
+- Perfil › Ayuda:
+  - `instalar`: "Instalar Racha" · "Ábrela de un toque desde tu pantalla de inicio" (ícono de celular, con flecha; va de primera).
+  - `instalada-navegador`: "Racha ya está instalada" · "Ábrela desde tu pantalla de inicio" (sin flecha, no es botón).
+  - `instalada`: "Racha ya está instalada" · "La estás usando desde tu pantalla de inicio" (ícono de visto bueno, sin flecha, va de última).
+  - `nada` (computador): no hay fila.
+
+**Reglas**
+- **Los dibujos no son tarjetas** (`.insdib`): borde punteado, sin fondo, no se pueden tocar y van con `aria-hidden`. Es la única excepción a la regla de hojas planas. Lo que hay que tocar se resalta con un aro del color del texto, no ámbar: el ámbar queda para el botón principal y el ícono de Racha (ámbar fijo `#FFB547`, no cambia con el acento).
+- Los pasos son una lista `<ol role="list">`. Los símbolos ⋯ ⋮ ≡ van con `aria-hidden` y un texto oculto ("los tres puntos").
+- Con poco contenido (Android, instalada, "ábrela desde tu inicio"), el bloque va centrado en el alto (`.obbody.insw.centro`).
+- Estado guardado en este navegador (no viaja a la nube ni se borra al salir de la cuenta): `racha_instalar` ('ahora_no' | 'dijo_que_si' | 'instalada'), `racha_instalar_fecha` y `racha_instalar_aviso` ('cerrado').
+- "Racha ya está instalada · La estás usando…" solo cuando de verdad se abre desde la pantalla de inicio.
+- El ícono de la app es el cuadro ámbar con la llama oscura (`public/icon-*.png`, `apple-touch-icon.png`); el nombre instalado es "Racha".
+
 ### Panel de pagos (aprobado el 29 sep, design/maqueta-panel-pagos.html)
 Solo para el dueño, **solo en computador**, en `tengoracha.com/panel`.
 - **Base de datos:** `supabase/schema-6-panel.sql`. Todo pasa por funciones que revisan `es_admin()`. Un comprador solo puede leer email, activo y estado_pago de su propia fila.
