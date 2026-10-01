@@ -884,7 +884,7 @@ Los cálculos están en src/utils/focoUtils.ts (48 pruebas); el sonido, la vibra
     - debajo, la tarjeta del paso y el pie de siempre.
   - "Hecho" marca el paso, pasa al siguiente y el reloj sigue; sale el aviso "Marcaste {paso}." con "Deshacer". Si era el último paso, la tarea queda terminada y el reloj sigue hasta que termine el pomodoro.
   - Tarea sin pasos: el reloj con el nombre de la tarea, sin tarjeta.
-- **Terminó el pomodoro** (sonido suave y vibración):
+- **Terminó el pomodoro** (dos tonos que se repiten dos veces, a buen volumen, y vibración; el 1 oct Johnatan pidió subirlo porque casi no se oía):
   - círculo ámbar-tint con ✓ y el título "Terminó tu pomodoro" (30px);
   - "25 min en {tarea}. Marcaste 2 pasos." (sin la parte de los pasos si no marcó ninguno);
   - "Descansar 5 min" (primario), "Otro pomodoro" (secundario) y "Terminar por ahora".
