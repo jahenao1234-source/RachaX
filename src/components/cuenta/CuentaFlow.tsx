@@ -3,6 +3,9 @@ import { ChevronLeft, Flame, Mail, HelpCircle, AlertCircle, PauseCircle, Message
 import { useCuenta } from '../../store/CuentaContext';
 import { supabaseListo } from '../../lib/supabase';
 import { SOPORTE_URL, VENTA_URL } from '../../lib/config';
+import { useInstalar } from '../pwa/useInstalar';
+import { hayQueCambiarDeNavegador } from '../../utils/instalarUtils';
+import { CambioNavegadorInstalar } from '../pwa/InstalarUI';
 
 // Maqueta aprobada: design/maqueta-cuenta.html (DESIGN.md, "Tu cuenta")
 const PASO = 'racha_cuenta_paso';
@@ -30,6 +33,9 @@ export const CuentaFlow: React.FC = () => {
   const [error, setError] = useState('');
   const [ocupado, setOcupado] = useState(false);
   const [espera, setEspera] = useState(0);
+  // "Ábrela en Safari / Chrome": sale antes de pedir el correo, hasta que toque "Seguir aquí por ahora"
+  const [sigueAqui, setSigueAqui] = useState(false);
+  const { caso: casoInstalar } = useInstalar();
   const codigoRef = useRef<HTMLInputElement>(null);
   const h1Ref = useRef<HTMLHeadingElement>(null);
 
@@ -197,6 +203,10 @@ export const CuentaFlow: React.FC = () => {
           : <button className="link quiet center" aria-live="polite" onClick={() => enviar()}>Reenviar el código</button>}
       </>
     );
+  }
+
+  if (paso === 'correo' && !sigueAqui && hayQueCambiarDeNavegador(casoInstalar)) {
+    return <CambioNavegadorInstalar onSeguir={() => setSigueAqui(true)} />;
   }
 
   return marco(

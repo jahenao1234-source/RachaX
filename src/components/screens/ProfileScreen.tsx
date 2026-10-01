@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import {
   User,
   Download,
+  Smartphone,
   Upload,
   RefreshCw,
   Flame,
@@ -36,6 +37,10 @@ import { getTodayString, ETAPAS } from '../../utils/habitUtils';
 import { Llama, LlamaDe, nombreLlama } from '../juego/Llama';
 import { useCuenta } from '../../store/CuentaContext';
 import { supabaseListo } from '../../lib/supabase';
+import { useInstalar } from '../pwa/useInstalar';
+import { filaPerfilInstalar } from '../../utils/instalarUtils';
+
+
 
 // Componente para la hoja modal del nombre
 const NameModal = ({
@@ -251,6 +256,9 @@ export const ProfileScreen: React.FC = () => {
   
   const { nombre, setNombre, acento, setAcento, apariencia, setApariencia } = useTheme();
   const { correo, salir } = useCuenta();
+  const instalacion = useInstalar();
+  const filaInstalar = filaPerfilInstalar(instalacion.caso, instalacion.estado);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedBadge, setSelectedBadge] = useState<InsigniaDef | null>(null);
@@ -807,6 +815,28 @@ export const ProfileScreen: React.FC = () => {
       {/* Ayuda */}
       <section className="mt-[26px]">
         <h2 className="m-0 font-heading font-bold text-[22px] text-text">Ayuda</h2>
+        {filaInstalar === 'instalar' && (
+          <div className="flex items-center gap-1.5 py-1.5 border-b border-line">
+            <button onClick={() => { if (instalacion.caso === 'android-boton') void instalacion.instalar(); else instalacion.abrirHojaInstalar(); }} className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer">
+              <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0"><Smartphone size={18} /></span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-[15px] font-semibold text-text truncate">Instalar Racha</span>
+                <span className="block text-[13px] text-text-muted mt-px">Ábrela de un toque desde tu pantalla de inicio</span>
+              </span>
+              <span className="text-text-muted flex shrink-0"><ChevronRight size={18} strokeWidth={2.2} /></span>
+            </button>
+          </div>
+        )}
+        {filaInstalar === 'instalada-navegador' && (
+          <div className="flex items-center gap-3 min-h-[64px] py-1.5 border-b border-line">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0"><Smartphone size={18} /></span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Racha ya está instalada</span>
+              <span className="block text-[13px] text-text-muted mt-px">Ábrela desde tu pantalla de inicio</span>
+            </span>
+          </div>
+        )}
+        
         <div className="flex items-center gap-1.5 py-1.5">
           <button onClick={openOnboarding} className="flex-1 min-w-0 flex items-center gap-3 min-h-[52px] p-0 border-none bg-transparent text-left cursor-pointer">
             <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0">
@@ -821,6 +851,15 @@ export const ProfileScreen: React.FC = () => {
             </span>
           </button>
         </div>
+        {filaInstalar === 'instalada' && (
+          <div className="flex items-center gap-3 min-h-[64px] py-1.5 border-t border-line">
+            <span className="w-[36px] h-[36px] rounded-[10px] bg-surface-raised text-text-muted flex items-center justify-center shrink-0"><CheckCircle2 size={18} /></span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold text-text truncate">Racha ya está instalada</span>
+              <span className="block text-[13px] text-text-muted mt-px">La estás usando desde tu pantalla de inicio</span>
+            </span>
+          </div>
+        )}
       </section>
 
       {/* Modals */}

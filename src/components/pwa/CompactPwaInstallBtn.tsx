@@ -1,55 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Download } from 'lucide-react';
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-}
+import { useInstalar } from './useInstalar';
+import { sePuedeInstalarAqui } from '../../utils/instalarUtils';
 
 export const CompactPwaInstallBtn: React.FC = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
+  const { caso, estado, instalar, abrirHojaInstalar } = useInstalar();
 
-  useEffect(() => {
-    // Check if running as standalone app
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true;
-
-    if (isStandalone) {
-      setIsInstalled(true);
-      return;
-    }
-
-    const handleBeforeInstall = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
-
-  if (isInstalled || !deferredPrompt) {
+  if (!sePuedeInstalarAqui(caso) || estado === 'dijo_que_si' || estado === 'instalada') {
     return null;
   }
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
+    if (caso === 'android-boton') {
+      await instalar();
+    } else {
+      abrirHojaInstalar();
     }
   };
 

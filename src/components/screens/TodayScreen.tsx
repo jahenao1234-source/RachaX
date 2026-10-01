@@ -37,6 +37,10 @@ import {
 import { CompromisoProximo } from '../../utils/compromisosUtils';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
 import { ariaChip, entradaDificil, pendientesParaDificil, ayerSinMarcar, tieneMinimo, puntosAlMarcar, puntosDeHoy, puntosPorGanar, textoAvisoAuto } from '../../utils/dificilUtils';
+import { useInstalar } from '../pwa/useInstalar';
+import { debeMostrarAviso } from '../../utils/instalarUtils';
+import { RecordatorioInstalar } from '../pwa/InstalarUI';
+
 
 const SubtareaTreeNode: React.FC<{
   sub: Subtarea;
@@ -691,7 +695,11 @@ export const TodayScreen: React.FC = () => {
     deshacerComodinAuto
   } = useHabitStore();
 
+
+
   const desk = useEsEscritorio();
+  const instalacion = useInstalar();
+
 
   const [isRetoSheetOpen, setIsRetoSheetOpen] = useState(false);
   const [isCajaSheetOpen, setIsCajaSheetOpen] = useState(false);
@@ -747,6 +755,7 @@ export const TodayScreen: React.FC = () => {
   const currentHour = new Date().getHours();
 
   const currentMomento = currentHour < 12 ? 'manana' : currentHour < 19 ? 'tarde' : 'noche';
+
 
   const [expandedTarea, setExpandedTarea] = useState<string | null>(null);
   const [plegados, setPlegados] = useState<Record<string, boolean>>(() => {
@@ -928,6 +937,16 @@ export const TodayScreen: React.FC = () => {
   const proximaInsignia = proximasInsignias.length > 0 ? proximasInsignias[0] : null;
 
   const esDiaRegreso = getDiasDeRegreso(habitosActivos, registros, diasCongelados, hoy).includes(hoy);
+  
+  const rachaAyerSinMarcar = ayerSinMarcar(habitosActivos, registros, diasCongelados, hoy);
+  const mostrarRecordatorioInstalar = debeMostrarAviso({
+    caso: instalacion.caso,
+    estado: instalacion.estado,
+    fecha: instalacion.fecha,
+    aviso: instalacion.aviso,
+    hoy,
+    hayOtroAviso: !!rachaAyerSinMarcar || esDiaRegreso
+  });
 
   const handleAcceptReto = (optId: string) => {
     if (retoSemanal) {
@@ -1245,6 +1264,8 @@ export const TodayScreen: React.FC = () => {
           })()}
         </div>
       </section>
+
+      {mostrarRecordatorioInstalar && !desk && <RecordatorioInstalar />}
 
       {renderRetoSemanalRow({ retoSemanal, desk, setIsRetoSheetOpen, hoy })}
 
