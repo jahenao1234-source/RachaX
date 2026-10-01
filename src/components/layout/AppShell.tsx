@@ -29,6 +29,7 @@ import { CompactPwaInstallBtn } from '../pwa/CompactPwaInstallBtn';
 import { Flame } from 'lucide-react';
 import { PantallaInstalar, HojaInstalar } from '../pwa/InstalarUI';
 import { AvisosSync } from '../avisos/AvisosSync';
+import { HojaAvisos, PantallaAvisos } from '../avisos/AvisosUI';
 
 export const AppShell: React.FC = () => {
   const {
@@ -166,6 +167,8 @@ export const AppShell: React.FC = () => {
         {/* Instalar la app: una vez, cuando ya entró y el onboarding está cerrado (o no hay cuenta configurada) */}
         {(estado === 'dentro' || !supabaseListo) && nubeLista && !isOnboardingOpen && <PantallaInstalar />}
         {estado === 'dentro' && <CelebracionesManager />}
+        {estado === 'dentro' && <HojaAvisos />}
+        {estado === 'dentro' && <PantallaAvisos />}
 
         {/* Create Habit Modal */}
         {activeTab === 'crear' && <CreateHabitScreen />}

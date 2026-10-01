@@ -40,6 +40,7 @@ import { ariaChip, entradaDificil, pendientesParaDificil, ayerSinMarcar, tieneMi
 import { useInstalar } from '../pwa/useInstalar';
 import { debeMostrarAviso } from '../../utils/instalarUtils';
 import { RecordatorioInstalar } from '../pwa/InstalarUI';
+import { RecordatorioAvisos, PreguntarAvisos } from '../avisos/AvisosUI';
 
 
 const SubtareaTreeNode: React.FC<{
@@ -1266,6 +1267,8 @@ export const TodayScreen: React.FC = () => {
       </section>
 
       {mostrarRecordatorioInstalar && !desk && <RecordatorioInstalar />}
+      {!mostrarRecordatorioInstalar && !desk && <RecordatorioAvisos hayOtroAviso={!!rachaAyerSinMarcar || esDiaRegreso} />}
+      {!desk && <PreguntarAvisos marcoAlgoHoy={registros.some((r) => r.completado && r.fecha === hoy)} />}
 
       {renderRetoSemanalRow({ retoSemanal, desk, setIsRetoSheetOpen, hoy })}
 

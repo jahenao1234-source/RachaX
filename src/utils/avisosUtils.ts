@@ -261,7 +261,9 @@ export const proximoAviso = (c: ConfigAvisos, habitos: Habito[], horaAhora: stri
   const horas = tipos.filter((t) => c[CLAVE_ON[t]]).map((t) => horaDe(c, t)).sort();
   if (horas.length === 0) return '';
   const sig = horas.find((h) => minutos(h) > minutos(horaAhora));
-  return sig ? `hoy a las ${textoHora(sig)}` : `mañana a las ${textoHora(horas[0])}`;
+  // "a la 1:00", "a las 7:00"
+  const aLas = (h: string) => `${parseInt(h.split(':')[0], 10) % 12 === 1 ? 'a la' : 'a las'} ${textoHora(h)}`;
+  return sig ? `hoy ${aLas(sig)}` : `mañana ${aLas(horas[0])}`;
 };
 
 export type PermisoAvisos = 'si' | 'no' | 'bloqueado' | 'sin-soporte' | 'falta-instalar';

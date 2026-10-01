@@ -1808,3 +1808,5 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 #screen-today .avav .no{width:44px;height:44px;border:none;background:none;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
 #screen-today .avav button:focus-visible{outline:2px solid var(--lila);outline-offset:2px}
 @media (max-width:359px){#screen-today .avav > svg{display:none}}
+/* En escritorio, la pantalla Avisos es una columna centrada (como la entrada con código) */
+@media (min-width:1024px){.avp .avtop,.avp .avbody{width:100%;max-width:560px;margin-left:auto;margin-right:auto}.avp .avtop{padding-top:28px}}

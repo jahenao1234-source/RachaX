@@ -39,6 +39,7 @@ import { useCuenta } from '../../store/CuentaContext';
 import { supabaseListo } from '../../lib/supabase';
 import { useInstalar } from '../pwa/useInstalar';
 import { filaPerfilInstalar } from '../../utils/instalarUtils';
+import { FilaPerfilAvisos } from '../avisos/AvisosUI';
 
 
 
@@ -689,6 +690,7 @@ export const ProfileScreen: React.FC = () => {
           </button>
         </div>
         <button type="button" className="ddsw" role="switch" aria-checked={comodinAuto} aria-labelledby="ddsw-t" aria-describedby="ddsw-a" onClick={() => setComodinAuto(!comodinAuto)}><span className="t"><b id="ddsw-t">Comodín automático</b><small id="ddsw-a">Si un día se te queda algo sin marcar, lo congelamos con un comodín. Te avisamos y puedes deshacerlo.</small></span><i aria-hidden="true"></i></button>
+        <FilaPerfilAvisos />
       </section>
 
       {/* Apariencia */}

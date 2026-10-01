@@ -5,7 +5,9 @@ export const SelectorHora: React.FC<{
   onCambiar: (hhmm: string) => void;
   onQuitar: () => void;
   onListo: () => void;
-}> = ({ valor, onCambiar, onQuitar, onListo }) => {
+  /** Sin el pie de "Quitar la hora" y "Listo" (la hoja de Avisos trae su propio Guardar) */
+  sinPie?: boolean;
+}> = ({ valor, onCambiar, onQuitar, onListo, sinPie }) => {
   const [hStr, mStr] = valor.split(':');
   let h24 = parseInt(hStr, 10);
   if (isNaN(h24)) h24 = 12;
@@ -152,7 +154,7 @@ export const SelectorHora: React.FC<{
         </div>
       </div>
 
-      <div className="flex items-center gap-[12px] p-[16px] pt-[8px] border-t border-line mt-[8px]">
+      {!sinPie && <div className="flex items-center gap-[12px] p-[16px] pt-[8px] border-t border-line mt-[8px]">
         <button 
           type="button" 
           onClick={onQuitar}
@@ -167,7 +169,7 @@ export const SelectorHora: React.FC<{
         >
           Listo
         </button>
-      </div>
+      </div>}
     </div>
   );
 };
