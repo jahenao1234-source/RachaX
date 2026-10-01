@@ -42,8 +42,11 @@ export const AppShell: React.FC = () => {
     setHabitoRecienCreadoId,
     closeCreateModal,
     revisarComodinAutomatico,
-    isOnboardingOpen
+    isOnboardingOpen,
+    rachaGlobal
   } = useHabitStore();
+  // La racha junto al título ("Racha | 12 días"): días completos seguidos; en cero no sale nada
+  const diasRacha = rachaGlobal();
   const { estado } = useCuenta();
   // Sin Supabase configurado (por ejemplo, un despliegue sin las variables), la app funciona solo en el celular
   const [nubeLista, setNubeLista] = useState(!supabaseListo);
@@ -105,7 +108,7 @@ export const AppShell: React.FC = () => {
         {/* Right / Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
           {/* Mobile Compact Top Bar (hidden on lg since brand is in SideNav) */}
-          <header className="px-4 py-2.5 flex items-center justify-between border-b border-line/50 relative z-10 shrink-0 lg:hidden">
+          <header className="px-4 py-2.5 flex items-center gap-3 border-b border-line/50 relative z-10 shrink-0 lg:hidden">
             <button
               type="button"
               onClick={() => {
@@ -122,9 +125,25 @@ export const AppShell: React.FC = () => {
                 Racha
               </span>
             </button>
+            {diasRacha > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  closeHabitDetail();
+                  setActiveTab('stats');
+                }}
+                className="flex items-center min-h-[44px] -my-2.5 text-left transition-opacity hover:opacity-90"
+                aria-label={`Tu racha: ${diasRacha} ${diasRacha === 1 ? 'día seguido' : 'días seguidos'}. Ver tu progreso`}
+              >
+                <span className="flex items-baseline gap-1.5 pl-3 border-l border-line-strong text-sm font-semibold text-text whitespace-nowrap">
+                  <b className="font-number font-bold text-[20px] leading-none">{diasRacha}</b>
+                  {diasRacha === 1 ? 'día' : 'días'}
+                </span>
+              </button>
+            )}
 
             {/* Compact PWA Install Button (only when installable on mobile) */}
-            <div className="flex items-center">
+            <div className="flex items-center ml-auto">
               <CompactPwaInstallBtn />
             </div>
           </header>

@@ -11,7 +11,9 @@ export const SideNav: React.FC = () => {
     openCreateMenu,
     closeHabitDetail,
     nivelActual,
+    rachaGlobal,
   } = useHabitStore();
+  const diasRacha = rachaGlobal();
   const { nombre } = useTheme();
 
   const navItems: { id: TabRoute; label: string; icon: React.FC<{ className?: string; size?: number; strokeWidth?: number }> }[] = [
@@ -48,6 +50,11 @@ export const SideNav: React.FC = () => {
             <span className="font-heading font-bold text-[22px] text-text tracking-tight leading-none mt-1">
               Racha
             </span>
+            {diasRacha > 0 && (
+              <span className="text-[13px] font-semibold text-text-muted leading-none mt-1.5 whitespace-nowrap">
+                {diasRacha} {diasRacha === 1 ? 'día seguido' : 'días seguidos'}
+              </span>
+            )}
           </div>
         </button>
 
