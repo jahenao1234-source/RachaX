@@ -135,8 +135,8 @@ export const AppShell: React.FC = () => {
                 className="flex items-center min-h-[44px] -my-2.5 text-left transition-opacity hover:opacity-90"
                 aria-label={`Tu racha: ${diasRacha} ${diasRacha === 1 ? 'día seguido' : 'días seguidos'}. Ver tu progreso`}
               >
-                <span className="flex items-baseline gap-1.5 pl-3 border-l border-line-strong text-sm font-semibold text-text whitespace-nowrap">
-                  <b className="font-number font-bold text-[20px] leading-none">{diasRacha}</b>
+                <span className="flex items-baseline gap-1 pl-3 border-l border-line-strong text-sm font-medium text-text whitespace-nowrap">
+                  <b className="font-bold text-[15px] leading-none">{diasRacha}</b>
                   {diasRacha === 1 ? 'día' : 'días'}
                 </span>
               </button>
