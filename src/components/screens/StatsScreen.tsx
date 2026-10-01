@@ -9,7 +9,7 @@ import {
   contarVecesCumplidas
 } from '../../utils/progresoUtils';
 import { getTodayString, parseDateString, subtractDays, formatDateToString, contarCompletadosSemana } from '../../utils/habitUtils';
-import { datosRadar, posicionRadar, poligonoRadar, valoresAntes, hayFiguraAntes, flechaRadar, textoRadar, ariaRadarDibujo, ariaPuntoRadar, destacadosRadar, FILAS_TUS_HABITOS } from '../../utils/radarUtils';
+import { datosRadar, posicionRadar, poligonoRadar, valoresAntes, hayFiguraAntes, flechaRadar, textoRadar, ariaRadarDibujo, ariaPuntoRadar, destacadosRadar, FILAS_TUS_HABITOS, ariaDestacado, barrasDestacado } from '../../utils/radarUtils';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 import { HabitIcon } from '../common/HabitIcon';
 import { useState, useEffect } from 'react';
@@ -619,18 +619,27 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
     </div>
   ) : null;
 
-  // "Lo que dice tu figura" (escritorio, debajo de Tus récords; design/maqueta-progreso-radar.html, ajuste del 30 sep)
+  // "Lo que dice tu gráfica" (escritorio, debajo de Tus récords; DESIGN.md › Progreso › "Lo que dice tu gráfica", aprobado el 1 oct):
+  // la raya que separaba las filas es ahora una barra de barritas inclinadas, con la marca punteada de hace 30 días.
   const figuraSec = desk && radar.modo === 'radar' && destacados.length > 0 ? (
-    <div className={tarjeta}>
-      <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-2">Lo que dice tu figura</h2>
-      {destacados.map((d) => (
-        <button key={d.tipo} type="button" className={`rdd ${d.tipo}`} onClick={() => openHabitDetail(d.punto.habito.id)}
-          aria-label={`${d.titulo}: ${d.punto.habito.nombre}, ${d.tipo === 'subio' ? `subió ${d.punto.hoy - (d.punto.antes ?? d.punto.hoy)}` : `fuerza ${d.punto.hoy}`}. Ver el hábito`}>
-          <span className="t"><small>{d.titulo}</small><b><i style={{ background: COLOR_MOMENTO_RADAR[d.punto.momento] }}></i>{d.punto.habito.nombre}</b></span>
-          <span className="v">{d.valor}</span>
-          <ChevronRight size={16} strokeWidth={2.2} className="ch" aria-hidden="true" />
-        </button>
-      ))}
+    <div className={`${tarjeta} gD`}>
+      <div className="gcab">
+        <h2 className="font-heading font-bold text-[22px] text-text">Lo que dice tu gráfica</h2>
+        {destacados.some((d) => d.punto.antes !== null) && <span className="gley"><i aria-hidden="true"></i>hace 30 días</span>}
+      </div>
+      {destacados.map((d) => {
+        const barras = barrasDestacado(d);
+        return (
+          <button key={d.tipo} type="button" className={`rdd ${d.tipo}`} onClick={() => openHabitDetail(d.punto.habito.id)} aria-label={ariaDestacado(d)}>
+            <span className="t"><small>{d.titulo}</small><b><i style={{ background: COLOR_MOMENTO_RADAR[d.punto.momento] }}></i><span className="gnom">{d.punto.habito.nombre}</span></b></span>
+            <span className="v">{d.valor}</span>
+            <ChevronRight size={16} strokeWidth={2.2} className="ch" aria-hidden="true" />
+            <span className="gskl" aria-hidden="true">
+              {barras.segmentos.map((c, i) => <i key={i} className={[c, i === barras.marca ? 'antes' : ''].filter(Boolean).join(' ') || undefined}></i>)}
+            </span>
+          </button>
+        );
+      })}
     </div>
   ) : null;
 

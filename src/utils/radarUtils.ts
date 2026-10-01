@@ -176,7 +176,7 @@ export interface Destacado {
 }
 
 /**
- * La tarjeta "Lo que dice tu figura" (escritorio, al lado del radar):
+ * La tarjeta "Lo que dice tu gráfica" (antes "Lo que dice tu figura"; escritorio, al lado del radar):
  * - "Más firme": el de más fuerza;
  * - "Necesita ayuda": el de menos fuerza entre los que ya existían hace 30 días (uno nuevo empieza en 0 y no es que le cueste),
  *   si está por debajo de 75 y no es el mismo de "Más firme";
@@ -194,6 +194,36 @@ export function destacadosRadar(puntos: PuntoRadar[], reciente: boolean): Destac
   const subio = [...viejos].sort((a, b) => (b.hoy - b.antes!) - (a.hoy - a.antes!))[0];
   if (subio && subio.hoy - subio.antes! >= 5 && !out.some((d) => d.punto === subio)) out.push({ tipo: 'subio', titulo: 'El que más subió', punto: subio, valor: `↑ ${subio.hoy - subio.antes!}` });
   return out;
+}
+
+/** Cuántas barritas inclinadas tiene cada fila de "Lo que dice tu gráfica". Cada una vale unos 3 puntos de fuerza. */
+export const BARRITAS_GRAFICA = 30;
+
+export interface BarrasDestacado {
+  /** Una por barrita: 'on' = llena; 'base' = lo que ya tenía hace 30 días (solo en "El que más subió"); '' = vacía. */
+  segmentos: ('on' | 'base' | '')[];
+  /** La barrita que lleva la marca punteada de "hace 30 días"; null si el hábito no existía entonces. */
+  marca: number | null;
+}
+
+/**
+ * Las barritas de una fila de "Lo que dice tu gráfica" (Progreso, escritorio; DESIGN.md › "Lo que dice tu gráfica").
+ * Con fuerza mayor que 0 siempre hay al menos una llena, para que no parezca vacío.
+ */
+export function barrasDestacado(d: Destacado, n: number = BARRITAS_GRAFICA): BarrasDestacado {
+  const cuantas = (v: number) => { const c = Math.round((Math.max(0, Math.min(100, v)) / 100) * n); return v > 0 ? Math.max(1, c) : 0; };
+  const hoy = cuantas(d.punto.hoy);
+  const antes = d.punto.antes === null ? null : cuantas(d.punto.antes);
+  const segmentos = Array.from({ length: n }, (_, i): 'on' | 'base' | '' => (i >= hoy ? '' : d.tipo === 'subio' && antes !== null && i < antes ? 'base' : 'on'));
+  return { segmentos, marca: antes === null ? null : Math.max(0, antes - 1) };
+}
+
+/** Lo que oye quien usa lector de pantalla en cada fila (las barritas van ocultas para él). */
+export function ariaDestacado(d: Destacado): string {
+  const { hoy, antes } = d.punto;
+  const nombre = d.punto.habito.nombre;
+  if (d.tipo === 'subio' && antes !== null) return `${d.titulo}: ${nombre}, subió ${hoy - antes}, de ${antes} a ${hoy}. Ver el hábito`;
+  return `${d.titulo}: ${nombre}, fuerza ${hoy}${antes === null ? '' : `, hace 30 días ${antes}`}. Ver el hábito`;
 }
 
 /** Cuántas filas de "Tus hábitos" se ven antes de "Ver todos (N)": 6 en escritorio, 5 en el celular. */

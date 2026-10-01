@@ -1682,6 +1682,24 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .progreso .rdd.ayuda .v{color:var(--text-muted)}
 .progreso .rdd .ch{color:var(--text-muted);flex-shrink:0}
 .progreso .rdd:hover b{text-decoration:underline;text-underline-offset:3px}
+/* "Lo que dice tu gráfica": la raya que separaba cada fila es una barra de barritas inclinadas a todo lo ancho,
+   con la marca punteada de hace 30 días (igual que la figura punteada del radar). Mide lo mismo que antes. */
+.progreso .gD .gcab{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}
+.progreso .gD .gcab h2{margin:0}
+.progreso .gD .gley{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--text-muted);white-space:nowrap}
+.progreso .gD .gley i{width:7px;height:11px;border-radius:1.5px;transform:skewX(-24deg);outline:1.5px dashed var(--text);outline-offset:1.5px;margin:0 2px}
+.progreso .gD .rdd{position:relative;border-top:none;min-height:56px;padding:0 0 15px}
+.progreso .gD .rdd small{line-height:1.25}
+.progreso .gD .rdd b{margin-top:1px;line-height:1.25}
+.progreso .gD .rdd .gnom{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.progreso .gskl{position:absolute;left:3px;right:3px;bottom:2px;height:11px;display:flex;gap:4px}
+.progreso .gskl i{flex:1;min-width:0;border-radius:1.5px;background:var(--track-empty);transform:skewX(-24deg)}
+.progreso .gskl i.on{background:var(--ambar-text)}
+/* Lo que ya tenía hace 30 días: un color fijo (no transparencia), para asegurar 3 a 1 contra la tarjeta en oscuro y en claro */
+.progreso .gskl i.base{background:color-mix(in srgb,var(--ambar-text) var(--gbase,55%),var(--surface))}
+html:not(.dark) .progreso .gskl i.base{--gbase:76%}
+.progreso .rdd.ayuda .gskl i.on{background:var(--text-muted)}
+.progreso .gskl i.antes{outline:1.5px dashed var(--text);outline-offset:1.5px}
 .progreso .rdver{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin-top:12px;border:1px solid var(--line-strong);border-radius:12px;background:none;color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .progreso .rdver:hover{background:var(--surface-raised)}
 /* ==========================================================================
