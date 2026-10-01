@@ -145,6 +145,29 @@ export function avisoAgregado(item: ItemBiblioteca, habitosAgregados: number): s
     : `Empezaste ${item.nombre}: 1 tarea.`;
 }
 
+/**
+ * La pregunta antes de quitar algo ya agregado (enlace "Quitar"). Los hábitos se ARCHIVAN (guardan su historial y se
+ * restauran en Gestionar hábitos); la tarea se BORRA. `peligro` = se borra algo: el botón "Quitar" va en rojo.
+ */
+export function confirmarQuitar(item: ItemBiblioteca, habitos: Habito[], tareas: Tarea[]): { titulo: string; texto: string; peligro: boolean } {
+  const a = agregadoDe(item, habitos, tareas);
+  const titulo = `¿Quitar ${item.nombre}?`;
+  const sus = a.habitos === 1 ? 'Su hábito sale' : `Sus ${a.habitos} hábitos salen`;
+  if (a.habitos > 0 && a.tarea) {
+    return { titulo, texto: `${sus} de Hoy y ${a.habitos === 1 ? 'guarda' : 'guardan'} su historial. La tarea se borra con sus pasos.`, peligro: true };
+  }
+  if (a.tarea) return { titulo, texto: 'La tarea se borra con sus pasos.', peligro: true };
+  return {
+    titulo,
+    texto: a.habitos === 1
+      ? 'Su hábito sale de Hoy. Guarda su historial y lo puedes restaurar en Gestionar hábitos.'
+      : `${sus} de Hoy. Guardan su historial y los puedes restaurar en Gestionar hábitos.`,
+    peligro: false,
+  };
+}
+/** El aviso después de quitar (sin Deshacer: ya hubo pregunta). */
+export const avisoQuitado = (item: ItemBiblioteca): string => `Quitaste ${item.nombre}.`;
+
 // ---------- Crear lo que se agrega (sin tocar nada de lo que la persona ya tiene) ----------
 
 export interface Fabrica { ahora: string; nuevoId: () => string }

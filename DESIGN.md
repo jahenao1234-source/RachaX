@@ -1208,6 +1208,15 @@ Los bonos que van dentro de la app: hábitos, tareas y planes de 30 días **list
 - Ya agregado: apagado, **"Ya lo agregaste"** (tarea: "Ya la agregaste"; plan: "Ya lo empezaste"), y encima una línea centrada (13px, text-muted) que dice dónde quedó: "Están en Hoy." / "Está en Hoy." / "Está en Tareas." / "Los hábitos están en Hoy y la tarea en Tareas." / "La tarea está en Tareas." **No se puede agregar dos veces.**
 - "Ya agregado" quiere decir que existe un hábito sin archivar o una tarea con ese `origen`. Si la persona lo deshace, lo borra o lo archiva, vuelve a estar disponible.
 
+**Quitar lo agregado (aprobado el 1 oct; maqueta en la galería "Biblioteca: quitar lo agregado"):** el Deshacer dura 6 segundos y se va al cerrar la Biblioteca, así que hace falta una forma de quitar después. Al abrir algo ya agregado, debajo del botón apagado va el enlace **"Quitar"** (una sola palabra; 14px, 600, text-muted, subrayado, 44px de alto). Abre una pregunta (hoja abajo en el celular, ventana centrada de 420px en escritorio; `role="alertdialog"`; el foco va a "Dejarlo"):
+- Título: "¿Quitar {nombre}?" (Barlow Condensed 22px).
+- Pack: "Sus 3 hábitos salen de Hoy. Guardan su historial y los puedes restaurar en Gestionar hábitos." (con 1: "Su hábito sale de Hoy. Guarda su historial y lo puedes restaurar en Gestionar hábitos.")
+- Plan: "Sus 2 hábitos salen de Hoy y guardan su historial. La tarea se borra con sus pasos." (con 1: "Su hábito sale de Hoy y guarda su historial. La tarea se borra con sus pasos.")
+- Tarea (o plan del que solo queda la tarea): "La tarea se borra con sus pasos."
+- Botones de 48px: **"Dejarlo"** (secundario) y **"Quitar"**. "Quitar" va con borde y texto danger **solo cuando se borra una tarea**; en un pack es un secundario normal, porque no borra nada.
+- Qué hace: los hábitos de ese origen se **archivan** (nunca se borran: conservan sus días cumplidos y se restauran en Gestionar hábitos) y la tarea de ese origen se **borra**. No toca nada más.
+- Después: la hoja se cierra, sale "Quitaste {nombre}." (aviso **sin** Deshacer: ya hubo pregunta) y vuelve a estar disponible para agregar.
+
 **Al agregar:** la hoja se cierra y sale el aviso con **Deshacer** (dentro de la pantalla, abajo; `role="status"`; 6 segundos):
 - Pack: "Agregaste 3 hábitos. Ya están en Hoy." / "Agregaste 1 hábito. Ya está en Hoy."
 - Tarea: "Agregaste Declarar renta a tus tareas."

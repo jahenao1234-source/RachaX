@@ -1903,3 +1903,13 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .biblio.dk .bpanel.vacio{padding-bottom:20px;min-height:220px;align-items:center;justify-content:center;text-align:center;color:var(--text-muted);font-size:15px;line-height:1.4}
 .biblio.dk .btoast{position:sticky;left:auto;right:auto;bottom:24px;max-width:420px;margin-top:12px}
 @media (max-width:1279px){.biblio.dk .bdkgrid{grid-template-columns:minmax(0,1fr) 360px}}
+/* Biblioteca: quitar lo agregado (el enlace "Quitar" y su pregunta) */
+:is(.biblio,.bhoja) .bpie .bquitar{display:block;width:100%;min-height:44px;margin-top:4px;border:none;border-radius:10px;background:transparent;color:var(--text-muted);font:inherit;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.tareas .tsheet.bconf{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+.tareas .tsheet.bconf h2{margin:4px 0 8px;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:22px;line-height:1.1;color:var(--text);overflow-wrap:anywhere}
+.tareas .tsheet.bconf p{margin:0;font-size:15px;line-height:1.4;color:var(--text-muted)}
+.tareas .tsheet.bconf .bconfb{display:flex;gap:10px;margin-top:18px}
+.tareas .tsheet.bconf .bsecu{flex:1;min-height:48px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface-raised);color:var(--text);font:inherit;font-size:15px;font-weight:700}
+.tareas .tsheet.bconf .bsecu.peligro{background:transparent;border-color:var(--danger);color:var(--danger)}
+.biblio .btoast.solo{padding:14px}
+@media (min-width:1024px){.tareas .tsheet.bconf{top:50%;bottom:auto;transform:translate(-50%,-50%);max-width:420px;border-radius:20px;border:1px solid var(--line);padding-top:18px}.tareas .tsheet.bconf .tgrab{display:none}}

@@ -139,6 +139,8 @@ interface HabitContextType {
   agregarDeBiblioteca: (item: ItemBiblioteca, claves: string[]) => { habitoIds: string[]; tareaId: string | null };
   /** El Deshacer: quita solo esos ids (con sus registros), nunca restaura una foto vieja. */
   deshacerBiblioteca: (ids: { habitoIds: string[]; tareaId: string | null }) => void;
+  /** "Quitar" algo ya agregado: ARCHIVA sus hábitos (guardan el historial) y BORRA su tarea. Solo toca lo que tiene ese origen. */
+  quitarDeBiblioteca: (item: ItemBiblioteca) => void;
   agregarPasoTarea: (tareaId: string, padreId: string | null, texto: string) => string | null;
   editarTextoPaso: (tareaId: string, pasoId: string, texto: string) => void;
   borrarPasoTarea: (tareaId: string, pasoId: string) => void;
@@ -1414,6 +1416,10 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     ids.habitoIds.forEach((id) => eliminarHabito(id));
     if (ids.tareaId) eliminarTarea(ids.tareaId);
   };
+  const quitarDeBiblioteca = (item: ItemBiblioteca) => {
+    setHabitos((prev) => (prev.some((h) => h.origen === item.id && !h.archivado) ? prev.map((h) => (h.origen === item.id && !h.archivado ? { ...h, archivado: true } : h)) : prev));
+    setTareas((prev) => (prev.some((t) => t.origen === item.id) ? prev.filter((t) => t.origen !== item.id) : prev));
+  };
   const agregarPasoTarea = (tareaId: string, padreId: string | null, texto: string): string | null => {
     if (!texto.trim()) return null;
     const id = nuevoIdPaso();
@@ -1650,6 +1656,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         cerrarBiblioteca,
         agregarDeBiblioteca,
         deshacerBiblioteca,
+        quitarDeBiblioteca,
         consejosOcultos,
         ocultarConsejo,
         mostrarConsejo,

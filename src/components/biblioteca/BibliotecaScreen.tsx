@@ -5,7 +5,7 @@ import { useHabitStore } from '../../store/HabitContext';
 import { HabitIcon } from '../common/HabitIcon';
 import { useEsEscritorio } from '../screens/TodayScreen';
 import { GRUPOS_TAREAS_BIBLIOTECA, PACKS_BIBLIOTECA, PLANES_BIBLIOTECA, TAREAS_BIBLIOTECA } from '../../data/biblioteca';
-import { avisoAgregado, botonDeItem, clavesIniciales, dondeQuedo, hayAviso, ItemBiblioteca, HabitoBiblioteca, lineaHabito, lineaMinimo, marcaDeItem, metaDeItem, subtituloDeItem, textoAviso, tituloSemana, yaAgregado } from '../../utils/bibliotecaUtils';
+import { avisoAgregado, avisoQuitado, botonDeItem, confirmarQuitar, clavesIniciales, dondeQuedo, hayAviso, ItemBiblioteca, HabitoBiblioteca, lineaHabito, lineaMinimo, marcaDeItem, metaDeItem, subtituloDeItem, textoAviso, tituloSemana, yaAgregado } from '../../utils/bibliotecaUtils';
 import { MomentoDia } from '../../types';
 
 type Pestana = 'habitos' | 'tareas' | 'planes';
@@ -19,13 +19,18 @@ const CLAVE_PESTANA = 'racha_biblioteca_pestana';
 const claseMomento = (m: MomentoDia) => (m === 'flexible' ? '' : m);
 
 export const BibliotecaScreen: React.FC = () => {
-  const { verBiblioteca, cerrarBiblioteca, agregarDeBiblioteca, deshacerBiblioteca, habitos, tareas, habitosActivos } = useHabitStore();
+  const { verBiblioteca, cerrarBiblioteca, agregarDeBiblioteca, deshacerBiblioteca, quitarDeBiblioteca, habitos, tareas, habitosActivos } = useHabitStore();
   const desk = useEsEscritorio();
   const [pestana, setPestana] = useState<Pestana>(() => { try { const p = localStorage.getItem(CLAVE_PESTANA); return p === 'tareas' || p === 'planes' ? p : 'habitos'; } catch { return 'habitos'; } });
   const [abierto, setAbierto] = useState<ItemBiblioteca | null>(null);
   const [claves, setClaves] = useState<string[]>([]);
   const [semanas, setSemanas] = useState<number[]>([0]);
-  const [aviso, setAviso] = useState<{ texto: string; ids: { habitoIds: string[]; tareaId: string | null } } | null>(null);
+  // ids = null: un aviso sin Deshacer (después de "Quitar", que ya preguntó)
+  const [aviso, setAviso] = useState<{ texto: string; ids: { habitoIds: string[]; tareaId: string | null } | null } | null>(null);
+  // La pregunta "¿Quitar …?" (el enlace Quitar de algo ya agregado)
+  const [preguntando, setPreguntando] = useState(false);
+  const dejarloRef = useRef<HTMLButtonElement>(null);
+  const quitarRef = useRef<HTMLButtonElement>(null);
 
   const timer = useRef<number | null>(null);
   const cerrarRef = useRef<HTMLButtonElement>(null);
@@ -34,6 +39,7 @@ export const BibliotecaScreen: React.FC = () => {
   const volverA = useRef<HTMLElement | null>(null);
 
   const abrir = (item: ItemBiblioteca) => {
+    setPreguntando(false);
     setAbierto(item);
     setClaves(clavesIniciales(item));
     setSemanas([0]);
@@ -41,6 +47,7 @@ export const BibliotecaScreen: React.FC = () => {
 
   const elegirPestana = (p: Pestana) => {
     setPestana(p);
+    setPreguntando(false);
     try { localStorage.setItem(CLAVE_PESTANA, p); } catch {}
     setAbierto(null);
   };
@@ -66,8 +73,19 @@ export const BibliotecaScreen: React.FC = () => {
     timer.current = window.setTimeout(() => setAviso(null), 6000);
   };
 
+  // "Quitar": archiva los hábitos de ese origen y borra su tarea; en el celular cierra la hoja
+  const quitar = () => {
+    if (!abierto) return;
+    quitarDeBiblioteca(abierto);
+    setPreguntando(false);
+    setAviso({ texto: avisoQuitado(abierto), ids: null });
+    if (!desk) setAbierto(null);
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setAviso(null), 6000);
+  };
+
   const deshacer = () => {
-    if (aviso) {
+    if (aviso && aviso.ids) {
       deshacerBiblioteca(aviso.ids);
       setAviso(null);
       if (timer.current) window.clearTimeout(timer.current);
@@ -91,6 +109,7 @@ export const BibliotecaScreen: React.FC = () => {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (preguntando) { setPreguntando(false); return; }
         if (!desk) {
           if (abierto) setAbierto(null);
           else cerrarBiblioteca();
@@ -99,7 +118,14 @@ export const BibliotecaScreen: React.FC = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [desk, abierto, cerrarBiblioteca]);
+  }, [desk, abierto, cerrarBiblioteca, preguntando]);
+
+  // La pregunta: el foco va a "Dejarlo" (lo seguro) y al cerrarla vuelve al enlace Quitar
+  useEffect(() => {
+    if (!preguntando) return;
+    dejarloRef.current?.focus();
+    return () => { quitarRef.current?.focus(); };
+  }, [preguntando]);
 
   // Celular: la pantalla es un diálogo. Al abrirla, el fondo queda inerte y el foco va a Cerrar; al cerrarla, el foco vuelve a donde estaba.
   // (No depende de `abierto`: si dependiera, cada hoja que se abre pisaría el lugar al que hay que volver.)
@@ -244,16 +270,33 @@ export const BibliotecaScreen: React.FC = () => {
     <div className="bpie">
       {donde && <p className="bdonde">{donde}</p>}
       <button type="button" className="bprim" aria-disabled={boton.apagado || undefined} onClick={agregar}>{boton.texto}</button>
+      {ya && <button type="button" className="bquitar" ref={quitarRef} onClick={() => setPreguntando(true)}>Quitar</button>}
     </div>
   );
 
   const toast = aviso ? (
-    <div className="btoast" role="status"><span>{aviso.texto}</span><button type="button" onClick={deshacer}>Deshacer</button></div>
+    <div className={`btoast${aviso.ids ? '' : ' solo'}`} role="status"><span>{aviso.texto}</span>{aviso.ids && <button type="button" onClick={deshacer}>Deshacer</button>}</div>
   ) : null;
+
+  const q = abierto && preguntando ? confirmarQuitar(abierto, habitos, tareas) : null;
+  const pregunta = q ? createPortal(
+    <div className="tareas">
+      <div className="tscrim" style={{ zIndex: 72 }} onClick={() => setPreguntando(false)} aria-hidden="true" />
+      <div className="tsheet bhoja bconf" style={{ zIndex: 73 }} role="alertdialog" aria-modal="true" aria-labelledby="bq1" aria-describedby="bq2">
+        <div className="tgrab" aria-hidden="true" />
+        <h2 id="bq1">{q.titulo}</h2>
+        <p id="bq2">{q.texto}</p>
+        <div className="bconfb">
+          <button type="button" className="bsecu" ref={dejarloRef} onClick={() => setPreguntando(false)}>Dejarlo</button>
+          <button type="button" className={`bsecu${q.peligro ? ' peligro' : ''}`} onClick={quitar}>Quitar</button>
+        </div>
+      </div>
+    </div>, document.body) : null;
 
   if (!desk) {
     return (
       <>
+        {pregunta}
         {createPortal(
           <div className="biblio" role="dialog" aria-modal="true" aria-labelledby="bt">
             <header className="bcab"><h1 id="bt">Biblioteca</h1><button type="button" className="bcerrar" aria-label="Cerrar" onClick={cerrarBiblioteca} ref={cerrarRef}><X size={16} /></button></header>
@@ -279,6 +322,7 @@ export const BibliotecaScreen: React.FC = () => {
 
   return (
     <div className="biblio dk">
+      {pregunta}
       <div className="bdkcab"><h1>Biblioteca</h1><p>Hábitos, tareas y planes listos para agregar.</p></div>
       <div className="bdkgrid">
         <div>{pestanasYLista}{toast}</div>
