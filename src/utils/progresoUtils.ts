@@ -87,7 +87,9 @@ export function serieFuerzaTotal(
   habitosActivos: Habito[], 
   registros: Registro[], 
   diasCongelados: string[], 
-  hastaStr: string
+  hastaStr: string,
+  /** Series ya calculadas por hábito (fuerzaSerieHabito), para no repetir el cálculo (las usa también el radar). */
+  seriesPorHabito?: Map<string, { fecha: string; valor: number }[]>
 ): { fecha: string; valor: number }[] {
   if (habitosActivos.length === 0) return [];
   
@@ -103,7 +105,7 @@ export function serieFuerzaTotal(
   // Calcular la serie individual para cada hábito
   const series = new Map<string, Map<string, number>>();
   for (const h of habitosActivos) {
-    const s = fuerzaSerieHabito(h, registros, diasCongelados, hastaStr);
+    const s = seriesPorHabito?.get(h.id) ?? fuerzaSerieHabito(h, registros, diasCongelados, hastaStr);
     const dayMap = new Map<string, number>();
     for (const p of s) {
       dayMap.set(p.fecha, p.valor);

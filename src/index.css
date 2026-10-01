@@ -1628,3 +1628,43 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .ddsw[aria-checked=true] i{background:var(--lila-text);border-color:var(--lila-text)}
 .ddsw[aria-checked=true] i::after{left:22px;background:var(--bg)}
 #screen-today .ddchip .dcw,#screen-stats .ddchip .dcw{margin-left:-2px}
+
+/* ===================== Fuerza en radar (design/maqueta-progreso-radar.html, DESIGN.md › Progreso › "#### Fuerza en radar") ===================== */
+.progreso .rdw{position:relative;width:100%;max-width:600px;margin:4px auto 6px}
+.progreso .rdw svg{display:block;width:100%;height:auto;overflow:visible}
+.progreso .rdw .rd-g{fill:none;stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.progreso .rdw .rd-g.medio{stroke:var(--line-strong)}
+.progreso .rdw .rd-a{fill:none;stroke:var(--text-muted);stroke-width:1.5;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.progreso .rdw .rd-h{fill:var(--ambar-tint);stroke:var(--ambar-text);stroke-width:2.5;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.progreso .rdw .rd-v{fill:var(--ambar-text)}
+/* Los nombres son botones (abren el detalle del hábito) */
+.progreso .rdl{position:absolute;display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:0 4px;border:none;background:none;color:var(--text);font:inherit;font-size:12px;font-weight:600;white-space:nowrap;border-radius:8px;transform:translate(-50%,-50%);cursor:pointer}
+.progreso .rdw.grande .rdl{font-size:13px}
+.progreso .rdw.muchos .rdl{min-height:28px}
+.progreso .rdl.der{transform:translate(0,-50%)}
+.progreso .rdl.izq{transform:translate(-100%,-50%)}
+.progreso .rdl:hover{background:var(--surface-raised)}
+.progreso .rdl > span{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.progreso .rdl i{width:7px;height:7px;border-radius:9px;flex-shrink:0}
+.progreso .rdl.baja{color:var(--text-muted)}
+.progreso .rdl b{font-weight:700;color:var(--ambar-text)}
+.progreso .rdl.baja b{color:var(--text-muted)}
+.progreso .rdl small{font-size:11px;font-weight:500;color:var(--text-muted)}
+.progreso .rdl:focus-visible{outline:2px solid var(--lila);outline-offset:2px}
+@media (max-width:359px){.progreso .rdl{font-size:11px}}
+.progreso .rdley{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;margin:0 0 10px;font-size:12px;color:var(--text-muted)}
+.progreso .rdley span{display:inline-flex;align-items:center;gap:6px}
+.progreso .rdley i{display:inline-block;width:16px;border-top:2.5px solid var(--ambar-text)}
+.progreso .rdley i.antes{border-top:1.5px dashed var(--text-muted)}
+.progreso .rdley b{color:var(--ambar-text);font-weight:700}
+.progreso .rdmas{display:inline-flex;align-items:center;min-height:44px;margin:-10px 0 0;padding:0;border:none;background:none;color:var(--text-muted);font:inherit;font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* Con 1 o 2 hábitos: barras con la marca de hace 30 días */
+.progreso .rdb{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+.progreso .rdbf{display:block;width:100%;border:none;background:none;padding:0;color:inherit;font:inherit;text-align:left;min-height:44px;border-radius:10px;cursor:pointer}
+.progreso .rdbf:hover .rdbh{text-decoration:underline;text-underline-offset:3px}
+.progreso .rdbh{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;margin-bottom:8px}
+.progreso .rdbh i{width:8px;height:8px;border-radius:9px}
+.progreso .rdbh b{margin-left:auto;font-family:var(--font-number);font-size:20px;font-weight:700}
+.progreso .rdbt{display:block;position:relative;height:10px;border-radius:9px;background:var(--track-empty)}
+.progreso .rdbt > i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--ambar-text)}
+.progreso .rdbt > u{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:2px;background:var(--text);box-shadow:0 0 0 1.5px var(--surface);text-decoration:none}
