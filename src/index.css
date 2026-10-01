@@ -978,7 +978,11 @@ html:not(.dark) .tareas .t4dlg{box-shadow:0 24px 60px rgba(15,17,19,.18)}
 
 
 /* ---- Hoy en escritorio: cabecera compacta (design/maqueta-hoy-cabecera.html) ---- */
-.hoyd .hc{display:flex;align-items:center;gap:16px;padding:4px 0 16px;border-bottom:1px solid var(--line)}
+/* Con el menú lateral abierto en una ventana angosta el contenido se estrecha: la fecha nunca se parte en dos renglones,
+   y si no cabe todo en una fila, los botones bajan a una segunda (a la derecha). */
+.hoyd .hc{display:flex;flex-wrap:wrap;align-items:center;gap:16px;row-gap:12px;padding:4px 0 16px;border-bottom:1px solid var(--line)}
+.hoyd .hc h1{white-space:nowrap}
+.hoyd .hc>.flex.shrink-0:last-child{margin-left:auto}
 .hoyd .hcsal{margin:0 0 2px;font-size:14px;font-weight:600;color:var(--text-muted)}
 .hoyd .hcprog{flex:1;min-width:200px;max-width:340px;margin-left:auto;display:grid;gap:8px}
 .hoyd .hcl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;color:var(--text);text-decoration:none;min-height:24px}

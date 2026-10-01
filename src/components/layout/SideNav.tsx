@@ -5,9 +5,8 @@ import { useTheme } from '../../store/ThemeContext';
 import { TabRoute } from '../../types';
 
 // El menú se abre y se cierra con el botón de abajo (DESIGN.md › Navigation › "Menú lateral que se abre y se cierra").
-// - Ventana ancha (1280px o más): abrirlo o cerrarlo empuja el contenido, y lo elegido se recuerda. Sin elegir, abierto, como antes.
-// - Ventana angosta: está cerrado, como antes. Al abrirlo queda ENCIMA del contenido (si lo empujara, Hoy quedaría tan estrecho
-//   que la fecha se parte en dos renglones); no se guarda, y se cierra al elegir un destino, al tocar fuera o con Escape.
+// Abrirlo o cerrarlo SIEMPRE empuja el contenido, que se acomoda al ancho que queda (Johnatan no lo quiso montado sobre el contenido).
+// Lo elegido se recuerda. Si nunca ha elegido: abierto desde 1280px y cerrado por debajo, como antes.
 const CLAVE_MENU = 'racha_menu_abierto';
 const leerPreferencia = (): boolean | null => {
   try { const v = localStorage.getItem(CLAVE_MENU); return v === '1' ? true : v === '0' ? false : null; } catch { return null; }
@@ -39,24 +38,12 @@ export const SideNav: React.FC = () => {
   const { nombre } = useTheme();
   const ventanaAncha = useVentanaAncha();
   const [preferencia, setPreferencia] = useState<boolean | null>(leerPreferencia);
-  const [encimaAbierto, setEncimaAbierto] = useState(false);
-  const abierto = ventanaAncha ? (preferencia ?? true) : encimaAbierto;
-  const encima = !ventanaAncha && encimaAbierto;
-  const cerrarEncima = () => setEncimaAbierto(false);
+  const abierto = preferencia ?? ventanaAncha;
   const alternarMenu = () => {
-    if (!ventanaAncha) { setEncimaAbierto((v) => !v); return; }
     const nuevo = !abierto;
     setPreferencia(nuevo);
     try { localStorage.setItem(CLAVE_MENU, nuevo ? '1' : '0'); } catch { /* sin almacenamiento: vale solo por esta vez */ }
   };
-  // Al ensanchar la ventana, lo abierto "encima" deja de aplicar
-  useEffect(() => { if (ventanaAncha) setEncimaAbierto(false); }, [ventanaAncha]);
-  useEffect(() => {
-    if (!encima) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setEncimaAbierto(false); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [encima]);
 
   const navItems: { id: TabRoute; label: string; icon: React.FC<{ className?: string; size?: number; strokeWidth?: number }> }[] = [
     { id: 'hoy', label: 'Hoy', icon: CalendarCheck },
@@ -73,21 +60,16 @@ export const SideNav: React.FC = () => {
   const soloAbierto = abierto ? '' : 'hidden';
 
   return (
-    <>
-    {encima && <div className="hidden lg:block fixed inset-0 z-[19]" onClick={cerrarEncima} aria-hidden="true" />}
     <aside
       id="desktop-side-nav"
       aria-label="Navegación lateral de escritorio"
-      className={`hidden lg:block select-none h-full relative z-20 transition-all duration-300 shrink-0 ${abierto && !encima ? 'w-[240px]' : 'w-[76px]'} sidenav`}
+      className={`hidden lg:flex flex-col bg-surface border-r border-line justify-between select-none h-full relative z-20 transition-all duration-300 shrink-0 ${abierto ? 'w-[240px]' : 'w-[76px]'} sidenav`}
     >
-      {/* En ventana angosta el menú abierto es esta misma caja, de 240px, puesta encima del contenido */}
-      <div className={`flex flex-col justify-between h-full bg-surface border-r border-line ${encima ? 'absolute inset-y-0 left-0 w-[240px] shadow-[8px_0_24px_rgba(0,0,0,0.35)]' : 'w-full'}`}>
       <div className={`flex flex-col gap-4 ${abierto ? 'p-4' : 'p-3'}`}>
         {/* Brand Logo */}
         <button
           type="button"
           onClick={() => {
-            cerrarEncima();
             closeHabitDetail();
             navigateToTab('hoy');
           }}
@@ -113,7 +95,7 @@ export const SideNav: React.FC = () => {
         <button
           id="side-nav-btn-create"
           type="button"
-          onClick={() => { cerrarEncima(); openCreateMenu(); }}
+          onClick={openCreateMenu}
           aria-label="Crear"
           title="Crear"
           className={`w-full flex items-center justify-center gap-2 logro text-ink font-heading font-bold transition-all active:scale-[0.98] ${abierto ? 'h-[46px] rounded-[12px] px-4 text-[15px]' : 'h-[48px] rounded-[14px]'}`}
@@ -134,7 +116,6 @@ export const SideNav: React.FC = () => {
                 id={`side-nav-tab-${item.id}`}
                 type="button"
                 onClick={() => {
-                  cerrarEncima();
                   closeHabitDetail();
                   navigateToTab(item.id);
                 }}
@@ -161,7 +142,7 @@ export const SideNav: React.FC = () => {
           <button
             id="side-nav-tab-biblioteca"
             type="button"
-            onClick={() => { cerrarEncima(); closeHabitDetail(); abrirBiblioteca(); }}
+            onClick={() => { closeHabitDetail(); abrirBiblioteca(); }}
             aria-current={verBiblioteca ? 'page' : undefined}
             aria-label="Biblioteca"
             title="Biblioteca"
@@ -193,7 +174,6 @@ export const SideNav: React.FC = () => {
         <button
           type="button"
           onClick={() => {
-            cerrarEncima();
             closeHabitDetail();
             navigateToTab('perfil');
           }}
@@ -219,8 +199,6 @@ export const SideNav: React.FC = () => {
           </div>
         </button>
       </div>
-      </div>
     </aside>
-    </>
   );
 };
