@@ -1888,13 +1888,17 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .biblio .btoast button{min-height:44px;padding:0 12px;border:none;border-radius:10px;background:transparent;color:var(--ambar-text);font:inherit;font-size:14px;font-weight:700;flex-shrink:0}
 
 /* Escritorio */
-.biblio.dk{position:static;inset:auto;z-index:auto;background:transparent;display:block}
+/* La página es una rejilla de dos columnas: a la izquierda el título y la lista; a la derecha el panel, que arranca arriba
+   (junto al título) y usa casi todo el alto de la ventana, para que un plan se lea sin una franja pequeña. */
+.biblio.dk{position:static;inset:auto;z-index:auto;background:transparent;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-rows:auto 1fr;column-gap:24px;align-items:start}
+.biblio.dk .bdkcab{grid-column:1}
 .biblio.dk .bdkcab h1{margin:0;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:44px;line-height:1}
 .biblio.dk .bdkcab p{margin:6px 0 0;font-size:15px;color:var(--text-muted)}
-.biblio.dk .bdkgrid{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:24px;align-items:start;margin-top:18px}
+.biblio.dk .bdkgrid{display:contents}
+.biblio.dk .bdkgrid>div:first-child{grid-column:1;margin-top:18px;min-width:0}
 .biblio.dk .btabs{max-width:420px}
 .biblio.dk .bfila{cursor:pointer}
-.biblio.dk .bpanel{position:sticky;top:0;display:flex;flex-direction:column;max-height:calc(100vh - 150px);padding:20px 20px 0;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.biblio.dk .bpanel{grid-column:2;grid-row:1 / span 2;position:sticky;top:0;display:flex;flex-direction:column;max-height:calc(100vh - 56px);padding:20px 20px 0;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
 .biblio.dk .bpanel h2{margin:0;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;font-size:24px;line-height:1.1}
 .biblio.dk .bpanel .bsub{margin:4px 0 10px;font-size:13px;color:var(--text-muted)}
 .biblio.dk .bpanel .bhcuerpo{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-bottom:10px}
@@ -1902,7 +1906,7 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .biblio.dk .bpanel .bnota{margin:4px 0;padding:12px 0;border-radius:0;background:transparent;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .biblio.dk .bpanel.vacio{padding-bottom:20px;min-height:220px;align-items:center;justify-content:center;text-align:center;color:var(--text-muted);font-size:15px;line-height:1.4}
 .biblio.dk .btoast{position:sticky;left:auto;right:auto;bottom:24px;max-width:420px;margin-top:12px}
-@media (max-width:1279px){.biblio.dk .bdkgrid{grid-template-columns:minmax(0,1fr) 360px}}
+@media (max-width:1279px){.biblio.dk{grid-template-columns:minmax(0,4fr) minmax(0,5fr);column-gap:18px}}
 /* Biblioteca: quitar lo agregado (el enlace "Quitar" y su pregunta) */
 :is(.biblio,.bhoja) .bpie .bquitar{display:block;width:100%;min-height:44px;margin-top:4px;border:none;border-radius:10px;background:transparent;color:var(--text-muted);font:inherit;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .tareas .tsheet.bconf{padding-bottom:max(22px,env(safe-area-inset-bottom))}

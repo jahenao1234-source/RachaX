@@ -403,6 +403,79 @@ export const PLANES_BIBLIOTECA: PlanBiblioteca[] = [
         pasos: ['Programar los pagos fijos', 'Separar un monto pequeño para ahorrar', 'Poner la fecha de la próxima revisión'] },
     ],
   },
+  {
+    tipo: 'plan', id: 'plan-volver-a-estudiar', nombre: 'Volver a estudiar', icono: 'GraduationCap', iconoTarea: 'GraduationCap',
+    descripcion: 'Un mes para retomar el estudio de a poco: un rato fijo cada día y un tema a la vez.',
+    habitos: [
+      { clave: 'sentarme-a-estudiar', nombre: 'Sentarme a estudiar 25 minutos', icono: 'GraduationCap', momento: 'noche', anclaje: 'cenar', minimo: 'abrir el material y leer 5 minutos' },
+      { clave: 'planear-semana', nombre: 'Planear el estudio de la semana', icono: 'Target', momento: 'tarde', anclaje: 'almorzar', minimo: 'escoger el tema de la semana', frecuencia: 'personalizado', diasPersonalizados: [0] },
+    ],
+    semanas: [
+      { titulo: 'Armar el lugar y el plan', porque: 'Volver cuesta menos cuando ya está decidido qué, dónde y a qué hora.',
+        pasos: ['Escribir qué quiero estudiar y para qué', 'Conseguir el material (libro, curso, guías)', 'Escoger un lugar fijo y dejarlo listo'] },
+      { titulo: 'Empezar por lo fácil', porque: 'La primera semana de estudio es para agarrar el ritmo, no para rendir.',
+        pasos: ['Dividir el material en temas', 'Estudiar el primer tema', 'Hacer un resumen corto de lo que entendí'] },
+      { titulo: 'Agarrar ritmo', porque: 'Ya hay costumbre. Ahora se avanza un tema por vez.',
+        pasos: ['Estudiar el segundo tema', 'Hacer ejercicios o preguntas del tema', 'Anotar lo que no entendí y buscarlo'] },
+      { titulo: 'Medir y seguir', porque: 'Mirar lo que avanzaste te dice qué sigue.',
+        pasos: ['Repasar los resúmenes del mes', 'Probarme con preguntas o un examen de práctica', 'Decidir qué temas siguen el próximo mes'] },
+    ],
+  },
+  {
+    tipo: 'plan', id: 'plan-casa-en-orden', nombre: 'Poner la casa en orden', icono: 'Home', iconoTarea: 'Home',
+    descripcion: 'Un mes para ordenar la casa por zonas, una a la vez, sin dedicarle un día entero.',
+    habitos: [
+      { clave: 'recoger', nombre: 'Recoger 10 minutos', icono: 'Home', momento: 'noche', anclaje: 'cenar', minimo: 'guardar 5 cosas' },
+    ],
+    semanas: [
+      { titulo: 'La entrada y la sala', porque: 'Se empieza por lo que ves al llegar: el cambio se nota desde el primer día.',
+        pasos: ['Sacar lo que no es de ahí', 'Ordenar la mesa y los muebles', 'Darles un lugar a las llaves, los bolsos y los zapatos'] },
+      { titulo: 'La cocina', porque: 'Es donde más cosas se acumulan sin que uno las use.',
+        pasos: ['Sacar lo vencido de la nevera y la alacena', 'Ordenar un cajón o un gabinete', 'Dejar despejado el mesón', 'Sacar los trastes que ya no uso'] },
+      { titulo: 'El cuarto y el clóset', porque: 'Con el resto de la casa andando, el cuarto se ordena más fácil.',
+        pasos: ['Sacar la ropa que ya no uso', 'Ordenar la mesa de noche y debajo de la cama', 'Doblar y guardar por tipo de ropa', 'Llevar a donar lo que sale'] },
+      { titulo: 'El baño y lo que quedó', porque: 'La última semana es para cerrar y dejarlo fácil de mantener.',
+        pasos: ['Sacar los productos vencidos o vacíos del baño', 'Ordenar los papeles sueltos de la casa', 'Escoger un día fijo para el aseo de la semana'] },
+    ],
+  },
+  {
+    tipo: 'plan', id: 'plan-moverte-mas', nombre: 'Moverte más', icono: 'Footprints', iconoTarea: 'Target',
+    descripcion: 'Un mes para meter movimiento en tu día, empezando por muy poco.',
+    habitos: [
+      { clave: 'estirarme', nombre: 'Estirarme 5 minutos', icono: 'Zap', momento: 'manana', anclaje: 'despertarme', minimo: 'estirar los brazos una vez' },
+      { clave: 'caminar', nombre: 'Caminar 10 minutos', icono: 'Footprints', momento: 'tarde', anclaje: 'almorzar', minimo: 'caminar 2 minutos' },
+      { clave: 'salir', nombre: 'Salir a moverme', icono: 'Dumbbell', momento: 'manana', anclaje: 'desayunar', minimo: 'caminar una cuadra', frecuencia: 'personalizado', diasPersonalizados: [6] },
+    ],
+    semanas: [
+      { titulo: 'Empezar con lo que hay', porque: 'No hace falta gimnasio ni ropa nueva para arrancar.',
+        pasos: ['Escoger algo que me guste o no me moleste (caminar, bailar, bici)', 'Dejar a la mano los tenis y la ropa'] },
+      { titulo: 'Ponerle hora', porque: 'Lo que tiene hora fija no depende de las ganas.',
+        pasos: ['Escoger los días y la hora de la semana', 'Anotarlos en mis compromisos'] },
+      { titulo: 'Subir un poquito', porque: 'Se sube de a poco para que no dé pereza volver.',
+        pasos: ['Sumarle 5 minutos a la caminata', 'Probar una actividad distinta una vez'] },
+      { titulo: 'Dejarlo andando', porque: 'Lo que se hace acompañado se sostiene más.',
+        pasos: ['Invitar a alguien a moverse conmigo una vez', 'Decidir qué sigo haciendo el próximo mes'] },
+    ],
+  },
+  {
+    tipo: 'plan', id: 'plan-dormir-mejor', nombre: 'Dormir mejor', icono: 'Moon', iconoTarea: 'ListChecks',
+    descripcion: 'Un mes para armar tu rutina de noche: una hora fija y menos pantalla antes de acostarte.',
+    habitos: [
+      { clave: 'apagar-pantallas', nombre: 'Apagar las pantallas', icono: 'Smartphone', momento: 'noche', anclaje: 'lavarme los dientes', minimo: 'dejar el celular boca abajo' },
+      { clave: 'acostarme', nombre: 'Acostarme a mi hora', icono: 'Bed', momento: 'noche', anclaje: 'apagar las pantallas', minimo: 'estar en la cama, aunque no tenga sueño' },
+      { clave: 'cortina', nombre: 'Abrir la cortina', icono: 'Sparkles', momento: 'manana', anclaje: 'despertarme', minimo: 'prender la luz' },
+    ],
+    semanas: [
+      { titulo: 'Mirar cómo estoy durmiendo', porque: 'Antes de cambiar algo, mira a qué hora te acuestas de verdad.',
+        pasos: ['Anotar 3 noches a qué hora me acuesto y me levanto', 'Escoger la hora a la que quiero acostarme'] },
+      { titulo: 'Preparar el cuarto', porque: 'Un cuarto listo hace más fácil acostarse.',
+        pasos: ['Dejar el cargador del celular lejos de la cama', 'Tapar o apagar las luces que molestan', 'Escoger dónde dejo lista la ropa de mañana'] },
+      { titulo: 'Armar la rutina de noche', porque: 'Hacer lo mismo cada noche hace que acostarse no sea una decisión.',
+        pasos: ['Escoger 2 cosas para hacer antes de dormir (leer, bañarme, música suave)', 'Poner una alarma para empezar la rutina'] },
+      { titulo: 'Ajustar', porque: 'Con un mes encima, ya sabes qué te sirve.',
+        pasos: ['Mirar qué noches me costó más y por qué', 'Decidir qué dejo fijo el próximo mes'] },
+    ],
+  },
 ];
 
 export const CATALOGO_BIBLIOTECA: ItemBiblioteca[] = [...PACKS_BIBLIOTECA, ...TAREAS_BIBLIOTECA, ...PLANES_BIBLIOTECA];
