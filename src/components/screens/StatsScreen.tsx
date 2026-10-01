@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useHabitStore } from '../../store/HabitContext';
-import { TrendingUp, Clock, ChevronRight, Plus, Calendar } from 'lucide-react';
+import { TrendingUp, Clock, ChevronRight, ChevronDown, Plus, Calendar } from 'lucide-react';
 import {
   fuerzaSerieHabito,
   serieFuerzaTotal,
@@ -9,6 +9,7 @@ import {
   contarVecesCumplidas
 } from '../../utils/progresoUtils';
 import { getTodayString, parseDateString, subtractDays, formatDateToString, contarCompletadosSemana } from '../../utils/habitUtils';
+import { datosRadar, posicionRadar, poligonoRadar, valoresAntes, hayFiguraAntes, flechaRadar, textoRadar, ariaRadarDibujo, ariaPuntoRadar, destacadosRadar, FILAS_TUS_HABITOS } from '../../utils/radarUtils';
 import { getMomentoColorTokens } from '../common/HabitPreviewRow';
 import { HabitIcon } from '../common/HabitIcon';
 import { useState, useEffect } from 'react';
@@ -24,6 +25,7 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
 
   const [pestana, setPestana] = useState<'resumen' | 'calendario'>(pestanaInicial);
   const [fechaAbrir, setFechaAbrir] = useState<string | null>(null);
+  const [verTodosHabitos, setVerTodosHabitos] = useState(false);
   const desk = useEsEscritorio();
 
   useEffect(() => {
@@ -34,7 +36,6 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
   const yesterdayStr = subtractDays(todayStr, 1);
 
   const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-  const monthNamesShort = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   
   const weekDays = [
     { idx: 1, label: 'L', name: 'lunes' },
@@ -69,14 +70,18 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
   const isRecent = daysSinceStart < 14;
 
   // Fuerza de tus hábitos (gráfico general)
-  const globalFuerzaSerie = useMemo(() => serieFuerzaTotal(habitos, registros, diasCongelados, yesterdayStr), [habitos, registros, diasCongelados, yesterdayStr]);
+  const seriesPorHabito = useMemo(() => {
+    return new Map(habitos.map(h => [h.id, fuerzaSerieHabito(h, registros, diasCongelados, yesterdayStr)]));
+  }, [habitos, registros, diasCongelados, yesterdayStr]);
+
+  const globalFuerzaSerie = useMemo(() => serieFuerzaTotal(habitos, registros, diasCongelados, yesterdayStr, seriesPorHabito), [habitos, registros, diasCongelados, yesterdayStr, seriesPorHabito]);
   const currentFuerza = globalFuerzaSerie.length > 0 ? globalFuerzaSerie[globalFuerzaSerie.length - 1].valor : 0;
   
   const fuerzaHace30 = globalFuerzaSerie.length > 30 ? globalFuerzaSerie[globalFuerzaSerie.length - 31].valor : 0;
   const diffFuerza = currentFuerza - fuerzaHace30;
 
-  // Preparar SVG data (últimos 180 días)
-  const graphPoints = globalFuerzaSerie.slice(-180);
+  const radar = useMemo(() => datosRadar(habitos, registros, diasCongelados, yesterdayStr, ordenMomentos, undefined, seriesPorHabito), [habitos, registros, diasCongelados, yesterdayStr, ordenMomentos, seriesPorHabito]);
+  const destacados = useMemo(() => destacadosRadar(radar.puntos, isRecent), [radar, isRecent]);
   
   const date30DaysAgo = subtractDays(yesterdayStr, 29);
   const analisisDesdeStr = useMemo(() => {
@@ -147,13 +152,13 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
       let focoText = focoSeg >= 60 ? ` · ${formatoDuracion(focoSeg)} en Foco` : '';
 
       if (isWeekly) {
-        const fs = fuerzaSerieHabito(h, registros, diasCongelados, yesterdayStr);
+        const fs = seriesPorHabito.get(h.id) || [];
         f = fs.length > 0 ? fs[fs.length - 1].valor : 0;
         
         const weekCompletions = contarCompletadosSemana(h.id, todayStr, registros);
         weeklyText = `${weekCompletions} de ${h.vecesPorSemana || 1} esta semana`;
       } else {
-        const fs = fuerzaSerieHabito(h, registros, diasCongelados, yesterdayStr);
+        const fs = seriesPorHabito.get(h.id) || [];
         f = fs.length > 0 ? fs[fs.length - 1].valor : 0;
         
         const { pct } = tasaPeriodo([h], registros, diasCongelados, startOfMonth, yesterdayStr);
@@ -169,7 +174,7 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
         isWeekly
       };
     }).sort((a, b) => a.fuerza - b.fuerza);
-  }, [habitos, registros, diasCongelados, yesterdayStr, sesionesFoco, todayStr]);
+  }, [habitos, registros, diasCongelados, yesterdayStr, sesionesFoco, todayStr, seriesPorHabito]);
 
   // Este mes 
   const currentMonthStart = `${yesterdayStr.substring(0, 7)}-01`;
@@ -268,14 +273,18 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
     </div>
   );
 
-  // Gráfica: en el celular 350x150; en escritorio 700x280 para que no quede gigante al estirarse.
-  const GW = desk ? 700 : 350, GH = desk ? 280 : 150;
-  const gFin = GW - 20, gTope = 20, gBase = GH - 20;
-  const gY = (v: number) => gBase - (v / 100) * (gBase - gTope);
-  const gLetra = desk ? 'text-[12px]' : 'text-[11px]';
+  // Radar (design/maqueta-progreso-radar.html)
+  const COLOR_MOMENTO_RADAR: Record<string, string> = { manana: 'var(--manana)', tarde: 'var(--coral)', noche: 'var(--lila)', flexible: 'var(--text-muted)' };
+  const W = desk ? 560 : 314;
+  const H = desk ? 340 : 244;
+  const cx = W / 2;
+  const cy = H / 2;
+  const radio = desk ? 128 : 76;
+  const n = radar.puntos.length;
+  const conAntes = !isRecent && hayFiguraAntes(radar.puntos);
 
   const fuerzaCard = (
-    <div className={`rounded-[18px] bg-surface border border-line ${desk ? 'p-5' : 'p-[18px] mb-[26px]'}`}>
+    <div className={`rounded-[18px] bg-surface border border-line ${desk ? 'p-5 rdalto' : 'p-[18px] mb-[26px]'}`}>
       <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-2">Fuerza de tus hábitos</h2>
 
       <div className="flex justify-between items-start mb-6">
@@ -288,85 +297,121 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
             creciendo
           </div>
         ) : (
-          diffFuerza === 0 ? (
-            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
-              Igual que hace 30 días
-            </div>
-          ) : diffFuerza > 0 ? (
-            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold gap-1">
-              <TrendingUp size={14} strokeWidth={3} />
-              +{diffFuerza} en 30 días
-            </div>
+          globalFuerzaSerie.length > 30 ? (
+            diffFuerza === 0 ? (
+              <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
+                Igual que hace 30 días
+              </div>
+            ) : diffFuerza > 0 ? (
+              <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold gap-1">
+                <TrendingUp size={14} strokeWidth={3} />
+                +{diffFuerza} en 30 días
+              </div>
+            ) : (
+              <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
+                −{Math.abs(diffFuerza)} en 30 días
+              </div>
+            )
           ) : (
-            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center bg-surface-raised text-text-muted text-[13px] font-bold">
-              −{Math.abs(diffFuerza)} en 30 días
+            <div className="h-[26px] px-2.5 rounded-full inline-flex items-center chip-sube text-[13px] font-bold">
+              creciendo
             </div>
           )
         )}
       </div>
 
-      {/* SVG GRÁFICO MANUAL */}
-      <div className="w-full relative mb-4" style={{ aspectRatio: `${GW} / ${GH}` }}>
-        <svg viewBox={`0 0 ${GW} ${GH}`} className="w-full h-full overflow-visible" role="img">
-          <title>Fuerza de tus hábitos: hoy {currentFuerza} de 100</title>
-          {/* Guide lines */}
-          <line x1="0" y1={gY(50)} x2={gFin} y2={gY(50)} stroke="var(--line)" strokeWidth="1" />
-          <line x1="0" y1={gTope} x2={gFin} y2={gTope} stroke="var(--line)" strokeWidth="1" />
-          <line x1="0" y1={gBase} x2={gFin} y2={gBase} stroke="var(--line-strong)" strokeWidth="1" />
-
-          {/* Labels right */}
-          <text x={gFin + 6} y={gTope + 4} className={`fill-text-muted ${gLetra} font-medium font-sans`}>100</text>
-          <text x={gFin + 6} y={gY(50) + 4} className={`fill-text-muted ${gLetra} font-medium font-sans`}>50</text>
-
-          {/* Data Line and Area */}
-          {graphPoints.length > 0 && (() => {
-            const pts = graphPoints.map((p, i) => {
-              const x = graphPoints.length > 1 ? (i / (graphPoints.length - 1)) * gFin : gFin / 2;
-              const y = gY(p.valor);
-              return { x, y, fecha: p.fecha };
-            });
-
-            const lineD = "M " + pts.map(p => `${p.x},${p.y}`).join(" L ");
-            const areaD = `${lineD} L ${pts[pts.length - 1].x},${gBase} L ${pts[0].x},${gBase} Z`;
-            const endPt = pts[pts.length - 1];
-
-            // Month labels on x axis
-            const monthLabels = [];
-            let lastM = -1;
-            for (const p of pts) {
-              if (!p.fecha) continue;
-              const mIdx = parseDateString(p.fecha).getMonth();
-              const d = parseDateString(p.fecha).getDate();
-              if (d === 1 && mIdx !== lastM && p.x < gFin - 20) {
-                monthLabels.push(<text key={p.fecha} x={p.x} y={GH - 4} textAnchor="middle" className={`fill-text-muted ${gLetra} font-medium font-sans`}>{monthNamesShort[mIdx]}</text>);
-                lastM = mIdx;
-              }
-            }
-
+      {radar.modo === 'radar' && (
+        <div className={`rdw${desk ? ' grande' : ''}${n > 9 ? ' muchos' : ''}`}>
+          <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={ariaRadarDibujo(n, conAntes)}>
+            <polygon className="rd-g" points={poligonoRadar(Array(n).fill(25), radio, cx, cy)} />
+            <polygon className="rd-g medio" points={poligonoRadar(Array(n).fill(50), radio, cx, cy)} />
+            <polygon className="rd-g" points={poligonoRadar(Array(n).fill(75), radio, cx, cy)} />
+            <polygon className="rd-g" points={poligonoRadar(Array(n).fill(100), radio, cx, cy)} />
+            {Array.from({ length: n }).map((_, i) => {
+              const dest = posicionRadar(i, n, 100, radio);
+              return <line key={i} className="rd-g" x1={cx} y1={cy} x2={cx + dest.x} y2={cy + dest.y} />;
+            })}
+            {conAntes && <polygon className="rd-a" points={poligonoRadar(valoresAntes(radar.puntos), radio, cx, cy)} />}
+            <polygon className="rd-h" points={poligonoRadar(radar.puntos.map(p => p.hoy), radio, cx, cy)} />
+            {radar.puntos.map((p, i) => {
+              const dest = posicionRadar(i, n, p.hoy, radio);
+              return <circle key={i} className="rd-v" r="3.5" cx={cx + dest.x} cy={cy + dest.y} />;
+            })}
+          </svg>
+          {radar.puntos.map((p, i) => {
+            const q = posicionRadar(i, n, 100, radio + 10);
+            const left = ((cx + q.x) / W) * 100;
+            const top = ((cy + q.y) / H) * 100;
+            const flecha = flechaRadar(p);
+            let className = "rdl";
+            if (q.x > 8) className += " der";
+            if (q.x < -8) className += " izq";
+            if (flecha === "↓") className += " baja";
+            
+            const st = q.x > 8 ? { left: `${left}%`, top: `${top}%`, maxWidth: `calc(${100 - left}% + 18px)` } :
+                       q.x < -8 ? { left: `${left}%`, top: `${top}%`, maxWidth: `calc(${left}% + 18px)` } :
+                       { left: `${left}%`, top: `${top}%` };
+            
             return (
-              <>
-                <path d={areaD} className="fill-ambar-tint" />
-                <path d={lineD} className="stroke-ambar-text fill-none" strokeWidth="2.5" />
-                <circle cx={endPt.x} cy={endPt.y} r="4.5" className="fill-ambar-text stroke-surface" strokeWidth="2" />
-                {monthLabels}
-              </>
+              <button 
+                type="button" 
+                key={i} 
+                className={className} 
+                style={st} 
+                aria-label={ariaPuntoRadar(p, conAntes)} 
+                onClick={() => openHabitDetail(p.habito.id)}
+              >
+                <i style={{ background: COLOR_MOMENTO_RADAR[p.momento] }}></i>
+                <span>{p.corto}</span>
+                {conAntes && flecha && <b>{flecha}</b>}
+                {conAntes && p.antes === null && <small>nuevo</small>}
+              </button>
             );
-          })()}
-        </svg>
-      </div>
+          })}
+        </div>
+      )}
+      
+      {radar.modo === 'barras' && (
+        <div className="rdb">
+          {radar.puntos.map((p, i) => (
+            <button key={i} type="button" className="rdbf" aria-label={ariaPuntoRadar(p, true)} onClick={() => openHabitDetail(p.habito.id)}>
+              <span className="rdbh">
+                <i style={{ background: COLOR_MOMENTO_RADAR[p.momento] }}></i>
+                {p.habito.nombre}
+                <b>{p.hoy}</b>
+              </span>
+              <span className="rdbt">
+                <i style={{ width: `${p.hoy}%` }}></i>
+                {p.antes !== null && <u style={{ left: `calc(${p.antes}% - 1px)` }}></u>}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {radar.modo !== 'vacio' && (
+        <p className="rdley">
+          <span><i></i>hoy</span>
+          {conAntes && radar.modo === 'radar' && (
+            <>
+              <span><i className="antes"></i>hace 30 días</span>
+              <span><b>↑</b> subió · ↓ bajó</span>
+            </>
+          )}
+          {conAntes && radar.modo === 'barras' && (
+            <span><i className="antes" style={{ width: 2, height: 12, border: 'none', background: 'var(--text)' }}></i>hace 30 días</span>
+          )}
+        </p>
+      )}
+
+      {radar.modo === 'radar' && radar.resto > 0 && (
+        <button type="button" className="rdmas" onClick={() => { setVerTodosHabitos(true); window.setTimeout(() => document.getElementById('tusHabitosSec')?.scrollIntoView({ behavior: 'smooth' }), 0); }}>
+          y {radar.resto} más en Tus hábitos
+        </button>
+      )}
 
       <p className="text-[13px] text-text-muted leading-snug max-w-[68ch]">
-        {isRecent ? (
-          "Todo hábito empieza en 0 y sube con cada día que cumples. En unas semanas verás la curva tomar forma."
-        ) : (
-          currentFuerza >= 90 ? (
-            "Tus hábitos ya están firmes. Ahora toca mantenerlos: cada vez que cumples sigue sumando en tus récords."
-          ) : diffFuerza >= 0 ? (
-            "Sube cada día que cumples y un día gris solo la baja un poco. Cuanto más alta, más firme el hábito."
-          ) : (
-            "Bajó un poco, y así funciona: baja despacio. Con unos días seguidos vuelve a subir."
-          )
-        )}
+        {textoRadar(radar.puntos, isRecent)}
       </p>
     </div>
   );
@@ -396,14 +441,19 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
     </div>
   ) : null;
 
+  // Tus hábitos: los que más necesitan atención primero (6 en escritorio, 5 en el celular) y "Ver todos (N)"
+  const limiteHabitos = desk ? FILAS_TUS_HABITOS.escritorio : FILAS_TUS_HABITOS.celular;
+  // Solo se pliega si esconde 2 o más (un botón para mostrar una sola fila no vale la pena)
+  const plegarHabitos = habitsBreakdown.length > limiteHabitos + 1;
+
   const tusHabitosSec = (
-    <div className={desk ? tarjeta : 'mb-[26px]'}>
+    <div id="tusHabitosSec" className={desk ? tarjeta : 'mb-[26px]'}>
       <div className="flex items-baseline justify-between mb-4">
         <h2 className="font-heading font-bold text-[22px] m-0 text-text">Tus hábitos</h2>
         <span className="text-[13px] text-text-muted">de menor a mayor fuerza</span>
       </div>
-      <div className="flex flex-col">
-        {habitsBreakdown.map(h => {
+      <div className="flex flex-col" id="tusHabitosLista">
+        {(verTodosHabitos || !plegarHabitos ? habitsBreakdown : habitsBreakdown.slice(0, limiteHabitos)).map(h => {
           const tokens = getMomentoColorTokens(h.momento || 'flexible');
           return (
             <button
@@ -428,6 +478,12 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
           );
         })}
       </div>
+      {plegarHabitos && (
+        <button type="button" className="rdver" aria-expanded={verTodosHabitos} aria-controls="tusHabitosLista" onClick={() => setVerTodosHabitos(!verTodosHabitos)}>
+          {verTodosHabitos ? 'Ver menos' : `Ver todos (${habitsBreakdown.length})`}
+          <ChevronDown size={16} strokeWidth={2.2} aria-hidden="true" style={verTodosHabitos ? { transform: 'rotate(180deg)' } : undefined} />
+        </button>
+      )}
     </div>
   );
 
@@ -563,7 +619,22 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
     </div>
   ) : null;
 
-  const derecha = esteMesSec || recordsSec;
+  // "Lo que dice tu figura" (escritorio, debajo de Tus récords; design/maqueta-progreso-radar.html, ajuste del 30 sep)
+  const figuraSec = desk && radar.modo === 'radar' && destacados.length > 0 ? (
+    <div className={tarjeta}>
+      <h2 className="font-heading font-bold text-[22px] m-0 text-text mb-2">Lo que dice tu figura</h2>
+      {destacados.map((d) => (
+        <button key={d.tipo} type="button" className={`rdd ${d.tipo}`} onClick={() => openHabitDetail(d.punto.habito.id)}
+          aria-label={`${d.titulo}: ${d.punto.habito.nombre}, ${d.tipo === 'subio' ? `subió ${d.punto.hoy - (d.punto.antes ?? d.punto.hoy)}` : `fuerza ${d.punto.hoy}`}. Ver el hábito`}>
+          <span className="t"><small>{d.titulo}</small><b><i style={{ background: COLOR_MOMENTO_RADAR[d.punto.momento] }}></i>{d.punto.habito.nombre}</b></span>
+          <span className="v">{d.valor}</span>
+          <ChevronRight size={16} strokeWidth={2.2} className="ch" aria-hidden="true" />
+        </button>
+      ))}
+    </div>
+  ) : null;
+
+  const derecha = esteMesSec || recordsSec || figuraSec;
 
   return (
     <div id="screen-stats" className="pb-28">
@@ -594,9 +665,9 @@ export const StatsScreen: React.FC<{ pestanaInicial?: 'resumen' | 'calendario' }
 
           {desk ? (
             <>
-              <div className={derecha ? 'grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-5 items-start' : ''}>
+              <div className={derecha ? 'grid grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] gap-5 items-stretch' : ''}>
                 {fuerzaCard}
-                {derecha && <div className="flex flex-col gap-5">{esteMesSec}{recordsSec}</div>}
+                {derecha && <div className="flex flex-col gap-5">{esteMesSec}{recordsSec}{figuraSec}</div>}
               </div>
               <TuAnio onRevisarDia={revisarDia} />
               <div className="grid grid-cols-2 gap-5 items-start mt-5">

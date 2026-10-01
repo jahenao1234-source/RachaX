@@ -165,3 +165,36 @@ export function ariaRadar(puntos: PuntoRadar[]): string {
     return `${p.habito.nombre} ${p.hoy}${d > 0 ? `, subió ${d}` : d < 0 ? `, bajó ${-d}` : ''}`;
   }).join('; ') + '.';
 }
+
+export interface Destacado {
+  tipo: 'firme' | 'ayuda' | 'subio';
+  /** "Más firme" / "Necesita ayuda" / "El que más subió" */
+  titulo: string;
+  punto: PuntoRadar;
+  /** Lo que va a la derecha: "92" / "44" / "↑ 37" */
+  valor: string;
+}
+
+/**
+ * La tarjeta "Lo que dice tu figura" (escritorio, al lado del radar):
+ * - "Más firme": el de más fuerza;
+ * - "Necesita ayuda": el de menos fuerza entre los que ya existían hace 30 días (uno nuevo empieza en 0 y no es que le cueste),
+ *   si está por debajo de 75 y no es el mismo de "Más firme";
+ * - "El que más subió": el que más subió en 30 días, si subió 5 o más y no salió ya arriba.
+ * Sin hábitos o con figura de recién empiezas, vacío.
+ */
+export function destacadosRadar(puntos: PuntoRadar[], reciente: boolean): Destacado[] {
+  if (reciente || puntos.length === 0) return [];
+  const out: Destacado[] = [];
+  const firme = [...puntos].sort((a, b) => b.hoy - a.hoy)[0];
+  out.push({ tipo: 'firme', titulo: 'Más firme', punto: firme, valor: String(firme.hoy) });
+  const viejos = puntos.filter((p) => p.antes !== null);
+  const ayuda = [...viejos].sort((a, b) => a.hoy - b.hoy)[0];
+  if (ayuda && ayuda !== firme && ayuda.hoy < 75) out.push({ tipo: 'ayuda', titulo: 'Necesita ayuda', punto: ayuda, valor: String(ayuda.hoy) });
+  const subio = [...viejos].sort((a, b) => (b.hoy - b.antes!) - (a.hoy - a.antes!))[0];
+  if (subio && subio.hoy - subio.antes! >= 5 && !out.some((d) => d.punto === subio)) out.push({ tipo: 'subio', titulo: 'El que más subió', punto: subio, valor: `↑ ${subio.hoy - subio.antes!}` });
+  return out;
+}
+
+/** Cuántas filas de "Tus hábitos" se ven antes de "Ver todos (N)": 6 en escritorio, 5 en el celular. */
+export const FILAS_TUS_HABITOS = { escritorio: 6, celular: 5 };

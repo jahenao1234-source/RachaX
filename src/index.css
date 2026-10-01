@@ -1668,3 +1668,19 @@ html:not(.dark) .semana .s4hoy{border-color:var(--text-muted)}
 .progreso .rdbt{display:block;position:relative;height:10px;border-radius:9px;background:var(--track-empty)}
 .progreso .rdbt > i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--ambar-text)}
 .progreso .rdbt > u{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:2px;background:var(--text);box-shadow:0 0 0 1.5px var(--surface);text-decoration:none}
+
+/* Progreso en escritorio: "Lo que dice tu figura" y "Tus hábitos" plegada (ajuste del 30 sep; DESIGN.md › "#### Fuerza en radar") */
+.progreso .rdalto{height:100%;display:flex;flex-direction:column}
+.progreso .rdalto .rdw{margin-top:auto;margin-bottom:auto}
+.progreso .rdd{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:6px 0;border:none;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.progreso .rdd:first-of-type{border-top:none}
+.progreso .rdd .t{flex:1;min-width:0}
+.progreso .rdd small{display:block;font-size:12px;font-weight:600;color:var(--text-muted)}
+.progreso .rdd b{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:600;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.progreso .rdd b i{width:8px;height:8px;border-radius:9px;flex-shrink:0}
+.progreso .rdd .v{font-family:var(--font-number);font-size:24px;font-weight:700;color:var(--ambar-text);white-space:nowrap}
+.progreso .rdd.ayuda .v{color:var(--text-muted)}
+.progreso .rdd .ch{color:var(--text-muted);flex-shrink:0}
+.progreso .rdd:hover b{text-decoration:underline;text-underline-offset:3px}
+.progreso .rdver{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin-top:12px;border:1px solid var(--line-strong);border-radius:12px;background:none;color:var(--text);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.progreso .rdver:hover{background:var(--surface-raised)}
