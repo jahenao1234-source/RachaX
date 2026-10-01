@@ -1,5 +1,5 @@
 import React from 'react';
-import { CalendarCheck, ListChecks, CalendarRange, BarChart3, Calendar, Plus, Flame, User } from 'lucide-react';
+import { CalendarCheck, ListChecks, CalendarRange, BarChart3, Calendar, Plus, Flame, User, Library } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { useTheme } from '../../store/ThemeContext';
 import { TabRoute } from '../../types';
@@ -12,6 +12,8 @@ export const SideNav: React.FC = () => {
     closeHabitDetail,
     nivelActual,
     rachaGlobal,
+    verBiblioteca,
+    abrirBiblioteca,
   } = useHabitStore();
   const diasRacha = rachaGlobal();
   const { nombre } = useTheme();
@@ -75,7 +77,7 @@ export const SideNav: React.FC = () => {
         <nav className="flex flex-col gap-1 xl:pt-2" aria-label="Secciones de la aplicación">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id || (item.id === 'stats' && activeTab === 'calendario');
+            const isActive = !verBiblioteca && (activeTab === item.id || (item.id === 'stats' && activeTab === 'calendario'));
 
             return (
               <button
@@ -106,6 +108,20 @@ export const SideNav: React.FC = () => {
               </button>
             );
           })}
+          <button
+            id="side-nav-tab-biblioteca"
+            type="button"
+            onClick={() => { closeHabitDetail(); abrirBiblioteca(); }}
+            aria-current={verBiblioteca ? 'page' : undefined}
+            aria-label="Biblioteca"
+            title="Biblioteca"
+            className={`w-full flex items-center lg:justify-center xl:justify-start xl:gap-3 xl:px-3 lg:h-[48px] xl:h-[44px] rounded-[10px] text-[15px] font-semibold transition-all ${verBiblioteca ? 'bg-surface-raised text-text' : 'text-text-muted hover:text-text hover:bg-surface-raised'}`}
+          >
+            <div className={`flex items-center justify-center shrink-0 transition-colors ${verBiblioteca ? 'text-ambar-text' : 'text-text-muted'}`}>
+              <Library size={20} strokeWidth={verBiblioteca ? 2.3 : 2} />
+            </div>
+            <span className="hidden xl:inline tracking-tight">Biblioteca</span>
+          </button>
         </nav>
       </div>
 

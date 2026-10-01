@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { X, Plus, ListChecks, ListTodo, Timer } from 'lucide-react';
+import { X, Plus, ListChecks, ListTodo, Timer, Library } from 'lucide-react';
 import { useHabitStore } from '../../store/HabitContext';
 import { getTodayString } from '../../utils/habitUtils';
 import { HojaCompromiso } from '../semana/HojaCompromiso';
 
 export const CreateMenu: React.FC = () => {
-  const { isCreateMenuOpen, closeCreateMenu, openCreateModal, openRutinaEditor, openTareaEditor, navigateToTab, openFocusMode } = useHabitStore();
+  const { isCreateMenuOpen, closeCreateMenu, openCreateModal, openRutinaEditor, openTareaEditor, navigateToTab, openFocusMode, abrirBiblioteca } = useHabitStore();
   // "Nuevo compromiso" abre la hoja aquí mismo, sin cambiar de pantalla.
   const [hojaCompromiso, setHojaCompromiso] = useState(false);
   const hoja = <HojaCompromiso isOpen={hojaCompromiso} onClose={() => setHojaCompromiso(false)} fechaInicial={getTodayString()} />;
@@ -47,6 +47,14 @@ export const CreateMenu: React.FC = () => {
           </div>
         </button>
         <div className="h-px bg-line my-1" aria-hidden="true"></div>
+        <button type="button" onClick={() => { closeCreateMenu(); abrirBiblioteca(); }}
+          className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
+          <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0"><Library size={20} /></div>
+          <div>
+            <p className="text-sm font-bold font-heading text-text">Biblioteca</p>
+            <p className="text-[11px] text-text-muted">Hábitos, tareas y planes listos para agregar</p>
+          </div>
+        </button>
         <button type="button" onClick={() => { closeCreateMenu(); openFocusMode({ tipo: 'libre' }); }}
           className="w-full p-3.5 rounded-[14px] bg-bg border border-line hover:border-[var(--accent-30)] flex items-center gap-3 text-left transition-all active:scale-[0.98]">
           <div className="w-10 h-10 rounded-xl bg-[var(--accent-15)] text-[var(--accent)] flex items-center justify-center shrink-0"><Timer size={20} /></div>

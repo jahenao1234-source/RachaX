@@ -4,7 +4,7 @@ import { useCuenta } from '../../store/CuentaContext';
 import { getTodayString, contarProgresoReto } from '../../utils/habitUtils';
 import { BottomNav } from './BottomNav';
 import { SideNav } from './SideNav';
-import { TodayScreen } from '../screens/TodayScreen';
+import { TodayScreen, useEsEscritorio } from '../screens/TodayScreen';
 import { StatsScreen } from '../screens/StatsScreen';
 import { CalendarScreen } from '../screens/CalendarScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -18,6 +18,7 @@ import { HojaDificil } from '../comodines/HojaDificil';
 import { TasksScreen } from '../screens/TasksScreen';
 import { SemanaScreen } from '../screens/SemanaScreen';
 import { RutinaEditorModal } from '../screens/RutinaEditorModal';
+import { BibliotecaScreen } from '../biblioteca/BibliotecaScreen';
 import { CreateMenu } from './CreateMenu';
 import { HabitCreatedSheet } from '../screens/HabitCreatedSheet';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
@@ -43,19 +44,22 @@ export const AppShell: React.FC = () => {
     closeCreateModal,
     revisarComodinAutomatico,
     isOnboardingOpen,
-    rachaGlobal
+    rachaGlobal,
+    verBiblioteca
   } = useHabitStore();
   // La racha junto al título ("Racha | 12 días"): días completos seguidos; en cero no sale nada
   const diasRacha = rachaGlobal();
   const { estado } = useCuenta();
   // Sin Supabase configurado (por ejemplo, un despliegue sin las variables), la app funciona solo en el celular
   const [nubeLista, setNubeLista] = useState(!supabaseListo);
+  const desk = useEsEscritorio();
 
   // Comodín automático (design/maqueta-dia-dificil.html): se revisa cuando la nube ya trajo los datos,
   // y otra vez al volver a la app (por si cambió el día). Solo actúa una vez por día.
   const revisarRef = useRef(revisarComodinAutomatico);
   revisarRef.current = revisarComodinAutomatico;
   const puedeRevisar = nubeLista && (estado === 'dentro' || !supabaseListo);
+  const bibliotecaAbierta = verBiblioteca && puedeRevisar;
   useEffect(() => { if (puedeRevisar) revisarRef.current(); });
   useEffect(() => {
     if (!puedeRevisar) return;
@@ -150,14 +154,14 @@ export const AppShell: React.FC = () => {
 
           {/* Scrollable Screen Content */}
           <div className={`flex-1 overflow-y-auto relative z-10 custom-scrollbar ${
-            (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas' || activeTab === 'semana' || activeTab === 'stats' || activeTab === 'calendario')
+            (bibliotecaAbierta && desk) || (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas' || activeTab === 'semana' || activeTab === 'stats' || activeTab === 'calendario')
               ? 'px-5 sm:px-6 lg:px-[22px] xl:px-[32px] pt-3 lg:pt-[18px] xl:pt-[24px] pb-24 lg:pb-8' 
               : 'px-5 sm:px-6 lg:px-8 pt-3 lg:pt-6 pb-24 lg:pb-8'
           }`}>
             <div className={`w-full mx-auto ${
-              (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas' || activeTab === 'semana' || activeTab === 'stats' || activeTab === 'calendario') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
+              (bibliotecaAbierta && desk) || (activeTab === 'hoy' || activeTab === 'crear' || activeTab === 'tareas' || activeTab === 'semana' || activeTab === 'stats' || activeTab === 'calendario') ? 'max-w-[760px] lg:max-w-[1120px]' : 'max-w-[760px]'
             }`}>
-              {renderActiveScreen()}
+              {bibliotecaAbierta && desk ? <BibliotecaScreen /> : renderActiveScreen()}
             </div>
           </div>
         </div>
@@ -178,6 +182,7 @@ export const AppShell: React.FC = () => {
         <HojaDificil />
         <HojaInstalar />
         <CreateMenu />
+        {bibliotecaAbierta && !desk && <BibliotecaScreen />}
         <RutinaEditorModal />
         <CuentaFlow />
         {estado === 'dentro' && supabaseListo && <NubeSync onNubeLista={() => setNubeLista(true)} />}
