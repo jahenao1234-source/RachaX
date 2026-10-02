@@ -1099,8 +1099,9 @@ Dos páginas públicas, sin cuenta, para que se puedan mandar por WhatsApp antes
 
 **Lo que debe llevar ManyChat (para el paso de WhatsApp)**
 - Antes de cobrar: qué es Racha y qué incluye, el precio total, que es un solo pago, la llave Bre-B y a nombre de quién, los 7 días de prueba y los enlaces a las dos páginas.
-- Antes de recibir el comprobante, el permiso de datos con botón: "Para activar tu Racha necesito tu correo y la foto del comprobante. Una inteligencia artificial lee la foto y después la revisa una persona. Aquí está cómo cuidamos tus datos: tengoracha.com/privacidad. ¿Autorizas que usemos tus datos para eso?" · botón **"Sí, autorizo"**. ManyChat guarda la fecha: esa es la prueba del permiso.
-- Después de pagar: "Recibimos tu pago de $… el [fecha]. Tu acceso: tengoracha.com con el correo […]."
+- **El permiso de datos, sin botón (cambiado el 1 oct por Johnatan: el botón "Sí, autorizo" crea desconfianza).** El aviso va dentro del mensaje de cómo pagar, antes de que la persona mande nada: "Lo lee primero una inteligencia artificial y después lo reviso yo. Solo lo uso, junto con tu correo, para activar tu cuenta. Aquí están los términos y cómo cuidamos tus datos: tengoracha.com/terminos y tengoracha.com/privacidad." El permiso se da al mandar el comprobante y el correo (conducta inequívoca, decreto 1377 de 2013, art. 7). ManyChat guarda la conversación con fecha: esa es la prueba. La página de privacidad dice lo mismo.
+- Después de pagar: "Recibí tu pago de $… el [fecha]. Ya tienes Racha." y los pasos para entrar con el correo.
+- **Forma de los mensajes (1 oct):** sin botones, en texto, en primera persona como Johnatan; una idea y una sola pregunta por mensaje; se dice "acceso vitalicio"; si preguntan si es un bot, no se miente. Los mensajes aprobados están en `design/manychat-mensajes.md` (versión 3) y la investigación en `design/whatsapp-investigacion.md`.
 
 ### Panel de pagos (aprobado el 29 sep, design/maqueta-panel-pagos.html)
 Solo para el dueño, **solo en computador**, en `tengoracha.com/panel`.
