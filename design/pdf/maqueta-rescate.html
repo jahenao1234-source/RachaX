@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protocolo de Rescate</title>
+<style>
+@font-face{font-family:'Barlow';font-weight:400;src:url('../../public/fuentes/barlow-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:600;src:url('../../public/fuentes/barlow-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:700;src:url('../../public/fuentes/barlow-latin-700-normal.woff2') format('woff2')}
+:root{--bg:#0F1113;--ink:#0F1113;--papel:#F6F1E7;--text:#F1F3F5;--muted:#A3AAB3;--ambar:#FFB547;--ambar2:#FFC979;--sup:#181B1F;--raised:#22262C;--line:#2F353D;--lila:#8E9BFF;--lilabg:#1E2136}
+@page{size:390px 693px;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#000}
+body{font-family:'Barlow',system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:390px;height:693px;padding:26px 24px 44px;background:var(--bg);color:var(--text);position:relative;overflow:hidden;break-after:page;page-break-after:always;font-size:16.5px;line-height:1.48}
+.pg.ap{font-size:15px;line-height:1.42}
+.pg>*{position:relative}
+.pg .dd{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.pg.am{background:var(--ambar);color:var(--ink)}
+.pts{position:absolute!important;right:-30px;top:-30px;width:190px;height:190px;background:radial-gradient(circle,rgba(255,181,71,.5) 1.6px,transparent 2px) 0 0/11px 11px;-webkit-mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%);mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%)}
+.am .pts{background:radial-gradient(circle,rgba(15,17,19,.28) 1.6px,transparent 2px) 0 0/11px 11px}
+.tag{display:inline-block;background:var(--ambar);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px 3px;border-radius:4px;transform:rotate(-2.5deg);margin:0 0 14px -2px;box-shadow:3px 3px 0 rgba(255,255,255,.16)}
+.pg.ap .tag{margin-bottom:11px}
+.num{position:absolute!important;right:20px;bottom:14px;width:34px;height:34px;border-radius:50%;background:var(--ambar);color:var(--ink);font-weight:700;font-size:14px;display:grid;place-items:center;transform:rotate(6deg);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar)}
+.pie{position:absolute!important;left:24px;bottom:22px;font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h2{font-weight:700;font-size:34px;line-height:1.02;margin:0 0 16px;letter-spacing:-.015em;text-transform:uppercase}
+h2.s{font-size:28px;line-height:1.04}
+.pg.ap h2{margin-bottom:13px}
+h2 mark,.fz mark{background:var(--ambar);color:var(--ink);padding:0 7px 1px;border-radius:3px;display:inline-block;transform:rotate(-1.5deg)}
+p{margin:0 0 12px}
+.pg.ap p{margin-bottom:10px}
+b,strong{font-weight:700}
+/* viñeta */
+.vin{border:2.5px solid var(--text);border-radius:6px;box-shadow:6px 6px 0 var(--ambar);background:var(--sup);margin:4px 6px 20px 0}
+.pg.ap .vin{margin-bottom:17px}
+.vin.fig{padding:12px 13px 11px}
+.vin.img{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--ambar);color:var(--ink);font-weight:600;font-size:12px;line-height:1.35;box-shadow:6px 6px 0 rgba(255,255,255,.2);margin-top:0;overflow:hidden}
+.vin.img b{font-size:13px}
+.vin.img img{width:100%;height:100%;object-fit:cover;display:block}
+[data-img="2-dia-en-blanco"] img{object-position:50% 27%}
+.vin.cap{background:var(--raised);color:var(--muted);box-shadow:6px 6px 0 var(--ambar)}
+.vin.cap b{color:var(--text)}
+.t{font-weight:700;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.n{font-size:12.5px;line-height:1.35;color:var(--muted);margin-top:7px;font-weight:600}
+/* globo: la voz de Johnatan */
+.globo{background:var(--papel);color:var(--ink);border:2.5px solid var(--ink);outline:2.5px solid var(--papel);border-radius:18px;padding:11px 14px;font-weight:600;font-size:.94em;line-height:1.37;margin:6px 6px 26px 2px;box-shadow:6px 6px 0 var(--ambar)}
+.globo:after{content:"";position:absolute;left:34px;bottom:-19px;width:26px;height:22px;background:var(--papel);clip-path:polygon(0 0,100% 0,18% 100%)}
+.fz{font-weight:700;font-size:23px;line-height:1.14;text-transform:uppercase;letter-spacing:-.01em;margin-top:4px}
+.pg.ap .fz{font-size:21px}
+/* dato de la app */
+.app{border:2px dashed var(--ambar);border-radius:8px;padding:10px 12px;font-size:.93em;line-height:1.4;background:rgba(255,181,71,.08)}
+.app b{color:var(--ambar)}
+/* tiras y cuadritos */
+.tira{display:flex;gap:6px;margin-bottom:4px}
+.c{width:38px;height:38px;border-radius:7px;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);flex:none;display:grid;place-items:center;font-weight:700;font-style:normal;color:var(--ink);font-size:18px}
+.c.v{background:transparent;border:2.5px dashed var(--muted);box-shadow:none}
+.c.g{background:var(--raised);border-color:var(--raised);box-shadow:none}
+.fila{display:flex;gap:5px;padding-left:2px}
+.fila .c{width:16px;height:16px;border-radius:4px;border-width:1.5px;box-shadow:0 0 0 1.5px var(--ambar)}
+.fila .c.v{border:1.5px dashed var(--muted);box-shadow:none}
+.fila .c.x{background:#4a3a1e;box-shadow:0 0 0 1.5px #4a3a1e}
+.fila .sem{width:38px;font-size:11px;font-weight:700;color:var(--muted)}
+.fig .fila+.fila{margin-top:6px}
+.rot{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px!important}
+.rot em{font-style:normal;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600}
+/* tablas */
+table{width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.28}
+th{font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 8px 7px 0;vertical-align:bottom}
+th.si span{background:var(--ambar);color:var(--ink);padding:2px 6px 1px;border-radius:3px;display:inline-block;transform:rotate(-1.5deg)}
+td{padding:8px 8px 8px 0;border-top:2px solid var(--line);vertical-align:top}
+td.si{font-weight:700}
+td.no{color:var(--muted)}
+td.h{font-weight:700;color:var(--ambar);font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+/* escalera */
+.esc .r{display:flex;align-items:center;gap:8px;padding:5px 0}
+.esc .q{flex:1;font-weight:700;font-size:13.5px}
+.esc .a{flex:none;width:166px;background:var(--raised);border:2px solid var(--text);border-radius:6px;padding:7px 10px;font-weight:700;font-size:13.5px;line-height:1.2}
+.esc .a.am{background:var(--ambar);color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 2px var(--ambar)}
+.esc .a.li{background:var(--lilabg);border-color:var(--lila)}
+.esc .fl{flex:none;color:var(--ambar);font-weight:700}
+/* línea de tiempo */
+.lt{list-style:none;margin:0;padding:0}
+.lt:before{content:"";position:absolute;left:15px;top:14px;bottom:24px;width:3px;background:var(--ambar)}
+.lt li{position:relative;padding:0 0 10px 44px;font-size:14.5px;line-height:1.36}
+.lt li i{position:absolute;left:0;top:0;width:33px;height:33px;border-radius:50%;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);color:var(--ink);font-style:normal;font-weight:700;font-size:14px;display:grid;place-items:center}
+.lt b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ambar)}
+/* pasos */
+ol.ps{list-style:none;margin:0 0 12px;padding:0;counter-reset:p}
+ol.ps li{counter-increment:p;position:relative;padding:0 0 8px 38px;min-height:38px}
+ol.ps li:before{content:counter(p);position:absolute;left:2px;top:0;width:26px;height:26px;border-radius:50%;background:var(--ambar);border:2px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);color:var(--ink);font-weight:700;font-size:13px;display:grid;place-items:center}
+/* mapa mental */
+.mm{width:342px;height:462px;margin:0 0 10px}
+.mm svg{position:absolute;inset:0}
+.mm .ctr{position:absolute;left:76px;top:170px;width:190px;height:108px;border-radius:54px;background:var(--ambar);color:var(--ink);border:3px solid var(--ink);box-shadow:0 0 0 3px var(--ambar),7px 7px 0 3px rgba(255,255,255,.2);font-weight:700;font-size:19px;line-height:1.05;text-transform:uppercase;display:grid;place-items:center;text-align:center;padding:0 14px;transform:rotate(-2deg)}
+.mm .nd{position:absolute;width:158px;min-height:70px;background:var(--sup);border:2.5px solid var(--text);border-radius:6px;box-shadow:5px 5px 0 var(--ambar);padding:8px 10px;font-size:13.5px;line-height:1.26;font-weight:600}
+.mm .nd b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ambar);margin-bottom:3px}
+.mm .nd.li{border-color:var(--lila);box-shadow:5px 5px 0 var(--lila)}
+.mm .nd.li b{color:var(--lila)}
+/* portada y cierre */
+.cov{padding:0}
+.cov .im{position:absolute;left:22px;right:28px;top:24px;height:346px;border:3px solid var(--ink);border-radius:6px;background:var(--ambar2);box-shadow:7px 7px 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:12px;line-height:1.35;overflow:hidden}
+.cov .im img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.cov .tx{position:absolute;left:24px;right:20px;bottom:30px}
+.cov h1{font-weight:700;font-size:58px;line-height:.9;margin:0 0 14px;letter-spacing:-.025em;text-transform:uppercase}
+.cov h1 span{display:inline-block;background:var(--ink);color:var(--ambar);padding:2px 9px 5px;margin:4px 0 0 -4px;transform:rotate(-2deg);border-radius:4px}
+.cov .s{font-size:18px;line-height:1.25;font-weight:600;margin:0 0 16px}
+.marca{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.marca i{width:26px;height:26px;border-radius:8px;background:var(--ink);display:grid;place-items:center}
+.fin{display:flex;flex-direction:column;justify-content:center;padding:26px 28px 44px}
+.fin h2{font-size:54px;line-height:.92;margin-bottom:24px;letter-spacing:-.025em}
+.fin h2 span{display:inline-block;background:var(--ink);color:var(--ambar);padding:2px 9px 5px;margin:4px 0 0 -4px;transform:rotate(-2deg);border-radius:4px}
+.fin p{font-size:18px;font-weight:600;line-height:1.38}
+.fin .ct{margin-top:14px;font-size:14px;font-weight:700}
+@media screen{body{display:flex;flex-wrap:wrap;gap:16px;padding:16px;justify-content:center}}
+/* Protocolo de Rescate */
+.paso{display:flex;gap:12px;align-items:flex-start;padding:8px 12px;margin:0 6px 11px 0!important}
+.paso .ic{flex:none;width:44px;height:44px;border-radius:50%;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);display:grid;place-items:center;position:relative}
+.paso .ic em{position:absolute;left:-7px;top:-7px;width:20px;height:20px;border-radius:50%;background:var(--papel);color:var(--ink);border:2px solid var(--ink);font-style:normal;font-weight:700;font-size:12px;display:grid;place-items:center}
+.paso p{margin:0!important;font-size:13.5px;line-height:1.33}
+.paso p b{display:block;font-size:14.5px;text-transform:uppercase;letter-spacing:.01em;margin-bottom:1px}
+.fl{display:flex;flex-direction:column;align-items:center;gap:0;margin:0 6px 14px 0}
+.fl .bx{width:100%;border:2.5px solid var(--text);border-radius:6px;background:var(--sup);padding:8px 12px;font-weight:700;font-size:14.5px;text-align:center;box-shadow:5px 5px 0 var(--ambar)}
+.fl .bx.am{background:var(--ambar);color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 2.5px var(--ambar);width:auto;padding:8px 22px;border-radius:22px;text-transform:uppercase;transform:rotate(-1.5deg)}
+.fl .bx small{display:block;font-weight:600;font-size:12px;color:var(--muted)}
+.fl .fle{width:3px;height:16px;background:var(--ambar);position:relative;margin:5px 0 7px}
+.fl .fle:after{content:"";position:absolute;left:-5px;bottom:-5px;border:6.5px solid transparent;border-top-color:var(--ambar);border-bottom:0}
+.fl .dos{display:flex;gap:10px;width:100%;margin-top:8px}
+.fl .dos .bx{font-size:13px;padding:7px 8px;box-shadow:none}
+.fl .dos .bx.li{border-color:var(--lila);background:var(--lilabg)}
+.lt.min li i{font-size:13px}
+[data-img="r2-revision"] img{object-position:50% 22%}
+.r3 td{padding:6px 8px 6px 0}
+.r3 table{font-size:13px}
+.r3 .vin{margin-bottom:14px!important}
+.r3 .app{padding:8px 12px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="garab" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M40,60 l10,-24 l10,24 l-25,-15 h30 z"/>
+      <path d="M300,120 l22,13 v26 l-22,13 l-22,-13 v-26 z"/>
+      <path d="M330,300 l14,12 l-14,12 M346,300 l14,12 l-14,12"/>
+      <path d="M30,330 c20,-18 40,18 60,0 s40,18 60,0"/>
+      <path d="M60,520 l22,13 v26 l-22,13 l-22,-13 v-26 z"/>
+      <path d="M270,560 h70 m-18,-14 l18,14 l-18,14"/>
+      <path d="M200,40 l6,-14 l6,14 l-15,-9 h18 z"/>
+      <path d="M340,440 l10,-24 l10,24 l-25,-15 h30 z"/>
+      <path d="M150,640 l14,12 l-14,12 M166,640 l14,12 l-14,12"/>
+      <circle cx="120" cy="200" r="4"/><circle cx="250" cy="250" r="4"/><circle cx="210" cy="470" r="4"/>
+    </g>
+    <g id="llama"><path fill="#FFB547" d="M12 2c1 4 6 6 6 11a6 6 0 0 1-12 0c0-2.200 1-3.600 2.200-4.800.4 1.900 1.600 2.400 1.600 2.400C10.300 8 10.200 5 12 2z"/></g>
+  </defs>
+</svg>
+
+<!-- 1 -->
+<section class="pg am cov">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.34)"/></svg>
+  <div class="im" data-img="r1-portada"><b>IMAGEN 1 · portada</b>Ella, agachada, cuida con las manos<br>una llama pequeña que casi se apaga.</div>
+  <div class="tx">
+    <h1>Protocolo<br><span>de Rescate</span></h1>
+    <p class="s">Qué hacer el día después de fallar.<br>En 5 minutos.</p>
+    <div class="marca"><i><svg width="16" height="16" viewBox="0 0 24 24"><use href="#llama"/></svg></i>Racha</div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="pg ap" style="font-size:14.2px">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">01 · El día después</span>
+  <h2 class="s">Ayer fallaste. Hoy haz <mark>esto</mark></h2>
+  <p>Son cuatro pasos y caben en cinco minutos. Hazlos en orden, sin pensarlo mucho.</p>
+  <div class="vin paso"><span class="ic"><em>1</em><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.800 12.800"/></svg></span><p><b>No hagas cuentas.</b>No mires cuánto perdiste ni cuánto te falta. Un día sin cumplir no borra los demás.</p></div>
+  <div class="vin paso"><span class="ic"><em>2</em><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/></svg></span><p><b>Congela, si puedes.</b>Abre Racha. Si ayer quedó sin marcar y te quedan comodines, te pregunta: “¿Lo congelas?”. Di que sí.</p></div>
+  <div class="vin paso"><span class="ic"><em>3</em><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.500l5 5L20 6.500"/></svg></span><p><b>Haz una sola cosa, en su versión mínima.</b>Toca “¿Día pesado? Haz solo lo mínimo”, escoge el hábito más fácil y márcalo. Con eso ya volviste.</p></div>
+  <div class="vin paso"><span class="ic"><em>4</em><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="2.6" stroke-linecap="round"><path d="M5 18a7 7 0 0 1 14 0M2 18h20M12 4v3M4.500 8.500l2 2M19.500 8.500l-2 2"/></svg></span><p><b>Deja decidido mañana.</b>Una cosa, y después de qué la vas a hacer. Nada más.</p></div>
+  <p style="font-weight:700;margin-top:2px">Si hoy solo alcanzas a hacer el paso 3, está bien.</p>
+  <span class="pie">Protocolo de Rescate</span><span class="num">2</span>
+</section>
+
+<!-- 3 -->
+<section class="pg ap r3" style="font-size:13.9px">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">02 · Más de un día</span>
+  <h2 class="s">Si fueron <mark>varios días</mark></h2>
+  <p>Tres días, una semana, un mes. El protocolo es el mismo, con tres cuidados.</p>
+  <p><b>No pagues la deuda.</b> No intentes reponer lo que no hiciste. Lo de ayer ya pasó; lo de hoy es lo único que cuenta.</p>
+  <p><b>Vuelve con uno, no con todos.</b> Si tenías tres hábitos, hoy marca uno. Los otros esperan.</p>
+  <p><b>Si uno se cae siempre, es muy grande.</b> Achícale la versión mínima, o archívalo por un tiempo. Lo puedes restaurar cuando quieras, con su historial.</p>
+  <div class="vin fig">
+    <table>
+      <tr><th style="width:50%">Lo que te provoca</th><th class="si"><span>Lo que sirve</span></th></tr>
+      <tr><td class="no">Reponer todo hoy</td><td class="si">Hacer una sola cosa</td></tr>
+      <tr><td class="no">Empezar de cero el lunes</td><td class="si">Volver hoy</td></tr>
+      <tr><td class="no">Agregar hábitos para compensar</td><td class="si">Quitar uno</td></tr>
+      <tr><td class="no">Castigarte</td><td class="si">Congelar el día y seguir</td></tr>
+    </table>
+  </div>
+  <div class="app"><b>En Racha:</b> si llevabas tres días o más en blanco, el día que vuelves tus puntos valen el doble.</div>
+  <span class="pie">Protocolo de Rescate</span><span class="num">3</span>
+</section>
+
+<!-- 4 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">03 · Una vez a la semana</span>
+  <h2>La revisión de <mark>10 minutos</mark></h2>
+  <div class="vin img" data-img="r2-revision" style="height:126px"><b>IMAGEN 2 · la revisión</b>Ella sentada con un café, mirando el celular tranquila.</div>
+  <p>Una vez a la semana, el mismo día. No es para juzgarte: es para ajustar.</p>
+  <ol class="lt min">
+    <li><i>2</i><b>2 minutos · ¿Qué sí hice?</b>Abre Tu semana y mira “Cómo vas”. Empieza por lo que salió.</li>
+    <li><i>3</i><b>3 minutos · ¿Qué día se me cayó, y qué pasó ese día?</b>Casi siempre es el mismo día o la misma hora.</li>
+    <li><i>2</i><b>2 minutos · ¿Qué hábito me está quedando grande?</b>Si Racha te muestra “Rescate”, ese es. Ajustarlo funciona mejor que forzarlo.</li>
+    <li><i>3</i><b>3 minutos · ¿Qué pasos van esta semana?</b>Ponles día en Tu semana.</li>
+  </ol>
+  <p>Y si no sabes qué cambiar, abre Progreso y mira “Qué hacer ahora”.</p>
+  <span class="pie">Protocolo de Rescate</span><span class="num">4</span>
+</section>
+
+<!-- 5 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">04 · Para guardar</span>
+  <h2 class="s">El protocolo en <mark>una hoja</mark></h2>
+  <div class="fl">
+    <div class="bx am">¿Fallaste ayer?</div><div class="fle"></div>
+    <div class="bx">1 · No hagas cuentas</div><div class="fle"></div>
+    <div class="bx">2 · ¿Tienes comodín?<div class="dos"><div class="bx li" style="flex:1">Sí: congélalo</div><div class="bx" style="flex:1">No: sigue igual</div></div></div><div class="fle"></div>
+    <div class="bx">3 · Haz una sola cosa, en mínimo</div><div class="fle"></div>
+    <div class="bx">4 · Deja decidido mañana</div>
+  </div>
+  <div class="app" style="text-align:center"><b>Una vez a la semana:</b> 10 minutos para ajustar.</div>
+  <p class="fz" style="margin-top:16px">Fallar no te saca del camino. <mark>Quedarte quieto, sí.</mark></p>
+  <span class="pie">Racha · tengoracha.com · hola@tengoracha.com</span><span class="num">5</span>
+</section>
+
+</body>
+</html>
