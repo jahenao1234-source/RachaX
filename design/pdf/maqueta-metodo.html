@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Método Anti-Abandono · maqueta (estilo cómic)</title>
+<style>
+@font-face{font-family:'Barlow';font-weight:400;src:url('../../public/fuentes/barlow-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:600;src:url('../../public/fuentes/barlow-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:700;src:url('../../public/fuentes/barlow-latin-700-normal.woff2') format('woff2')}
+:root{--bg:#0F1113;--ink:#0F1113;--papel:#F6F1E7;--text:#F1F3F5;--muted:#A3AAB3;--ambar:#FFB547;--ambar2:#FFC979;--sup:#181B1F;--raised:#22262C;--line:#2F353D;--lila:#8E9BFF;--lilabg:#1E2136}
+@page{size:390px 693px;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#000}
+body{font-family:'Barlow',system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:390px;height:693px;padding:26px 24px 44px;background:var(--bg);color:var(--text);position:relative;overflow:hidden;break-after:page;page-break-after:always;font-size:16.5px;line-height:1.48}
+.pg.ap{font-size:15px;line-height:1.42}
+.pg>*{position:relative}
+.pg .dd{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.pg.am{background:var(--ambar);color:var(--ink)}
+.pts{position:absolute!important;right:-30px;top:-30px;width:190px;height:190px;background:radial-gradient(circle,rgba(255,181,71,.5) 1.6px,transparent 2px) 0 0/11px 11px;-webkit-mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%);mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%)}
+.am .pts{background:radial-gradient(circle,rgba(15,17,19,.28) 1.6px,transparent 2px) 0 0/11px 11px}
+.tag{display:inline-block;background:var(--ambar);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px 3px;border-radius:4px;transform:rotate(-2.5deg);margin:0 0 14px -2px;box-shadow:3px 3px 0 rgba(255,255,255,.16)}
+.pg.ap .tag{margin-bottom:11px}
+.num{position:absolute!important;right:20px;bottom:14px;width:34px;height:34px;border-radius:50%;background:var(--ambar);color:var(--ink);font-weight:700;font-size:14px;display:grid;place-items:center;transform:rotate(6deg);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar)}
+.pie{position:absolute!important;left:24px;bottom:22px;font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h2{font-weight:700;font-size:34px;line-height:1.02;margin:0 0 16px;letter-spacing:-.015em;text-transform:uppercase}
+h2.s{font-size:28px;line-height:1.04}
+.pg.ap h2{margin-bottom:13px}
+h2 mark,.fz mark{background:var(--ambar);color:var(--ink);padding:0 7px 1px;border-radius:3px;display:inline-block;transform:rotate(-1.5deg)}
+p{margin:0 0 12px}
+.pg.ap p{margin-bottom:10px}
+b,strong{font-weight:700}
+/* viñeta */
+.vin{border:2.5px solid var(--text);border-radius:6px;box-shadow:6px 6px 0 var(--ambar);background:var(--sup);margin:4px 6px 20px 0}
+.pg.ap .vin{margin-bottom:17px}
+.vin.fig{padding:12px 13px 11px}
+.vin.img{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--ambar);color:var(--ink);font-weight:600;font-size:12px;line-height:1.35;box-shadow:6px 6px 0 rgba(255,255,255,.2);margin-top:0;overflow:hidden}
+.vin.img b{font-size:13px}
+.vin.img img{width:100%;height:100%;object-fit:cover;display:block}
+[data-img="2-dia-en-blanco"] img{object-position:50% 27%}
+.vin.cap{background:var(--raised);color:var(--muted);box-shadow:6px 6px 0 var(--ambar)}
+.vin.cap b{color:var(--text)}
+.t{font-weight:700;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.n{font-size:12.5px;line-height:1.35;color:var(--muted);margin-top:7px;font-weight:600}
+/* globo: la voz de Johnatan */
+.globo{background:var(--papel);color:var(--ink);border:2.5px solid var(--ink);outline:2.5px solid var(--papel);border-radius:18px;padding:11px 14px;font-weight:600;font-size:.94em;line-height:1.37;margin:6px 6px 26px 2px;box-shadow:6px 6px 0 var(--ambar)}
+.globo:after{content:"";position:absolute;left:34px;bottom:-19px;width:26px;height:22px;background:var(--papel);clip-path:polygon(0 0,100% 0,18% 100%)}
+.fz{font-weight:700;font-size:23px;line-height:1.14;text-transform:uppercase;letter-spacing:-.01em;margin-top:4px}
+.pg.ap .fz{font-size:21px}
+/* dato de la app */
+.app{border:2px dashed var(--ambar);border-radius:8px;padding:10px 12px;font-size:.93em;line-height:1.4;background:rgba(255,181,71,.08)}
+.app b{color:var(--ambar)}
+/* tiras y cuadritos */
+.tira{display:flex;gap:6px;margin-bottom:4px}
+.c{width:38px;height:38px;border-radius:7px;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);flex:none;display:grid;place-items:center;font-weight:700;font-style:normal;color:var(--ink);font-size:18px}
+.c.v{background:transparent;border:2.5px dashed var(--muted);box-shadow:none}
+.c.g{background:var(--raised);border-color:var(--raised);box-shadow:none}
+.fila{display:flex;gap:5px;padding-left:2px}
+.fila .c{width:16px;height:16px;border-radius:4px;border-width:1.5px;box-shadow:0 0 0 1.5px var(--ambar)}
+.fila .c.v{border:1.5px dashed var(--muted);box-shadow:none}
+.fila .c.x{background:#4a3a1e;box-shadow:0 0 0 1.5px #4a3a1e}
+.fila .sem{width:38px;font-size:11px;font-weight:700;color:var(--muted)}
+.fig .fila+.fila{margin-top:6px}
+.rot{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px!important}
+.rot em{font-style:normal;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600}
+/* tablas */
+table{width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.28}
+th{font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 8px 7px 0;vertical-align:bottom}
+th.si span{background:var(--ambar);color:var(--ink);padding:2px 6px 1px;border-radius:3px;display:inline-block;transform:rotate(-1.5deg)}
+td{padding:8px 8px 8px 0;border-top:2px solid var(--line);vertical-align:top}
+td.si{font-weight:700}
+td.no{color:var(--muted)}
+td.h{font-weight:700;color:var(--ambar);font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+/* escalera */
+.esc .r{display:flex;align-items:center;gap:8px;padding:5px 0}
+.esc .q{flex:1;font-weight:700;font-size:13.5px}
+.esc .a{flex:none;width:166px;background:var(--raised);border:2px solid var(--text);border-radius:6px;padding:7px 10px;font-weight:700;font-size:13.5px;line-height:1.2}
+.esc .a.am{background:var(--ambar);color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 2px var(--ambar)}
+.esc .a.li{background:var(--lilabg);border-color:var(--lila)}
+.esc .fl{flex:none;color:var(--ambar);font-weight:700}
+/* línea de tiempo */
+.lt{list-style:none;margin:0;padding:0}
+.lt:before{content:"";position:absolute;left:15px;top:14px;bottom:24px;width:3px;background:var(--ambar)}
+.lt li{position:relative;padding:0 0 10px 44px;font-size:14.5px;line-height:1.36}
+.lt li i{position:absolute;left:0;top:0;width:33px;height:33px;border-radius:50%;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);color:var(--ink);font-style:normal;font-weight:700;font-size:14px;display:grid;place-items:center}
+.lt b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ambar)}
+/* pasos */
+ol.ps{list-style:none;margin:0 0 12px;padding:0;counter-reset:p}
+ol.ps li{counter-increment:p;position:relative;padding:0 0 8px 38px;min-height:38px}
+ol.ps li:before{content:counter(p);position:absolute;left:2px;top:0;width:26px;height:26px;border-radius:50%;background:var(--ambar);border:2px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);color:var(--ink);font-weight:700;font-size:13px;display:grid;place-items:center}
+/* mapa mental */
+.mm{width:342px;height:462px;margin:0 0 10px}
+.mm svg{position:absolute;inset:0}
+.mm .ctr{position:absolute;left:76px;top:170px;width:190px;height:108px;border-radius:54px;background:var(--ambar);color:var(--ink);border:3px solid var(--ink);box-shadow:0 0 0 3px var(--ambar),7px 7px 0 3px rgba(255,255,255,.2);font-weight:700;font-size:19px;line-height:1.05;text-transform:uppercase;display:grid;place-items:center;text-align:center;padding:0 14px;transform:rotate(-2deg)}
+.mm .nd{position:absolute;width:158px;min-height:70px;background:var(--sup);border:2.5px solid var(--text);border-radius:6px;box-shadow:5px 5px 0 var(--ambar);padding:8px 10px;font-size:13.5px;line-height:1.26;font-weight:600}
+.mm .nd b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ambar);margin-bottom:3px}
+.mm .nd.li{border-color:var(--lila);box-shadow:5px 5px 0 var(--lila)}
+.mm .nd.li b{color:var(--lila)}
+/* portada y cierre */
+.cov{padding:0}
+.cov .im{position:absolute;left:22px;right:28px;top:24px;height:346px;border:3px solid var(--ink);border-radius:6px;background:var(--ambar2);box-shadow:7px 7px 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:12px;line-height:1.35;overflow:hidden}
+.cov .im img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.cov .tx{position:absolute;left:24px;right:20px;bottom:30px}
+.cov h1{font-weight:700;font-size:58px;line-height:.9;margin:0 0 14px;letter-spacing:-.025em;text-transform:uppercase}
+.cov h1 span{display:inline-block;background:var(--ink);color:var(--ambar);padding:2px 9px 5px;margin:4px 0 0 -4px;transform:rotate(-2deg);border-radius:4px}
+.cov .s{font-size:18px;line-height:1.25;font-weight:600;margin:0 0 16px}
+.marca{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.marca i{width:26px;height:26px;border-radius:8px;background:var(--ink);display:grid;place-items:center}
+.fin{display:flex;flex-direction:column;justify-content:center;padding:26px 28px 44px}
+.fin h2{font-size:54px;line-height:.92;margin-bottom:24px;letter-spacing:-.025em}
+.fin h2 span{display:inline-block;background:var(--ink);color:var(--ambar);padding:2px 9px 5px;margin:4px 0 0 -4px;transform:rotate(-2deg);border-radius:4px}
+.fin p{font-size:18px;font-weight:600;line-height:1.38}
+.fin .ct{margin-top:14px;font-size:14px;font-weight:700}
+@media screen{body{display:flex;flex-wrap:wrap;gap:16px;padding:16px;justify-content:center}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="garab" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M40,60 l10,-24 l10,24 l-25,-15 h30 z"/>
+      <path d="M300,120 l22,13 v26 l-22,13 l-22,-13 v-26 z"/>
+      <path d="M330,300 l14,12 l-14,12 M346,300 l14,12 l-14,12"/>
+      <path d="M30,330 c20,-18 40,18 60,0 s40,18 60,0"/>
+      <path d="M60,520 l22,13 v26 l-22,13 l-22,-13 v-26 z"/>
+      <path d="M270,560 h70 m-18,-14 l18,14 l-18,14"/>
+      <path d="M200,40 l6,-14 l6,14 l-15,-9 h18 z"/>
+      <path d="M340,440 l10,-24 l10,24 l-25,-15 h30 z"/>
+      <path d="M150,640 l14,12 l-14,12 M166,640 l14,12 l-14,12"/>
+      <circle cx="120" cy="200" r="4"/><circle cx="250" cy="250" r="4"/><circle cx="210" cy="470" r="4"/>
+    </g>
+    <g id="llama"><path fill="#FFB547" d="M12 2c1 4 6 6 6 11a6 6 0 0 1-12 0c0-2.200 1-3.600 2.200-4.800.4 1.900 1.600 2.400 1.600 2.400C10.300 8 10.200 5 12 2z"/></g>
+  </defs>
+</svg>
+
+<!-- 1 -->
+<section class="pg am cov">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.34)"/></svg>
+  <div class="im" data-img="1-portada"><b>IMAGEN 1 · portada</b>Persona al borde de la cama, de noche,<br>mirando el celular.</div>
+  <div class="tx">
+    <h1>Método<br><span>Anti-Abandono</span></h1>
+    <p class="s">Para que un día malo<br>no te haga empezar de cero.</p>
+    <div class="marca"><i><svg width="16" height="16" viewBox="0 0 24 24"><use href="#llama"/></svg></i>Racha</div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">01 · El día malo</span>
+  <h2>Son las <mark>11</mark> de la noche.</h2>
+  <div class="vin img" data-img="2-dia-en-blanco" style="height:170px"><b>IMAGEN 2 · la noche</b>La persona al borde de la cama, mirando el celular.</div>
+  <p>El día se te fue entre el trabajo, el bus y los afanes. No hiciste nada de lo que te habías propuesto. Abres el celular, ves los días en blanco y piensas: “ya la embarré”.</p>
+  <div class="globo">Yo también he estado ahí. Dejé el ejercicio, dejé cursos, dejé libros y proyectos a medias. Y con cada cosa que dejaba, en mí crecía una llama que decía: ya no más.</div>
+  <p>No es pereza. No es falta de disciplina.</p>
+  <p class="fz">Es un <mark>día malo</mark>, y todos los tenemos.</p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">2</span>
+</section>
+
+<!-- 3 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">02 · Lo que dejaste</span>
+  <h2>Equivocarse <mark>no es</mark> el error</h2>
+  <div class="vin img" data-img="3-lo-que-dejaste" style="height:214px"><b>IMAGEN 3 · lo que dejaste</b>Tenis, libros, un cuaderno y una guitarra<br>arrumados en un rincón.</div>
+  <div class="globo">Cada cosa que abandoné parecía un error. Ahora la veo distinto: fue el costo que tenía que pagar para entender quién soy.</div>
+  <p>Equivocarse no es el problema. El problema es cómo lo vemos, y cómo dejamos que eso nos drene la energía todos los días.</p>
+  <p>Así que empieza por aquí: lo que dejaste atrás no te quita nada.</p>
+  <p class="fz">Te trajo hasta <mark>esta página.</mark></p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">3</span>
+</section>
+
+<!-- 4 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">03 · La trampa</span>
+  <h2 class="s">“El lunes empiezo <mark>de cero”</mark></h2>
+  <p>Después del día malo llega esa frase. Suena a buena decisión. Es la trampa.</p>
+  <div class="globo">A mí me pasó muchas veces. Y sé que no soy el único: muchos se activan en enero y febrero, y el resto del año es un ciclo que termina en un diciembre lleno de ilusiones.</div>
+  <div class="vin fig">
+    <div class="t">El año de casi todos</div>
+    <svg width="306" height="62" viewBox="0 0 306 62">
+      <path d="M4,18 C34,2 52,6 66,26 S100,47 140,48 L236,49 C266,49 284,32 302,8" fill="none" stroke="#FFB547" stroke-width="4" stroke-linecap="round"/>
+      <g font-family="Barlow" font-weight="700" font-size="10" fill="#A3AAB3" text-anchor="middle">
+        <text x="8" y="61">E</text><text x="35" y="61">F</text><text x="62" y="61">M</text><text x="89" y="61">A</text><text x="116" y="61">M</text><text x="143" y="61">J</text><text x="170" y="61">J</text><text x="197" y="61">A</text><text x="224" y="61">S</text><text x="251" y="61">O</text><text x="278" y="61">N</text><text x="300" y="61">D</text>
+      </g>
+    </svg>
+  </div>
+  <p>Si llevabas 12 días y fallaste uno, no tienes cero. <b>Tienes 12 días y un hueco.</b></p>
+  <div class="vin fig" style="margin-bottom:0">
+    <p class="rot">Empezar de cero <em>· pierdes los 12</em></p>
+    <div class="fila"><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c v"></i><i class="c"></i></div>
+    <p class="rot" style="margin-top:10px!important">Seguir <em>· vas en el día 13</em></p>
+    <div class="fila"><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c v"></i><i class="c"></i></div>
+  </div>
+  <span class="pie">Método Anti-Abandono</span><span class="num">4</span>
+</section>
+
+<!-- nueva -->
+<section class="pg ap" style="font-size:14.4px">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">04 · El otro error</span>
+  <h2 class="s" style="font-size:26px">Empezar con todo es empezar a <mark>abandonar</mark></h2>
+  <p>Llega el lunes y arrancas con todo: gimnasio, leer, madrugar, comer bien, inglés. La primera semana vuelas. La segunda ya pesa. Y en la tercera, un día malo te tumba las cinco cosas de un solo golpe.</p>
+  <p>No fallaste por flojo. Fallaste por cargar demasiado.</p>
+  <div class="vin fig">
+    <div style="display:flex;gap:14px">
+      <div style="flex:1"><div class="t">Cinco de una</div><div class="fila"><b class="sem">Sem 1</b><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i></div><div class="fila"><b class="sem">Sem 2</b><i class="c"></i><i class="c"></i><i class="c"></i><i class="c v"></i><i class="c v"></i></div><div class="fila"><b class="sem">Sem 3</b><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div><div class="fila"><b class="sem">Sem 4</b><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div></div>
+      <div style="flex:1"><div class="t" style="color:#FFB547">Uno, y luego otro</div><div class="fila"><b class="sem">Sem 1</b><i class="c"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div><div class="fila"><b class="sem">Sem 2</b><i class="c"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div><div class="fila"><b class="sem">Sem 3</b><i class="c"></i><i class="c"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div><div class="fila"><b class="sem">Sem 4</b><i class="c"></i><i class="c"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div></div>
+    </div>
+  </div>
+  <p><b>La regla de los 3:</b> empieza con máximo tres hábitos. Mejor con uno. Cuando ese ya te salga solo, agregas el siguiente.</p>
+  <p><b>Y amárralo a algo que ya haces:</b> “Después de ___, hago ___”. Después del café, leo una página. Después de cepillarme, estiro cinco minutos. Así no dependes de acordarte ni de tener ganas.</p>
+  <div class="app"><b>En Racha:</b> al crear un hábito, llena “¿Después de qué?”. Y si pasas de tres hábitos, la Biblioteca te avisa.</div>
+  <span class="pie">Método Anti-Abandono</span><span class="num">5</span>
+</section>
+<!-- 5 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">05 · Lo que sí sirve</span>
+  <h2 class="s">No necesitas más ganas. Necesitas <mark>un sistema</mark></h2>
+  <p>Casi todos los consejos dicen lo mismo: más disciplina, más ganas, levántate a las 5. Eso sirve en los días buenos. Y los días buenos nunca fueron el problema.</p>
+  <div class="globo">Yo solo pude parar esa carrera cuando acepté que solo no podía. Necesitaba un sistema: pasos pequeños que me dieran triunfos pequeños.</div>
+  <div class="vin fig">
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"><div class="t">Como crees que es</div>
+        <svg width="146" height="80" viewBox="0 0 146 80"><path d="M6,74 H140 M6,74 V6" stroke="#3A4048" stroke-width="2" fill="none"/><path d="M10,68 L134,12" stroke="#A3AAB3" stroke-width="4" stroke-linecap="round" fill="none"/></svg></div>
+      <div style="flex:1"><div class="t" style="color:#FFB547">Como es de verdad</div>
+        <svg width="146" height="80" viewBox="0 0 146 80"><path d="M6,74 H140 M6,74 V6" stroke="#3A4048" stroke-width="2" fill="none"/><path d="M10,68 L34,48 L48,60 L72,34 L88,50 L112,22 L122,32 L134,10" stroke="#FFB547" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><g fill="#0F1113" stroke="#F1F3F5" stroke-width="2.5"><circle cx="48" cy="60" r="5"/><circle cx="88" cy="50" r="5"/><circle cx="122" cy="32" r="5"/></g></svg></div>
+    </div>
+    <div class="n">Cada punto es un día malo del que volviste.</div>
+  </div>
+  <p>Porque el camino nunca sube en línea recta. Tiene altos y bajos. Y en los bajos necesitas a alguien que te apoye de verdad: un familiar, un amigo, o Racha.</p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">6</span>
+</section>
+
+<!-- 6 -->
+<section class="pg">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">06 · La regla</span>
+  <h2>Un día malo <mark>se vale.</mark> Dos seguidos, no.</h2>
+  <p>Un día en blanco es un accidente. Dos días en blanco ya son el comienzo de otra costumbre: la de no hacerlo.</p>
+  <p>La comodidad no te tumba de un golpe. Mata lentamente, de “mañana sí” en “mañana sí”.</p>
+  <div class="vin fig">
+    <p class="rot">Un día malo <em>· la tira sigue</em></p>
+    <div class="tira"><i class="c">✓</i><i class="c">✓</i><i class="c v"></i><i class="c">✓</i><i class="c">✓</i><i class="c">✓</i><i class="c">✓</i></div>
+    <p class="rot" style="margin-top:12px!important">Dos seguidos <em>· la tira se apaga</em></p>
+    <div class="tira"><i class="c">✓</i><i class="c">✓</i><i class="c v"></i><i class="c v"></i><i class="c g"></i><i class="c g"></i><i class="c g"></i></div>
+  </div>
+  <p>Por eso lo único que importa después de un día malo es el día siguiente.</p>
+  <p class="fz">No el lunes. <mark>Mañana.</mark></p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">7</span>
+</section>
+
+<!-- 7 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">07 · El día sin fuerzas</span>
+  <h2>La versión <mark>mínima</mark></h2>
+  <p>¿Y si mañana tampoco tienes fuerzas? Entonces no haces el hábito completo. Haces su versión mínima: lo más pequeño que todavía cuenta. Tan pequeño que te da pena decir que no puedes.</p>
+  <div class="vin fig">
+    <table>
+      <tr><th>Tu hábito</th><th class="si"><span>Su versión mínima</span></th></tr>
+      <tr><td class="no">Leer 20 páginas</td><td class="si">Leer 1 página</td></tr>
+      <tr><td class="no">Entrenar 40 minutos</td><td class="si">5 minutos de estiramiento</td></tr>
+      <tr><td class="no">Estudiar 1 hora</td><td class="si">Abrir el cuaderno y repasar 5 minutos</td></tr>
+      <tr><td class="no">Meditar 10 minutos</td><td class="si">3 respiraciones profundas</td></tr>
+    </table>
+  </div>
+  <p>No la haces para avanzar. La haces para no soltar el hilo. El día que lees una página sigues siendo alguien que lee.</p>
+  <div class="app"><b>En Racha:</b> cuando creas o editas un hábito puedes escribirle su mínima. Hazlo un día bueno, para que el día malo ya esté decidido.</div>
+  <span class="pie">Método Anti-Abandono</span><span class="num">8</span>
+</section>
+
+<!-- 8 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">08 · El día pesado</span>
+  <h2>El día <mark>difícil</mark></h2>
+  <p>Hay días en que desde temprano sabes que no vas a poder con todo. Para esos días Racha tiene un botón.</p>
+  <div class="vin img cap" data-img="cap-dia-dificil" style="height:292px"><b>CAPTURA DE LA APP</b>Hoy con el día difícil activo:<br>“Mínimo: …” en cada hábito y “+5”.</div>
+  <p>En Hoy, dentro de “Tu día”, toca <b>“¿Día pesado? Haz solo lo mínimo”</b>. Cada hábito te muestra su mínima, y al marcarla cuenta como cumplido.</p>
+  <p>Vale 5 puntos en vez de 10. Y tu racha sigue.</p>
+  <p class="fz">No es trampa. Es <mark>el plan</mark> que hiciste para este día.</p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">9</span>
+</section>
+
+<!-- 9 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">09 · El día imposible</span>
+  <h2>Los <mark>comodines</mark></h2>
+  <p>Y hay días en que ni lo mínimo. Te enfermaste, viajaste, se te cayó el mundo. También pasa.</p>
+  <p>Para eso están los comodines. Un comodín congela un día que no pudiste: <b>ese día no cuenta como fallado.</b></p>
+  <p>Guardas hasta 3. Te llega uno cada mes y ganas más con los retos. Si ayer quedó en blanco, Racha te pregunta al abrir si lo quieres congelar. Y si prendes el comodín automático en Perfil, lo hace sola cuando tu racha está en riesgo.</p>
+  <div class="vin fig" style="margin-bottom:0">
+    <div class="t">Tu plan para el día malo</div>
+    <div class="esc">
+      <div class="r"><span class="q">¿Puedes con todo?</span><span class="fl">→</span><span class="a am">Hazlo completo</span></div>
+      <div class="r"><span class="q">¿No?</span><span class="fl">→</span><span class="a">Haz la versión mínima</span></div>
+      <div class="r"><span class="q">¿Ni eso?</span><span class="fl">→</span><span class="a li">Usa un comodín</span></div>
+      <div class="r"><span class="q">¿No te quedan?</span><span class="fl">→</span><span class="a">Vuelve mañana</span></div>
+    </div>
+    <div class="n">Un día sin cumplir no borra los demás.</div>
+  </div>
+  <span class="pie">Método Anti-Abandono</span><span class="num">10</span>
+</section>
+
+<!-- 10 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">10 · Después de fallar</span>
+  <h2>Volver <mark>sin culpa</mark></h2>
+  <div class="vin img" data-img="4-volver" style="height:214px"><b>IMAGEN 4 · volver</b>La misma persona, de pie y de día.</div>
+  <p>Puede que igual se te vayan tres días. O una semana. O un mes. No pasa nada: se vuelve.</p>
+  <p>Volver no tiene ceremonia. No hay que esperar el lunes, ni el primero del mes, ni tener ganas. Abres Racha, haces una sola cosa en su versión mínima, y ya volviste.</p>
+  <p>Racha no te va a regañar. No hay días en rojo ni mensajes de culpa. Y si llevabas tres días o más en blanco, el día que vuelves tus puntos valen el doble.</p>
+  <p class="fz">Volver es lo más difícil. Y es lo que <mark>más cuenta.</mark></p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">11</span>
+</section>
+
+<!-- 11 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">11 · Para empezar</span>
+  <h2>Tus primeros <mark>7 días</mark></h2>
+  <p>No tienes que usar todo desde el primer día. Ve así:</p>
+  <ol class="lt">
+    <li><i>1</i><b>Día 1</b>Crea de uno a tres hábitos, no más. A cada uno escríbele su versión mínima. Instala la app y prende los avisos.</li>
+    <li><i>2</i><b>Día 2</b>Marca lo que hagas. Nada más.</li>
+    <li><i>3</i><b>Día 3</b>Abre Tareas y anota eso que vienes aplazando. Divídelo en pasos.</li>
+    <li><i>4</i><b>Día 4</b>Prueba el Modo Foco: un pomodoro de 15 minutos en un solo paso.</li>
+    <li><i>5</i><b>Día 5</b>Si el día viene pesado, usa “Haz solo lo mínimo”. Para eso está.</li>
+    <li><i>6</i><b>Día 6</b>Abre Tu semana y ponle día a tus pasos.</li>
+    <li><i>7</i><b>Día 7</b>Entra a Progreso y mira tu semana. Así se ve empezar en pequeño.</li>
+  </ol>
+  <span class="pie">Método Anti-Abandono</span><span class="num">12</span>
+</section>
+
+<!-- 12 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">12 · Las metas grandes</span>
+  <h2 class="s">Pídele el plan a <mark>una IA</mark></h2>
+  <p>Una meta grande asusta porque no sabes por dónde empezar. Se vuelve fácil cuando la partes en pasos que caben en un día. Si no sabes cómo partirla, que lo haga una IA:</p>
+  <ol class="ps">
+    <li>Crea una tarea nueva y toca <b>“Pedirle el plan a una IA”</b>. Racha copia una instrucción lista.</li>
+    <li>Pégala en ChatGPT o en la IA que uses.</li>
+    <li>Copia la respuesta y pégala en tu tarea. Racha la vuelve pasos, con su orden.</li>
+  </ol>
+  <div class="vin img cap" data-img="cap-tarea" style="height:162px;margin-bottom:17px"><b>CAPTURA DE LA APP</b>Una tarea con sus pasos.</div>
+  <div class="app"><b>¿Quieres empezar ya?</b> Abre la Biblioteca: trae hábitos, tareas y planes de 30 días listos para agregar con un toque.</div>
+  <span class="pie">Método Anti-Abandono</span><span class="num">13</span>
+</section>
+
+<!-- 13 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">13 · La diferencia</span>
+  <h2 class="s">Una casilla <mark>no es</mark> un sistema</h2>
+  <p>Marcar una casilla se siente bien. Pero una casilla sola no te sostiene el día que todo sale mal.</p>
+  <div class="globo">Yo lo aprendí así: lo que te lleva a una meta es un sistema. Pasos pequeños, triunfos pequeños. Y saber desde antes que algunos días van a ser malos, y que otros solo vas a querer descansar.</div>
+  <div class="vin fig" style="margin-bottom:0">
+    <table>
+      <tr><th></th><th>Solo una casilla</th><th class="si"><span>Un sistema</span></th></tr>
+      <tr><td class="h">El día malo</td><td class="no">No estaba en el plan</td><td class="si">Tiene su versión mínima</td></tr>
+      <tr><td class="h">Si fallas un día</td><td class="no">Vuelves a cero</td><td class="si">Un comodín lo congela</td></tr>
+      <tr><td class="h">Una meta grande</td><td class="no">Una casilla enorme</td><td class="si">Pasos que caben en un día</td></tr>
+      <tr><td class="h">Cuando vuelves</td><td class="no">Empiezas de nuevo</td><td class="si">Sigues donde ibas</td></tr>
+    </table>
+  </div>
+  <span class="pie">Método Anti-Abandono</span><span class="num">14</span>
+</section>
+
+<!-- 14 -->
+<section class="pg ap">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg><div class="pts"></div>
+  <span class="tag">14 · Para guardar</span>
+  <h2 class="s">El método en <mark>una hoja</mark></h2>
+  <div class="mm" style="height:426px">
+    <svg width="342" height="426" viewBox="0 0 342 426" fill="none" stroke="#FFB547" stroke-width="3" stroke-linecap="round">
+      <path d="M128,126 C112,116 92,108 82,94"/>
+      <path d="M214,126 C230,112 252,100 260,78"/>
+      <path d="M128,216 C110,228 92,236 82,250"/>
+      <path d="M214,216 C232,228 250,236 260,250"/>
+      <path d="M168,222 L168,372 M158,372 L178,372"/>
+    </svg>
+    <div class="nd" style="left:0;top:4px"><b>Al empezar</b>Máximo tres hábitos, amarrados a algo que ya haces.</div>
+    <div class="nd" style="left:178px;top:4px"><b>La regla</b>Un día malo se vale. Dos seguidos, no.</div>
+    <div class="ctr" style="top:122px;height:96px">No vuelvo a empezar de cero</div>
+    <div class="nd" style="left:0;top:250px"><b>El día sin fuerzas</b>La versión mínima.</div>
+    <div class="nd" style="left:178px;top:250px"><b>El día pesado</b>“Haz solo lo mínimo”.</div>
+    <div class="nd li" style="left:0;top:340px"><b>El día imposible</b>Un comodín.</div>
+    <div class="nd" style="left:178px;top:340px"><b>Después de fallar</b>Vuelvo mañana, sin culpa.</div>
+  </div>
+  <p style="font-weight:700;text-align:center;margin:0">Guarda esta página. Es todo lo que necesitas recordar.</p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">15</span>
+</section>
+
+<!-- 15 -->
+<section class="pg am fin">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.34)"/></svg><div class="pts"></div>
+  <h2>Todo comienza<br><span>en pequeño.</span></h2>
+  <p>No necesitas un lunes, ni un enero, ni ser otra persona. Necesitas una cosa mínima, hoy, y volver mañana.</p>
+  <p>Nosotros te acompañamos en los días buenos. Y sobre todo en los otros.</p>
+  <div class="marca" style="margin-top:18px"><i><svg width="16" height="16" viewBox="0 0 24 24"><use href="#llama"/></svg></i>Racha</div>
+  <p class="ct">tengoracha.com · hola@tengoracha.com</p>
+</section>
+
+</body>
+</html>

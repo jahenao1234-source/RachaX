@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Método Anti-Abandono · muestra de estilo cómic</title>
+<style>
+@font-face{font-family:'Barlow';font-weight:400;src:url('../../public/fuentes/barlow-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:600;src:url('../../public/fuentes/barlow-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:700;src:url('../../public/fuentes/barlow-latin-700-normal.woff2') format('woff2')}
+:root{--bg:#0F1113;--ink:#0F1113;--papel:#F6F1E7;--text:#F1F3F5;--muted:#A3AAB3;--ambar:#FFB547;--ambar2:#FFC979}
+@page{size:390px 693px;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#000}
+body{font-family:'Barlow',system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:390px;height:693px;padding:26px 24px 44px;background:var(--bg);color:var(--text);position:relative;overflow:hidden;break-after:page;font-size:16.5px;line-height:1.48}
+.pg>*{position:relative}
+.pg .dd{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.pg.am{background:var(--ambar);color:var(--ink)}
+/* trama de puntos en una esquina */
+.pts{position:absolute;right:-30px;top:-30px;width:190px;height:190px;background:radial-gradient(circle,rgba(255,181,71,.5) 1.6px,transparent 2px) 0 0/11px 11px;-webkit-mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%);mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%)}
+.am .pts{background:radial-gradient(circle,rgba(15,17,19,.28) 1.6px,transparent 2px) 0 0/11px 11px}
+/* etiqueta torcida */
+.tag{display:inline-block;background:var(--ambar);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px 3px;border-radius:4px;transform:rotate(-2.5deg);margin:0 0 14px -2px;box-shadow:3px 3px 0 rgba(255,255,255,.16)}
+.num{position:absolute;right:20px;bottom:14px;width:34px;height:34px;border-radius:50%;background:var(--ambar);color:var(--ink);font-weight:700;font-size:14px;display:grid;place-items:center;transform:rotate(6deg);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar)}
+.pie{position:absolute;left:24px;bottom:22px;font-weight:700;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h2{font-weight:700;font-size:34px;line-height:1.02;margin:0 0 16px;letter-spacing:-.015em;text-transform:uppercase}
+h2 mark,.fz mark{background:var(--ambar);color:var(--ink);padding:0 7px 1px;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone;display:inline-block;transform:rotate(-1.5deg)}
+p{margin:0 0 12px}
+/* viñeta: borde grueso y sombra dura */
+.vin{border:2.5px solid var(--text);border-radius:6px;box-shadow:6px 6px 0 var(--ambar);background:#181B1F}
+.vin.img{height:206px;margin:0 6px 20px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--ambar);color:var(--ink);font-weight:600;font-size:12px;line-height:1.35;box-shadow:6px 6px 0 rgba(255,255,255,.2)}
+.vin.img b{font-size:13px}
+/* globo: mi voz */
+.globo{position:relative;background:var(--papel);color:var(--ink);border:2.5px solid var(--ink);outline:2.5px solid var(--papel);border-radius:18px;padding:12px 15px;font-weight:600;font-size:15.5px;line-height:1.38;margin:6px 4px 26px 0;box-shadow:6px 6px 0 var(--ambar)}
+.globo:after{content:"";position:absolute;left:34px;bottom:-19px;width:26px;height:22px;background:var(--papel);clip-path:polygon(0 0,100% 0,18% 100%)}
+.fz{font-weight:700;font-size:23px;line-height:1.12;text-transform:uppercase;letter-spacing:-.01em;margin-top:4px}
+/* tiras */
+.tira{display:flex;gap:6px;margin-bottom:4px}
+.c{width:38px;height:38px;border-radius:7px;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);flex:none;display:grid;place-items:center;font-weight:700;color:var(--ink);font-size:18px}
+.c.v{background:transparent;border:2.5px dashed var(--muted);box-shadow:none;color:var(--muted)}
+.c.g{background:#22262C;border-color:#22262C;box-shadow:none}
+.rot{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px}
+.rot em{font-style:normal;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600}
+.fig{padding:14px 14px 12px;margin:4px 6px 20px 0}
+/* portada */
+.cov{padding:0}
+.cov .im{position:absolute;left:22px;right:28px;top:24px;height:372px;border:3px solid var(--ink);border-radius:6px;background:var(--ambar2);box-shadow:7px 7px 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:12px;line-height:1.35}
+.cov .tx{position:absolute;left:24px;right:20px;bottom:30px}
+.cov h1{font-weight:700;font-size:58px;line-height:.9;margin:0 0 14px;letter-spacing:-.025em;text-transform:uppercase}
+.cov h1 span{display:inline-block;background:var(--ink);color:var(--ambar);padding:2px 9px 5px;margin:4px 0 0 -4px;transform:rotate(-2deg);border-radius:4px}
+.cov .s{font-size:18px;line-height:1.25;font-weight:600;margin:0 0 16px}
+.marca{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.marca i{width:26px;height:26px;border-radius:8px;background:var(--ink);display:grid;place-items:center}
+@media screen{body{display:flex;flex-wrap:wrap;gap:16px;padding:16px;justify-content:center}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="garab" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M40,60 l10,-24 l10,24 l-25,-15 h30 z"/>
+      <path d="M300,120 l22,13 v26 l-22,13 l-22,-13 v-26 z"/>
+      <path d="M330,300 l14,12 l-14,12 M346,300 l14,12 l-14,12"/>
+      <path d="M30,330 c20,-18 40,18 60,0 s40,18 60,0"/>
+      <path d="M60,520 l22,13 v26 l-22,13 l-22,-13 v-26 z"/>
+      <path d="M270,560 h70 m-18,-14 l18,14 l-18,14"/>
+      <path d="M200,40 l6,-14 l6,14 l-15,-9 h18 z"/>
+      <path d="M340,440 l10,-24 l10,24 l-25,-15 h30 z"/>
+      <path d="M150,640 l14,12 l-14,12 M166,640 l14,12 l-14,12"/>
+      <circle cx="120" cy="200" r="4"/><circle cx="250" cy="250" r="4"/><circle cx="210" cy="470" r="4"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- portada -->
+<section class="pg am cov">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.34)"/></svg>
+  <div class="im"><b>IMAGEN 1 · portada</b>Persona al borde de la cama, de noche,<br>mirando el celular.</div>
+  <div class="tx">
+    <h1>Método<br><span>Anti-Abandono</span></h1>
+    <p class="s">Qué hacer el día que no puedes con nada.</p>
+    <div class="marca"><i><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#FFB547" d="M12 2c1 4 6 6 6 11a6 6 0 0 1-12 0c0-2.2 1-3.600 2.200-4.800.4 1.900 1.600 2.400 1.600 2.400C10.300 8 10.200 5 12 2z"/></svg></i>Racha</div>
+  </div>
+</section>
+
+<!-- página 2 -->
+<section class="pg">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg>
+  <div class="pts"></div>
+  <span class="tag">01 · El día malo</span>
+  <h2>Son las <mark>11</mark> de la noche.</h2>
+  <div class="vin img"><b>IMAGEN 2 · el día en blanco</b>Una mano con el celular;<br>en la pantalla, casillas vacías.</div>
+  <p>El día se te fue entre el trabajo, el bus y los afanes. Abres el celular, ves los días en blanco y piensas: “ya la embarré”.</p>
+  <div class="globo">Yo también he estado ahí. Dejé el ejercicio, cursos, libros y proyectos a medias. Y con cada cosa que dejaba, en mí crecía una llama que decía: ya no más.</div>
+  <p class="fz">No es pereza. Es un <mark>día malo</mark>.</p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">2</span>
+</section>
+
+<!-- página 6 -->
+<section class="pg">
+  <svg class="dd" viewBox="0 0 390 693"><use href="#garab" stroke="rgba(255,255,255,.055)"/></svg>
+  <div class="pts"></div>
+  <span class="tag">05 · La regla</span>
+  <h2>Un día malo <mark>se vale.</mark> Dos seguidos, no.</h2>
+  <p>Un día en blanco es un accidente. Dos días en blanco ya son el comienzo de otra costumbre: la de no hacerlo.</p>
+  <p>La comodidad no te tumba de un golpe. Mata lentamente, de “mañana sí” en “mañana sí”.</p>
+  <div class="vin fig">
+    <p class="rot">Un día malo <em>· la tira sigue</em></p>
+    <div class="tira"><i class="c">✓</i><i class="c">✓</i><i class="c v"></i><i class="c">✓</i><i class="c">✓</i><i class="c">✓</i><i class="c">✓</i></div>
+    <p class="rot" style="margin-top:14px">Dos seguidos <em>· la tira se apaga</em></p>
+    <div class="tira"><i class="c">✓</i><i class="c">✓</i><i class="c v"></i><i class="c v"></i><i class="c g"></i><i class="c g"></i><i class="c g"></i></div>
+  </div>
+  <p>Lo único que importa después de un día malo es el día siguiente.</p>
+  <p class="fz">No el lunes. <mark>Mañana.</mark></p>
+  <span class="pie">Método Anti-Abandono</span><span class="num">6</span>
+</section>
+
+</body>
+</html>
