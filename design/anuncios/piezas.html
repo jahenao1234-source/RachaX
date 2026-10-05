@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Anuncios de Racha · imágenes y carruseles (4:5)</title>
+<style>
+@font-face{font-family:'Barlow';font-weight:400;src:url('../../public/fuentes/barlow-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:600;src:url('../../public/fuentes/barlow-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:700;src:url('../../public/fuentes/barlow-latin-700-normal.woff2') format('woff2')}
+:root{--bg:#0F1113;--ink:#0F1113;--papel:#F6F1E7;--text:#F1F3F5;--muted:#A3AAB3;--ambar:#FFB547;--ambar2:#FFC979;--sup:#181B1F;--raised:#22262C;--line:#2F353D}
+*{box-sizing:border-box}
+html,body{margin:0;background:#333}
+body{font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:16px;padding:16px}
+.ad{width:540px;height:675px;position:relative;overflow:hidden;background:var(--bg);color:var(--text);padding:34px 34px 30px;display:flex;flex-direction:column}
+.ad.am{background:var(--ambar);color:var(--ink)}
+.ad>*{position:relative}
+.dd{position:absolute!important;inset:0;width:100%;height:100%}
+.pts{position:absolute!important;right:-40px;top:-40px;width:260px;height:260px;background:radial-gradient(circle,rgba(255,181,71,.5) 2px,transparent 2.6px) 0 0/14px 14px;-webkit-mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%);mask:radial-gradient(circle at 100% 0,#000 0,transparent 70%)}
+.am .pts{background:radial-gradient(circle,rgba(15,17,19,.26) 2px,transparent 2.6px) 0 0/14px 14px}
+h1{font-weight:700;text-transform:uppercase;letter-spacing:-.02em;line-height:.98;margin:0;font-size:56px}
+.banda{display:inline-block;background:var(--ink);color:var(--ambar);padding:2px 12px 6px;border-radius:5px;transform:rotate(-2deg);margin:6px 0 0 -6px}
+.ad:not(.am) .banda{background:var(--ambar);color:var(--ink)}
+mark{background:var(--ambar);color:var(--ink);padding:0 9px 2px;border-radius:4px;display:inline-block;transform:rotate(-1.5deg)}
+.am mark{background:var(--ink);color:var(--ambar)}
+.sub{font-weight:600;font-size:25px;line-height:1.25;margin:18px 0 0}
+.marca{display:flex;align-items:center;gap:9px;font-weight:700;font-size:20px;margin-top:auto}
+.marca i{width:34px;height:34px;border-radius:10px;background:var(--ambar);display:grid;place-items:center}
+.am .marca i{background:var(--ink)}
+.marca small{margin-left:auto;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.tag{align-self:flex-start;background:var(--ambar);color:var(--ink);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px 4px;border-radius:5px;transform:rotate(-2.5deg);margin:0 0 18px -2px;box-shadow:4px 4px 0 rgba(255,255,255,.16)}
+.vin{border:3px solid var(--text);border-radius:8px;box-shadow:8px 8px 0 var(--ambar);background:var(--sup)}
+.am .vin{border-color:var(--ink);box-shadow:8px 8px 0 var(--ink);background:var(--ambar2)}
+.foto{overflow:hidden}
+.foto img{width:100%;height:100%;object-fit:cover;display:block}
+.falta{display:grid;place-items:center;text-align:center;font-weight:700;font-size:16px;line-height:1.35;padding:20px}
+.tach{position:relative;display:inline-block}
+.tach:after{content:"";position:absolute;left:-6px;right:-6px;top:52%;height:7px;background:var(--ink);transform:rotate(-2.5deg);border-radius:4px}
+/* nota */
+.nota{font-weight:700;font-size:50px;line-height:1.1;letter-spacing:-.015em;margin:auto 0}
+.nota span{display:block}
+/* cuadritos y tiras */
+.fila{display:flex;gap:6px}
+.c{width:24px;height:24px;border-radius:6px;background:var(--ambar);border:2.5px solid var(--ink);box-shadow:0 0 0 2px var(--ambar);flex:none;display:grid;place-items:center;font-weight:700;font-style:normal;color:var(--ink)}
+.c.v{background:transparent;border:2.5px dashed var(--muted);box-shadow:none}
+.c.x{background:#4a3a1e;box-shadow:0 0 0 2px #4a3a1e}
+.c.g{background:var(--raised);border-color:var(--raised);box-shadow:none}
+.tira .c{width:52px;height:52px;border-radius:10px;font-size:26px}
+.rot{font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.04em;margin:0 0 10px}
+.rot em{font-style:normal;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600}
+.fig{padding:18px 18px 18px;margin:22px 8px 0 0}
+table{width:100%;border-collapse:collapse;font-size:20px;line-height:1.22}
+th{font-weight:700;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 10px 10px 0;vertical-align:bottom}
+th.si span{background:var(--ambar);color:var(--ink);padding:3px 8px 2px;border-radius:4px;display:inline-block;transform:rotate(-1.5deg)}
+td{padding:11px 10px 11px 0;border-top:2px solid var(--line);vertical-align:top}
+td.si{font-weight:700}
+td.no{color:var(--muted)}
+td.h{font-weight:700;color:var(--ambar);font-size:15px;text-transform:uppercase}
+.lista{list-style:none;margin:20px 0 0;padding:0;font-weight:600;font-size:23px;line-height:1.25}
+.lista li{position:relative;padding:0 0 12px 40px}
+.lista li:before{content:"✓";position:absolute;left:0;top:1px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--ambar);font-weight:700;font-size:17px;display:grid;place-items:center}
+.ad:not(.am) .lista li:before{background:var(--ambar);color:var(--ink)}
+.desl{margin-top:auto;font-weight:700;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--ambar);display:flex;justify-content:space-between;align-items:center}
+.am .desl{color:var(--ink)}
+.n{font-size:15px;color:var(--muted);font-weight:700}
+.am .n{color:var(--ink);opacity:.7}
+.precio{font-weight:700;font-size:112px;line-height:.9;letter-spacing:-.03em}
+.paso{display:flex;align-items:center;gap:12px;font-weight:600;font-size:23px;padding:13px 0;border-top:2px solid var(--line)}
+.paso:first-child{border-top:0}
+.paso i{width:28px;height:28px;border-radius:7px;border:2.5px solid var(--muted);flex:none;display:grid;place-items:center;font-style:normal;font-weight:700;color:var(--ink)}
+.paso.h i{background:var(--ambar);border-color:var(--ambar)}
+.paso.h span{text-decoration:line-through;color:var(--muted)}
+.paso.s span{font-weight:700}
+.paso b{margin-left:auto;background:var(--ambar);color:var(--ink);font-size:13px;padding:3px 8px;border-radius:5px;text-transform:uppercase}
+.car{justify-content:center;padding-bottom:84px;padding-top:84px}
+.car .desl{position:absolute!important;left:34px;right:34px;bottom:28px;margin:0}
+.car .tag{position:absolute!important;top:34px;left:34px;margin:0}
+.car .marca{position:absolute!important;left:34px;right:34px;bottom:28px;margin:0}
+.car h1{margin:0!important}
+.car .sub{margin-bottom:0!important}
+.g .c{width:40px;height:40px;border-radius:8px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <g id="garab" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M56,84 l14,-33 l14,33 l-35,-21 h42 z"/><path d="M430,150 l30,18 v36 l-30,18 l-30,-18 v-36 z"/>
+    <path d="M462,400 l19,17 l-19,17 M484,400 l19,17 l-19,17"/><path d="M40,440 c28,-25 56,25 84,0 s56,25 84,0"/>
+    <path d="M84,560 l30,18 v36 l-30,18 l-30,-18 v-36 z"/><path d="M372,610 h98 m-25,-20 l25,20 l-25,20"/>
+    <path d="M280,56 l8,-20 l8,20 l-21,-13 h25 z"/><circle cx="168" cy="250" r="5"/><circle cx="350" cy="320" r="5"/>
+  </g>
+  <g id="llama"><path d="M12 2c1 4 6 6 6 11a6 6 0 0 1-12 0c0-2.200 1-3.600 2.200-4.800.4 1.900 1.600 2.400 1.600 2.400C10.300 8 10.200 5 12 2z"/></g>
+</defs></svg>
+
+<!-- A1 -->
+<section class="ad am" id="A1-imagen">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg>
+  <div class="vin foto" style="height:350px;margin:0 8px 26px 0"><img src="../pdf/imagenes/1-portada.jpg" style="object-position:50% 26%" alt=""></div>
+  <h1 style="font-size:37px"><span class="tach" style="white-space:nowrap">El lunes empiezo de cero.</span><br><span class="banda" style="font-size:54px;margin-top:14px">Hoy hago lo mínimo.</span></h1>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha<small>App · $37.900 · un solo pago</small></div>
+</section>
+
+<!-- A5 -->
+<section class="ad am" id="A5-nota">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg><div class="pts"></div>
+  <div class="nota"><span>Llevabas 12 días.</span><span>Fallaste uno.</span><span style="margin-top:22px">No tienes cero.</span><span class="banda" style="font-size:46px;margin-top:10px">Tienes 12 días y un hueco.</span></div>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha<small>App · $37.900 · un solo pago</small></div>
+</section>
+
+<!-- A7 -->
+<section class="ad car" id="A7-comparativa">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <h1 style="font-size:46px">Una casilla no te sostiene <mark>el día malo.</mark></h1>
+  <div class="vin fig">
+    <table>
+      <tr><th></th><th>Solo una casilla</th><th class="si"><span>Un sistema</span></th></tr>
+      <tr><td class="h">El día malo</td><td class="no">No estaba en el plan</td><td class="si">Tiene su versión mínima</td></tr>
+      <tr><td class="h">Si fallas un día</td><td class="no">Vuelves a cero</td><td class="si">Un comodín lo congela</td></tr>
+      <tr><td class="h">Una meta grande</td><td class="no">Una casilla enorme</td><td class="si">Pasos que caben en un día</td></tr>
+      <tr><td class="h">Cuando vuelves</td><td class="no">Empiezas de nuevo</td><td class="si">Sigues donde ibas</td></tr>
+    </table>
+  </div>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#0F1113"><use href="#llama"/></svg></i>Racha<small>App · $37.900 · un solo pago</small></div>
+</section>
+
+<!-- B1 -->
+<section class="ad am" id="B1-imagen">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg>
+  <div class="vin foto" data-img="b1-cosas-empezadas" style="height:330px;margin:0 8px 26px 0"><div class="falta" style="height:100%">FALTA EL DIBUJO DE GEMINI<br>La joven en el piso, rodeada de cosas empezadas.</div></div>
+  <h1 style="font-size:46px">Cinco cosas empezadas.<br><span class="banda" style="font-size:50px;margin-top:12px">Ninguna terminada.</span></h1>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha<small>App · $37.900 · un solo pago</small></div>
+</section>
+
+<!-- B5 -->
+<section class="ad am" id="B5-nota">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg><div class="pts"></div>
+  <div class="nota" style="font-size:44px"><span style="font-size:24px;letter-spacing:.08em;text-transform:uppercase">Lunes</span><span>Gimnasio, inglés, leer, madrugar, comer bien.</span><span style="font-size:24px;letter-spacing:.08em;text-transform:uppercase;margin-top:30px">Jueves</span><span class="banda" style="font-size:60px;margin-top:6px">Nada.</span></div>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha<small>App · $37.900 · un solo pago</small></div>
+</section>
+
+<!-- C1 -->
+<section class="ad am" id="C1-oferta">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg><div class="pts"></div>
+  <h1 style="font-size:40px">Una app de hábitos.</h1>
+  <div class="precio" style="margin-top:10px"><span class="banda" style="padding:6px 16px 12px">$37.900</span></div>
+  <h1 style="font-size:40px;margin-top:18px">Un solo pago.</h1>
+  <ul class="lista">
+    <li>Acceso vitalicio, sin mensualidad</li>
+    <li>El Método Anti-Abandono y el Protocolo de Rescate</li>
+    <li>6 rutinas, 18 tareas y 5 planes de 30 días, listos</li>
+    <li>7 días para probarla</li>
+  </ul>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha<small>Hecha para tus días malos</small></div>
+</section>
+
+<!-- Carrusel A4 -->
+<section class="ad car" id="A4-carrusel-1">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <span class="tag">La trampa</span>
+  <h1 style="font-size:66px;margin-top:auto">“El lunes empiezo <mark>de cero.”</mark></h1>
+  <p class="sub" style="margin-bottom:auto">Suena a buena decisión.<br>Es la trampa.</p>
+  <div class="desl"><span>Racha</span><span>Desliza →</span></div>
+</section>
+<section class="ad car" id="A4-carrusel-2">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <h1 style="font-size:44px">Llevabas 12 días y fallaste uno.</h1>
+  <div class="vin fig">
+    <p class="rot">Empezar de cero <em>· pierdes los 12</em></p>
+    <div class="fila"><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c x"></i><i class="c v"></i><i class="c"></i></div>
+    <p class="rot" style="margin-top:20px">Seguir <em>· vas en el día 13</em></p>
+    <div class="fila"><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c v"></i><i class="c"></i></div>
+  </div>
+  <p class="sub" style="font-size:30px;font-weight:700">No tienes cero.<br><mark>Tienes 12 días y un hueco.</mark></p>
+  <div class="desl"><span>Racha</span><span>→</span></div>
+</section>
+<section class="ad car" id="A4-carrusel-3">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <span class="tag">La regla</span>
+  <h1 style="font-size:52px">Un día malo <mark>se vale.</mark> Dos seguidos, no.</h1>
+  <div class="vin fig">
+    <p class="rot">Un día malo <em>· la tira sigue</em></p>
+    <div class="fila tira"><i class="c">✓</i><i class="c">✓</i><i class="c v"></i><i class="c">✓</i><i class="c">✓</i><i class="c">✓</i><i class="c">✓</i></div>
+    <p class="rot" style="margin-top:18px">Dos seguidos <em>· la tira se apaga</em></p>
+    <div class="fila tira"><i class="c">✓</i><i class="c">✓</i><i class="c v"></i><i class="c v"></i><i class="c g"></i><i class="c g"></i><i class="c g"></i></div>
+  </div>
+  <div class="desl"><span>Racha</span><span>→</span></div>
+</section>
+<section class="ad car" id="A4-carrusel-4">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <span class="tag">El día sin fuerzas</span>
+  <h1 style="font-size:50px">Haces tu versión <mark>mínima.</mark></h1>
+  <div class="vin fig">
+    <table>
+      <tr><th>Tu hábito</th><th class="si"><span>Su versión mínima</span></th></tr>
+      <tr><td class="no">Leer 20 páginas</td><td class="si">Leer 1 página</td></tr>
+      <tr><td class="no">Entrenar 40 minutos</td><td class="si">5 minutos de estiramiento</td></tr>
+      <tr><td class="no">Estudiar 1 hora</td><td class="si">Repasar 5 minutos</td></tr>
+    </table>
+  </div>
+  <p class="sub">Y cuenta como cumplido.</p>
+  <div class="desl"><span>Racha</span><span>→</span></div>
+</section>
+<section class="ad am car" id="A4-carrusel-5">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg><div class="pts"></div>
+  <h1 style="font-size:64px;margin-top:auto">Racha.<br>La app para <span class="banda">tus días malos.</span></h1>
+  <p class="sub" style="font-size:30px;font-weight:700">$37.900, un solo pago.<br>7 días para probarla.</p>
+  <p class="sub" style="margin-bottom:auto">Escríbeme y te la muestro.</p>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha</div>
+</section>
+
+<!-- Carrusel B4 -->
+<section class="ad car" id="B4-carrusel-1">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <span class="tag">El otro error</span>
+  <h1 style="font-size:62px;margin:auto 0">Empezar con todo es empezar a <mark>abandonar.</mark></h1>
+  <div class="desl"><span>Racha</span><span>Desliza →</span></div>
+</section>
+<section class="ad car" id="B4-carrusel-2">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <h1 style="font-size:40px">Gimnasio, leer, madrugar, comer bien, inglés.</h1>
+  <div class="vin fig g" style="margin-top:20px">
+    <p class="rot">Cinco de una</p>
+    <div class="fila" style="margin-bottom:9px"><b class="n" style="width:96px;font-size:17px;align-self:center">Semana 1</b><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i><i class="c"></i></div>
+    <div class="fila" style="margin-bottom:9px"><b class="n" style="width:96px;font-size:17px;align-self:center">Semana 2</b><i class="c"></i><i class="c"></i><i class="c"></i><i class="c v"></i><i class="c v"></i></div>
+    <div class="fila"><b class="n" style="width:96px;font-size:17px;align-self:center">Semana 3</b><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i><i class="c v"></i></div>
+  </div>
+  <p class="sub" style="font-size:29px;font-weight:700">En la semana 3, un día malo <mark>te tumba las cinco.</mark></p>
+  <div class="desl"><span>Racha</span><span>→</span></div>
+</section>
+<section class="ad car" id="B4-carrusel-3">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <span class="tag">La regla de los 3</span>
+  <h1 style="font-size:58px;margin-top:auto">Máximo <mark>tres</mark> hábitos.</h1>
+  <h1 style="font-size:58px;margin-top:10px">Mejor uno.</h1>
+  <p class="sub" style="margin-bottom:auto">Cuando ese ya te salga solo, agregas el siguiente.</p>
+  <div class="desl"><span>Racha</span><span>→</span></div>
+</section>
+<section class="ad car" id="B4-carrusel-4">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.05)"/></svg><div class="pts"></div>
+  <h1 style="font-size:44px">Y lo grande, en pasos que <mark>caben en un día.</mark></h1>
+  <div class="vin fig" style="padding:12px 18px">
+    <div class="paso h"><i>✓</i><span>Revisar los requisitos</span></div>
+    <div class="paso s"><i></i><span>Pedir la cita</span><b>Sigue</b></div>
+    <div class="paso"><i></i><span>Alistar los papeles</span></div>
+    <div class="paso"><i></i><span>Ir a la cita</span></div>
+  </div>
+  <p class="sub">Solo haces el que sigue.</p>
+  <div class="desl"><span>Racha</span><span>→</span></div>
+</section>
+<section class="ad am car" id="B4-carrusel-5">
+  <svg class="dd" viewBox="0 0 540 675"><use href="#garab" stroke="rgba(255,255,255,.32)"/></svg><div class="pts"></div>
+  <h1 style="font-size:64px;margin-top:auto">Racha.<br><span class="banda">Una cosa a la vez.</span></h1>
+  <p class="sub" style="font-size:30px;font-weight:700">$37.900, un solo pago.<br>7 días para probarla.</p>
+  <p class="sub" style="margin-bottom:auto">Escríbeme y te la muestro.</p>
+  <div class="marca"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFB547"><use href="#llama"/></svg></i>Racha</div>
+</section>
+
+</body>
+</html>

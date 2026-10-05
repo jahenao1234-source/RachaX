@@ -1,4 +1,4 @@
-# Mensajes de WhatsApp (ManyChat): versión 3, APROBADA por Johnatan el 1 de octubre de 2026
+# Mensajes de WhatsApp (ManyChat): versión 3, APROBADA por Johnatan el 1 de octubre de 2026 (corregida el 2 de octubre por las políticas de WhatsApp)
 
 Reescritos desde cero el 1 de octubre de 2026, con lo que salió de la investigación (`design/whatsapp-investigacion.md`).
 
@@ -12,7 +12,9 @@ Reescritos desde cero el 1 de octubre de 2026, con lo que salió de la investiga
 - El comprobante se pide desde "cómo pagar". El nombre de quien pagó, solo si el comprobante no lo trae.
 - Precio: **$37.900**, un solo pago. Sin prometer resultados (ley 1480). Sin urgencia falsa.
 
-Por llenar antes de pegar: [LLAVE BRE-B], el número de WhatsApp, la nota de voz y el video (los graba Johnatan) y los testimonios reales.
+**Reglas de WhatsApp Business que hay que cumplir (leídas el 2 oct en la política oficial):** no poner Racha en el catálogo de WhatsApp ni usar los pagos de WhatsApp (la regla contra productos digitales aplica ahí); el perfil debe tener correo (hola@tengoracha.com) y sitio (tengoracha.com); no pedir números de cuenta ni de documento; para escribir después de la conversación hace falta permiso; siempre debe haber una salida a una persona (mensaje 20).
+
+Por llenar antes de pegar: [LLAVE BRE-B], el número de WhatsApp, la nota de voz y el video (los graba Johnatan). Testimonios: por ahora no hay ni grupo de prueba; se consiguen con las primeras ventas (mensaje 31) y entonces se agrega un mensaje con uno después del video.
 
 ## Cómo avanza sin botones
 ManyChat mira lo que la persona escribe y manda el paso que toca. Cuando no entiende, no insiste: manda el mensaje 20, le avisa a Johnatan y pausa lo automático en ese chat.
@@ -37,6 +39,16 @@ Vale $37.900, un solo pago, y es tuya para siempre.
 
 Pero antes de que decidas, déjame mostrarte cómo es por dentro. ¿Qué es eso que siempre empiezas con ganas y a las semanas se te cae?
 
+## Mensaje 1c. Si llega por el anuncio de "terminar lo que empiezo" (escribe "Hola, vi lo de terminar lo que empiezo")
+¡Hola! Qué bueno que escribiste. Soy Johnatan, de Racha.
+
+Antes de contarte nada, una pregunta: ¿qué es eso que tienes empezado y no has podido terminar?
+
+## Mensaje 1d. Si llega por el anuncio de la oferta (escribe "Hola, quiero Racha")
+¡Hola! Qué bueno que escribiste. Soy Johnatan, de Racha.
+
+Te la muestro en medio minuto y te cuento cómo es el pago. Una pregunta antes: ¿qué hábito es el que más quieres sostener?
+
 # 2. Recoger lo que dijo y mostrar la app
 
 ## Mensaje 2. Sirve para cualquier respuesta
@@ -51,9 +63,6 @@ Lo que pasa es esto: un día malo te tumba todo, te da rabia, y terminas empezan
 [video de 30 a 40 segundos: guion al final]
 
 Así se ve por dentro. ¿Qué te pareció?
-
-## Mensaje 3b. Testimonio (solo cuando haya uno real; mientras tanto, este mensaje no se manda)
-[pantallazo o audio de un usuario real, con su permiso]
 
 # 3. La oferta, en mensajes cortos (cuando responde al video o pregunta qué incluye)
 
@@ -130,6 +139,8 @@ Para entrar:
 3. Te llega un código de 6 dígitos. Lo escribes y ya.
 4. La app misma te guía para instalarla en el celular.
 
+(En este punto, ManyChat le manda a Meta el evento de compra: Purchase, 37900, COP. Es lo que le enseña a Meta a traer compradores y no curiosos. Confirmar al conectar que la acción "Send event to Meta Conversions API" funciona en el canal de WhatsApp.)
+
 ## Mensaje 14. Los regalos
 Te mando tu Método Anti-Abandono. Léelo primero, son 10 minutos.
 [archivo: Metodo-Anti-Abandono.pdf]
@@ -143,6 +154,11 @@ Los otros tres regalos ya están dentro de la app: tocas el + y luego "Bibliotec
 Un consejo: empieza con uno o dos hábitos, no con cinco. Y a cada uno ponle su versión mínima.
 
 Cualquier cosa que no te funcione, me escribes por aquí.
+
+(mensaje aparte)
+¿Te puedo escribir en unos días para saber cómo te va? Si prefieres que no, me dices y no te escribo más.
+
+(Si dice que sí, o algo como "dale" o "claro": se guarda el permiso y se mandan los mensajes 30 y 31. Si dice que no o no responde: no se mandan. En cualquier momento, si escribe "no más" o "no me escribas", se detiene todo.)
 
 # 6. Objeciones (se responden como dudas, no como rechazo)
 
@@ -202,7 +218,9 @@ Ese correo ya tiene Racha activa. Entra en tengoracha.com con {correo}. Si no te
 ## Mensaje 24. Devolución
 Claro, sin problema. Tienes 7 días desde tu compra y no tienes que darme explicaciones.
 
-Mándame el correo con el que compraste y la llave Bre-B a la que te devuelvo la plata. Te la devuelvo en máximo 5 días hábiles.
+Mándame el correo con el que compraste y la llave Bre-B a la que te devuelvo la plata. Que la llave sea tu celular, tu correo o un alias: no me mandes tu cédula ni tu número de cuenta. Te la devuelvo en máximo 5 días hábiles.
+
+(WhatsApp prohíbe pedir números de cuenta bancaria o de documento. Si la única llave de la persona es su cédula, se le pide que cree una con el celular o el correo.)
 
 ## Mensaje 25. Dudas cortas
 "mensualidad", "suscripción": No, es un solo pago de $37.900 y tu acceso es vitalicio.

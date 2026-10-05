@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Anuncios de Racha · tres caminos de muestra</title>
+<style>
+@font-face{font-family:'Barlow';font-weight:400;src:url('../../public/fuentes/barlow-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:600;src:url('../../public/fuentes/barlow-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Barlow';font-weight:700;src:url('../../public/fuentes/barlow-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'BarlowC';font-weight:700;src:url('../../public/fuentes/barlow-condensed-latin-700-normal.woff2') format('woff2')}
+*{box-sizing:border-box}
+html,body{margin:0;background:#333}
+body{font-family:'Barlow',system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:16px;padding:16px}
+.ad{width:540px;height:675px;position:relative;overflow:hidden}
+
+/* 1 · Volante de oferta */
+.vol{background:#0b0b0d;color:#fff}
+.vol .rayos{position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 72% 30%,rgba(255,181,71,.13) 0 9deg,transparent 9deg 18deg)}
+.vol .top{position:absolute;left:0;right:0;top:0;background:#FFB547;color:#0b0b0d;font:700 31px/1 'BarlowC';letter-spacing:.02em;text-transform:uppercase;padding:13px 18px 12px;text-align:center}
+.vol .tel{position:absolute;left:18px;top:66px;width:176px;height:350px;border-radius:30px;border:7px solid #1c1c20;background:#000;overflow:hidden;box-shadow:0 0 0 2px #3a3a40,12px 14px 0 rgba(255,181,71,.9);transform:rotate(-5deg)}
+.vol .tel img{width:100%;display:block}
+.vol .pdf{position:absolute;width:84px;height:149px;border-radius:6px;overflow:hidden;border:3px solid #fff;box-shadow:6px 7px 0 rgba(0,0,0,.6)}
+.vol .pdf img{width:100%;height:100%;object-fit:cover;display:block}
+.vol .p1{left:150px;top:296px;transform:rotate(7deg)}
+.vol .p2{left:60px;top:308px;transform:rotate(-8deg)}
+.vol .der{position:absolute;left:236px;right:10px;top:68px;text-align:center}
+.vol .solo{font:700 30px/1 'BarlowC';letter-spacing:.06em;color:#fff}
+.vol .precio{font:700 92px/.88 'BarlowC';color:#FFE14D;letter-spacing:-.01em;text-shadow:5px 5px 0 #C2410C;margin:2px 0 6px}
+.vol .pago{display:inline-block;background:#E11D2E;color:#fff;font:700 21px/1 'BarlowC';letter-spacing:.03em;padding:7px 10px 6px;transform:rotate(-3deg);white-space:nowrap;text-transform:uppercase}
+.vol .sello{position:absolute;right:14px;top:250px;width:124px;height:124px;border-radius:50%;background:#FFE14D;color:#0b0b0d;display:grid;place-items:center;text-align:center;font:700 21px/.98 'BarlowC';text-transform:uppercase;transform:rotate(11deg);border:4px dashed #0b0b0d;outline:5px solid #FFE14D}
+.vol .noes{position:absolute;left:254px;top:268px;width:132px;font:700 25px/1 'BarlowC';text-transform:uppercase;color:#fff;text-align:left}
+.vol .noes b{color:#FFE14D}
+.vol ul{position:absolute;left:16px;right:16px;top:474px;margin:0;padding:10px 12px 8px;list-style:none;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.22);border-radius:10px;font:700 17.5px/1.22 'Barlow';columns:2;column-gap:14px}
+.vol li{position:relative;padding:0 0 5px 24px;break-inside:avoid}
+.vol li:before{content:"✔";position:absolute;left:0;top:0;color:#4ADE80;font-size:17px}
+.vol .wa{position:absolute;left:0;right:0;bottom:0;background:#25D366;color:#06270f;font:700 27px/1 'BarlowC';letter-spacing:.02em;text-transform:uppercase;padding:13px 16px 12px;display:flex;align-items:center;justify-content:center;gap:10px}
+.vol .wa small{font:700 15px/1 'Barlow';background:#06270f;color:#fff;padding:5px 8px;border-radius:5px;letter-spacing:.04em}
+
+/* 2 · Escena con emoción */
+.esc{background:#FFB547}
+.esc img.f{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 34%}
+.esc .som{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.72) 0,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 62%,rgba(0,0,0,.82) 100%)}
+.esc .hora{position:absolute;left:26px;top:26px;font:700 21px/1 'Barlow';letter-spacing:.14em;text-transform:uppercase;color:#FFB547}
+.esc .a{position:absolute;left:26px;right:26px;top:54px;font:700 45px/1.02 'Barlow';color:#fff;letter-spacing:-.015em;text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.esc .b{position:absolute;left:26px;right:26px;bottom:70px;font:700 39px/1.04 'Barlow';color:#fff;letter-spacing:-.015em}
+.esc .b span{background:#FFB547;color:#0F1113;padding:0 9px 3px;border-radius:4px;display:inline-block;transform:rotate(-1.5deg);margin-top:6px}
+.esc .pie{position:absolute;left:26px;right:26px;bottom:24px;display:flex;justify-content:space-between;align-items:center;font:700 17px/1 'Barlow';color:#fff}
+.esc .pie b{color:#FFB547}
+
+/* 3 · Contenido casero (como una historia) */
+.his{background:#0F1113}
+.his img.f{position:absolute;left:0;top:-300px;width:540px;display:block}
+.his .velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 16%,rgba(0,0,0,0) 80%,rgba(0,0,0,.6) 100%)}
+.his .barra{position:absolute;left:14px;right:14px;top:12px;height:3px;border-radius:2px;background:rgba(255,255,255,.35)}
+.his .barra:after{content:"";position:absolute;left:0;top:0;bottom:0;width:38%;background:#fff;border-radius:2px}
+.his .quien{position:absolute;left:16px;top:26px;display:flex;align-items:center;gap:8px;font:700 15px/1 'Barlow';color:#fff}
+.his .quien i{width:30px;height:30px;border-radius:50%;background:#FFB547;display:grid;place-items:center}
+.his .quien span{font-weight:400;opacity:.8}
+.his .et{position:absolute;background:#fff;color:#111;font:700 21px/1.12 'Barlow';padding:8px 12px 9px;border-radius:9px;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.his .et.am{background:#FFB547}
+.his .et.ne{background:#111;color:#fff}
+.his .flecha{position:absolute;font:700 46px/1 'Barlow';color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+</style>
+</head>
+<body>
+
+<!-- 1 · Volante de oferta -->
+<section class="ad vol" id="1-volante-de-oferta">
+  <div class="rayos"></div>
+  <div class="top">App de hábitos para tus días malos</div>
+  <div class="tel"><img src="recursos/app-hoy.png" alt=""></div>
+  <div class="pdf p2"><img src="recursos/portada-rescate.png" alt=""></div>
+  <div class="pdf p1"><img src="recursos/portada-metodo.png" alt=""></div>
+  <div class="der">
+    <div class="solo">POR SOLO</div>
+    <div class="precio">$37.900</div>
+    <div class="pago">Un solo pago · sin mensualidad</div>
+  </div>
+  <div class="noes">No es un PDF:<br><b>es una app</b> para tu celular</div>
+  <div class="sello">Acceso<br>vitalicio<br>7 días de<br>garantía</div>
+  <ul>
+    <li>La app Racha: Android, iPhone y PC</li>
+    <li>Guía “Método Anti-Abandono”</li>
+    <li>Guía “Protocolo de Rescate”</li>
+    <li>6 rutinas ya armadas</li>
+    <li>18 tareas paso a paso</li>
+    <li>5 planes de 30 días</li>
+  </ul>
+  <div class="wa">Escríbeme y te la muestro <small>ACCESO INMEDIATO</small></div>
+</section>
+
+<!-- 2 · Escena con emoción -->
+<section class="ad esc" id="2-escena-con-emocion">
+  <img class="f" src="../pdf/imagenes/originales/portada-anterior.jpg" alt="">
+  <div class="som"></div>
+  <div class="hora">Jueves · 9:47 p. m.</div>
+  <div class="a">Tres días sin hacer nada de lo que te prometiste.</div>
+  <div class="b">Y ya estás pensando:<br><span>“el lunes empiezo de cero”.</span></div>
+  <div class="pie"><span>Racha · la app para ese día</span><b>$37.900 · un solo pago</b></div>
+</section>
+
+<!-- 3 · Contenido casero -->
+<section class="ad his" id="3-contenido-casero">
+  <img class="f" src="recursos/app-hoy.png" alt="">
+  <div class="velo"></div>
+  <div class="barra"></div>
+  <div class="quien"><i><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#0F1113" d="M12 2c1 4 6 6 6 11a6 6 0 0 1-12 0c0-2.200 1-3.600 2.200-4.800.4 1.900 1.600 2.400 1.600 2.400C10.300 8 10.200 5 12 2z"/></svg></i>johnatan <span>· hace 2 h</span></div>
+  <div class="et ne" style="left:22px;top:70px;transform:rotate(-2deg)">hoy llegué reventado 😮‍💨</div>
+  <div class="et" style="right:20px;top:418px;transform:rotate(3deg)">toqué “día difícil”</div>
+  <div class="flecha" style="right:230px;top:378px;transform:rotate(20deg)">↖</div>
+  <div class="et am" style="left:28px;top:486px;transform:rotate(-3deg)">leí UNA página<br>y me la contó 👀</div>
+  <div class="et" style="right:22px;top:548px;transform:rotate(2deg)">no perdí la racha 🔥</div>
+  <div class="et ne" style="left:22px;bottom:26px;font-size:17px">Racha · app · $37.900 un solo pago</div>
+</section>
+
+</body>
+</html>
