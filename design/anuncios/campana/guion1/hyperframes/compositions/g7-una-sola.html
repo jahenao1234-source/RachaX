@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        .mini { position: absolute; width: 180px; height: 132px; border-radius: 18px; border: 4px solid #16130f; box-shadow: 6px 6px 0 #16130f; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; opacity: 0; }
+        .mini span { font-family: "Barlow", sans-serif; font-weight: 700; font-size: 31px; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
+        .k1 { background: #16130f; color: #ffffff; } .k2 { background: #f6f3ea; color: #16130f; } .k3 { background: #1f3b8f; color: #ffffff; } .k4 { background: #1f7a4d; color: #ffffff; } .k5 { background: #f5a524; color: #16130f; }
+        .equis { position: absolute; left: -10px; top: -10px; width: 200px; height: 152px; overflow: visible; }
+        .equis path { fill: none; stroke: #d5320f; stroke-width: 14; stroke-linecap: round; stroke-dasharray: 240; stroke-dashoffset: 240; }
+        .llama { position: absolute; overflow: visible; transform-origin: 50% 90%; opacity: 0; }
+        .tit { color: #ffffff; font-size: 96px; }
+        .marca { color: #16130f; }
+        .frase2 { position: absolute; left: 60px; top: 690px; margin: 0; display: flex; align-items: flex-end; gap: 14px; white-space: nowrap; font-family: "Georgia", serif; font-style: italic; font-weight: 700; font-size: 50px; line-height: 1; color: #ffffff; }
+        .frase2 span { opacity: 0; }
+        .frase2 u { display: inline-block; width: 190px; height: 64px; border-bottom: 6px dashed #f5a524; text-decoration: none; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="g7-una-sola" data-width="1080" data-height="1920">
+        <div class="mini k1" id="j-0" style="left: 44px; top: 300px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" /><path d="m2.5 21.5 1.4-1.4" /><path d="m20.1 3.9 1.4-1.4" /><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z" /><path d="m9.6 14.4 4.8-4.8" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Gimnasio</span></div>
+        <div class="mini k2" id="j-1" style="left: 242px; top: 300px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Leer</span></div>
+        <div class="mini k3" id="j-2" style="left: 440px; top: 300px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2" /><path d="M5 3 2 6" /><path d="m22 6-3-3" /><path d="M6.38 18.7 4 21" /><path d="M17.64 18.67 20 21" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Madrugar</span></div>
+        <div class="mini k4" id="j-3" style="left: 638px; top: 300px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.528V3a1 1 0 0 1 1-1h0" /><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Comer bien</span></div>
+        <div class="mini k5" id="j-4" style="left: 836px; top: 300px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="m22 22-5-10-5 10" /><path d="M14 18h6" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Inglés</span></div>
+        <p class="tit" style="top: 452px"><span id="jt-1">Empieza con</span></p>
+        <p class="tit" style="top: 572px"><span id="jt-2" class="marca">una sola.</span></p>
+        <p class="frase2" id="j-f" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><span id="jt-3">Después de</span> <u id="j-h1"></u><span id="jt-4">, hago</span> <u id="j-h2"></u></p>
+        <svg class="llama" id="j-llama" style="left: 540px; top: 560px" width="112" height="112" viewBox="0 0 24 24" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><path id="j-llama-p" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" fill="#f5a524" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round" /></svg>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#j-0", { opacity: 0, y: 40 }, { opacity: 1, y: 0, rotation: -4, duration: 0.18, ease: "back.out(1.8)" }, 0.04); tl.fromTo("#j-1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, rotation: 3, duration: 0.18, ease: "back.out(1.8)" }, 0.09); tl.fromTo("#j-2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, rotation: -2, duration: 0.18, ease: "back.out(1.8)" }, 0.14); tl.fromTo("#j-3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, rotation: 4, duration: 0.18, ease: "back.out(1.8)" }, 0.19); tl.fromTo("#j-4", { opacity: 0, y: 40 }, { opacity: 1, y: 0, rotation: -3, duration: 0.18, ease: "back.out(1.8)" }, 0.24);
+          tl.fromTo("#jt-1", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)" }, 0.65); tl.to("#j-0", { x: 198, opacity: 0, scale: 0.6, duration: 0.24, ease: "power3.in" }, 1.23); tl.to("#j-2", { x: -198, opacity: 0, scale: 0.6, duration: 0.24, ease: "power3.in" }, 1.23); tl.to("#j-3", { x: -396, opacity: 0, scale: 0.6, duration: 0.24, ease: "power3.in" }, 1.23); tl.to("#j-4", { x: -594, opacity: 0, scale: 0.6, duration: 0.24, ease: "power3.in" }, 1.23);
+          tl.to("#j-1", { x: -198, rotation: -3, scale: 1.12, duration: 0.28, ease: "back.out(1.6)" }, 1.38); tl.fromTo("#jt-2", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)", rotation: -2 }, 1.38); tl.fromTo("#j-llama", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.26, ease: "back.out(2.4)" }, 1.63); tl.to("#jt-3", { opacity: 1, duration: 0.12 }, 2.8283); tl.to("#j-h1", { opacity: 1, duration: 0.12 }, 3.0783);
+          tl.to("#jt-4", { opacity: 1, duration: 0.12 }, 3.4583); tl.to("#j-h2", { opacity: 1, duration: 0.12 }, 3.7583);
+          window.__timelines["g7-una-sola"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · campaña · guion 1</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #ebe7dd; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #ebe7dd; }
+      .clip { position: absolute; inset: 0; }
+      /* El fondo: color papel u oscuro, con rayas muy suaves. */
+      #lienzo { position: absolute; inset: 0; background-color: #ebe7dd; z-index: 0; }
+      #rayas { position: absolute; inset: 0; z-index: 1; background: repeating-linear-gradient(90deg, transparent 0 178px, rgba(128, 128, 128, 0.09) 178px 180px); }
+      /* Lina. El escenario recorta (cuadro o pantalla completa) y el zoom la mueve y la acerca. */
+      #escenario { position: absolute; inset: 0; z-index: 2; overflow: hidden; background-color: #f5a524; clip-path: inset(757px 162px 0px 162px); }
+      #zoom { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; }
+      .toma { width: 100%; height: 100%; object-fit: cover; }
+      .grafico { z-index: 3; }
+      #subtitulos { z-index: 4; }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="51.958333" data-width="1080" data-height="1920">
+      <hf-audio-group id="voz" data-label="Voz de Lina" data-fx-chain='{"version":1,"nodes":[{"type":"gain","id":"v1","params":{"gain":8}},{"type":"limiter","id":"v2","params":{"limit":-1.5}}]}'></hf-audio-group>
+      <div id="lienzo"></div>
+      <div id="rayas"></div>
+
+      <!-- Lina: una sola grabación; los planos los hace el escenario -->
+      <div id="escenario">
+        <div id="zoom">
+          <video id="toma-0" class="clip toma" src="assets/1-gancho-recorte.webm" playsinline muted data-start="0" data-duration="0.583332" data-media-start="0.68" data-track-index="0"></video>
+          <video id="toma-1" class="clip toma" src="assets/1-gancho-recorte.webm" playsinline muted data-start="0.583333" data-duration="0.416666" data-media-start="1.27" data-track-index="0"></video>
+          <video id="toma-2" class="clip toma" src="assets/1-gancho.mp4" playsinline muted data-start="1" data-duration="0.541665" data-media-start="1.67" data-track-index="0"></video>
+          <video id="toma-3" class="clip toma" src="assets/1-gancho-recorte.webm" playsinline muted data-start="1.541666" data-duration="3.833333" data-media-start="2.77" data-track-index="0"></video>
+          <video id="toma-4" class="clip toma" src="assets/2-cinco-cosas.mp4" playsinline muted data-start="5.375" data-duration="2.958332" data-media-start="0" data-track-index="0"></video>
+          <video id="toma-5" class="clip toma" src="assets/2-cinco-cosas.mp4" playsinline muted data-start="8.333333" data-duration="1.958332" data-media-start="2.99" data-track-index="0"></video>
+          <video id="toma-6" class="clip toma" src="assets/2-cinco-cosas-recorte.webm" playsinline muted data-start="10.291666" data-duration="1.791666" data-media-start="5.59" data-track-index="0"></video>
+          <video id="toma-7" class="clip toma" src="assets/2-cinco-cosas-recorte.webm" playsinline muted data-start="12.083333" data-duration="1.916666" data-media-start="7.99" data-track-index="0"></video>
+          <video id="toma-8" class="clip toma" src="assets/3-dia-pesado.mp4" playsinline muted data-start="14" data-duration="2.958332" data-media-start="0.38" data-track-index="0"></video>
+          <video id="toma-9" class="clip toma" src="assets/3-dia-pesado.mp4" playsinline muted data-start="16.958333" data-duration="1.124999" data-media-start="3.48" data-track-index="0"></video>
+          <video id="toma-10" class="clip toma" src="assets/3-dia-pesado.mp4" playsinline muted data-start="18.083333" data-duration="1.916666" data-media-start="5.34" data-track-index="0"></video>
+          <video id="toma-11" class="clip toma" src="assets/4-no-era-disciplina.mp4" playsinline muted data-start="20" data-duration="1.708332" data-media-start="1" data-track-index="0"></video>
+          <video id="toma-12" class="clip toma" src="assets/4-no-era-disciplina.mp4" playsinline muted data-start="21.708333" data-duration="3.166666" data-media-start="3.88" data-track-index="0"></video>
+          <video id="toma-13" class="clip toma" src="assets/5-una-sola-recorte.webm" playsinline muted data-start="24.875" data-duration="2.208332" data-media-start="0.54" data-track-index="0"></video>
+          <video id="toma-14" class="clip toma" src="assets/5-una-sola-recorte.webm" playsinline muted data-start="27.083333" data-duration="3.833332" data-media-start="3.74" data-track-index="0"></video>
+          <video id="toma-15" class="clip toma" src="assets/6-ejemplo-recorte.webm" playsinline muted data-start="30.916666" data-duration="1.041666" data-media-start="0.52" data-track-index="0"></video>
+          <video id="toma-16" class="clip toma" src="assets/6-ejemplo-recorte.webm" playsinline muted data-start="31.958333" data-duration="1.083332" data-media-start="2.1" data-track-index="0"></video>
+          <video id="toma-17" class="clip toma" src="assets/9-leyendo.mp4" playsinline muted data-start="33.041666" data-duration="2.541666" data-media-start="1" data-track-index="0"></video>
+          <video id="toma-18" class="clip toma" src="assets/7-racha.mp4" playsinline muted data-start="35.583333" data-duration="2.874999" data-media-start="0.85" data-track-index="0"></video>
+          <video id="toma-19" class="clip toma" src="assets/7-racha.mp4" playsinline muted data-start="38.458333" data-duration="1.458332" data-media-start="4.12" data-track-index="0"></video>
+          <video id="toma-20" class="clip toma" src="assets/7-racha.mp4" playsinline muted data-start="39.916666" data-duration="2.458333" data-media-start="6.14" data-track-index="0"></video>
+          <video id="toma-21" class="clip toma" src="assets/7-racha.mp4" playsinline muted data-start="42.375" data-duration="1.249999" data-media-start="8.74" data-track-index="0"></video>
+          <video id="toma-22" class="clip toma" src="assets/8-cierre-recorte.webm" playsinline muted data-start="43.625" data-duration="4.291665" data-media-start="0.12" data-track-index="0"></video>
+          <video id="toma-23" class="clip toma" src="assets/8-cierre-recorte.webm" playsinline muted data-start="47.916666" data-duration="1.624999" data-media-start="5.36" data-track-index="0"></video>
+        </div>
+      </div>
+      <audio id="voz-0" src="assets/1-gancho.mp4" data-start="0" data-duration="0.583332" data-media-start="0.68" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-1" src="assets/1-gancho.mp4" data-start="0.583333" data-duration="0.416666" data-media-start="1.27" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-2" src="assets/1-gancho.mp4" data-start="1" data-duration="0.541665" data-media-start="1.67" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-3" src="assets/1-gancho.mp4" data-start="1.541666" data-duration="3.833333" data-media-start="2.77" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-4" src="assets/2-cinco-cosas.mp4" data-start="5.375" data-duration="2.958332" data-media-start="0" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-5" src="assets/2-cinco-cosas.mp4" data-start="8.333333" data-duration="1.958332" data-media-start="2.99" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-6" src="assets/2-cinco-cosas.mp4" data-start="10.291666" data-duration="1.791666" data-media-start="5.59" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-7" src="assets/2-cinco-cosas.mp4" data-start="12.083333" data-duration="1.916666" data-media-start="7.99" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-8" src="assets/3-dia-pesado.mp4" data-start="14" data-duration="2.958332" data-media-start="0.38" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-9" src="assets/3-dia-pesado.mp4" data-start="16.958333" data-duration="1.124999" data-media-start="3.48" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-10" src="assets/3-dia-pesado.mp4" data-start="18.083333" data-duration="1.916666" data-media-start="5.34" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-11" src="assets/4-no-era-disciplina.mp4" data-start="20" data-duration="1.708332" data-media-start="1" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-12" src="assets/4-no-era-disciplina.mp4" data-start="21.708333" data-duration="3.166666" data-media-start="3.88" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-13" src="assets/5-una-sola.mp4" data-start="24.875" data-duration="2.208332" data-media-start="0.54" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-14" src="assets/5-una-sola.mp4" data-start="27.083333" data-duration="3.833332" data-media-start="3.74" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-15" src="assets/6-ejemplo.mp4" data-start="30.916666" data-duration="1.041666" data-media-start="0.52" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-16" src="assets/6-ejemplo.mp4" data-start="31.958333" data-duration="1.083332" data-media-start="2.1" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-17" src="assets/6-ejemplo.mp4" data-start="33.041666" data-duration="2.541666" data-media-start="4.51" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-18" src="assets/7-racha.mp4" data-start="35.583333" data-duration="2.874999" data-media-start="0.85" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-19" src="assets/7-racha.mp4" data-start="38.458333" data-duration="1.458332" data-media-start="4.12" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-20" src="assets/7-racha.mp4" data-start="39.916666" data-duration="2.458333" data-media-start="6.14" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-21" src="assets/7-racha.mp4" data-start="42.375" data-duration="1.249999" data-media-start="8.74" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-22" src="assets/8-cierre.mp4" data-start="43.625" data-duration="4.291665" data-media-start="0.12" data-track-index="4" data-audio-group="voz"></audio>
+      <audio id="voz-23" src="assets/8-cierre.mp4" data-start="47.916666" data-duration="1.624999" data-media-start="5.36" data-track-index="4" data-audio-group="voz"></audio>
+
+      <!-- Los gráficos de cada plano -->
+      <div id="g1-gancho" class="clip grafico" data-composition-id="g1-gancho" data-composition-src="compositions/g1-gancho.html" data-start="0" data-duration="1.541666" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g2-lunes" class="clip grafico" data-composition-id="g2-lunes" data-composition-src="compositions/g2-lunes.html" data-start="1.541666" data-duration="3.833334" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g3-cinco" class="clip grafico" data-composition-id="g3-cinco" data-composition-src="compositions/g3-cinco.html" data-start="5.375" data-duration="4.916666" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g4-semanas" class="clip grafico" data-composition-id="g4-semanas" data-composition-src="compositions/g4-semanas.html" data-start="10.291666" data-duration="3.708334" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g5-dia-pesado" class="clip grafico" data-composition-id="g5-dia-pesado" data-composition-src="compositions/g5-dia-pesado.html" data-start="14" data-duration="6" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g6-disciplina" class="clip grafico" data-composition-id="g6-disciplina" data-composition-src="compositions/g6-disciplina.html" data-start="20" data-duration="4.875" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g7-una-sola" class="clip grafico" data-composition-id="g7-una-sola" data-composition-src="compositions/g7-una-sola.html" data-start="24.875" data-duration="6.041666" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g8-ejemplo" class="clip grafico" data-composition-id="g8-ejemplo" data-composition-src="compositions/g8-ejemplo.html" data-start="30.916666" data-duration="4.666667" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g9-racha" class="clip grafico" data-composition-id="g9-racha" data-composition-src="compositions/g9-racha.html" data-start="35.583333" data-duration="8.041667" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g10-precio" class="clip grafico" data-composition-id="g10-precio" data-composition-src="compositions/g10-precio.html" data-start="43.625" data-duration="5.916666" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="g11-cierre" class="clip grafico" data-composition-id="g11-cierre" data-composition-src="compositions/g11-cierre.html" data-start="49.541666" data-duration="2.416667" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+
+      <!-- Sonidos (fabricados, bajitos): un soplo en cada cambio de plano y un golpe cuando cae el precio -->
+      <audio id="sfx-p2" src="assets/whoosh.wav" data-start="1.4417" data-duration="0.4" data-track-index="5" data-volume="0.16"></audio>
+      <audio id="sfx-p3" src="assets/whoosh.wav" data-start="5.275" data-duration="0.4" data-track-index="6" data-volume="0.16"></audio>
+      <audio id="sfx-p4" src="assets/whoosh.wav" data-start="10.1917" data-duration="0.4" data-track-index="5" data-volume="0.16"></audio>
+      <audio id="sfx-p5" src="assets/whoosh.wav" data-start="13.9" data-duration="0.4" data-track-index="6" data-volume="0.16"></audio>
+      <audio id="sfx-p6" src="assets/whoosh.wav" data-start="19.9" data-duration="0.4" data-track-index="5" data-volume="0.16"></audio>
+      <audio id="sfx-p7" src="assets/whoosh.wav" data-start="24.775" data-duration="0.4" data-track-index="6" data-volume="0.16"></audio>
+      <audio id="sfx-p8a" src="assets/whoosh.wav" data-start="30.8167" data-duration="0.4" data-track-index="5" data-volume="0.16"></audio>
+      <audio id="sfx-p8b" src="assets/whoosh.wav" data-start="32.9417" data-duration="0.4" data-track-index="6" data-volume="0.16"></audio>
+      <audio id="sfx-p9a" src="assets/whoosh.wav" data-start="35.4833" data-duration="0.4" data-track-index="5" data-volume="0.16"></audio>
+      <audio id="sfx-p9b" src="assets/whoosh.wav" data-start="39.8167" data-duration="0.4" data-track-index="6" data-volume="0.16"></audio>
+      <audio id="sfx-p10" src="assets/whoosh.wav" data-start="43.525" data-duration="0.4" data-track-index="5" data-volume="0.16"></audio>
+      <audio id="sfx-precio" src="assets/golpe.wav" data-start="44.115" data-duration="0.4" data-track-index="7" data-volume="0.3"></audio>
+
+      <!-- Subtítulos -->
+      <div id="subtitulos" class="clip" data-composition-id="subtitulos" data-composition-src="compositions/subtitulos.html" data-start="0" data-duration="49.541666" data-track-index="3" data-track-kind="captions" data-width="1080" data-height="1920"></div>
+    </div>
+    <script>
+      gsap.set("#zoom", { x: 10, y: 317, scale: 1 });
+      const tl = gsap.timeline({ paused: true });
+      tl.to("#escenario", { clipPath: "inset(757px 162px 0px 162px)", duration: 0.16, ease: "power3.inOut" }, 0.5433);
+      tl.to("#zoom", { x: 10, y: 317, scale: 1, duration: 0.16, ease: "power3.inOut" }, 0.5433);
+      tl.to("#escenario", { backgroundColor: "#2b4fd8", duration: 0.12 }, 0.5433);
+      tl.to("#lienzo", { backgroundColor: "#101114", duration: 0.16 }, 0.5433);
+      tl.to("#escenario", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.16, ease: "power3.inOut" }, 0.96);
+      tl.to("#zoom", { x: -122, y: -304, scale: 1.25, duration: 0.16, ease: "power3.inOut" }, 0.96);
+      tl.to("#escenario", { clipPath: "inset(757px 162px 0px 162px)", duration: 0.3, ease: "power3.inOut" }, 1.4417);
+      tl.to("#zoom", { x: 10, y: 317, scale: 1, duration: 0.3, ease: "power3.inOut" }, 1.4417);
+      tl.to("#escenario", { backgroundColor: "#f5a524", duration: 0.12 }, 1.4417);
+      tl.to("#lienzo", { backgroundColor: "#ebe7dd", duration: 0.16 }, 1.4417);
+      tl.to("#escenario", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power3.inOut" }, 5.275);
+      tl.to("#zoom", { x: -122, y: -304, scale: 1.25, duration: 0.3, ease: "power3.inOut" }, 5.275);
+      tl.to("#escenario", { clipPath: "inset(757px 162px 0px 162px)", duration: 0.3, ease: "power3.inOut" }, 10.1917);
+      tl.to("#zoom", { x: 10, y: 317, scale: 1, duration: 0.3, ease: "power3.inOut" }, 10.1917);
+      tl.to("#escenario", { backgroundColor: "#2b4fd8", duration: 0.12 }, 10.1917);
+      tl.to("#lienzo", { backgroundColor: "#ebe7dd", duration: 0.16 }, 10.1917);
+      tl.to("#escenario", { clipPath: "inset(760px 0px 0px 0px)", duration: 0.3, ease: "power3.inOut" }, 13.9);
+      tl.to("#zoom", { x: -255, y: -25, scale: 1.5, duration: 0.3, ease: "power3.inOut" }, 13.9);
+      tl.to("#escenario", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power3.inOut" }, 19.9);
+      tl.to("#zoom", { x: -308, y: -601, scale: 1.6, duration: 0.3, ease: "power3.inOut" }, 19.9);
+      tl.to("#escenario", { clipPath: "inset(757px 162px 0px 162px)", duration: 0.3, ease: "power3.inOut" }, 24.775);
+      tl.to("#zoom", { x: 10, y: 317, scale: 1, duration: 0.3, ease: "power3.inOut" }, 24.775);
+      tl.to("#escenario", { backgroundColor: "#f5a524", duration: 0.12 }, 24.775);
+      tl.to("#lienzo", { backgroundColor: "#101114", duration: 0.16 }, 24.775);
+      tl.to("#escenario", { clipPath: "inset(757px 162px 0px 162px)", duration: 0.3, ease: "power3.inOut" }, 30.8167);
+      tl.to("#zoom", { x: 10, y: 317, scale: 1, duration: 0.3, ease: "power3.inOut" }, 30.8167);
+      tl.to("#escenario", { backgroundColor: "#f5a524", duration: 0.12 }, 30.8167);
+      tl.to("#lienzo", { backgroundColor: "#ebe7dd", duration: 0.16 }, 30.8167);
+      tl.to("#escenario", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power3.inOut" }, 32.9417);
+      tl.to("#zoom", { x: -270, y: -36, scale: 1.5, duration: 0.3, ease: "power3.inOut" }, 32.9417);
+      tl.to("#escenario", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power3.inOut" }, 35.4833);
+      tl.to("#zoom", { x: -122, y: -304, scale: 1.25, duration: 0.3, ease: "power3.inOut" }, 35.4833);
+      tl.to("#escenario", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power3.inOut" }, 39.8167);
+      tl.to("#zoom", { x: -122, y: -304, scale: 1.25, duration: 0.3, ease: "power3.inOut" }, 39.8167);
+      tl.to("#escenario", { clipPath: "inset(757px 162px 0px 162px)", duration: 0.16, ease: "power3.inOut" }, 43.585);
+      tl.to("#zoom", { x: 10, y: 317, scale: 1, duration: 0.16, ease: "power3.inOut" }, 43.585);
+      tl.to("#escenario", { backgroundColor: "#f5a524", duration: 0.12 }, 43.585);
+      tl.to("#lienzo", { backgroundColor: "#ebe7dd", duration: 0.16 }, 43.585);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

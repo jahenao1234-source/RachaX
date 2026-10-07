@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        .ventana { position: absolute; left: 56px; top: 300px; width: 968px; border-radius: 22px; background: #14161d; box-shadow: 0 22px 0 rgba(0,0,0,0.2), 0 0 0 5px #16130f; padding-bottom: 30px; transform-origin: 50% 100%; opacity: 0; }
+        .barra { height: 62px; display: flex; align-items: center; gap: 10px; padding: 0 24px; border-bottom: 2px solid #2a2e3a; }
+        .barra i { width: 16px; height: 16px; border-radius: 50%; background: #ef5b4d; }
+        .barra i:nth-child(2) { background: #f0b541; }
+        .barra i:nth-child(3) { background: #48c26b; }
+        .barra span { margin-left: 14px; font-family: "Consolas", monospace; font-weight: 700; font-size: 24px; color: #8b93a7; }
+        .ren { display: flex; align-items: center; gap: 24px; padding: 30px 34px 0; opacity: 0; }
+        .tecleo { display: inline-block; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 78px; letter-spacing: -0.03em; line-height: 1.1; color: #ffffff; }
+      </style>
+      <div id="root" data-composition-id="g8-ejemplo" data-width="1080" data-height="1920">
+        <div class="ventana" id="e-caja" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>
+          <div class="barra"><i></i><i></i><i></i><span>mi-habito</span></div>
+          <div class="ren" id="e-r1"><svg class="ico" width="66" height="66" viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2" /><path d="M14 2v2" /><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" /><path d="M6 2v2" /></svg><span class="tecleo" id="e-t1" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Después del café,</span></div>
+          <div class="ren" id="e-r2"><svg class="ico" width="66" height="66" viewBox="0 0 24 24" fill="none" stroke="#f5a524" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></svg><span class="tecleo" id="e-t2" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>leo una página.</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#e-caja", { opacity: 0, scale: 0.7, y: 60 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(1.7)" }, 0.02); tl.to("#e-r1", { opacity: 1, duration: 0.08 }, 1.0317); tl.fromTo("#e-t1", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.81, ease: "steps(17)" }, 1.0817); tl.to("#e-r2", { opacity: 1, duration: 0.08 }, 2.115); tl.fromTo("#e-t2", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.95, ease: "steps(15)" }, 2.165);
+          window.__timelines["g8-ejemplo"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

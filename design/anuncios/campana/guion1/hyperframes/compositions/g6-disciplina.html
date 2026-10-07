@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        #f-franja { position: absolute; left: 54px; top: 1030px; width: 972px; height: 150px; background: #f3efe1; border-left: 14px solid #d5320f; box-shadow: 0 14px 0 rgba(0, 0, 0, 0.28); transform-origin: 0 50%; opacity: 0; }
+        .rueda { position: absolute; left: 30px; right: 20px; top: 20px; height: 110px; overflow: hidden; }
+        .linea { position: relative; margin: 0; height: 110px; display: flex; align-items: center; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 84px; letter-spacing: -0.035em; color: #16130f; width: max-content; }
+        .chica { font-size: 53px; }
+        .chica b { margin-left: 14px; background: #f5a524; padding: 0 10px 4px; }
+        #f-raya { position: absolute; left: -6px; right: -6px; top: 52%; height: 12px; background: #d5320f; transform-origin: 0 50%; }
+      </style>
+      <div id="root" data-composition-id="g6-disciplina" data-width="1080" data-height="1920">
+        <div id="f-franja" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>
+          <div class="rueda"><div id="f-tira">
+            <p class="linea" id="f-a" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>¿Falta de disciplina?<i id="f-raya"></i></p>
+            <p class="linea chica" id="f-b" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Demasiadas cosas <b>al mismo tiempo.</b></p>
+          </div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#f-franja", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.2, ease: "power3.out" }, 0.04); tl.fromTo("#f-raya", { scaleX: 0, rotation: -2 }, { scaleX: 1, rotation: -2, duration: 0.16, ease: "power3.out" }, 1.05); tl.fromTo("#f-tira", { y: 0 }, { y: -110, duration: 0.26, ease: "back.out(1.4)" }, 1.6983);
+          window.__timelines["g6-disciplina"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

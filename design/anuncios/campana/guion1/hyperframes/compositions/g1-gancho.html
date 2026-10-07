@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        .tit { top: 380px; font-size: 112px; }
+        .la .clave { background: #f5a524; padding: 2px 16px 8px; }
+        .lb { font-family: "Georgia", serif; font-style: italic; letter-spacing: -0.02em; color: #ffffff; opacity: 0; }
+        .lb .clave { color: #f5a524; }
+        .lc { left: 0; right: 0; top: 262px; text-align: center; font-size: 104px; color: #ffffff; -webkit-text-stroke: 14px #000000; paint-order: stroke fill; opacity: 0; }
+        .lc .clave { color: #f5a524; }
+      </style>
+      <div id="root" data-composition-id="g1-gancho" data-width="1080" data-height="1920">
+        <p class="tit la" id="ga" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><span id="ga-0">No</span> <span id="ga-1">es</span> <span id="ga-2">que</span> <span id="ga-3">seas</span> <span id="ga-4" class="clave">flojo.</span></p>
+        <p class="tit lb" id="gb" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><span id="gb-0">No</span> <span id="gb-1">es</span> <span id="gb-2">que</span> <span id="gb-3">seas</span> <span id="gb-4" class="clave">flojo.</span></p>
+        <p class="tit lc" id="gc" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><span id="gc-0">No</span> <span id="gc-1">es</span> <span id="gc-2">que</span> <span id="gc-3">seas</span> <span id="gc-4" class="clave">flojo.</span></p>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#ga-0", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.26); tl.fromTo("#ga-1", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.44); tl.fromTo("#ga-2", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.5833); tl.fromTo("#ga-3", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.6633); tl.fromTo("#ga-4", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 1);
+          tl.fromTo("#gb-0", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.26); tl.fromTo("#gb-1", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.44); tl.fromTo("#gb-2", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.5833); tl.fromTo("#gb-3", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.6633); tl.fromTo("#gb-4", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 1);
+          tl.fromTo("#gc-0", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.26); tl.fromTo("#gc-1", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.44); tl.fromTo("#gc-2", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.5833); tl.fromTo("#gc-3", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.6633); tl.fromTo("#gc-4", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 1);
+          tl.set("#ga", { opacity: 0 }, 0.5833); tl.set("#gb", { opacity: 1 }, 0.5833); tl.set("#gb", { opacity: 0 }, 1); tl.set("#gc", { opacity: 1 }, 1); tl.fromTo("#gc", { scale: 1.25 }, { scale: 1, duration: 0.18, ease: "power3.out" }, 1);
+          window.__timelines["g1-gancho"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

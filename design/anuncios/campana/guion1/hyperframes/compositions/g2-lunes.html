@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        .semana { position: absolute; left: 60px; top: 596px; display: flex; gap: 18px; }
+        .dia { position: relative; width: 122px; height: 122px; border: 4px solid #16130f; border-radius: 22px; background: #f6f3ea; opacity: 0; }
+        .dia b { position: absolute; inset: 0; border-radius: 18px; background: #f5a524; opacity: 0; }
+        .dia span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 60px; color: #16130f; }
+        #c-aro { position: absolute; left: -38px; top: -38px; width: 198px; height: 198px; overflow: visible; }
+        #c-aro path { fill: none; stroke: #d5320f; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 560; stroke-dashoffset: 560; }
+      </style>
+      <div id="root" data-composition-id="g2-lunes" data-width="1080" data-height="1920">
+        <p class="eti" id="c-eti">EL LUNES</p>
+        <p class="tit" style="top: 338px"><span id="c-1">Quisiste</span> <span id="c-2">empezar</span></p>
+        <p class="tit" style="top: 448px"><span id="c-3" class="marca">con todo.</span></p>
+        <div class="semana">
+          <div class="dia" id="c-d0"><b id="c-f0"></b><span>L</span></div>
+          <div class="dia" id="c-d1"><b id="c-f1"></b><span>M</span></div>
+          <div class="dia" id="c-d2"><b id="c-f2"></b><span>M</span></div>
+          <div class="dia" id="c-d3"><b id="c-f3"></b><span>J</span></div>
+          <div class="dia" id="c-d4"><b id="c-f4"></b><span>V</span></div>
+          <div class="dia" id="c-d5"><b id="c-f5"></b><span>S</span></div>
+          <div class="dia" id="c-d6"><b id="c-f6"></b><span>D</span></div>
+          <svg id="c-aro" viewBox="0 0 200 200" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><path id="c-aro1" d="M100 14 C150 10 190 50 186 102 C182 154 142 190 96 186 C46 182 10 142 16 92 C22 46 62 14 112 20" /></svg>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#c-eti", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.18, ease: "power2.out" }, 0.02); tl.fromTo("#c-d0", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.04); tl.fromTo("#c-d1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.07); tl.fromTo("#c-d2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.1); tl.fromTo("#c-d3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.13);
+          tl.fromTo("#c-d4", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.16); tl.fromTo("#c-d5", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.19); tl.fromTo("#c-d6", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.16, ease: "back.out(1.8)" }, 0.22); tl.to("#c-aro1", { strokeDashoffset: 0, duration: 0.28, ease: "power2.inOut" }, 0.43); tl.fromTo("#c-f0", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "back.out(2.5)" }, 0.63);
+          tl.fromTo("#c-1", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)" }, 0.83); tl.fromTo("#c-2", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)" }, 1.25); tl.fromTo("#c-3", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)", rotation: -2 }, 1.88); tl.fromTo("#c-f1", { opacity: 0, scale: 0.4 }, { opacity: 0.85, scale: 1, duration: 0.12, ease: "back.out(2.5)" }, 2.26); tl.fromTo("#c-f2", { opacity: 0, scale: 0.4 }, { opacity: 0.7, scale: 1, duration: 0.12, ease: "back.out(2.5)" }, 2.33);
+          tl.fromTo("#c-f3", { opacity: 0, scale: 0.4 }, { opacity: 0.55, scale: 1, duration: 0.12, ease: "back.out(2.5)" }, 2.4); tl.fromTo("#c-f4", { opacity: 0, scale: 0.4 }, { opacity: 0.4, scale: 1, duration: 0.12, ease: "back.out(2.5)" }, 2.47);
+          window.__timelines["g2-lunes"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

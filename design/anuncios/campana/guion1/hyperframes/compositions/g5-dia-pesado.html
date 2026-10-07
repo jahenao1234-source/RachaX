@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        .mini { position: absolute; width: 180px; height: 132px; border-radius: 18px; border: 4px solid #16130f; box-shadow: 6px 6px 0 #16130f; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; opacity: 0; }
+        .mini span { font-family: "Barlow", sans-serif; font-weight: 700; font-size: 31px; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
+        .k1 { background: #16130f; color: #ffffff; } .k2 { background: #f6f3ea; color: #16130f; } .k3 { background: #1f3b8f; color: #ffffff; } .k4 { background: #1f7a4d; color: #ffffff; } .k5 { background: #f5a524; color: #16130f; }
+        .equis { position: absolute; left: -10px; top: -10px; width: 200px; height: 152px; overflow: visible; }
+        .equis path { fill: none; stroke: #d5320f; stroke-width: 14; stroke-linecap: round; stroke-dasharray: 240; stroke-dashoffset: 240; }
+        .llama { position: absolute; overflow: visible; transform-origin: 50% 90%; opacity: 0; }
+        #h-papel { position: absolute; left: 0; top: 0; width: 1080px; height: 800px; background: #f3efe1; clip-path: polygon(0% 0%, 100% 0%, 100% 95.50%, 97.5% 99.64%, 95% 96.80%, 92.5% 96.45%, 90% 98.78%, 87.5% 97.90%, 85% 96.98%, 82.5% 98.88%, 80% 98.90%, 77.5% 97.94%, 75% 98.58%, 72.5% 98.36%, 70% 99.18%, 67.5% 96.59%, 65% 97.18%, 62.5% 98.69%, 60% 98.64%, 57.5% 95.74%, 55% 98.58%, 52.5% 97.61%, 50% 99.65%, 47.5% 99.13%, 45% 96.05%, 42.5% 97.81%, 40% 99.65%, 37.5% 98.60%, 35% 98.40%, 32.5% 98.10%, 30% 99.60%, 27.5% 99.59%, 25% 97.18%, 22.5% 97.01%, 20% 99.27%, 17.5% 97.00%, 15% 96.19%, 12.5% 96.84%, 10% 97.43%, 7.5% 96.83%, 5% 99.72%, 2.5% 98.01%, 0% 98.78%); }
+        .mancha { position: absolute; border-radius: 50%; filter: blur(6px); }
+        .m1 { right: -150px; top: 380px; width: 420px; height: 300px; background: #f5a524; opacity: 0.35; border-radius: 46% 54% 60% 40% / 55% 45% 55% 45%; }
+        .m2 { left: -140px; top: 240px; width: 420px; height: 300px; background: #e9dcc0; opacity: 0.9; border-radius: 58% 42% 45% 55% / 48% 60% 40% 52%; }
+        .eti { opacity: 0; }
+        .serif { position: absolute; left: 58px; top: 348px; margin: 0; white-space: nowrap; font-family: "Georgia", serif; font-weight: 700; font-style: italic; font-size: 112px; line-height: 1; color: #16130f; opacity: 0; }
+        .cuenta { position: absolute; left: 60px; top: 480px; margin: 0; height: 70px; font-family: "Consolas", monospace; font-weight: 700; color: #d5320f; }
+        .cuenta b { position: absolute; left: 0; top: 0; font-size: 62px; line-height: 1; opacity: 0; }
+        .cuenta span { position: absolute; left: 50px; top: 14px; font-size: 38px; white-space: nowrap; color: #6f685c; }
+      </style>
+      <div id="root" data-composition-id="g5-dia-pesado" data-width="1080" data-height="1920">
+        <div id="h-papel" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>
+          <i class="mancha m1"></i><i class="mancha m2"></i>
+          <p class="eti" id="h-eti">SEMANA 3</p>
+          <p class="serif" id="h-tit">Un día pesado.</p>
+          <p class="cuenta" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><b id="h-n5" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>5</b><b id="h-n4" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>4</b><b id="h-n3" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>3</b><b id="h-n2" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>2</b><b id="h-n1" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>1</b><b id="h-n0" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>0</b><span>de 5</span></p>
+        <div class="mini k1" id="h-0" style="left: 44px; top: 566px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" /><path d="m2.5 21.5 1.4-1.4" /><path d="m20.1 3.9 1.4-1.4" /><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z" /><path d="m9.6 14.4 4.8-4.8" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Gimnasio</span><svg class="equis" viewBox="0 0 200 152"><path id="h-x0a" d="M24 18 L176 134" /><path id="h-x0b" d="M178 16 L22 136" /></svg></div>
+        <div class="mini k2" id="h-1" style="left: 242px; top: 566px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Leer</span><svg class="equis" viewBox="0 0 200 152"><path id="h-x1a" d="M24 18 L176 134" /><path id="h-x1b" d="M178 16 L22 136" /></svg></div>
+        <div class="mini k3" id="h-2" style="left: 440px; top: 566px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2" /><path d="M5 3 2 6" /><path d="m22 6-3-3" /><path d="M6.38 18.7 4 21" /><path d="M17.64 18.67 20 21" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Madrugar</span><svg class="equis" viewBox="0 0 200 152"><path id="h-x2a" d="M24 18 L176 134" /><path id="h-x2b" d="M178 16 L22 136" /></svg></div>
+        <div class="mini k4" id="h-3" style="left: 638px; top: 566px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.528V3a1 1 0 0 1 1-1h0" /><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Comer bien</span><svg class="equis" viewBox="0 0 200 152"><path id="h-x3a" d="M24 18 L176 134" /><path id="h-x3b" d="M178 16 L22 136" /></svg></div>
+        <div class="mini k5" id="h-4" style="left: 836px; top: 566px" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg class="ico" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="m22 22-5-10-5 10" /><path d="M14 18h6" /></svg><span data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>Inglés</span><svg class="equis" viewBox="0 0 200 152"><path id="h-x4a" d="M24 18 L176 134" /><path id="h-x4b" d="M178 16 L22 136" /></svg></div>
+        <svg class="llama" id="h-llama" style="left: 300px; top: 452px" width="104" height="104" viewBox="0 0 24 24" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><path id="h-llama-p" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" fill="#f5a524" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round" /></svg>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#h-papel", { y: -820 }, { y: 0, duration: 0.24, ease: "power3.out" }, 0); tl.fromTo("#h-eti", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.16 }, 0.14); tl.fromTo("#h-0", { opacity: 0, y: 40, rotation: -12 }, { opacity: 1, y: 0, rotation: -4, duration: 0.2, ease: "back.out(1.8)" }, 0.16); tl.fromTo("#h-1", { opacity: 0, y: 40, rotation: 9 }, { opacity: 1, y: 0, rotation: 3, duration: 0.2, ease: "back.out(1.8)" }, 0.21); tl.fromTo("#h-2", { opacity: 0, y: 40, rotation: -6 }, { opacity: 1, y: 0, rotation: -2, duration: 0.2, ease: "back.out(1.8)" }, 0.26);
+          tl.fromTo("#h-3", { opacity: 0, y: 40, rotation: 12 }, { opacity: 1, y: 0, rotation: 4, duration: 0.2, ease: "back.out(1.8)" }, 0.31); tl.fromTo("#h-4", { opacity: 0, y: 40, rotation: -9 }, { opacity: 1, y: 0, rotation: -3, duration: 0.2, ease: "back.out(1.8)" }, 0.36); tl.set("#h-n5", { opacity: 1 }, 0.2); tl.fromTo("#h-llama", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2)" }, 0.3); tl.fromTo("#h-tit", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.16, ease: "back.out(2)" }, 1.74);
+          tl.to("#h-llama", { scale: 0.7, duration: 0.3, ease: "power2.out" }, 1.82); tl.to("#h-x0a", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 3.0483); tl.to("#h-x0b", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 3.1383); tl.to("#h-0", { filter: "grayscale(1)", opacity: 0.55, duration: 0.12 }, 3.1683); tl.set("#h-n5", { opacity: 0 }, 3.1483);
+          tl.set("#h-n4", { opacity: 1 }, 3.1483); tl.to("#h-x1a", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 3.4673); tl.to("#h-x1b", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 3.5573); tl.to("#h-1", { filter: "grayscale(1)", opacity: 0.55, duration: 0.12 }, 3.5873); tl.set("#h-n4", { opacity: 0 }, 3.5673);
+          tl.set("#h-n3", { opacity: 1 }, 3.5673); tl.to("#h-x2a", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 3.8863); tl.to("#h-x2b", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 3.9763); tl.to("#h-2", { filter: "grayscale(1)", opacity: 0.55, duration: 0.12 }, 4.0063); tl.set("#h-n3", { opacity: 0 }, 3.9863);
+          tl.set("#h-n2", { opacity: 1 }, 3.9863); tl.to("#h-x3a", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 4.3053); tl.to("#h-x3b", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 4.3953); tl.to("#h-3", { filter: "grayscale(1)", opacity: 0.55, duration: 0.12 }, 4.4253); tl.set("#h-n2", { opacity: 0 }, 4.4053);
+          tl.set("#h-n1", { opacity: 1 }, 4.4053); tl.to("#h-x4a", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 4.7243); tl.to("#h-x4b", { strokeDashoffset: 0, duration: 0.09, ease: "power2.in" }, 4.8143); tl.to("#h-4", { filter: "grayscale(1)", opacity: 0.55, duration: 0.12 }, 4.8443); tl.set("#h-n1", { opacity: 0 }, 4.8243);
+          tl.set("#h-n0", { opacity: 1 }, 4.8243); tl.to("#h-llama-p", { fill: "#b9b3a6", duration: 0.25 }, 4.3633); tl.to("#h-llama", { scale: 0.45, duration: 0.3, ease: "power2.in" }, 4.3633);
+          window.__timelines["g5-dia-pesado"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

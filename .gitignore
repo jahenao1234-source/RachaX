@@ -34,3 +34,9 @@ design/anuncios/**/*.mp3
 
 # Imágenes de avatar descartadas (13 MB)
 design/avatar/nueva/descartada-*.png
+
+# HyperFrames de la campaña: lo que se vuelve a generar
+design/anuncios/**/hyperframes/assets/
+design/anuncios/**/hyperframes/snapshots/
+design/anuncios/**/hyperframes/renders/
+design/anuncios/**/hyperframes/node_modules/

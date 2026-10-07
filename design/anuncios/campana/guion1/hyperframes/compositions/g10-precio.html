@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; transform-origin: 0 60%; }
+        .ico { display: block; }
+        .llama { position: absolute; overflow: visible; transform-origin: 50% 90%; opacity: 0; }
+        #z-chip { position: absolute; left: 58px; top: 292px; display: flex; align-items: center; gap: 14px; opacity: 0; }
+        #z-chip .logo { width: 72px; height: 72px; border-radius: 18px; background: #f5a524; border: 4px solid #16130f; display: flex; align-items: center; justify-content: center; }
+        #z-chip span { font-family: "Barlow", sans-serif; font-weight: 700; font-size: 66px; letter-spacing: -0.03em; line-height: 1; color: #16130f; }
+        #z-precio { position: absolute; left: 56px; top: 388px; margin: 0; padding: 0 30px 12px; background: #f5a524; border: 6px solid #16130f; box-shadow: 12px 12px 0 #16130f; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 168px; letter-spacing: -0.04em; line-height: 1; color: #16130f; white-space: nowrap; transform-origin: 0 100%; opacity: 0; }
+        .chapa { position: absolute; top: 606px; margin: 0; padding: 8px 22px 12px; background: #16130f; color: #ffffff; border-radius: 14px; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 46px; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; opacity: 0; }
+        #z-c1 { left: 58px; }
+        #z-c2 { left: 368px; }
+        #z-cta { position: absolute; left: 58px; top: 684px; margin: 0; display: flex; align-items: center; gap: 12px; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 52px; letter-spacing: -0.02em; line-height: 1; color: #16130f; white-space: nowrap; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="g10-precio" data-width="1080" data-height="1920">
+        <div id="z-chip" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><b class="logo"><svg class="ico" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#16130f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></svg></b><span>Racha</span></div>
+        <p id="z-precio" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>$37.900</p>
+        <p class="chapa" id="z-c1" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>un solo pago</p>
+        <p class="chapa" id="z-c2" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow>7 días para probarla</p>
+        <p id="z-cta" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><span>Escríbenos aquí abajo</span><svg class="ico" width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#16130f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14" /><path d="m19 12-7 7-7-7" /></svg></p>
+        <svg class="llama" id="z-llama" style="left: 880px; top: 300px" width="110" height="110" viewBox="0 0 24 24" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><path id="z-llama-p" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" fill="#f5a524" stroke="#16130f" stroke-width="1.3" stroke-linejoin="round" /></svg>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#z-chip", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.18, ease: "power2.out" }, 0.04); tl.fromTo("#z-llama", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.26, ease: "back.out(2.4)" }, 0.12); tl.fromTo("#z-precio", { opacity: 0, scale: 1.9, rotation: -12 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.2, ease: "power4.in" }, 0.31); tl.fromTo("#z-c1", { opacity: 0, y: 24, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, rotation: -2, duration: 0.16, ease: "back.out(2.2)" }, 1.13); tl.fromTo("#z-c2", { opacity: 0, y: 24, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, rotation: 2, duration: 0.16, ease: "back.out(2.2)" }, 2.51);
+          tl.fromTo("#z-cta", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 4.3317); tl.fromTo("#z-cta .ico", { y: 0 }, { y: 14, duration: 0.22, yoyo: true, repeat: 5, ease: "sine.inOut" }, 4.5317);
+          window.__timelines["g10-precio"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -56,3 +56,13 @@ Antes hay que recortar a Lina del fondo, dentro de `lina-estilo/` (tarda de 4 a 
 - `ffmpeg -ss 1.91 -i ../../clips/1-gancho.mp4 -t 4.05 -c:v libx264 -crf 14 -r 24 -c:a aac assets/gancho.mp4` y `node "$CLI" remove-background assets/gancho.mp4 -o assets/gancho-recorte.webm`
 - `ffmpeg -i ../../clips/2-mito.mp4 -t 6.8 -c:v libx264 -crf 14 -r 24 -an assets/mito-corto.mp4` y `node "$CLI" remove-background assets/mito-corto.mp4 -o assets/mito-recorte.webm`
 Si no existen los recortes, el script usa el clip con su fondo. El recorte deja pedazos del cuadro y la repisa: los clips nuevos deben generarse con pared lisa.
+
+## La campaña (`design/anuncios/campana/`)
+Los guiones y el plan están en `campana/guiones.md`; los textos para Flow de cada guion, en `campana/guionN-textos-flow.md`.
+Guion 1 (`campana/guion1/`), en estilo Tarjeta con variedad de planos:
+1. Los clips los genera Johnatan en Flow y los guarda en `guion1/clips/` (N-nombre.mp4). Lina siempre en plano medio, pared lisa y micrófono en la mano.
+2. `node transcribir-assembly.mjs <clip.mp4>` por cada clip hablado.
+3. Recortar a Lina del fondo en los clips que van en cuadro: `node "$CLI" remove-background clips/N-nombre.mp4 -o clips/N-nombre-recorte.webm` (4 a 6 minutos cada uno; no correr dos cosas pesadas al tiempo).
+4. `capturas-campana-g1.cjs`: capturas reales de la app (crear el hábito "Leer" después de tomar café), con la app en `localhost:3002`.
+5. `node hf-campana-g1.mjs`: arma el proyecto de HyperFrames en `guion1/hyperframes/`. Arriba del script están el guion, la lista de planos (en qué palabra empieza cada uno y cómo se ve Lina) y las medidas de cada encuadre. Si falta un clip, usa el 1-gancho de relleno para poder revisar.
+6. Dentro de `guion1/hyperframes/`: `check`, `snapshot --at ...`, `preview --background --port=3040` y `render --low-memory-mode -w 1 -f 24 -o ../guion1-empezar-con-todo-v1.mp4` (queda en `guion1/`; tarda más de 10 minutos en este computador).
