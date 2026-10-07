@@ -1,0 +1,28 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 720
+PlayResY: 1280
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Segoe UI,54,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,5,0,2,50,50,330,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.30,0:00:02.20,Sub,,0,0,0,,Se te quiebra un huevo...
+Dialogue: 0,0:00:03.55,0:00:04.90,Sub,,0,0,0,,¿y botas la cubeta entera?
+Dialogue: 0,0:00:05.00,0:00:08.95,Sub,,0,0,0,,Eso es volver a cero\Npor fallar un día.
+Dialogue: 0,0:00:09.40,0:00:11.55,Sub,,0,0,0,,Llevas veintitrés días,\Nfallas uno...
+Dialogue: 0,0:00:11.55,0:00:13.45,Sub,,0,0,0,,y el contador\Nte devuelve a cero.
+Dialogue: 0,0:00:13.85,0:00:15.40,Sub,,0,0,0,,Y con el cero\Nllega el "ya qué".
+Dialogue: 0,0:00:15.65,0:00:17.10,Sub,,0,0,0,,Ahí es donde botas todo.
+Dialogue: 0,0:00:17.40,0:00:18.95,Sub,,0,0,0,,Racha te guarda la partida.
+Dialogue: 0,0:00:19.45,0:00:20.45,Sub,,0,0,0,,¿Día pesado?
+Dialogue: 0,0:00:20.80,0:00:22.45,Sub,,0,0,0,,Haces lo mínimo y cuenta.
+Dialogue: 0,0:00:22.90,0:00:23.90,Sub,,0,0,0,,¿No hiciste nada?
+Dialogue: 0,0:00:24.05,0:00:25.75,Sub,,0,0,0,,Un comodín\Ncongela ese día.
+Dialogue: 0,0:00:26.25,0:00:28.30,Sub,,0,0,0,,Y el día que vuelves\Nvale el doble.
+Dialogue: 0,0:00:29.20,0:00:32.20,Sub,,0,0,0,,Racha es una app\Ny se paga una sola vez.
+Dialogue: 0,0:00:32.60,0:00:34.10,Sub,,0,0,0,,Escríbenos aquí abajo.

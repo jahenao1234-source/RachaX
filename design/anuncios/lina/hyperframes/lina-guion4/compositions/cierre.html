@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0c0d10; }
+        #cierre-img { display: block; width: 100%; height: 100%; transform-origin: 50% 38%; }
+      </style>
+      <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
+        <img id="cierre-img" src="assets/cierre.png" alt="" data-layout-allow-overflow />
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#cierre-img", { scale: 1.04, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out" }, 0);
+          window.__timelines["cierre"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

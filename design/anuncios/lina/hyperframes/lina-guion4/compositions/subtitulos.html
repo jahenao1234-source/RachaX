@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; }
+        .frase {
+          position: absolute; left: 40px; right: 40px; bottom: 716px; margin: 0; opacity: 0;
+          white-space: nowrap; text-align: center;
+          font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 124px; line-height: 1; letter-spacing: 0.005em;
+          color: #ffffff; -webkit-text-stroke: 16px #000000; paint-order: stroke fill;
+          text-shadow: 0 8px 0 rgba(0, 0, 0, 0.45);
+        }
+      </style>
+      <div id="root" data-composition-id="subtitulos" data-width="1080" data-height="1920">
+        <p id="frase-0" class="frase"><span id="w0">El</span> <span id="w1">lunes</span></p>
+        <p id="frase-1" class="frase"><span id="w2">empiezas</span></p>
+        <p id="frase-2" class="frase"><span id="w3">con</span> <span id="w4">todo</span></p>
+        <p id="frase-3" class="frase"><span id="w5">y</span> <span id="w6">el</span> <span id="w7">jueves</span></p>
+        <p id="frase-4" class="frase"><span id="w8">ya</span> <span id="w9">lo</span> <span id="w10">soltaste.</span></p>
+        <p id="frase-5" class="frase"><span id="w11">Gimnasio,</span></p>
+        <p id="frase-6" class="frase"><span id="w12">leer,</span></p>
+        <p id="frase-7" class="frase"><span id="w13">madrugar,</span></p>
+        <p id="frase-8" class="frase"><span id="w14">comer</span> <span id="w15">bien,</span></p>
+        <p id="frase-9" class="frase"><span id="w16">todo</span> <span id="w17">de</span> <span id="w18">una.</span></p>
+        <p id="frase-10" class="frase"><span id="w19">No</span> <span id="w20">es</span> <span id="w21">pereza.</span></p>
+        <p id="frase-11" class="frase"><span id="w22">Empezar</span></p>
+        <p id="frase-12" class="frase"><span id="w23">con</span> <span id="w24">todo</span></p>
+        <p id="frase-13" class="frase"><span id="w25">es</span> <span id="w26">empezar</span></p>
+        <p id="frase-14" class="frase"><span id="w27">a</span> <span id="w28">abandonar.</span></p>
+        <p id="frase-15" class="frase"><span id="w29">Racha</span> <span id="w30">te</span> <span id="w31">hace</span></p>
+        <p id="frase-16" class="frase"><span id="w32">empezar</span> <span id="w33">con</span> <span id="w34">uno</span></p>
+        <p id="frase-17" class="frase"><span id="w35">solo,</span></p>
+        <p id="frase-18" class="frase"><span id="w36">amarrado</span> <span id="w37">a</span> <span id="w38">algo</span></p>
+        <p id="frase-19" class="frase"><span id="w39">que</span> <span id="w40">ya</span> <span id="w41">haces.</span></p>
+        <p id="frase-20" class="frase"><span id="w42">Después</span></p>
+        <p id="frase-21" class="frase"><span id="w43">del</span> <span id="w44">desayuno,</span></p>
+        <p id="frase-22" class="frase"><span id="w45">una</span> <span id="w46">página.</span></p>
+        <p id="frase-23" class="frase"><span id="w47">Y</span> <span id="w48">cuando</span></p>
+        <p id="frase-24" class="frase"><span id="w49">quieras</span> <span id="w50">más,</span></p>
+        <p id="frase-25" class="frase"><span id="w51">vas</span></p>
+        <p id="frase-26" class="frase"><span id="w52">de</span> <span id="w53">a</span> <span id="w54">tres,</span></p>
+        <p id="frase-27" class="frase"><span id="w55">no</span> <span id="w56">de</span> <span id="w57">a</span> <span id="w58">diez.</span></p>
+        <p id="frase-28" class="frase"><span id="w59">Es</span> <span id="w60">una</span> <span id="w61">app</span></p>
+        <p id="frase-29" class="frase"><span id="w62">y</span> <span id="w63">se</span> <span id="w64">paga</span></p>
+        <p id="frase-30" class="frase"><span id="w65">una</span> <span id="w66">sola</span> <span id="w67">vez.</span></p>
+        <p id="frase-31" class="frase"><span id="w68">Escríbenos</span> <span id="w69">aquí</span></p>
+        <p id="frase-32" class="frase"><span id="w70">abajo.</span></p>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.set("#frase-0", { opacity: 1 }, 0.52);
+          tl.fromTo("#frase-0", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 0.52);
+          tl.set("#frase-0", { opacity: 0 }, 1);
+          tl.set("#w0", { color: "#f5a524" }, 0.52);
+          tl.set("#w0", { color: "#ffffff" }, 0.69);
+          tl.set("#w1", { color: "#f5a524" }, 0.69);
+          tl.set("#frase-1", { opacity: 1 }, 1);
+          tl.fromTo("#frase-1", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 1);
+          tl.set("#frase-1", { opacity: 0 }, 1.47);
+          tl.set("#w2", { color: "#f5a524" }, 1);
+          tl.set("#frase-2", { opacity: 1 }, 1.47);
+          tl.fromTo("#frase-2", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 1.47);
+          tl.set("#frase-2", { opacity: 0 }, 2.29);
+          tl.set("#w3", { color: "#f5a524" }, 1.47);
+          tl.set("#w3", { color: "#ffffff" }, 1.74);
+          tl.set("#w4", { color: "#f5a524" }, 1.74);
+          tl.set("#frase-3", { opacity: 1 }, 2.29);
+          tl.fromTo("#frase-3", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 2.29);
+          tl.set("#frase-3", { opacity: 0 }, 2.92);
+          tl.set("#w5", { color: "#f5a524" }, 2.29);
+          tl.set("#w5", { color: "#ffffff" }, 2.41);
+          tl.set("#w6", { color: "#f5a524" }, 2.41);
+          tl.set("#w6", { color: "#ffffff" }, 2.55);
+          tl.set("#w7", { color: "#f5a524" }, 2.55);
+          tl.set("#frase-4", { opacity: 1 }, 2.92);
+          tl.fromTo("#frase-4", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 2.92);
+          tl.set("#frase-4", { opacity: 0 }, 3.95);
+          tl.set("#w8", { color: "#f5a524" }, 2.92);
+          tl.set("#w8", { color: "#ffffff" }, 3.04);
+          tl.set("#w9", { color: "#f5a524" }, 3.04);
+          tl.set("#w9", { color: "#ffffff" }, 3.12);
+          tl.set("#w10", { color: "#f5a524" }, 3.12);
+          tl.set("#frase-5", { opacity: 1 }, 4.1617);
+          tl.fromTo("#frase-5", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 4.1617);
+          tl.set("#frase-5", { opacity: 0 }, 4.9717);
+          tl.set("#w11", { color: "#f5a524" }, 4.1617);
+          tl.set("#frase-6", { opacity: 1 }, 4.9717);
+          tl.fromTo("#frase-6", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 4.9717);
+          tl.set("#frase-6", { opacity: 0 }, 5.7517);
+          tl.set("#w12", { color: "#f5a524" }, 4.9717);
+          tl.set("#frase-7", { opacity: 1 }, 5.7983);
+          tl.fromTo("#frase-7", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 5.7983);
+          tl.set("#frase-7", { opacity: 0 }, 6.7183);
+          tl.set("#w13", { color: "#f5a524" }, 5.7983);
+          tl.set("#frase-8", { opacity: 1 }, 6.7567);
+          tl.fromTo("#frase-8", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 6.7567);
+          tl.set("#frase-8", { opacity: 0 }, 7.7067);
+          tl.set("#w14", { color: "#f5a524" }, 6.7567);
+          tl.set("#w14", { color: "#ffffff" }, 7.1167);
+          tl.set("#w15", { color: "#f5a524" }, 7.1167);
+          tl.set("#frase-9", { opacity: 1 }, 7.7567);
+          tl.fromTo("#frase-9", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 7.7567);
+          tl.set("#frase-9", { opacity: 0 }, 8.6267);
+          tl.set("#w16", { color: "#f5a524" }, 7.7567);
+          tl.set("#w16", { color: "#ffffff" }, 8.0667);
+          tl.set("#w17", { color: "#f5a524" }, 8.0667);
+          tl.set("#w17", { color: "#ffffff" }, 8.2067);
+          tl.set("#w18", { color: "#f5a524" }, 8.2067);
+          tl.set("#frase-10", { opacity: 1 }, 8.6733);
+          tl.fromTo("#frase-10", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 8.6733);
+          tl.set("#frase-10", { opacity: 0 }, 9.6233);
+          tl.set("#w19", { color: "#f5a524" }, 8.6733);
+          tl.set("#w19", { color: "#ffffff" }, 8.8233);
+          tl.set("#w20", { color: "#f5a524" }, 8.8233);
+          tl.set("#w20", { color: "#ffffff" }, 9.0333);
+          tl.set("#w21", { color: "#f5a524" }, 9.0333);
+          tl.set("#frase-11", { opacity: 1 }, 9.6733);
+          tl.fromTo("#frase-11", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 9.6733);
+          tl.set("#frase-11", { opacity: 0 }, 10.1433);
+          tl.set("#w22", { color: "#f5a524" }, 9.6733);
+          tl.set("#frase-12", { opacity: 1 }, 10.1433);
+          tl.fromTo("#frase-12", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 10.1433);
+          tl.set("#frase-12", { opacity: 0 }, 10.7133);
+          tl.set("#w23", { color: "#f5a524" }, 10.1433);
+          tl.set("#w23", { color: "#ffffff" }, 10.3333);
+          tl.set("#w24", { color: "#f5a524" }, 10.3333);
+          tl.set("#frase-13", { opacity: 1 }, 10.7233);
+          tl.fromTo("#frase-13", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 10.7233);
+          tl.set("#frase-13", { opacity: 0 }, 11.2033);
+          tl.set("#w25", { color: "#f5a524" }, 10.7233);
+          tl.set("#w25", { color: "#ffffff" }, 10.8333);
+          tl.set("#w26", { color: "#f5a524" }, 10.8333);
+          tl.set("#frase-14", { opacity: 1 }, 11.2033);
+          tl.fromTo("#frase-14", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 11.2033);
+          tl.set("#frase-14", { opacity: 0 }, 11.9733);
+          tl.set("#w27", { color: "#f5a524" }, 11.2033);
+          tl.set("#w27", { color: "#ffffff" }, 11.3133);
+          tl.set("#w28", { color: "#f5a524" }, 11.3133);
+          tl.set("#frase-15", { opacity: 1 }, 12.42);
+          tl.fromTo("#frase-15", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 12.42);
+          tl.set("#frase-15", { opacity: 0 }, 13.05);
+          tl.set("#w29", { color: "#f5a524" }, 12.42);
+          tl.set("#w29", { color: "#ffffff" }, 12.82);
+          tl.set("#w30", { color: "#f5a524" }, 12.82);
+          tl.set("#w30", { color: "#ffffff" }, 12.92);
+          tl.set("#w31", { color: "#f5a524" }, 12.92);
+          tl.set("#frase-16", { opacity: 1 }, 13.05);
+          tl.fromTo("#frase-16", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 13.05);
+          tl.set("#frase-16", { opacity: 0 }, 13.84);
+          tl.set("#w32", { color: "#f5a524" }, 13.05);
+          tl.set("#w32", { color: "#ffffff" }, 13.47);
+          tl.set("#w33", { color: "#f5a524" }, 13.47);
+          tl.set("#w33", { color: "#ffffff" }, 13.64);
+          tl.set("#w34", { color: "#f5a524" }, 13.64);
+          tl.set("#frase-17", { opacity: 1 }, 13.84);
+          tl.fromTo("#frase-17", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 13.84);
+          tl.set("#frase-17", { opacity: 0 }, 14.38);
+          tl.set("#w35", { color: "#f5a524" }, 13.84);
+          tl.set("#frase-18", { opacity: 1 }, 14.4233);
+          tl.fromTo("#frase-18", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 14.4233);
+          tl.set("#frase-18", { opacity: 0 }, 15.2133);
+          tl.set("#w36", { color: "#f5a524" }, 14.4233);
+          tl.set("#w36", { color: "#ffffff" }, 14.9433);
+          tl.set("#w37", { color: "#f5a524" }, 14.9433);
+          tl.set("#w37", { color: "#ffffff" }, 15.0233);
+          tl.set("#w38", { color: "#f5a524" }, 15.0233);
+          tl.set("#frase-19", { opacity: 1 }, 15.2133);
+          tl.fromTo("#frase-19", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 15.2133);
+          tl.set("#frase-19", { opacity: 0 }, 16.0633);
+          tl.set("#w39", { color: "#f5a524" }, 15.2133);
+          tl.set("#w39", { color: "#ffffff" }, 15.4033);
+          tl.set("#w40", { color: "#f5a524" }, 15.4033);
+          tl.set("#w40", { color: "#ffffff" }, 15.5033);
+          tl.set("#w41", { color: "#f5a524" }, 15.5033);
+          tl.set("#frase-20", { opacity: 1 }, 16.1317);
+          tl.fromTo("#frase-20", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 16.1317);
+          tl.set("#frase-20", { opacity: 0 }, 16.4517);
+          tl.set("#w42", { color: "#f5a524" }, 16.1317);
+          tl.set("#frase-21", { opacity: 1 }, 16.4517);
+          tl.fromTo("#frase-21", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 16.4517);
+          tl.set("#frase-21", { opacity: 0 }, 17.3617);
+          tl.set("#w43", { color: "#f5a524" }, 16.4517);
+          tl.set("#w43", { color: "#ffffff" }, 16.6517);
+          tl.set("#w44", { color: "#f5a524" }, 16.6517);
+          tl.set("#frase-22", { opacity: 1 }, 17.3617);
+          tl.fromTo("#frase-22", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 17.3617);
+          tl.set("#frase-22", { opacity: 0 }, 18.1117);
+          tl.set("#w45", { color: "#f5a524" }, 17.3617);
+          tl.set("#w45", { color: "#ffffff" }, 17.6117);
+          tl.set("#w46", { color: "#f5a524" }, 17.6117);
+          tl.set("#frase-23", { opacity: 1 }, 18.245);
+          tl.fromTo("#frase-23", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 18.245);
+          tl.set("#frase-23", { opacity: 0 }, 18.625);
+          tl.set("#w47", { color: "#f5a524" }, 18.245);
+          tl.set("#w47", { color: "#ffffff" }, 18.335);
+          tl.set("#w48", { color: "#f5a524" }, 18.335);
+          tl.set("#frase-24", { opacity: 1 }, 18.625);
+          tl.fromTo("#frase-24", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 18.625);
+          tl.set("#frase-24", { opacity: 0 }, 19.705);
+          tl.set("#w49", { color: "#f5a524" }, 18.625);
+          tl.set("#w49", { color: "#ffffff" }, 19.015);
+          tl.set("#w50", { color: "#f5a524" }, 19.015);
+          tl.set("#frase-25", { opacity: 1 }, 19.755);
+          tl.fromTo("#frase-25", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 19.755);
+          tl.set("#frase-25", { opacity: 0 }, 19.915);
+          tl.set("#w51", { color: "#f5a524" }, 19.755);
+          tl.set("#frase-26", { opacity: 1 }, 19.915);
+          tl.fromTo("#frase-26", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 19.915);
+          tl.set("#frase-26", { opacity: 0 }, 20.805);
+          tl.set("#w52", { color: "#f5a524" }, 19.915);
+          tl.set("#w52", { color: "#ffffff" }, 20.125);
+          tl.set("#w53", { color: "#f5a524" }, 20.125);
+          tl.set("#w53", { color: "#ffffff" }, 20.195);
+          tl.set("#w54", { color: "#f5a524" }, 20.195);
+          tl.set("#frase-27", { opacity: 1 }, 20.805);
+          tl.fromTo("#frase-27", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 20.805);
+          tl.set("#frase-27", { opacity: 0 }, 21.735);
+          tl.set("#w55", { color: "#f5a524" }, 20.805);
+          tl.set("#w55", { color: "#ffffff" }, 20.995);
+          tl.set("#w56", { color: "#f5a524" }, 20.995);
+          tl.set("#w56", { color: "#ffffff" }, 21.095);
+          tl.set("#w57", { color: "#f5a524" }, 21.095);
+          tl.set("#w57", { color: "#ffffff" }, 21.155);
+          tl.set("#w58", { color: "#f5a524" }, 21.155);
+          tl.set("#frase-28", { opacity: 1 }, 21.7983);
+          tl.fromTo("#frase-28", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 21.7983);
+          tl.set("#frase-28", { opacity: 0 }, 22.8783);
+          tl.set("#w59", { color: "#f5a524" }, 21.7983);
+          tl.set("#w59", { color: "#ffffff" }, 21.9883);
+          tl.set("#w60", { color: "#f5a524" }, 21.9883);
+          tl.set("#w60", { color: "#ffffff" }, 22.3983);
+          tl.set("#w61", { color: "#f5a524" }, 22.3983);
+          tl.set("#frase-29", { opacity: 1 }, 22.9233);
+          tl.fromTo("#frase-29", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 22.9233);
+          tl.set("#frase-29", { opacity: 0 }, 23.6633);
+          tl.set("#w62", { color: "#f5a524" }, 22.9233);
+          tl.set("#w62", { color: "#ffffff" }, 22.9733);
+          tl.set("#w63", { color: "#f5a524" }, 22.9733);
+          tl.set("#w63", { color: "#ffffff" }, 23.1933);
+          tl.set("#w64", { color: "#f5a524" }, 23.1933);
+          tl.set("#frase-30", { opacity: 1 }, 23.6633);
+          tl.fromTo("#frase-30", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 23.6633);
+          tl.set("#frase-30", { opacity: 0 }, 24.6533);
+          tl.set("#w65", { color: "#f5a524" }, 23.6633);
+          tl.set("#w65", { color: "#ffffff" }, 23.9233);
+          tl.set("#w66", { color: "#f5a524" }, 23.9233);
+          tl.set("#w66", { color: "#ffffff" }, 24.1833);
+          tl.set("#w67", { color: "#f5a524" }, 24.1833);
+          tl.set("#frase-31", { opacity: 1 }, 24.715);
+          tl.fromTo("#frase-31", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 24.715);
+          tl.set("#frase-31", { opacity: 0 }, 25.525);
+          tl.set("#w68", { color: "#f5a524" }, 24.715);
+          tl.set("#w68", { color: "#ffffff" }, 25.315);
+          tl.set("#w69", { color: "#f5a524" }, 25.315);
+          tl.set("#frase-32", { opacity: 1 }, 25.525);
+          tl.fromTo("#frase-32", { scale: 0.86 }, { scale: 1, duration: 0.09, ease: "back.out(2)" }, 25.525);
+          tl.set("#frase-32", { opacity: 0 }, 26.035);
+          tl.set("#w70", { color: "#f5a524" }, 25.525);
+          window.__timelines["subtitulos"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

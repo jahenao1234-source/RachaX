@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .cuenta { position: absolute; right: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.12em; color: #b8590a; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; margin-left: 6px; transform-origin: 0 60%; }
+        .suelta { position: relative; margin-left: 6px; color: #8a8375; }
+        #a-raya { position: absolute; left: -8px; right: -8px; top: 52%; height: 13px; background: #f5a524; transform-origin: 0 50%; }
+        .semana { position: absolute; left: 60px; top: 606px; display: flex; gap: 18px; }
+        .dia { position: relative; width: 122px; height: 122px; border: 4px solid #16130f; border-radius: 22px; background: #f6f3ea; overflow: visible; opacity: 0; }
+        .dia b { position: absolute; inset: 0; border-radius: 18px; background: #f5a524; opacity: 0; }
+        .dia span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 60px; color: #16130f; }
+        #a-x { position: absolute; inset: -14px; width: 150px; height: 150px; }
+        #a-x path { fill: none; stroke: #d5320f; stroke-width: 13; stroke-linecap: round; stroke-dasharray: 110; stroke-dashoffset: 110; }
+      </style>
+      <div id="root" data-composition-id="escena-a" data-width="1080" data-height="1920">
+        <p class="eti" id="a-eti">LUNES → JUEVES</p>
+        <p class="tit" id="a-l1" style="top: 346px"><span id="a-w1">El lunes:</span> <span id="a-w2" class="marca">con todo.</span></p>
+        <p class="tit" id="a-l2" style="top: 462px"><span id="a-w3">El jueves:</span> <span id="a-w4" class="suelta">lo soltaste.<i id="a-raya"></i></span></p>
+        <div class="semana">
+          <div class="dia" id="a-d0"><b id="a-f0"></b><span>L</span></div>
+          <div class="dia" id="a-d1"><b id="a-f1"></b><span>M</span></div>
+          <div class="dia" id="a-d2"><b id="a-f2"></b><span>M</span></div>
+          <div class="dia" id="a-d3"><b id="a-f3"></b><span>J</span><svg id="a-x" viewBox="0 0 100 100"><path id="a-x1" d="M14 16 L86 84" /><path id="a-x2" d="M86 14 L16 86" /></svg></div>
+          <div class="dia" id="a-d4"><b id="a-f4"></b><span>V</span></div>
+          <div class="dia" id="a-d5"><b id="a-f5"></b><span>S</span></div>
+          <div class="dia" id="a-d6"><b id="a-f6"></b><span>D</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#a-eti", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out" }, 0.05);
+          tl.fromTo("#a-d0", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.12);
+          tl.fromTo("#a-d1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.155);
+          tl.fromTo("#a-d2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.19);
+          tl.fromTo("#a-d3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.225);
+          tl.fromTo("#a-d4", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.26);
+          tl.fromTo("#a-d5", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.295);
+          tl.fromTo("#a-d6", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: "back.out(1.8)" }, 0.33);
+          tl.fromTo("#a-w1", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)" }, 0.63);
+          tl.fromTo("#a-f0", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "back.out(2.5)" }, 0.69);
+          tl.to("#a-d0", { scale: 1.14, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 0.69);
+          tl.fromTo("#a-f1", { opacity: 0, scale: 0.4 }, { opacity: 0.62, scale: 1, duration: 0.16, ease: "back.out(2.5)" }, 1.03);
+          tl.fromTo("#a-w2", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)", rotation: -2 }, 1.54);
+          tl.fromTo("#a-f2", { opacity: 0, scale: 0.4 }, { opacity: 0.3, scale: 1, duration: 0.16, ease: "back.out(2.5)" }, 1.74);
+          tl.fromTo("#a-w3", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)" }, 2.49);
+          tl.to("#a-x1", { strokeDashoffset: 0, duration: 0.12, ease: "power2.in" }, 2.6);
+          tl.to("#a-x2", { strokeDashoffset: 0, duration: 0.12, ease: "power2.in" }, 2.72);
+          tl.to("#a-d3", { rotation: -5, duration: 0.07, yoyo: true, repeat: 3, ease: "sine.inOut" }, 2.6);
+          tl.to("#a-d4", { opacity: 0.32, duration: 0.2 }, 2.8);
+          tl.to("#a-d5", { opacity: 0.32, duration: 0.2 }, 2.8);
+          tl.to("#a-d6", { opacity: 0.32, duration: 0.2 }, 2.8);
+          tl.fromTo("#a-w4", { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "back.out(2.2)" }, 2.87);
+          tl.fromTo("#a-raya", { scaleX: 0, rotation: -2 }, { scaleX: 1, rotation: -2, duration: 0.18, ease: "power3.out" }, 3.24);
+          window.__timelines["escena-a"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

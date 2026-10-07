@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · Lina · guion 4</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Barlow Condensed";
+        font-weight: 700;
+        src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2");
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #0c0d10; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #0c0d10; }
+      .clip { position: absolute; inset: 0; }
+      /* Las tomas de Lina. "cerca" es un acercamiento fijo para disimular el corte dentro del mismo plano. */
+      .toma { width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+      .toma.cerca { transform: scale(1.08); transform-origin: 50% 30%; }
+      #app-despues, #app-minimo, #cierre { z-index: 2; }
+      #subtitulos { z-index: 3; }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="29" data-width="1080" data-height="1920">
+      <!-- La voz de los clips llega bajita: se sube 7 dB y se le pone un tope para que no se sature. -->
+      <hf-audio-group id="voz" data-label="Voz de Lina" data-fx-chain='{"version":1,"nodes":[{"type":"gain","id":"v1","params":{"gain":7}},{"type":"limiter","id":"v2","params":{"limit":-1.5}}]}'></hf-audio-group>
+
+      <!-- Pista 0 · Lina, solo los tramos con voz -->
+      <video id="toma-0" class="clip toma" src="assets/1-gancho.mp4" playsinline data-has-audio="true" data-start="0" data-duration="4.041666" data-media-start="1.91" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-1" class="clip toma" src="assets/2-mito.mp4" playsinline data-has-audio="true" data-start="4.041666" data-duration="1.666667" data-media-start="0.43" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-2" class="clip toma cerca" src="assets/2-mito.mp4" playsinline data-has-audio="true" data-start="5.708333" data-duration="0.958333" data-media-start="2.15" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-3" class="clip toma" src="assets/2-mito.mp4" playsinline data-has-audio="true" data-start="6.666666" data-duration="1" data-media-start="3.28" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-4" class="clip toma cerca" src="assets/2-mito.mp4" playsinline data-has-audio="true" data-start="7.666666" data-duration="0.916667" data-media-start="4.33" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-5" class="clip toma" src="assets/2-mito.mp4" playsinline data-has-audio="true" data-start="8.583333" data-duration="1" data-media-start="5.62" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-6" class="clip toma cerca" src="assets/2-mito.mp4" playsinline data-has-audio="true" data-start="9.583333" data-duration="2.416667" data-media-start="6.69" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-7" class="clip toma" src="assets/3-solucion.mp4" playsinline data-has-audio="true" data-start="12" data-duration="2.333333" data-media-start="3.23" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-8" class="clip toma cerca" src="assets/3-solucion.mp4" playsinline data-has-audio="true" data-start="14.333333" data-duration="1.708333" data-media-start="5.8" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-9" class="clip toma" src="assets/3-solucion.mp4" playsinline data-has-audio="true" data-start="16.041666" data-duration="2.083334" data-media-start="7.64" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-10" class="clip toma" src="assets/4-cierre.mp4" playsinline data-has-audio="true" data-start="18.125" data-duration="3.583333" data-media-start="0.45" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-11" class="clip toma cerca" src="assets/4-cierre.mp4" playsinline data-has-audio="true" data-start="21.708333" data-duration="1.125" data-media-start="4.59" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-12" class="clip toma" src="assets/4-cierre.mp4" playsinline data-has-audio="true" data-start="22.833333" data-duration="1.791667" data-media-start="6.11" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+      <video id="toma-13" class="clip toma cerca" src="assets/4-cierre.mp4" playsinline data-has-audio="true" data-start="24.625" data-duration="1.791666" data-media-start="8.14" data-track-index="0" data-volume="1" data-audio-group="voz"></video>
+
+      <!-- Pista 1 · La app a pantalla completa y el cierre -->
+      <div id="app-despues" class="clip" data-composition-id="app-despues" data-composition-src="compositions/app-despues.html" data-start="14.375" data-duration="1.708333" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="app-minimo" class="clip" data-composition-id="app-minimo" data-composition-src="compositions/app-minimo.html" data-start="16.083333" data-duration="2.041667" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="cierre" class="clip" data-composition-id="cierre" data-composition-src="compositions/cierre.html" data-start="26.416666" data-duration="2.583334" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+
+      <!-- Pista 2 · Subtítulos palabra por palabra -->
+      <div id="subtitulos" class="clip" data-composition-id="subtitulos" data-composition-src="compositions/subtitulos.html" data-start="0" data-duration="26.416666" data-track-index="2" data-track-kind="captions" data-width="1080" data-height="1920"></div>
+
+      <!-- Pista 3 · Sonidos -->
+      <audio id="sfx-app" src="assets/whoosh.wav" data-start="14.275" data-duration="0.42" data-track-index="3" data-volume="0.3"></audio>
+      <audio id="sfx-ding" src="assets/ding.wav" data-start="16.2333" data-duration="0.7" data-track-index="3" data-volume="0.25"></audio>
+      <audio id="sfx-cierre" src="assets/whoosh.wav" data-start="26.3167" data-duration="0.42" data-track-index="3" data-volume="0.3"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Segoe UI Black,80,&H00FFFFFF,&H00FFFFFF,&H00000000,&H96000000,0,0,0,0,100,100,0,0,1,7,3,2,60,60,690,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.30,0:00:02.20,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Se te quiebra\N{\c&H24A5F5&}un huevo...
+Dialogue: 0,0:00:03.55,0:00:04.85,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}¿y botas la\N{\c&H24A5F5&}cubeta entera?
+Dialogue: 0,0:00:05.00,0:00:06.75,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Eso es\N{\c&H24A5F5&}volver a cero
+Dialogue: 0,0:00:06.90,0:00:08.95,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}por fallar\N{\c&H24A5F5&}un día.
+Dialogue: 0,0:00:09.40,0:00:11.50,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Llevas {\c&H24A5F5&}23 días,\N{\c&HFFFFFF&}fallas uno...
+Dialogue: 0,0:00:11.55,0:00:13.45,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}y el contador te\Ndevuelve {\c&H597AFF&}a cero.
+Dialogue: 0,0:00:13.85,0:00:15.40,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Y con el cero\Nllega el {\c&H24A5F5&}"ya qué".
+Dialogue: 0,0:00:15.65,0:00:17.10,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Ahí es donde\N{\c&H24A5F5&}botas todo.
+Dialogue: 0,0:00:17.45,0:00:18.95,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}{\c&H24A5F5&}Racha{\c&HFFFFFF&} te guarda\Nla partida.
+Dialogue: 0,0:00:19.45,0:00:20.50,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}¿Día pesado?
+Dialogue: 0,0:00:20.80,0:00:22.50,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Haces {\c&H24A5F5&}lo mínimo\N{\c&HFFFFFF&}y cuenta.
+Dialogue: 0,0:00:22.90,0:00:23.90,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}¿No hiciste nada?
+Dialogue: 0,0:00:24.05,0:00:25.78,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Un {\c&H24A5F5&}comodín\N{\c&HFFFFFF&}congela ese día.
+Dialogue: 0,0:00:26.25,0:00:28.33,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Y el día que vuelves\N{\c&H24A5F5&}vale el doble.
+Dialogue: 0,0:00:29.20,0:00:32.20,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Racha es una app\Ny se paga {\c&H24A5F5&}una sola vez.
+Dialogue: 0,0:00:32.60,0:00:34.10,Sub,,0,0,0,,{\fscx85\fscy85\t(0,90,\fscx100\fscy100)}Escríbenos\N{\c&H24A5F5&}aquí abajo.

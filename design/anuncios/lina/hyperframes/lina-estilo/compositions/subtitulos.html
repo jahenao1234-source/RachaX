@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .frase { position: absolute; left: 40px; right: 40px; top: 776px; margin: 0; opacity: 0; white-space: nowrap; text-align: center; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 66px; line-height: 1; letter-spacing: -0.01em; color: #ffffff; -webkit-text-stroke: 12px #000000; paint-order: stroke fill; }
+      </style>
+      <div id="root" data-composition-id="subtitulos" data-width="1080" data-height="1920">
+        <p id="frase-0" class="frase"><span id="w0">El</span> <span id="w1">lunes</span> <span id="w2">empiezas</span></p>
+        <p id="frase-1" class="frase"><span id="w3">con</span> <span id="w4">todo</span></p>
+        <p id="frase-2" class="frase"><span id="w5">y</span> <span id="w6">el</span> <span id="w7">jueves</span></p>
+        <p id="frase-3" class="frase"><span id="w8">ya</span> <span id="w9">lo</span> <span id="w10">soltaste.</span></p>
+        <p id="frase-4" class="frase"><span id="w11">Gimnasio,</span></p>
+        <p id="frase-5" class="frase"><span id="w12">leer,</span></p>
+        <p id="frase-6" class="frase"><span id="w13">madrugar,</span></p>
+        <p id="frase-7" class="frase"><span id="w14">comer</span> <span id="w15">bien,</span></p>
+        <p id="frase-8" class="frase"><span id="w16">todo</span> <span id="w17">de</span> <span id="w18">una.</span></p>
+        <p id="frase-9" class="frase"><span id="w19">No</span> <span id="w20">es</span> <span id="w21">pereza.</span></p>
+        <p id="frase-10" class="frase"><span id="w22">Empezar</span> <span id="w23">con</span> <span id="w24">todo</span></p>
+        <p id="frase-11" class="frase"><span id="w25">es</span> <span id="w26">empezar</span></p>
+        <p id="frase-12" class="frase"><span id="w27">a</span> <span id="w28">abandonar.</span></p>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.set("#frase-0", { opacity: 1 }, 0.52);
+          tl.fromTo("#frase-0", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 0.52);
+          tl.set("#frase-0", { opacity: 0 }, 1.47);
+          tl.set("#w0", { color: "#f5a524" }, 0.52);
+          tl.set("#w0", { color: "#ffffff" }, 0.69);
+          tl.set("#w1", { color: "#f5a524" }, 0.69);
+          tl.set("#w1", { color: "#ffffff" }, 1.03);
+          tl.set("#w2", { color: "#f5a524" }, 1.03);
+          tl.set("#frase-1", { opacity: 1 }, 1.47);
+          tl.fromTo("#frase-1", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 1.47);
+          tl.set("#frase-1", { opacity: 0 }, 2.27);
+          tl.set("#w3", { color: "#f5a524" }, 1.47);
+          tl.set("#w3", { color: "#ffffff" }, 1.74);
+          tl.set("#w4", { color: "#f5a524" }, 1.74);
+          tl.set("#frase-2", { opacity: 1 }, 2.29);
+          tl.fromTo("#frase-2", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 2.29);
+          tl.set("#frase-2", { opacity: 0 }, 2.92);
+          tl.set("#w5", { color: "#f5a524" }, 2.29);
+          tl.set("#w5", { color: "#ffffff" }, 2.41);
+          tl.set("#w6", { color: "#f5a524" }, 2.41);
+          tl.set("#w6", { color: "#ffffff" }, 2.55);
+          tl.set("#w7", { color: "#f5a524" }, 2.55);
+          tl.set("#frase-3", { opacity: 1 }, 2.92);
+          tl.fromTo("#frase-3", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 2.92);
+          tl.set("#frase-3", { opacity: 0 }, 3.93);
+          tl.set("#w8", { color: "#f5a524" }, 2.92);
+          tl.set("#w8", { color: "#ffffff" }, 3.04);
+          tl.set("#w9", { color: "#f5a524" }, 3.04);
+          tl.set("#w9", { color: "#ffffff" }, 3.12);
+          tl.set("#w10", { color: "#f5a524" }, 3.12);
+          tl.set("#frase-4", { opacity: 1 }, 4.1617);
+          tl.fromTo("#frase-4", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 4.1617);
+          tl.set("#frase-4", { opacity: 0 }, 4.9717);
+          tl.set("#w11", { color: "#f5a524" }, 4.1617);
+          tl.set("#frase-5", { opacity: 1 }, 4.9717);
+          tl.fromTo("#frase-5", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 4.9717);
+          tl.set("#frase-5", { opacity: 0 }, 5.7317);
+          tl.set("#w12", { color: "#f5a524" }, 4.9717);
+          tl.set("#frase-6", { opacity: 1 }, 5.7983);
+          tl.fromTo("#frase-6", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 5.7983);
+          tl.set("#frase-6", { opacity: 0 }, 6.6983);
+          tl.set("#w13", { color: "#f5a524" }, 5.7983);
+          tl.set("#frase-7", { opacity: 1 }, 6.7567);
+          tl.fromTo("#frase-7", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 6.7567);
+          tl.set("#frase-7", { opacity: 0 }, 7.6867);
+          tl.set("#w14", { color: "#f5a524" }, 6.7567);
+          tl.set("#w14", { color: "#ffffff" }, 7.1167);
+          tl.set("#w15", { color: "#f5a524" }, 7.1167);
+          tl.set("#frase-8", { opacity: 1 }, 7.7567);
+          tl.fromTo("#frase-8", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 7.7567);
+          tl.set("#frase-8", { opacity: 0 }, 8.6067);
+          tl.set("#w16", { color: "#f5a524" }, 7.7567);
+          tl.set("#w16", { color: "#ffffff" }, 8.0667);
+          tl.set("#w17", { color: "#f5a524" }, 8.0667);
+          tl.set("#w17", { color: "#ffffff" }, 8.2067);
+          tl.set("#w18", { color: "#f5a524" }, 8.2067);
+          tl.set("#frase-9", { opacity: 1 }, 8.6733);
+          tl.fromTo("#frase-9", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 8.6733);
+          tl.set("#frase-9", { opacity: 0 }, 9.6033);
+          tl.set("#w19", { color: "#f5a524" }, 8.6733);
+          tl.set("#w19", { color: "#ffffff" }, 8.8233);
+          tl.set("#w20", { color: "#f5a524" }, 8.8233);
+          tl.set("#w20", { color: "#ffffff" }, 9.0333);
+          tl.set("#w21", { color: "#f5a524" }, 9.0333);
+          tl.set("#frase-10", { opacity: 1 }, 9.6733);
+          tl.fromTo("#frase-10", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 9.6733);
+          tl.set("#frase-10", { opacity: 0 }, 10.6933);
+          tl.set("#w22", { color: "#f5a524" }, 9.6733);
+          tl.set("#w22", { color: "#ffffff" }, 10.1733);
+          tl.set("#w23", { color: "#f5a524" }, 10.1733);
+          tl.set("#w23", { color: "#ffffff" }, 10.3333);
+          tl.set("#w24", { color: "#f5a524" }, 10.3333);
+          tl.set("#frase-11", { opacity: 1 }, 10.7233);
+          tl.fromTo("#frase-11", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 10.7233);
+          tl.set("#frase-11", { opacity: 0 }, 11.2033);
+          tl.set("#w25", { color: "#f5a524" }, 10.7233);
+          tl.set("#w25", { color: "#ffffff" }, 10.8333);
+          tl.set("#w26", { color: "#f5a524" }, 10.8333);
+          tl.set("#frase-12", { opacity: 1 }, 11.2033);
+          tl.fromTo("#frase-12", { scale: 0.9 }, { scale: 1, duration: 0.08, ease: "back.out(2)" }, 11.2033);
+          tl.set("#frase-12", { opacity: 0 }, 11.9533);
+          tl.set("#w27", { color: "#f5a524" }, 11.2033);
+          tl.set("#w27", { color: "#ffffff" }, 11.3133);
+          tl.set("#w28", { color: "#f5a524" }, 11.3133);
+          window.__timelines["subtitulos"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

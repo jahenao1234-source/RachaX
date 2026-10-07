@@ -1,0 +1,12 @@
+0
+00:00:00,000 --> 00:00:02,000
+Racha te guarda la partida.
+
+1
+00:00:02,000 --> 00:00:05,500
+Día pesado, haces lo mínimo y cuenta.
+
+2
+00:00:05,500 --> 00:00:08,240
+No hiciste nada un comodín con gela ese día.
+

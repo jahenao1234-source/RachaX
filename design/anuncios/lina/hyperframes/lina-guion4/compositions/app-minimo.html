@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0c0d10; }
+        #app-minimo-img { display: block; width: 100%; height: 100%; transform-origin: 50% 38%; }
+      </style>
+      <div id="root" data-composition-id="app-minimo" data-width="1080" data-height="1920">
+        <img id="app-minimo-img" src="assets/app-minimo-y-hoy.png" alt="" data-layout-allow-overflow />
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#app-minimo-img", { scale: 1 }, { scale: 1.05, duration: 2.0417, ease: "none" }, 0);
+          window.__timelines["app-minimo"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+[0:v]tpad=stop_mode=clone:stop_duration=2.700[b];
+[1:v]setpts=PTS-STARTPTS+14.410/TB[k1];
+[2:v]setpts=PTS-STARTPTS+16.100/TB[k2];
+[3:v]setpts=PTS-STARTPTS+26.410/TB[k3];
+[b][k1]overlay=enable='between(t,14.410,16.100)':eof_action=pass[v1];
+[v1][k2]overlay=enable='between(t,16.100,18.140)':eof_action=pass[v2];
+[v2][k3]overlay=enable='gte(t,26.410)':eof_action=repeat[v3];
+[v3]subtitles=subs.ass,format=yuv420p[v];
+[0:a]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,apad=pad_dur=2.700[voz];
+[4:a]asplit=2[w1][w2];
+[w1]adelay=14310:all=1,volume=0.30[s1];
+[w2]adelay=26310:all=1,volume=0.30[s2];
+[5:a]adelay=16250:all=1,volume=0.25[s3];
+[voz][s1][s2][s3]amix=inputs=4:normalize=0:duration=first,alimiter=limit=0.95[a]

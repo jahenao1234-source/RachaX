@@ -1,0 +1,84 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Segoe UI Black,92,&H00FFFFFF,&H00FFFFFF,&H00000000,&H96000000,0,0,0,0,100,100,0,0,1,8,3,2,50,50,720,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.52,0:00:00.69,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}El{\c&HFFFFFF&} lunes
+Dialogue: 0,0:00:00.69,0:00:01.01,Sub,,0,0,0,,El {\c&H24A5F5&}lunes{\c&HFFFFFF&}
+Dialogue: 0,0:00:01.00,0:00:01.48,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}empiezas{\c&HFFFFFF&}
+Dialogue: 0,0:00:01.47,0:00:01.74,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}con{\c&HFFFFFF&} todo
+Dialogue: 0,0:00:01.74,0:00:02.29,Sub,,0,0,0,,con {\c&H24A5F5&}todo{\c&HFFFFFF&}
+Dialogue: 0,0:00:02.29,0:00:02.41,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}y{\c&HFFFFFF&} el jueves
+Dialogue: 0,0:00:02.41,0:00:02.55,Sub,,0,0,0,,y {\c&H24A5F5&}el{\c&HFFFFFF&} jueves
+Dialogue: 0,0:00:02.55,0:00:02.93,Sub,,0,0,0,,y el {\c&H24A5F5&}jueves{\c&HFFFFFF&}
+Dialogue: 0,0:00:02.92,0:00:03.04,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}ya{\c&HFFFFFF&} lo soltaste.
+Dialogue: 0,0:00:03.04,0:00:03.12,Sub,,0,0,0,,ya {\c&H24A5F5&}lo{\c&HFFFFFF&} soltaste.
+Dialogue: 0,0:00:03.12,0:00:03.95,Sub,,0,0,0,,ya lo {\c&H24A5F5&}soltaste.{\c&HFFFFFF&}
+Dialogue: 0,0:00:04.15,0:00:04.97,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Gimnasio,{\c&HFFFFFF&}
+Dialogue: 0,0:00:04.96,0:00:05.74,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}leer,{\c&HFFFFFF&}
+Dialogue: 0,0:00:05.79,0:00:06.71,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}madrugar,{\c&HFFFFFF&}
+Dialogue: 0,0:00:06.76,0:00:07.12,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}comer{\c&HFFFFFF&} bien,
+Dialogue: 0,0:00:07.12,0:00:07.71,Sub,,0,0,0,,comer {\c&H24A5F5&}bien,{\c&HFFFFFF&}
+Dialogue: 0,0:00:07.76,0:00:08.07,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}todo{\c&HFFFFFF&} de una.
+Dialogue: 0,0:00:08.07,0:00:08.21,Sub,,0,0,0,,todo {\c&H24A5F5&}de{\c&HFFFFFF&} una.
+Dialogue: 0,0:00:08.21,0:00:08.63,Sub,,0,0,0,,todo de {\c&H24A5F5&}una.{\c&HFFFFFF&}
+Dialogue: 0,0:00:08.68,0:00:08.83,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}No{\c&HFFFFFF&} es pereza.
+Dialogue: 0,0:00:08.83,0:00:09.04,Sub,,0,0,0,,No {\c&H24A5F5&}es{\c&HFFFFFF&} pereza.
+Dialogue: 0,0:00:09.04,0:00:09.63,Sub,,0,0,0,,No es {\c&H24A5F5&}pereza.{\c&HFFFFFF&}
+Dialogue: 0,0:00:09.68,0:00:10.16,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Empezar{\c&HFFFFFF&}
+Dialogue: 0,0:00:10.15,0:00:10.34,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}con{\c&HFFFFFF&} todo
+Dialogue: 0,0:00:10.34,0:00:10.72,Sub,,0,0,0,,con {\c&H24A5F5&}todo{\c&HFFFFFF&}
+Dialogue: 0,0:00:10.73,0:00:10.84,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}es{\c&HFFFFFF&} empezar
+Dialogue: 0,0:00:10.84,0:00:11.22,Sub,,0,0,0,,es {\c&H24A5F5&}empezar{\c&HFFFFFF&}
+Dialogue: 0,0:00:11.21,0:00:11.32,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}a{\c&HFFFFFF&} abandonar.
+Dialogue: 0,0:00:11.32,0:00:11.98,Sub,,0,0,0,,a {\c&H24A5F5&}abandonar.{\c&HFFFFFF&}
+Dialogue: 0,0:00:12.43,0:00:12.83,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Racha{\c&HFFFFFF&} te hace
+Dialogue: 0,0:00:12.83,0:00:12.93,Sub,,0,0,0,,Racha {\c&H24A5F5&}te{\c&HFFFFFF&} hace
+Dialogue: 0,0:00:12.93,0:00:13.07,Sub,,0,0,0,,Racha te {\c&H24A5F5&}hace{\c&HFFFFFF&}
+Dialogue: 0,0:00:13.06,0:00:13.48,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}empezar{\c&HFFFFFF&} con uno
+Dialogue: 0,0:00:13.48,0:00:13.65,Sub,,0,0,0,,empezar {\c&H24A5F5&}con{\c&HFFFFFF&} uno
+Dialogue: 0,0:00:13.65,0:00:13.86,Sub,,0,0,0,,empezar con {\c&H24A5F5&}uno{\c&HFFFFFF&}
+Dialogue: 0,0:00:13.85,0:00:14.39,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}solo,{\c&HFFFFFF&}
+Dialogue: 0,0:00:14.44,0:00:14.96,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}amarrado{\c&HFFFFFF&} a algo
+Dialogue: 0,0:00:14.96,0:00:15.04,Sub,,0,0,0,,amarrado {\c&H24A5F5&}a{\c&HFFFFFF&} algo
+Dialogue: 0,0:00:15.04,0:00:15.24,Sub,,0,0,0,,amarrado a {\c&H24A5F5&}algo{\c&HFFFFFF&}
+Dialogue: 0,0:00:15.23,0:00:15.42,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}que{\c&HFFFFFF&} ya haces.
+Dialogue: 0,0:00:15.42,0:00:15.52,Sub,,0,0,0,,que {\c&H24A5F5&}ya{\c&HFFFFFF&} haces.
+Dialogue: 0,0:00:15.52,0:00:16.08,Sub,,0,0,0,,que ya {\c&H24A5F5&}haces.{\c&HFFFFFF&}
+Dialogue: 0,0:00:16.13,0:00:16.46,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Después{\c&HFFFFFF&}
+Dialogue: 0,0:00:16.45,0:00:16.65,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}del{\c&HFFFFFF&} desayuno,
+Dialogue: 0,0:00:16.65,0:00:17.37,Sub,,0,0,0,,del {\c&H24A5F5&}desayuno,{\c&HFFFFFF&}
+Dialogue: 0,0:00:17.36,0:00:17.61,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}una{\c&HFFFFFF&} página.
+Dialogue: 0,0:00:17.61,0:00:18.11,Sub,,0,0,0,,una {\c&H24A5F5&}página.{\c&HFFFFFF&}
+Dialogue: 0,0:00:18.26,0:00:18.35,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Y{\c&HFFFFFF&} cuando
+Dialogue: 0,0:00:18.35,0:00:18.65,Sub,,0,0,0,,Y {\c&H24A5F5&}cuando{\c&HFFFFFF&}
+Dialogue: 0,0:00:18.64,0:00:19.03,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}quieras{\c&HFFFFFF&} más,
+Dialogue: 0,0:00:19.03,0:00:19.72,Sub,,0,0,0,,quieras {\c&H24A5F5&}más,{\c&HFFFFFF&}
+Dialogue: 0,0:00:19.77,0:00:19.94,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}vas{\c&HFFFFFF&}
+Dialogue: 0,0:00:19.93,0:00:20.14,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}de{\c&HFFFFFF&} a tres,
+Dialogue: 0,0:00:20.14,0:00:20.21,Sub,,0,0,0,,de {\c&H24A5F5&}a{\c&HFFFFFF&} tres,
+Dialogue: 0,0:00:20.21,0:00:20.83,Sub,,0,0,0,,de a {\c&H24A5F5&}tres,{\c&HFFFFFF&}
+Dialogue: 0,0:00:20.82,0:00:21.01,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}no{\c&HFFFFFF&} de a diez.
+Dialogue: 0,0:00:21.01,0:00:21.11,Sub,,0,0,0,,no {\c&H24A5F5&}de{\c&HFFFFFF&} a diez.
+Dialogue: 0,0:00:21.11,0:00:21.17,Sub,,0,0,0,,no de {\c&H24A5F5&}a{\c&HFFFFFF&} diez.
+Dialogue: 0,0:00:21.17,0:00:21.75,Sub,,0,0,0,,no de a {\c&H24A5F5&}diez.{\c&HFFFFFF&}
+Dialogue: 0,0:00:21.80,0:00:21.99,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Es{\c&HFFFFFF&} una app
+Dialogue: 0,0:00:21.99,0:00:22.40,Sub,,0,0,0,,Es {\c&H24A5F5&}una{\c&HFFFFFF&} app
+Dialogue: 0,0:00:22.40,0:00:22.88,Sub,,0,0,0,,Es una {\c&H24A5F5&}app{\c&HFFFFFF&}
+Dialogue: 0,0:00:22.93,0:00:22.98,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}y{\c&HFFFFFF&} se paga
+Dialogue: 0,0:00:22.98,0:00:23.20,Sub,,0,0,0,,y {\c&H24A5F5&}se{\c&HFFFFFF&} paga
+Dialogue: 0,0:00:23.20,0:00:23.68,Sub,,0,0,0,,y se {\c&H24A5F5&}paga{\c&HFFFFFF&}
+Dialogue: 0,0:00:23.67,0:00:23.93,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}una{\c&HFFFFFF&} sola vez.
+Dialogue: 0,0:00:23.93,0:00:24.19,Sub,,0,0,0,,una {\c&H24A5F5&}sola{\c&HFFFFFF&} vez.
+Dialogue: 0,0:00:24.19,0:00:24.66,Sub,,0,0,0,,una sola {\c&H24A5F5&}vez.{\c&HFFFFFF&}
+Dialogue: 0,0:00:24.71,0:00:25.31,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}Escríbenos{\c&HFFFFFF&} aquí
+Dialogue: 0,0:00:25.31,0:00:25.53,Sub,,0,0,0,,Escríbenos {\c&H24A5F5&}aquí{\c&HFFFFFF&}
+Dialogue: 0,0:00:25.52,0:00:26.03,Sub,,0,0,0,,{\fscx88\fscy88\t(0,80,\fscx100\fscy100)}{\c&H24A5F5&}abajo.{\c&HFFFFFF&}

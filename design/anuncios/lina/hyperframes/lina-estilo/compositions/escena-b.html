@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 700; src: url("assets/fuentes/barlow-700.woff2") format("woff2"); }
+        @font-face { font-family: "Consolas"; font-weight: 700; src: url("assets/fuentes/consolas-bold.ttf") format("truetype"); }
+        @font-face { font-family: "Georgia"; font-weight: 700; font-style: italic; src: url("assets/fuentes/georgia-bold-italic.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .eti { position: absolute; left: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.16em; color: #6f685c; }
+        .cuenta { position: absolute; right: 62px; top: 292px; margin: 0; font-family: "Consolas", monospace; font-weight: 700; font-size: 25px; letter-spacing: 0.12em; color: #b8590a; }
+        .tit { position: absolute; left: 58px; margin: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: -0.035em; color: #16130f; }
+        .tit span { display: inline-block; opacity: 0; }
+        .marca { background: #f5a524; padding: 2px 16px 8px; margin-left: 6px; transform-origin: 0 60%; }
+        .cuenta { opacity: 0; }
+        .carta { position: absolute; left: 90px; top: 352px; width: 900px; height: 300px; border-radius: 26px; border: 5px solid #16130f; box-shadow: 12px 12px 0 #16130f; display: flex; align-items: center; justify-content: center; opacity: 0; }
+        .carta span { font-family: "Barlow", sans-serif; font-weight: 700; font-size: 132px; letter-spacing: -0.035em; line-height: 1; }
+        .c1 { background: #16130f; color: #ffffff; }
+        .c2 { background: #f6f3ea; color: #16130f; }
+        .c2 span { font-family: "Georgia", serif; font-style: italic; letter-spacing: -0.02em; }
+        .c3 { background: #1f3b8f; color: #ffffff; }
+        .c4 { background: #1f7a4d; color: #ffffff; }
+        .sello { position: absolute; left: 150px; top: 430px; margin: 0; padding: 10px 44px 18px; background: #f5a524; border: 6px solid #16130f; box-shadow: 12px 12px 0 #16130f; font-family: "Barlow", sans-serif; font-weight: 700; font-size: 150px; letter-spacing: -0.03em; line-height: 1; color: #16130f; white-space: nowrap; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="escena-b" data-width="1080" data-height="1920">
+        <p class="eti" id="b-eti">EL LUNES QUIERES</p>
+        <p class="cuenta" id="b-n0">01 / 04</p>
+        <p class="cuenta" id="b-n1">02 / 04</p>
+        <p class="cuenta" id="b-n2">03 / 04</p>
+        <p class="cuenta" id="b-n3">04 / 04</p>
+        <div class="carta c1" id="b-c0" data-layout-allow-overlap data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-occlusion>Gimnasio</span></div>
+        <div class="carta c2" id="b-c1" data-layout-allow-overlap data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-occlusion>Leer</span></div>
+        <div class="carta c3" id="b-c2" data-layout-allow-overlap data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-occlusion>Madrugar</span></div>
+        <div class="carta c4" id="b-c3" data-layout-allow-overlap data-layout-allow-occlusion><span data-layout-allow-overlap data-layout-allow-occlusion>Comer bien</span></div>
+        <p class="sello" id="b-sello" data-layout-allow-overlap data-layout-allow-occlusion>TODO DE UNA</p>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#b-eti", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out" }, 0.03);
+          tl.fromTo("#b-c0", { opacity: 0, scale: 0.7, x: 0, y: 90, rotation: -9 }, { opacity: 1, scale: 1, x: 0, y: 0, rotation: -3, duration: 0.22, ease: "back.out(1.9)" }, 0.1);
+          tl.set("#b-n0", { opacity: 1 }, 0.1);
+          tl.fromTo("#b-c1", { opacity: 0, scale: 0.7, x: 26, y: 108, rotation: 7.5 }, { opacity: 1, scale: 1, x: 26, y: 18, rotation: 2.5, duration: 0.22, ease: "back.out(1.9)" }, 0.91);
+          tl.set("#b-n1", { opacity: 1 }, 0.91);
+          tl.set("#b-n0", { opacity: 0 }, 0.91);
+          tl.fromTo("#b-c2", { opacity: 0, scale: 0.7, x: -18, y: 130, rotation: -4.5 }, { opacity: 1, scale: 1, x: -18, y: 40, rotation: -1.5, duration: 0.22, ease: "back.out(1.9)" }, 1.7367);
+          tl.set("#b-n2", { opacity: 1 }, 1.7367);
+          tl.set("#b-n1", { opacity: 0 }, 1.7367);
+          tl.fromTo("#b-c3", { opacity: 0, scale: 0.7, x: 20, y: 152, rotation: 10.5 }, { opacity: 1, scale: 1, x: 20, y: 62, rotation: 3.5, duration: 0.22, ease: "back.out(1.9)" }, 2.695);
+          tl.set("#b-n3", { opacity: 1 }, 2.695);
+          tl.set("#b-n2", { opacity: 0 }, 2.695);
+          tl.to("#b-c0", { x: -70, y: -40, rotation: -9, scale: 0.78, duration: 0.25, ease: "power3.out" }, 3.665);
+          tl.to("#b-c1", { x: 110, y: -10, rotation: 8, scale: 0.78, duration: 0.25, ease: "power3.out" }, 3.665);
+          tl.to("#b-c2", { x: -90, y: 110, rotation: 6, scale: 0.78, duration: 0.25, ease: "power3.out" }, 3.665);
+          tl.to("#b-c3", { x: 90, y: 130, rotation: -7, scale: 0.78, duration: 0.25, ease: "power3.out" }, 3.665);
+          tl.fromTo("#b-sello", { opacity: 0, scale: 2.2, rotation: -14 }, { opacity: 1, scale: 1, rotation: -5, duration: 0.2, ease: "power4.in" }, 3.795);
+          tl.fromTo("#root", { x: 0 }, { x: 9, duration: 0.04, yoyo: true, repeat: 3, ease: "sine.inOut" }, 3.995);
+          window.__timelines["escena-b"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

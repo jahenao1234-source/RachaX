@@ -1,0 +1,13 @@
+[1:v]scale=600:-2,pad=iw+8:ih+8:4:4:color=0xF5A524[min];
+[2:v]scale=600:-2,pad=iw+8:ih+8:4:4:color=0xF5A524[com];
+[0:v]drawbox=x=410:y=110:w=270:h=170:color=black@0.78:t=fill:enable='between(t,9.4,13.7)',
+drawtext=fontfile='C\:/Windows/Fonts/segoeuib.ttf':text='23':fontsize=96:fontcolor=0xF5A524:x=410+(270-text_w)/2:y=122:enable='between(t,9.4,12.35)',
+drawtext=fontfile='C\:/Windows/Fonts/segoeuib.ttf':text='0':fontsize=96:fontcolor=0xFF7A59:x=410+(270-text_w)/2:y=122:enable='between(t,12.35,13.7)',
+drawtext=fontfile='C\:/Windows/Fonts/segoeuib.ttf':text='días seguidos':fontsize=30:fontcolor=white:x=410+(270-text_w)/2:y=232:enable='between(t,9.4,13.7)'[v1];
+[v1][min]overlay=x=(W-w)/2:y=90:enable='between(t,19.4,22.5)'[v2];
+[v2][com]overlay=x=(W-w)/2:y=90:enable='between(t,22.8,25.8)'[v3];
+[v3]drawbox=x=40:y=80:w=640:h=230:color=black@0.78:t=fill:enable='gte(t,29.2)',
+drawtext=fontfile='C\:/Windows/Fonts/segoeuib.ttf':textfile=textos-precio-1.txt:fontsize=44:fontcolor=white:x=(w-text_w)/2:y=104:enable='gte(t,29.2)',
+drawtext=fontfile='C\:/Windows/Fonts/segoeuib.ttf':textfile=textos-precio-2.txt:fontsize=56:fontcolor=0xF5A524:x=(w-text_w)/2:y=166:enable='gte(t,29.2)',
+drawtext=fontfile='C\:/Windows/Fonts/segoeuib.ttf':textfile=textos-precio-3.txt:fontsize=36:fontcolor=white:x=(w-text_w)/2:y=246:enable='gte(t,29.2)',
+subtitles=subs.ass[v]

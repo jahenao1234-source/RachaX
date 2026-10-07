@@ -28,3 +28,31 @@ NODE_PATH="<carpeta temporal>/node_modules" node make.js Metodo-Anti-Abandono.pd
 - `volante.js`: saca `volante.html` como PNG de 1080 × 1350 en `design/anuncios/volante/` (el camino que le gustó a Johnatan).
 - `muestras.js`: saca `muestras.html` (los tres caminos de muestra).
 - `anuncios.js`: saca `piezas.html` (las 16 imágenes que Johnatan **rechazó**; se conservan solo como referencia de lo que no va).
+
+## Los videos de Xiomara (`design/anuncios/xiomara/`)
+Hace falta ffmpeg (instalado con `winget install Gyan.FFmpeg`). Orden:
+1. `capturas-anuncio.cjs`: capturas reales de la app para los videos (día difícil, comodines y "Volviste"), con la app corriendo en `localhost:3002`. Deja las fotos y los recortes en `xiomara/app/`. La hoja de comodines se recorta de `b2-comodines.png` con ffmpeg (`crop=1170:1017:0:648`).
+2. `tarjetas-xiomara.cjs`: arma las pantallas completas de 1080 x 1920 (la app en grande, el contador de 23 a 0 y el cierre con el precio) en `xiomara/montaje/tarjetas/`. Avisa si algo se sale de la zona segura de Reels.
+3. `bash montar-xiomara-v2.sh`: corta y une los clips de Flow (`xiomara/clips/`), intercala las pantallas completas, pone los subtítulos (`xiomara/montaje/subs2.ass`) y saca `ensayo-guion1-v2.mp4` con una hoja de fotos.
+- `montar-xiomara.sh` es el primer montaje, que Johnatan rechazó porque las imágenes tapaban a la presentadora. Se conserva como referencia de lo que no va.
+- Voz a texto: `ffmpeg -i clip.mp4 -vn -af "whisper=model=m.bin:language=es:queue=10:destination=clip.srt:format=srt" -f null -` (el modelo está en `modelos/ggml-base.bin`; hay que copiarlo al lado con un nombre sin dos puntos en la ruta).
+
+## Los videos de Lina (`design/anuncios/lina/`)
+Lina es la presentadora nueva (guion 4). Sus clips de Flow están en `lina/clips/`. Orden:
+1. `node transcribir-assembly.mjs <clip.mp4>`: saca los tiempos de cada palabra con AssemblyAI (lee `ASSEMBLYAI_API_KEY` de `.env.local`) y deja `<clip>.palabras.json`.
+2. `capturas-lina.cjs`: capturas reales de la pantalla "Nuevo hábito", con la app corriendo en `localhost:3002`.
+3. `node montar-lina.mjs`: el montaje con ffmpeg (`lina-guion4-v1.mp4`). Quita los silencios, mete la app a pantalla completa, subtítulos palabra por palabra y el cierre. También deja las tarjetas en `lina/montaje/`.
+4. **`node hf-lina.mjs`: la misma edición en HyperFrames, que es como Johnatan quiere editar.** Escribe el proyecto en `lina/hyperframes/lina-guion4/` (`index.html` con las tomas y los sonidos; `compositions/` con la app, el cierre y los subtítulos; copia los recursos a `assets/`). No se edita el HTML a mano: se cambia el script y se vuelve a correr.
+
+Después, dentro de `lina/hyperframes/lina-guion4/`, con el CLI del plugin (`CLI="C:/Users/jahen/.claude/plugins/cache/hyperframes/hyperframes/<versión>/skills/hyperframes/scripts/plugin-cli.mjs"`):
+- `node "$CLI" check`: revisa que todo esté bien (debe dar "Check passed" sin avisos).
+- `node "$CLI" snapshot --at 1,5,15,27 --no-end --describe false`: fotos para mirar.
+- `node "$CLI" preview --background --port=3040`: abre el editor en `localhost:3040` (el 3002 es de la app). Se apaga con `preview --stop`.
+- `node "$CLI" render --low-memory-mode -w 1 -f 24 -o ../../lina-guion4-hf-v1.mp4`: exporta. El computador tiene poca memoria: cerrar programas antes.
+
+### Estilo de tarjeta y gráficos (prueba)
+`node hf-lina-estilo.mjs` arma `lina/hyperframes/lina-estilo/`: Lina en una tarjeta ámbar abajo, arriba un titular que se arma palabra por palabra con un dibujo por frase, y una escena de papel rasgado. Sale `lina/lina-estilo-prueba-v1.mp4`.
+Antes hay que recortar a Lina del fondo, dentro de `lina-estilo/` (tarda de 4 a 6 minutos por clip):
+- `ffmpeg -ss 1.91 -i ../../clips/1-gancho.mp4 -t 4.05 -c:v libx264 -crf 14 -r 24 -c:a aac assets/gancho.mp4` y `node "$CLI" remove-background assets/gancho.mp4 -o assets/gancho-recorte.webm`
+- `ffmpeg -i ../../clips/2-mito.mp4 -t 6.8 -c:v libx264 -crf 14 -r 24 -an assets/mito-corto.mp4` y `node "$CLI" remove-background assets/mito-corto.mp4 -o assets/mito-recorte.webm`
+Si no existen los recortes, el script usa el clip con su fondo. El recorte deja pedazos del cuadro y la repisa: los clips nuevos deben generarse con pared lisa.

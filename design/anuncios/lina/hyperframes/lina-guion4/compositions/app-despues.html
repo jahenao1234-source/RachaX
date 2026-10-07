@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: #0c0d10; }
+        #app-despues-img { display: block; width: 100%; height: 100%; transform-origin: 50% 38%; }
+      </style>
+      <div id="root" data-composition-id="app-despues" data-width="1080" data-height="1920">
+        <img id="app-despues-img" src="assets/app-despues.png" alt="" data-layout-allow-overflow />
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#app-despues-img", { scale: 1 }, { scale: 1.05, duration: 1.7083, ease: "none" }, 0);
+          window.__timelines["app-despues"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

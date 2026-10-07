@@ -15,3 +15,22 @@ coverage/
 scratch/
 # Maquetas temporales para verlas en el navegador
 public/zz-*.html
+
+# Modelo de voz a texto para los videos (148 MB)
+design/herramientas/modelos/
+
+# HyperFrames: lo que se vuelve a generar (copias de los clips, fotos de revisión y exportados)
+design/anuncios/*/hyperframes/*/assets/
+design/anuncios/*/hyperframes/*/snapshots/
+design/anuncios/*/hyperframes/*/renders/
+design/anuncios/*/hyperframes/*/node_modules/
+
+# Videos y sonidos de los anuncios: pesan mucho y se quedan solo en el computador
+design/anuncios/**/*.mp4
+design/anuncios/**/*.webm
+design/anuncios/**/*.mov
+design/anuncios/**/*.wav
+design/anuncios/**/*.mp3
+
+# Imágenes de avatar descartadas (13 MB)
+design/avatar/nueva/descartada-*.png
