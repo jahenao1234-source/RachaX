@@ -1,13 +1,14 @@
-// Arma el proyecto de HyperFrames del primer anuncio del estilo "pantalla grabada sin voz":
+// Arma el proyecto de HyperFrames de un anuncio del estilo "pantalla grabada sin voz":
 // Luis haciendo cosas -> las tomas del computador grabadas por Johnatan -> tarjeta del precio animada.
-// Uso: node design/herramientas/hf-pantalla1.mjs        (después, dentro de campana/pantalla1/hyperframes: check, snapshot, render)
+// Uso: node design/herramientas/hf-pantalla.mjs <pieza> [--solo-html]      (piezas: pantalla1, pantalla2)
+//      después, dentro de campana/<pieza>/hyperframes: check, snapshot --at ..., render --low-memory-mode -w 1 -f 30 -o ../<pieza>-v1.mp4
 //
 // Cómo está hecho:
-// - Los 12 cortes se preparan antes con ffmpeg (recorte, color y número exacto de cuadros) y se unen en assets/cuerpo.mp4.
+// - Los cortes se preparan antes con ffmpeg (recorte, color y número exacto de cuadros) y se unen en assets/cuerpo.mp4.
 //   Las tomas del computador son 4K en HEVC: así HyperFrames solo mueve un video liviano.
 // - HyperFrames pone la frase de arriba (Barlow Condensed, la letra de Racha), la tarjeta final animada y la música.
-// - La música ("Steady Progress", hecha por Johnatan en ElevenLabs) va a 100 golpes por minuto: un golpe cada 0,6 s
-//   (medido con design/herramientas/ritmo.py). Cada corte dura 2 golpes y la tarjeta se mueve con los golpes.
+// - La música va a 100 golpes por minuto: un golpe cada 0,6 s (medido con design/herramientas/ritmo.py).
+//   Cada corte dura un número entero de golpes y la tarjeta entra en el primer golpe de un compás (cada 2,4 s).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,61 +17,87 @@ import { execFileSync } from 'node:child_process';
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const RAIZ = path.join(AQUI, '..', '..');
 const C = path.join(AQUI, '..', 'anuncios', 'campana');
-const P = path.join(C, 'pantalla1', 'hyperframes');
-const A = path.join(P, 'assets');
 const FFMPEG = 'C:/Users/jahen/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-9.0.2-full_build/bin/ffmpeg.exe';
-for (const d of [A, path.join(A, 'fuentes'), path.join(P, 'compositions')]) fs.mkdirSync(d, { recursive: true });
 const ff = (args) => execFileSync(FFMPEG, ['-v', 'error', '-y', ...args], { stdio: ['ignore', 'inherit', 'inherit'] });
 
-// ---------- lo que se puede cambiar ----------
-// La frase de arriba es PROVISIONAL: falta que Johnatan la apruebe.
-const FRASE = ['Hábitos, tareas y foco:', 'todo en una sola app.'];
-const GOLPE = 0.6;                 // un golpe de la música
-const CORTE = 2 * GOLPE;           // cada corte dura 2 golpes (36 cuadros)
-const MUSICA = path.join(C, 'pantalla1', 'musica', 'steady-progress.mp4');
-const MUSICA_DESDE = 0.565;        // el primer golpe de la pista
-const CIERRE_DURA = 7 * GOLPE;     // 4,2 s
-// tipo, archivo, desde qué segundo, [x del recorte]
+// ---------- las piezas ----------
+// frases: cada una con sus renglones y desde qué golpe se ve (la siguiente la reemplaza).
+// tramos: tipo, archivo, desde qué segundo, cuántos golpes dura, [x del recorte]
 //   L = clip de Luis a cuadro completo;  P = clip de Luis quitando el 17 % de abajo (sale un celular en el piso);
 //   M = toma del computador: pedazo de 1536 px de ancho desde x, con negro arriba para la frase.
-const TRAMOS = [
-  ['L', 'se-levanta', 2.6], ['L', 'agua', 1.7], ['P', 'corre-pies', 1.0], ['L', 'pesas-piso', 3.0], ['L', 'escritorio-arriba', 0.5], ['L', 'abre-portatil', 4.6],
-  ['M', '21', 4.0, 500], ['M', '21', 12.2, 1100], ['M', '19', 9.0, 1100], ['M', '13', 0.3, 150], ['M', '13', 3.2, 1150], ['M', '21', 19.2, 300],
-];
-const CUERPO = TRAMOS.length * CORTE;        // 14,4 s
-const TOTAL = CUERPO + CIERRE_DURA;          // 18,6 s
+const MUSICA_1 = { archivo: path.join(C, 'pantalla1', 'musica', 'steady-progress.mp4'), desde: 0.565, golpe: 0.6 }; // "Steady Progress", hecha por Johnatan en ElevenLabs
+const PIEZAS = {
+  // Nivel 03: muestra qué es Racha. La frase es PROVISIONAL (falta que Johnatan la apruebe).
+  pantalla1: {
+    titulo: 'pantalla 1', musica: MUSICA_1,
+    frases: [{ desde: 0, renglones: ['Hábitos, tareas y foco:', 'todo en una sola app.'] }],
+    tramos: [
+      ['L', 'se-levanta', 2.6, 2], ['L', 'agua', 1.7, 2], ['P', 'corre-pies', 1.0, 2], ['L', 'pesas-piso', 3.0, 2], ['L', 'escritorio-arriba', 0.5, 2], ['L', 'abre-portatil', 4.6, 2],
+      ['M', '21', 4.0, 2, 500], ['M', '21', 12.2, 2, 1100], ['M', '19', 9.0, 2, 1100], ['M', '13', 0.3, 2, 150], ['M', '13', 3.2, 2, 1150], ['M', '21', 19.2, 2, 300],
+    ],
+  },
+  // Nivel 01, "El que empieza cada lunes": arranca por el problema (Luis en el sofá, los tenis sin usar) y después retoma.
+  // Las dos frases son PROVISIONALES: salen del borrador del guion 2 (campana/guiones.md), que Johnatan no ha aprobado.
+  pantalla2: {
+    titulo: 'pantalla 2 · el que empieza cada lunes', musica: MUSICA_1,
+    frases: [
+      { desde: 0, renglones: ['¿Tú también dejas', 'todo para el lunes?'] },
+      { desde: 4, renglones: ['No tienes que esperar al lunes.', 'Si fallaste hoy, sigues mañana.'] },
+    ],
+    tramos: [
+      ['L', 'sofa-sin-ganas', 1.0, 4],
+      ['L', 'se-levanta', 2.6, 2], ['L', 'agua', 1.7, 2], ['P', 'corre-pies', 1.0, 2], ['L', 'pesas-piso', 3.0, 2], ['L', 'abre-portatil', 4.6, 2],
+      ['M', '21', 4.0, 2, 500], ['M', '21', 12.2, 2, 1100], ['M', '13', 0.3, 2, 150], ['M', '13', 3.2, 2, 1150], ['M', '21', 19.2, 2, 300],
+    ],
+  },
+};
+
+const NOMBRE = process.argv[2];
+const pz = PIEZAS[NOMBRE];
+if (!pz) { console.log('Uso: node design/herramientas/hf-pantalla.mjs <' + Object.keys(PIEZAS).join(' | ') + '> [--solo-html]'); process.exit(1); }
+const P = path.join(C, NOMBRE, 'hyperframes');
+const A = path.join(P, 'assets');
+for (const d of [A, path.join(A, 'fuentes'), path.join(P, 'compositions')]) fs.mkdirSync(d, { recursive: true });
+
+const GOLPE = pz.musica.golpe;
+const CIERRE_DURA = 7 * GOLPE;                                   // 4,2 s
+const CUERPO = pz.tramos.reduce((s, t) => s + t[3], 0) * GOLPE;
+const TOTAL = CUERPO + CIERRE_DURA;
 const n = (x) => Number(x.toFixed(6));
+if (Math.abs((CUERPO / (4 * GOLPE)) % 1) > 1e-6) console.log(`OJO: los cortes duran ${CUERPO.toFixed(2)} s y no cierran en compás (múltiplos de ${(4 * GOLPE).toFixed(1)} s): la tarjeta no caería en un golpe fuerte.`);
 
 // ---------- 1. los cortes, con ffmpeg ----------
-const SOLO_HTML = process.argv.includes('--solo-html');
-if (!SOLO_HTML) {
+if (!process.argv.includes('--solo-html')) {
   const tmp = path.join(P, 'tmp'); fs.mkdirSync(tmp, { recursive: true });
   const COLOR = 'colorbalance=bs=-0.20:bm=-0.14:bh=-0.05:rs=0.04,eq=saturation=0.92:contrast=1.06';
   const COD = ['-c:v', 'libx264', '-crf', '14', '-preset', 'fast', '-pix_fmt', 'yuv420p', '-r', '30'];
   const lista = [];
-  TRAMOS.forEach(([tipo, archivo, desde, x], i) => {
+  pz.tramos.forEach(([tipo, archivo, desde, golpes, x], i) => {
     const entrada = tipo === 'M' ? path.join(C, 'grabaciones', `toma-${archivo}.mp4`) : path.join(C, 'hombre', 'clips', `${archivo}.mp4`);
     const vf = tipo === 'L' ? 'fps=30,scale=1080:1920:flags=lanczos,setsar=1'
       : tipo === 'P' ? 'fps=30,crop=596:1060:62:0,scale=1080:1920:flags=lanczos,setsar=1'
       : `fps=30,${COLOR},crop=1536:1728:${x}:0,scale=1080:1215:flags=lanczos,pad=1080:1920:0:400:black,setsar=1`;
-    ff(['-ss', String(desde), '-i', entrada, '-an', '-vf', vf, '-frames:v', String(Math.round(CORTE * 30)), ...COD, path.join(tmp, `t${i}.mp4`)]);
+    ff(['-ss', String(desde), '-i', entrada, '-an', '-vf', vf, '-frames:v', String(Math.round(golpes * GOLPE * 30)), ...COD, path.join(tmp, `t${i}.mp4`)]);
     lista.push(`file 't${i}.mp4'`);
-    process.stdout.write(`corte ${i + 1} de ${TRAMOS.length}\n`);
+    process.stdout.write(`corte ${i + 1} de ${pz.tramos.length}\n`);
   });
   fs.writeFileSync(path.join(tmp, 'lista.txt'), lista.join('\n'), 'utf8');
   // Un cuadro clave cada medio segundo, para que HyperFrames busque rápido cualquier momento
   ff(['-f', 'concat', '-safe', '0', '-i', path.join(tmp, 'lista.txt'), '-an', '-c:v', 'libx264', '-crf', '16', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', '30', '-g', '15', '-movflags', '+faststart', path.join(A, 'cuerpo.mp4')]);
   fs.rmSync(tmp, { recursive: true, force: true });
   // La música: desde su primer golpe, lo que dura el anuncio, bajando en el último segundo
-  ff(['-ss', String(MUSICA_DESDE), '-t', String(TOTAL), '-i', MUSICA, '-vn', '-af', `afade=t=out:st=${n(TOTAL - 1.1)}:d=1.1`, '-ar', '48000', '-ac', '2', path.join(A, 'musica.wav')]);
+  ff(['-ss', String(pz.musica.desde), '-t', String(TOTAL), '-i', pz.musica.archivo, '-vn', '-af', `afade=t=out:st=${n(TOTAL - 1.1)}:d=1.1`, '-ar', '48000', '-ac', '2', path.join(A, 'musica.wav')]);
 }
 
-// ---------- 2. letras e ícono ----------
+// ---------- 2. letras, ícono y la captura del celular ----------
 const fuente = (paquete, archivo, destino) => fs.copyFileSync(path.join(RAIZ, 'node_modules', '@fontsource', paquete, 'files', archivo), path.join(A, 'fuentes', destino));
 fuente('barlow-condensed', 'barlow-condensed-latin-700-normal.woff2', 'barlow-condensed-700.woff2');
 fuente('barlow-condensed', 'barlow-condensed-latin-600-normal.woff2', 'barlow-condensed-600.woff2');
 fuente('barlow', 'barlow-latin-600-normal.woff2', 'barlow-600.woff2');
 fuente('barlow', 'barlow-latin-500-normal.woff2', 'barlow-500.woff2');
+// La captura del celular (Hoy con los chulos) salió de grabaciones/celular-2.mp4, segundo 12,6, sin las barras de arriba y de abajo
+const CEL = path.join(C, 'pantalla1', 'hyperframes', 'assets', 'app-celular.png');
+if (path.join(A, 'app-celular.png') !== CEL) fs.copyFileSync(CEL, path.join(A, 'app-celular.png'));
 const LETRAS = `
         @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
         @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("assets/fuentes/barlow-condensed-600.woff2") format("woff2"); }
@@ -106,19 +133,23 @@ ${cuerpo}
 </html>
 `, 'utf8');
 
-// ---------- 3. la frase de arriba ----------
-pieza('frase', `        #f-caja { position: absolute; left: 0; right: 0; top: 178px; text-align: center; }
+// ---------- 3. la frase de arriba (puede cambiar una vez o más, siempre en un golpe) ----------
+const pasosFrase = [];
+pz.frases.forEach((f, k) => {
+  const t0 = f.desde * GOLPE;
+  if (k > 0) pasosFrase.push(`tl.to("#f-caja-${k - 1}", { opacity: 0, y: -14, duration: 0.14, ease: "power2.in" }, ${n(t0 - 0.14)});`);
+  f.renglones.forEach((_, i) => pasosFrase.push(`tl.fromTo("#f-${k}-${i}", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, ${n(t0 + 0.04 + i * 0.14)});`));
+});
+pieza('frase', `        .f-caja { position: absolute; left: 0; right: 0; top: 178px; text-align: center; }
         .f-linea { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 86px; line-height: 1.04; letter-spacing: 0.005em; color: #ffffff; text-shadow: 0 3px 14px rgba(0, 0, 0, 0.75), 0 0 3px rgba(0, 0, 0, 0.9); white-space: nowrap; opacity: 0; }`,
-`        <div id="f-caja">
-${FRASE.map((t, i) => `          <p class="f-linea" id="f-${i}">${t}</p>`).join('\n')}
-        </div>`, [
-  `tl.fromTo("#f-0", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 0.05);`,
-  `tl.fromTo("#f-1", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 0.2);`,
-]);
+// Una frase con renglones largos (más de 26 letras) va en letra un poco más pequeña, para que no toque los bordes
+pz.frases.map((f, k) => `        <div class="f-caja" id="f-caja-${k}">
+${f.renglones.map((t, i) => `          <p class="f-linea" id="f-${k}-${i}"${Math.max(...f.renglones.map((r) => r.length)) > 26 ? ' style="font-size: 74px"' : ''}>${t}</p>`).join('\n')}
+        </div>`).join('\n'), pasosFrase);
 
 // ---------- 4. la tarjeta final ----------
 // Lo importante va entre y = 270 y y = 1250: en Reels, lo de más abajo lo tapan el texto y el botón de Instagram.
-// Abajo asoma el celular con la app real (captura de la grabación de Johnatan), que se puede tapar sin perder nada.
+// Abajo asoma el celular con la app real, que se puede tapar sin perder nada.
 const g = (k) => n(k * GOLPE);
 pieza('cierre', `        #c-fondo { position: absolute; inset: 0; background: ${FONDO}; }
         #c-brillo { position: absolute; left: -260px; top: 80px; width: 1600px; height: 1500px; background: radial-gradient(closest-side, rgba(255, 181, 71, 0.30), rgba(255, 181, 71, 0.10) 45%, rgba(255, 181, 71, 0) 72%); opacity: 0; }
@@ -175,7 +206,7 @@ fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
-    <title>Racha · campaña · pantalla 1</title>
+    <title>Racha · campaña · ${pz.titulo}</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -189,10 +220,10 @@ fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
   </head>
   <body>
     <div id="main" data-composition-id="main" data-start="0" data-duration="${n(TOTAL)}" data-width="1080" data-height="1920">
-      <!-- Los 12 cortes ya unidos: 6 de Luis y 6 de la pantalla, de ${CORTE} s cada uno -->
+      <!-- Los ${pz.tramos.length} cortes ya unidos (Luis y la pantalla) -->
       <video id="cuerpo" class="clip" src="assets/cuerpo.mp4" playsinline muted data-start="0" data-duration="${n(CUERPO)}" data-media-start="0" data-track-index="0"></video>
 
-      <!-- La frase fija de arriba -->
+      <!-- La frase de arriba -->
       <div id="frase" class="clip" data-composition-id="frase" data-composition-src="compositions/frase.html" data-start="0" data-duration="${n(CUERPO)}" data-track-index="1" data-width="1080" data-height="1920"></div>
 
       <!-- La tarjeta final: entra en el primer golpe de un compás -->
@@ -212,6 +243,6 @@ fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
 
 for (const f of ['hyperframes.json', 'package.json', 'meta.json']) {
   const de = path.join(C, 'guion1', 'hyperframes', f);
-  if (!fs.existsSync(path.join(P, f)) && fs.existsSync(de)) fs.writeFileSync(path.join(P, f), fs.readFileSync(de, 'utf8').split('campana-guion1').join('campana-pantalla1'), 'utf8');
+  if (!fs.existsSync(path.join(P, f)) && fs.existsSync(de)) fs.writeFileSync(path.join(P, f), fs.readFileSync(de, 'utf8').split('campana-guion1').join(`campana-${NOMBRE}`), 'utf8');
 }
-console.log(`Listo: dura ${TOTAL.toFixed(2)} s (cortes ${CUERPO.toFixed(2)} s + tarjeta ${CIERRE_DURA.toFixed(2)} s)`);
+console.log(`Listo ${NOMBRE}: dura ${TOTAL.toFixed(2)} s (cortes ${CUERPO.toFixed(2)} s + tarjeta ${CIERRE_DURA.toFixed(2)} s)`);

@@ -79,3 +79,19 @@ De terceros:
 - https://www.adamigo.ai/blog/meta-ad-spending-limits-what-you-need-to-know
 - https://www.consolidaciondigital.com/blog/performance-marketing/cuanto-cuesta-meta-ads-colombia
 - https://wappi.chat/blog/cambios-precios-meta-whatsapp-octubre-2026/
+
+## Personas hechas con IA en los anuncios (revisado el 8 de octubre de 2026)
+
+Leído en páginas de Meta (noticias y centro de transparencia), a través del buscador; no se abrió el artículo del Centro de ayuda para empresas.
+
+- **No está prohibido** usar personas hechas con IA en un anuncio.
+- **Meta les pone una etiqueta.** Para contenido hecho con herramientas de terceros (como Flow), Meta lo detecta por señales estándar del archivo y pone "AI info" (Información de IA) dentro de "Acerca de este anuncio", en el menú de tres puntos. Según su página de políticas, esa detección automática en anuncios empieza el 1 de junio de 2026 y **el anunciante no tiene que hacer nada**.
+- Con las herramientas de IA de la propia Meta, si sale una persona realista hecha con IA, la etiqueta va al lado de "Publicidad".
+- **Declararlo a mano solo es obligatorio en anuncios políticos, electorales o de temas sociales.** Racha no entra ahí.
+- Lo que sigue aplicando de nuestro lado: el avatar no cuenta vivencias propias ni pasa por testimonio de un cliente.
+
+Fuentes:
+- https://about.fb.com/news/2025/02/gen-ai-transparency-metas-ads-products/
+- https://transparency.meta.com/governance/tracking-impact/labeling-ai-content
+- https://about.fb.com/news/2024/04/metas-approach-to-labeling-ai-generated-content-and-manipulated-media/
+- https://transparency.meta.com/policies/ad-standards/SIEP-advertising/SIEP/

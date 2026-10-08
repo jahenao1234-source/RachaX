@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("assets/fuentes/barlow-condensed-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 500; src: url("assets/fuentes/barlow-500.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .f-caja { position: absolute; left: 0; right: 0; top: 178px; text-align: center; }
+        .f-linea { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 86px; line-height: 1.04; letter-spacing: 0.005em; color: #ffffff; text-shadow: 0 3px 14px rgba(0, 0, 0, 0.75), 0 0 3px rgba(0, 0, 0, 0.9); white-space: nowrap; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="frase" data-width="1080" data-height="1920">
+        <div class="f-caja" id="f-caja-0">
+          <p class="f-linea" id="f-0-0">¿Tú también dejas</p>
+          <p class="f-linea" id="f-0-1">todo para el lunes?</p>
+        </div>
+        <div class="f-caja" id="f-caja-1">
+          <p class="f-linea" id="f-1-0" style="font-size: 74px">No tienes que esperar al lunes.</p>
+          <p class="f-linea" id="f-1-1" style="font-size: 74px">Si fallaste hoy, sigues mañana.</p>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#f-0-0", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 0.04);
+          tl.fromTo("#f-0-1", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 0.18);
+          tl.to("#f-caja-0", { opacity: 0, y: -14, duration: 0.14, ease: "power2.in" }, 2.26);
+          tl.fromTo("#f-1-0", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 2.44);
+          tl.fromTo("#f-1-1", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 2.58);
+          window.__timelines["frase"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
