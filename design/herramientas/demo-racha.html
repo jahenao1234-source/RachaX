@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Racha de muestra</title>
+<!--
+  Racha de muestra: llena la app con datos de ejemplo para grabar la pantalla en los anuncios.
+  Los nombres de hábitos y tareas salen de la Biblioteca (src/data/biblioteca.ts), que Johnatan ya aprobó.
+  Solo funciona en la app prendida con "npm.cmd run muestra" (puerto 3003, sin cuenta y sin nube).
+  Este archivo es el original; la copia que se abre es public/zz-demo.html (no sube a git ni a la app en vivo).
+  Ver design/herramientas/LEEME.md › "Racha de muestra".
+-->
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #101214; color: #F2F3F5; font: 16px/1.5 system-ui, sans-serif; }
+  main { width: min(440px, 100% - 32px); padding: 24px 0; }
+  h1 { font-size: 26px; margin: 0 0 8px; }
+  p { color: #A8AFB8; margin: 0 0 16px; }
+  label { display: block; margin: 16px 0 6px; font-weight: 600; }
+  select { width: 100%; height: 48px; border-radius: 10px; border: 1px solid #2B3036; background: #1A1D21; color: inherit; font: inherit; padding: 0 12px; }
+  button { width: 100%; height: 52px; margin-top: 24px; border: 0; border-radius: 12px; background: #FFB547; color: #1A1206; font: 600 17px system-ui, sans-serif; cursor: pointer; }
+  .no { border: 1px solid #5A2E2A; background: #2A1614; color: #FFB4A8; border-radius: 12px; padding: 16px; }
+  small { display: block; margin-top: 16px; color: #7D858F; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Racha de muestra</h1>
+  <div id="caja"></div>
+</main>
+<script>
+(function () {
+  var caja = document.getElementById('caja');
+
+  // Seguros: nunca tocar una Racha de verdad.
+  var hayCuenta = false;
+  try { for (var i = 0; i < localStorage.length; i++) if (/^sb-/.test(localStorage.key(i) || '')) hayCuenta = true; } catch (e) {}
+  if (location.port !== '3003' || hayCuenta) {
+    caja.innerHTML = '<div class="no">Esta página solo funciona en la Racha de muestra (la que se prende con <b>npm.cmd run muestra</b> y se abre en el puerto 3003). Aquí no se cambió nada.</div>';
+    return;
+  }
+
+  caja.innerHTML =
+    '<p>Llena la app con hábitos, tareas y compromisos de ejemplo, para grabar la pantalla. No tiene cuenta ni nube: nada de esto llega a tu Racha de verdad.</p>' +
+    '<label for="tema">Apariencia</label>' +
+    '<select id="tema"><option value="oscuro">Oscura</option><option value="claro">Clara</option></select>' +
+    '<label for="dia">Cómo va el día de hoy</label>' +
+    '<select id="dia">' +
+      '<option value="medias">A medias: 2 de 5 hábitos hechos</option>' +
+      '<option value="nada">Empezando: ninguno hecho</option>' +
+      '<option value="casi">Casi completo: falta 1 (para grabar la celebración)</option>' +
+    '</select>' +
+    '<button id="ir">Cargar los datos de ejemplo y abrir Racha</button>' +
+    '<small>Las fechas se calculan con el día en que tocas el botón. Si grabas otro día, vuelve aquí y tócalo otra vez. Borra lo que hayas cambiado en la muestra.</small>';
+
+  // ---------- fechas ----------
+  var p2 = function (n) { return String(n).padStart(2, '0'); };
+  var dia = function (n) { var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
+  var f = function (n) { var d = dia(n); return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); };
+  var iso = function (n, hora, min) { var d = dia(n); d.setHours(hora, min || 0, 0, 0); return d.toISOString(); };
+
+  function sembrar(tema, comoVaHoy) {
+    // ---------- hábitos (de la Biblioteca; se fueron agregando de a uno) ----------
+    var H = [
+      { id: 'demo-agua', nombre: 'Tomar un vaso de agua', icono: 'Droplet', momento: 'manana', anclaje: 'despertarme', minimo: 'un sorbo', desde: 120, firme: 0.95 },
+      { id: 'demo-leer', nombre: 'Leer 10 páginas', icono: 'BookOpen', momento: 'noche', anclaje: 'cenar', minimo: 'una página', desde: 120, firme: 0.86 },
+      { id: 'demo-entrenar', nombre: 'Entrenar 30 minutos', icono: 'Dumbbell', momento: 'tarde', anclaje: 'llegar a casa', minimo: '10 sentadillas', desde: 92, firme: 0.74 },
+      { id: 'demo-tres', nombre: 'Escribir las 3 cosas importantes del día', icono: 'PenLine', momento: 'manana', anclaje: 'tomar café', minimo: 'escribir una sola', desde: 61, firme: 0.82 },
+      { id: 'demo-gasto', nombre: 'Anotar cada gasto', icono: 'PenLine', momento: 'flexible', anclaje: 'pagar algo', minimo: 'anotar solo el más grande', desde: 33, firme: 0.7 },
+    ];
+    var COLOR = { manana: '#FFB547', tarde: '#FF7A59', noche: '#8E9BFF', flexible: '#98A0AA' };
+    var habitos = H.map(function (h, i) {
+      return { id: h.id, nombre: h.nombre, tipo: 'positivo', color: COLOR[h.momento], icono: h.icono, momento: h.momento, orden: i, frecuencia: 'diario', anclaje: h.anclaje, minimo: h.minimo, creadoEn: iso(-h.desde, 8) };
+    });
+
+    // ---------- historia de 4 meses ----------
+    // d = hace cuántos días. Siempre sale igual (el azar tiene semilla fija).
+    // Racha actual: del 1 al 18, con un día difícil y un comodín. Antes: días completos, a medias y dos pausas con regreso.
+    var DIFICILES = [5, 47], CONGELADOS = [11, 56];
+    var esPausa = function (d) { return (d >= 27 && d <= 29) || (d >= 70 && d <= 74); };
+    var semilla = 20261007;
+    var azar = function () { semilla = (semilla + 0x6D2B79F5) | 0; var t = Math.imul(semilla ^ (semilla >>> 15), 1 | semilla); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    var registros = [];
+    for (var d = 120; d >= 1; d--) {
+      var dificil = DIFICILES.indexOf(d) >= 0;
+      H.forEach(function (h) {
+        var suerte = azar(); // se pide siempre, para que la historia no cambie si se toca una regla
+        if (d > h.desde || esPausa(d) || CONGELADOS.indexOf(d) >= 0) return;
+        var recien = h.desde - d < 10; // los primeros días de un hábito nuevo casi siempre se cumplen
+        if (d > 18 && !dificil && suerte > (recien ? 0.97 : h.firme)) return;
+        var r = { habitoId: h.id, fecha: f(-d), completado: true };
+        if (dificil) r.minimo = true;
+        registros.push(r);
+      });
+    }
+    var hechosHoy = comoVaHoy === 'nada' ? [] : comoVaHoy === 'casi' ? ['demo-agua', 'demo-tres', 'demo-entrenar', 'demo-gasto'] : ['demo-agua', 'demo-tres'];
+    hechosHoy.forEach(function (id) { registros.push({ habitoId: id, fecha: f(0), completado: true }); });
+
+    // ---------- tareas (de la Biblioteca) ----------
+    var n = 0;
+    var paso = function (texto, extra) { var s = { id: 'demo-p' + (++n), texto: texto, hecha: false }; for (var k in (extra || {})) s[k] = extra[k]; return s; };
+    var hecho = function (texto, d) { return paso(texto, { hecha: true, hechaEn: f(-d) }); };
+    var grupo = function (texto, hijos) { var todos = hijos.every(function (h) { return h.hecha; }); var s = paso(texto, { subtareas: hijos }); if (todos) { s.hecha = true; s.hechaEn = hijos[hijos.length - 1].hechaEn; } return s; };
+    var tareas = [
+      { id: 'demo-t1', nombre: 'Sacar o renovar el pasaporte', icono: 'ListChecks', color: '', completada: false, creadoEn: iso(-9, 19), subtareas: [
+        grupo('Revisar qué necesito', [hecho('Mirar los requisitos y el costo en la página de la Cancillería', 4), hecho('Buscar mi cédula original', 3)]),
+        grupo('Pedir la cita', [paso('Elegir la oficina más cercana', { fecha: f(0), momento: 'tarde' }), paso('Agendar la cita o mirar el horario de atención', { fecha: f(1), momento: 'manana' })]),
+        grupo('Ir a la cita', [paso('Llevar la cédula y el pasaporte anterior, si tengo'), paso('Pagar el pasaporte'), paso('Reclamarlo o esperar a que llegue')]),
+      ] },
+      { id: 'demo-t2', nombre: 'Hacer la hoja de vida', icono: 'Briefcase', color: '', completada: false, creadoEn: iso(-6, 20), subtareas: [
+        grupo('Juntar la información', [hecho('Anotar mis estudios con fechas', 2), paso('Anotar mis trabajos, con fechas y lo que hice en cada uno', { fecha: f(0), momento: 'noche' }), paso('Buscar diplomas y certificados', { fecha: f(2), momento: 'tarde' })]),
+        grupo('Escribirla', [paso('Elegir una plantilla sencilla de una página', { fecha: f(3), momento: 'manana' }), paso('Escribir mis datos y un perfil de 3 renglones', { fecha: f(3), momento: 'manana' }), paso('Pasar los estudios y la experiencia', { fecha: f(4), momento: 'tarde' })]),
+        grupo('Dejarla lista', [paso('Pedirle a alguien que la lea'), paso('Guardarla en PDF con mi nombre')]),
+      ] },
+      { id: 'demo-t3', nombre: 'Hacer las finanzas del mes', icono: 'Target', color: '', completada: false, creadoEn: iso(-3, 21), subtareas: [
+        grupo('Lo que entra', [paso('Sumar todo lo que me entra este mes', { fecha: f(5), momento: 'noche' })]),
+        grupo('Lo que sale', [paso('Anotar los gastos fijos (arriendo, servicios, deudas)'), paso('Calcular cuánto gasto en comida y transporte'), paso('Anotar los gastos que vienen este mes')]),
+        grupo('Cuadrar', [paso('Restar los gastos de lo que entra'), paso('Decidir cuánto puedo guardar'), paso('Poner las fechas de pago en mis compromisos')]),
+      ] },
+      { id: 'demo-t4', nombre: 'Organizar el cuarto', icono: 'Home', color: '', completada: true, creadoEn: iso(-14, 18), subtareas: [
+        grupo('Sacar lo que sobra', [hecho('Recoger la ropa del piso y de la silla', 9), hecho('Sacar platos, vasos y basura', 9), hecho('Llenar una bolsa con lo que ya no uso', 8)]),
+        grupo('Ordenar por zonas', [hecho('La cama y la mesa de noche', 8), hecho('El escritorio o la mesa', 7), hecho('El piso y debajo de la cama', 7)]),
+        grupo('Dejarlo fácil de mantener', [hecho('Darle un lugar fijo a lo que más uso', 6), hecho('Barrer o aspirar', 6)]),
+      ] },
+    ];
+
+    // ---------- compromisos (estos nombres no vienen de la Biblioteca: son de ejemplo) ----------
+    var compromisos = [
+      { id: 'demo-c1', titulo: 'Reunión con el equipo', fecha: f(0), hora: '17:30', creadoEn: iso(-2, 9) },
+      { id: 'demo-c2', titulo: 'Cita con el odontólogo', fecha: f(1), hora: '10:30', creadoEn: iso(-5, 9) },
+      { id: 'demo-c3', titulo: 'Clase de inglés', fecha: f(-19), hora: '18:00', repetirSemanal: true, hechos: [f(-19), f(-12), f(-5)], creadoEn: iso(-20, 9) },
+      { id: 'demo-c4', titulo: 'Pagar el arriendo', fecha: f(4), momento: 'manana', creadoEn: iso(-1, 9) },
+      { id: 'demo-c5', titulo: 'Almuerzo en familia', fecha: f(5), hora: '13:00', creadoEn: iso(-1, 9) },
+    ];
+
+    // ---------- tiempo en Foco ----------
+    var foco = function (d, hora, min, minutos, extra) { var s = { id: 'demo-f' + d + '-' + hora, fecha: f(-d), inicio: iso(-d, hora, min), seg: minutos * 60 }; for (var k in extra) s[k] = extra[k]; return s; };
+    var sesiones = [
+      foco(6, 20, 10, 16, { tipo: 'habito', habitoId: 'demo-leer', etiqueta: 'Leer 10 páginas' }),
+      foco(4, 19, 0, 25, { tipo: 'tarea', tareaId: 'demo-t1', etiqueta: 'Sacar o renovar el pasaporte', pomodoro: true }),
+      foco(3, 20, 30, 18, { tipo: 'habito', habitoId: 'demo-leer', etiqueta: 'Leer 10 páginas' }),
+      foco(2, 18, 15, 25, { tipo: 'tarea', tareaId: 'demo-t2', etiqueta: 'Hacer la hoja de vida', pomodoro: true }),
+      foco(2, 18, 45, 25, { tipo: 'tarea', tareaId: 'demo-t2', etiqueta: 'Hacer la hoja de vida', pomodoro: true }),
+      foco(1, 18, 10, 31, { tipo: 'habito', habitoId: 'demo-entrenar', etiqueta: 'Entrenar 30 minutos' }),
+      foco(1, 20, 20, 21, { tipo: 'habito', habitoId: 'demo-leer', etiqueta: 'Leer 10 páginas' }),
+    ];
+
+    // ---------- guardar ----------
+    localStorage.clear();
+    var g = function (k, v) { localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); };
+    g('racha_demo', '1');
+    g('racha_onboarding', 'true');
+    g('racha_nombre', 'Laura');
+    g('racha_apariencia', tema);
+    g('racha_acento', 'ambar');
+    g('racha_pista_mantener', '1');
+    g('racha_primer_dia', 'visto');
+    g('racha_instalar', 'instalada');
+    g('racha_avisos_pregunta', 'cerrado');
+    g('racha_habitos', habitos);
+    g('racha_registros', registros);
+    g('racha_tareas', tareas);
+    g('racha_compromisos', compromisos);
+    g('racha_sesiones_foco', sesiones);
+    g('racha_comodines', '2');
+    g('racha_comodines_mes', f(0).slice(0, 7));
+    g('racha_dias_congelados', CONGELADOS.map(function (d) { return f(-d); }));
+    g('racha_dias_dificiles', DIFICILES.map(function (d) { return f(-d); }));
+    g('racha_cajas', '2'); // dos cajas sin abrir, para grabar cómo se abren
+  }
+
+  // Con cuatro meses de historia, la app muestra al entrar una ventana con todos los premios ganados.
+  // Para que la muestra abra limpia, se abre primero la app a escondidas y se cierra esa ventana (o las que salgan).
+  function cerrarPremios(alTerminar) {
+    var marco = document.createElement('iframe');
+    marco.src = '/';
+    marco.style.cssText = 'position:fixed;left:-3000px;top:0;width:1280px;height:800px;border:0;';
+    document.body.appendChild(marco);
+    var quieto = 0, vueltas = 0;
+    var reloj = setInterval(function () {
+      vueltas++;
+      var boton = null;
+      try {
+        var botones = marco.contentDocument ? marco.contentDocument.querySelectorAll('button') : [];
+        for (var i = 0; i < botones.length; i++) if ((botones[i].textContent || '').trim() === 'Seguir') boton = botones[i];
+      } catch (e) {}
+      if (boton) { boton.click(); quieto = 0; } else if (vueltas > 4) quieto++;
+      if (quieto >= 6 || vueltas > 60) { clearInterval(reloj); marco.remove(); retocar(); alTerminar(); }
+    }, 400);
+  }
+
+  // La app acaba de entregar todos los premios de un golpe (una caja por insignia, todos con fecha de hoy).
+  // Se deja como si se hubieran ganado poco a poco: 2 cajas sin abrir, 2 comodines y fechas repartidas en los 4 meses.
+  function retocar() {
+    try {
+      localStorage.setItem('racha_cajas', '2');
+      localStorage.setItem('racha_comodines', '2');
+      ['racha_llamas', 'racha_insignias'].forEach(function (clave) {
+        var ganados = JSON.parse(localStorage.getItem(clave) || '{}');
+        var ids = Object.keys(ganados);
+        ids.forEach(function (id, i) { ganados[id] = f(-Math.round(112 - (i * 108) / Math.max(1, ids.length - 1))); });
+        localStorage.setItem(clave, JSON.stringify(ganados));
+      });
+    } catch (e) {}
+  }
+
+  document.getElementById('ir').addEventListener('click', function () {
+    var boton = this;
+    boton.disabled = true;
+    boton.textContent = 'Preparando la muestra…';
+    sembrar(document.getElementById('tema').value, document.getElementById('dia').value);
+    cerrarPremios(function () { location.href = '/'; });
+  });
+})();
+</script>
+</body>
+</html>

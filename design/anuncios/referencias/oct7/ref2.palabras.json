@@ -1,0 +1,25 @@
+{
+ "id": "ea402ee2-4d49-4fbd-a07c-3d78b1aade4a",
+ "texto": "I remain versatile.",
+ "duracion": 16,
+ "palabras": [
+  {
+   "t": "I",
+   "i": 0.02,
+   "f": 0.03,
+   "c": 0.89
+  },
+  {
+   "t": "remain",
+   "i": 0.03,
+   "f": 0.42,
+   "c": 0.97
+  },
+  {
+   "t": "versatile.",
+   "i": 0.42,
+   "f": 1.54,
+   "c": 0.99
+  }
+ ]
+}

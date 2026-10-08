@@ -66,3 +66,29 @@ Guion 1 (`campana/guion1/`), en estilo Tarjeta con variedad de planos:
 4. `capturas-campana-g1.cjs`: capturas reales de la app (crear el hábito "Leer" después de tomar café), con la app en `localhost:3002`.
 5. `node hf-campana-g1.mjs`: arma el proyecto de HyperFrames en `guion1/hyperframes/`. Arriba del script están el guion, la lista de planos (en qué palabra empieza cada uno y cómo se ve Lina) y las medidas de cada encuadre. Si falta un clip, usa el 1-gancho de relleno para poder revisar.
 6. Dentro de `guion1/hyperframes/`: `check`, `snapshot --at ...`, `preview --background --port=3040` y `render --low-memory-mode -w 1 -f 24 -o ../guion1-empezar-con-todo-v1.mp4` (queda en `guion1/`; tarda más de 10 minutos en este computador).
+
+## Racha de muestra (para grabar la pantalla en los anuncios)
+
+Es la misma app, prendida aparte, **sin cuenta y sin nube**, con datos de ejemplo. No toca la Racha de nadie.
+
+1. En la terminal, dentro de `RachaX`: `npm.cmd run muestra` (queda en el puerto 3003).
+2. En Chrome: `http://localhost:3003/zz-demo.html`. Se elige la apariencia y cómo va el día, y se toca el botón.
+3. Las fechas salen del día en que se toca el botón: si se graba otro día, se vuelve a esa página y se toca otra vez (borra lo que se haya cambiado en la muestra).
+
+Cómo está hecha:
+- `.env.demo` (no sube a git) deja vacías las dos variables de Supabase; con eso la app arranca sin pedir correo y sin sincronizar (`--mode=demo`). Si se pierde, se vuelve a crear con `VITE_SUPABASE_URL=`, `VITE_SUPABASE_ANON_KEY=` y `VITE_VAPID_PUBLICA=`, las tres vacías.
+- `design/herramientas/demo-racha.html` es el original de la página; la que se abre es su copia `public/zz-demo.html` (no sube a git ni a la app en vivo). Al cambiar el original hay que copiarlo otra vez.
+- La página solo actúa en el puerto 3003 y si no hay una cuenta abierta en ese navegador.
+- Datos: la persona se llama Laura; 5 hábitos de la Biblioteca agregados de a uno en 4 meses (agua, leer, entrenar, las 3 cosas, anotar gastos); racha de 17 días, con días difíciles, comodines y dos pausas con regreso; 4 tareas de la Biblioteca (una terminada); 5 compromisos (estos nombres son de ejemplo, no de la Biblioteca); tiempo en Foco; 2 cajas sin abrir.
+- Al cargar, la página abre la app a escondidas para cerrar la ventana de premios acumulados y deja 2 cajas y 2 comodines.
+
+## El anuncio de pantalla grabada (`design/anuncios/campana/pantalla1/`)
+
+Luis haciendo cosas, después la pantalla grabada por Johnatan, una frase fija arriba, música y la tarjeta del precio.
+1. Material: los clips de Luis en `campana/hombre/clips/` (textos en `campana/avatar-hombre-textos-flow.md`), las tomas en `campana/grabaciones/` (qué hay en cada una: `tramos.md`) y la pista en `pantalla1/musica/`.
+2. El ritmo de la música: sacar el audio a WAV mono (`ffmpeg -i pista.mp4 -vn -ac 1 -ar 22050 pista.wav`) y `python design/herramientas/ritmo.py pista.wav`.
+3. Borrador rápido: `bash design/herramientas/anuncio-pantalla-1.sh` (arriba del script están la frase, los cortes y los datos de la música).
+4. Versión final: `node design/herramientas/hf-pantalla1.mjs` (con `--solo-html` no rehace los cortes). Después, dentro de `pantalla1/hyperframes/`: `check`, `snapshot --at ...` y `render --low-memory-mode -w 1 -f 30 -o ../pantalla1-v1.mp4` (menos de 3 minutos).
+5. Pruebas de las tomas sueltas: `prueba-pantalla.sh` (primera grabación, corrige el azul) y `prueba-pantalla-2.sh` (tomas horizontales en 4K).
+
+Las reglas de guiones y de edición están en las skills `guiones-anuncios` y `editor-anuncios` (en `C:\Users\jahen\.claude\skills\`).

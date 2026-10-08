@@ -15,7 +15,7 @@ Lo anterior (`guiones-xiomara.md`, los videos de Xiomara y de Lina) fueron prueb
 | Nivel de consciencia | Concepto | Estado |
 |---|---|---|
 | 01 Inconsciente | Empezar con todo (ángulo 12) | **Video versión 1 exportado el 6 oct** (`guion1/guion1-empezar-con-todo-v1.mp4`, 52 s, estilo Tarjeta). A Johnatan le pareció "muy bien"; faltan sus correcciones de detalle y los 2 ganchos de repuesto |
-| 01 Inconsciente | El que empieza cada lunes (ángulo 2) | Sin guion |
+| 01 Inconsciente | El que empieza cada lunes (ángulo 2) | Guion versión 1 escrito el 7 oct, **sin aprobar** (abajo) |
 | 02 Consciente del problema | El día malo (ángulo 1) | Sin guion |
 | 02 Consciente del problema | Otra vez desde cero (ángulo 8) | Sin guion |
 | 03 Consciente de la solución | Lo aplazado, en pasos (ángulo 4) | Sin guion |
@@ -99,3 +99,29 @@ Lo que hay que crear: imagen base de Lina (Flow), 8 clips más 2 ganchos de repu
 **Agregado de Johnatan (6 oct): cosas cercanas al cliente.** El ejemplo del plano 8 se aterriza y Lina lo hace de verdad. Propuesta de frase (sin aprobar): "Por ejemplo: después del tinto de la mañana, lees una página de tu libro preferido." En ese plano se ve un clip corto de Lina sentada, con el pocillo al lado, leyendo una página (clip aparte, sin voz, 8 s; su voz sigue por encima). El libro va sin título legible: no se muestra la portada de un libro real en un anuncio pago. Con este clip quedan 9 clips más 2 ganchos de repuesto, unos 138 créditos.
 
 **Decisiones de Johnatan sobre el plan versión 2 (6 oct):** se dice **"café"**, no "tinto" (frase del plano 8: "Por ejemplo: después del café, lees una página de tu libro preferido."); **la llama se ensaya, pero no sale todo el rato** (en el video de muestra el muñeco solo aparece en algunos momentos): va en el plano 5 (se apaga), en el plano 7 (vuelve) y en el cierre; **el gasto en Flow no importa**. Las ventanas sobre el pecho y a los lados, nunca en la cara: no objetó, se toma como aprobado.
+
+## Guion 2 · El que empieza cada lunes (versión 1, 7 oct, SIN APROBAR)
+
+Nivel 01 (Inconsciente) · Emoción: reconocerse ("ese soy yo").
+Culpable: esperar al lunes para volver a empezar. Fallas un día y dejas pasar el resto de la semana.
+Salida: seguir al día siguiente. Lo que ya hiciste sigue contando.
+Se diferencia del guion 1 (demasiadas cosas a la vez) y de los del nivel 02 (el día malo y volver a cero): aquí el tema es **cuándo** se retoma.
+
+| Clip | Dice |
+|---|---|
+| 0 · Gancho | "Si eres de los que dice 'el lunes empiezo', esto es para ti." |
+| 1 · Se reconoce | "El lunes sales a caminar. El martes también. El miércoles llegas cansado y no sales." |
+| 2 · Lo que piensa | "Y piensas: ya dañé la semana, mejor empiezo otra vez el lunes." |
+| 3 · Lo que pasa | "Entonces de jueves a domingo tampoco sales. Fallaste un día y dejaste pasar otros cuatro." |
+| 4 · La salida | "No tienes que esperar al lunes. Si fallaste el miércoles, sigues el jueves." |
+| 5 · Racha | "Racha es una app donde marcas cada día si hiciste tu hábito, y te muestra cuántos días del mes llevas." |
+| 6 · Racha | "Si un día fallas, esa cuenta no se borra. Al día siguiente sigues y sumas uno más." |
+| 7 · Cierre | "Se paga una sola vez y tienes siete días para probarla. Escríbenos aquí abajo." (el mismo del guion 1) |
+
+Unas 118 palabras: cerca de 50 segundos sin silencios.
+
+Ganchos de repuesto para la segunda tanda:
+- "¿Fallaste el miércoles y ya dijiste 'el lunes empiezo'?"
+- "¿Tú también dejas todo para el lunes?"
+
+Comprobado en la app (7 oct): en Hoy sale "N/M del mes" (los días de este mes cumplidos; `TodayScreen.tsx`, `constanciaMes`), y ese número no vuelve a cero por un día sin cumplir. OJO: la racha de días seguidos sí se rompe sin comodín; por eso el guion habla de la cuenta del mes y no de la racha. No se usó "Volviste. Hoy cada hábito vale el doble" porque obliga a explicar los puntos (y solo sale tras 3 días o más sin cumplir).
