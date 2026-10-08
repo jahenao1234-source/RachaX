@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("assets/fuentes/barlow-condensed-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 500; src: url("assets/fuentes/barlow-500.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.005em; white-space: nowrap; text-align: center; color: #0F1113; opacity: 0; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 0 30px 10px; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 0 30px 10px; }
+        .vin { position: absolute; overflow: hidden; border: 10px solid #0F1113; box-shadow: 18px 18px 0 #0F1113; background: #FFB547; opacity: 0; }
+        .vin img { position: absolute; left: 0; top: 0; width: 100%; display: block; transform-origin: 50% 40%; }
+        #c-fondo { position: absolute; inset: 0; background: #0B0C0F; }
+        #c-brillo { position: absolute; left: -260px; top: 80px; width: 1600px; height: 1500px; background: radial-gradient(closest-side, rgba(255, 181, 71, 0.30), rgba(255, 181, 71, 0.10) 45%, rgba(255, 181, 71, 0) 72%); opacity: 0; }
+        #c-col { position: absolute; left: 0; right: 0; top: 262px; display: flex; flex-direction: column; align-items: center; }
+        #c-ico { width: 148px; height: 148px; border-radius: 34px; background: #FFB547; display: flex; align-items: center; justify-content: center; opacity: 0; }
+        #c-ico svg { width: 104px; height: 104px; display: block; }
+        #c-marca { margin: 18px 0 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 170px; line-height: 1; color: #F4EFE6; opacity: 0; }
+        #c-app { margin: 2px 0 0; font-family: "Barlow", sans-serif; font-weight: 500; font-size: 54px; line-height: 1.1; color: #A89F92; opacity: 0; }
+        #c-precio { margin: 34px 0 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 318px; line-height: 0.92; letter-spacing: -0.01em; color: #FFB547; white-space: nowrap; opacity: 0; }
+        #c-pago { margin: 14px 0 0; padding: 4px 30px 8px; background: #F4EFE6; color: #0F1113; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 92px; line-height: 1; letter-spacing: 0.03em; white-space: nowrap; opacity: 0; }
+        #c-dias { margin: 26px 0 0; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 56px; line-height: 1.1; color: #F4EFE6; white-space: nowrap; opacity: 0; }
+        #c-boton { margin: 44px 0 0; height: 116px; padding: 0 56px; border-radius: 58px; background: #FFB547; color: #0F1113; display: flex; align-items: center; gap: 22px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 58px; white-space: nowrap; opacity: 0; }
+        #c-flecha { width: 50px; height: 50px; display: block; }
+        #c-cel { position: absolute; left: 215px; top: 1400px; width: 650px; height: 1290px; border-radius: 64px 64px 0 0; border: 10px solid #2A2D33; border-bottom: 0; background: #101216; overflow: hidden; opacity: 0; }
+        #c-cel img { display: block; width: 100%; }
+        #c-velo { position: absolute; left: 0; right: 0; top: 1380px; height: 540px; background: linear-gradient(180deg, rgba(11, 12, 15, 0) 0%, rgba(11, 12, 15, 0.55) 55%, rgba(11, 12, 15, 0.92) 100%); }
+      </style>
+      <div id="root" data-composition-id="cierre" data-width="1080" data-height="1920">
+        <div id="c-fondo"></div>
+        <div id="c-brillo" data-layout-allow-overflow></div>
+        <div id="c-cel" data-layout-allow-overflow><img src="assets/app-celular.png" alt="" data-layout-allow-overflow /></div>
+        <div id="c-velo"></div>
+        <div id="c-col">
+          <div id="c-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F1113" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></div>
+          <p id="c-marca">Racha</p>
+          <p id="c-app">es una app</p>
+          <p id="c-precio">$37.900</p>
+          <p id="c-pago">UN SOLO PAGO</p>
+          <p id="c-dias">7 días para probarla</p>
+          <div id="c-boton"><span>Escríbenos por WhatsApp</span><svg id="c-flecha" viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14" /><path d="m19 12-7 7-7-7" /></svg></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#c-brillo", { opacity: 0, scale: 0.7 }, { opacity: 0.55, scale: 1, duration: 0.5, ease: "power2.out" }, 0);
+          tl.fromTo("#c-ico", { opacity: 0, scale: 0.4, rotation: -14 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.3, ease: "back.out(2.2)" }, 0);
+          tl.fromTo("#c-marca", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.26, ease: "power3.out" }, 0.08);
+          tl.fromTo("#c-app", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 0.36);
+          tl.fromTo("#c-precio", { opacity: 0, scale: 1.7 }, { opacity: 1, scale: 1, duration: 0.2, ease: "power4.in" }, 0.56);
+          tl.to("#c-precio", { scale: 1.06, duration: 0.07, ease: "power1.out" }, 0.76);
+          tl.to("#c-precio", { scale: 1, duration: 0.22, ease: "power2.out" }, 0.83);
+          tl.to("#c-brillo", { opacity: 1, scale: 1.12, duration: 0.12, ease: "power1.out" }, 0.76);
+          tl.to("#c-brillo", { opacity: 0.7, scale: 1, duration: 0.6, ease: "power2.out" }, 0.88);
+          tl.fromTo("#c-pago", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.22, ease: "power3.out" }, 1.1);
+          tl.fromTo("#c-dias", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.24, ease: "power2.out" }, 1.36);
+          tl.fromTo("#c-boton", { opacity: 0, y: 70, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.6)" }, 1.62);
+          tl.fromTo("#c-cel", { opacity: 0, y: 260 }, { opacity: 0.9, y: 0, duration: 0.55, ease: "power3.out" }, 1.62);
+          tl.to("#c-flecha", { y: 12, duration: 0.3, ease: "power1.inOut", repeat: 5, yoyo: true }, 2.1);
+          window.__timelines["cierre"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

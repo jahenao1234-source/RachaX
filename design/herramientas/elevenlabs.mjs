@@ -3,6 +3,7 @@
 // Uso:
 //   node design/herramientas/elevenlabs.mjs voces [texto que debe contener]
 //   node design/herramientas/elevenlabs.mjs decir <idVoz> "<texto>" <salida.mp3>
+//     (con MODELO=eleven_v3 cambia el modelo; con AJUSTES='{"stability":0.3,"style":0.45,"speed":1.1}' cambia cómo lo dice)
 //   node design/herramientas/elevenlabs.mjs cambiar <idVoz> <audio de entrada> <salida.mp3>
 //   node design/herramientas/elevenlabs.mjs efecto "<descripción en inglés>" <segundos> <salida.mp3>
 import fs from 'node:fs';
@@ -34,7 +35,7 @@ try {
     console.log(filas.join('\n'));
   } else if (orden === 'decir') {
     const [voz, texto, salida] = a;
-    const audio = await pedir(`/v1/text-to-speech/${voz}?output_format=mp3_44100_128`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: texto, model_id: process.env.MODELO || 'eleven_multilingual_v2' }) }, true);
+    const audio = await pedir(`/v1/text-to-speech/${voz}?output_format=mp3_44100_128`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: texto, model_id: process.env.MODELO || 'eleven_multilingual_v2', ...(process.env.AJUSTES ? { voice_settings: JSON.parse(process.env.AJUSTES) } : {}) }) }, true);
     fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
   } else if (orden === 'cambiar') {
     const [voz, entrada, salida] = a;

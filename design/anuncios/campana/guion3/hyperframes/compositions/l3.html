@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("assets/fuentes/barlow-condensed-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 500; src: url("assets/fuentes/barlow-500.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.005em; white-space: nowrap; text-align: center; color: #0F1113; opacity: 0; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 0 30px 10px; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 0 30px 10px; }
+        .vin { position: absolute; overflow: hidden; border: 10px solid #0F1113; box-shadow: 18px 18px 0 #0F1113; background: #FFB547; opacity: 0; }
+        .vin img { position: absolute; left: 0; top: 0; width: 100%; display: block; transform-origin: 50% 40%; }
+        .grupo { top: 280px; gap: 14px; }
+        .l .caja { display: inline-block; background: #F4EFE6; color: #0F1113; padding: 0 28px 12px; border: 6px solid #0F1113; box-shadow: 8px 8px 0 #0F1113; }
+        .l .caja.amb { background: #FFB547; }
+        .g1 { font-size: 86px; }
+        .g2 { font-size: 104px; }
+        #l3-marca { display: flex; align-items: center; gap: 18px; opacity: 0; }
+        #l3-ico { width: 116px; height: 116px; border-radius: 26px; background: #FFB547; border: 6px solid #0F1113; display: flex; align-items: center; justify-content: center; }
+        #l3-ico svg { width: 78px; height: 78px; display: block; }
+        #l3-marca .l { font-size: 104px; opacity: 1; }
+        .chispa { position: absolute; left: 896.136px; top: 1069px; width: 22px; height: 22px; border-radius: 11px; background: #FFB547; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="l3" data-width="1080" data-height="1920">
+        <div class="col grupo" id="l3-g1">
+          <div id="l3-marca">
+            <div id="l3-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F1113" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></div>
+            <p class="l"><span class="caja">En Racha,</span></p>
+          </div>
+          <p class="l g1" id="l3-a"><span class="caja">a tus hábitos les pones</span></p>
+          <p class="l g1" id="l3-b"><span class="caja amb">una versión mínima</span></p>
+          <p class="l g1" id="l3-c"><span class="caja">para esos días.</span></p>
+        </div>
+        <div class="col grupo" id="l3-g2">
+          <p class="l g2" id="l3-d"><span class="caja">En vez de leer</span></p>
+          <p class="l g2" id="l3-e"><span class="caja">diez páginas,</span></p>
+          <p class="l g2" id="l3-f"><span class="caja amb">lees una.</span></p>
+        </div>
+        <div class="col grupo" id="l3-g3">
+          <p class="l g2" id="l3-g"><span class="caja">La marcas,</span></p>
+          <p class="l g2" id="l3-h"><span class="caja">y ese día cuenta</span></p>
+          <p class="l g2" id="l3-i"><span class="caja amb">como cumplido.</span></p>
+        </div>
+        <div class="chispa" id="l3-ch0"></div>
+        <div class="chispa" id="l3-ch1"></div>
+        <div class="chispa" id="l3-ch2"></div>
+        <div class="chispa" id="l3-ch3"></div>
+        <div class="chispa" id="l3-ch4"></div>
+        <div class="chispa" id="l3-ch5"></div>
+        <div class="chispa" id="l3-ch6"></div>
+        <div class="chispa" id="l3-ch7"></div>
+        <div class="chispa" id="l3-ch8"></div>
+        <div class="chispa" id="l3-ch9"></div>
+        <div class="chispa" id="l3-ch10"></div>
+        <div class="chispa" id="l3-ch11"></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#l3-marca", { opacity: 0, scale: 0.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.3, ease: "back.out(2)" }, 0.08);
+          tl.fromTo("#l3-a", { opacity: 0, y: 36, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)" }, 0.72);
+          tl.fromTo("#l3-b", { opacity: 0, scale: 1.5, rotation: -7.5 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.2, ease: "power4.in" }, 1.64);
+          tl.fromTo("#l3-c", { opacity: 0, y: 36, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)" }, 2.87);
+          tl.to("#l3-g1", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 3.93);
+          tl.fromTo("#l3-d", { opacity: 0, y: 36, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)" }, 4.09);
+          tl.fromTo("#l3-e", { opacity: 0, y: 36, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)" }, 4.71);
+          tl.fromTo("#l3-f", { opacity: 0, scale: 1.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.2, ease: "power4.in" }, 5.47);
+          tl.to("#l3-g2", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 6.32);
+          tl.fromTo("#l3-g", { opacity: 0, y: 36, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)" }, 6.48);
+          tl.fromTo("#l3-h", { opacity: 0, y: 36, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)" }, 7.52);
+          tl.fromTo("#l3-i", { opacity: 0, scale: 1.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.2, ease: "power4.in" }, 8.36);
+          tl.fromTo("#l3-ch0", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 210, y: 0, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch1", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 129.903811, y: 75, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch2", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 105, y: 181.865335, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch3", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 0, y: 150, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch4", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: -105, y: 181.865335, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch5", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: -129.903811, y: 75, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch6", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: -210, y: 0, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch7", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: -129.903811, y: -75, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch8", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: -105, y: -181.865335, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch9", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 0, y: -150, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch10", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 105, y: -181.865335, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          tl.fromTo("#l3-ch11", { opacity: 1, x: 0, y: 0, scale: 0.4 }, { opacity: 0, x: 129.903811, y: -75, scale: 1.2, duration: 0.55, ease: "power2.out" }, 7.002);
+          window.__timelines["l3"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

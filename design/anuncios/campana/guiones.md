@@ -16,7 +16,7 @@ Lo anterior (`guiones-xiomara.md`, los videos de Xiomara y de Lina) fueron prueb
 |---|---|---|
 | 01 Inconsciente | Empezar con todo (ángulo 12) | **Video versión 1 exportado el 6 oct** (`guion1/guion1-empezar-con-todo-v1.mp4`, 52 s, estilo Tarjeta). A Johnatan le pareció "muy bien"; faltan sus correcciones de detalle y los 2 ganchos de repuesto |
 | 01 Inconsciente | El que empieza cada lunes (ángulo 2) | Guion versión 1 escrito el 7 oct, **sin aprobar** (abajo) |
-| 02 Consciente del problema | El día malo (ángulo 1) | Sin guion |
+| 02 Consciente del problema | El día malo (ángulo 1) | Versión 1 **rechazada** el 8 oct. Versión 2 corta (22 s, molde "llevar la contraria", precio escrito y no en la voz), **sin aprobar** (abajo); pensada para el estilo todo animado con voz en off |
 | 02 Consciente del problema | Otra vez desde cero (ángulo 8) | Sin guion |
 | 03 Consciente de la solución | Lo aplazado, en pasos (ángulo 4) | Sin guion |
 | 03 Consciente de la solución | Tu primer día con Racha (idea de Johnatan) | Sin guion |
@@ -125,3 +125,77 @@ Ganchos de repuesto para la segunda tanda:
 - "¿Tú también dejas todo para el lunes?"
 
 Comprobado en la app (7 oct): en Hoy sale "N/M del mes" (los días de este mes cumplidos; `TodayScreen.tsx`, `constanciaMes`), y ese número no vuelve a cero por un día sin cumplir. OJO: la racha de días seguidos sí se rompe sin comodín; por eso el guion habla de la cuenta del mes y no de la racha. No se usó "Volviste. Hoy cada hábito vale el doble" porque obliga a explicar los puntos (y solo sale tras 3 días o más sin cumplir).
+
+## Guion 3 · El día malo (versión 2, 8 oct, SIN APROBAR): molde "llevar la contraria"
+
+Johnatan rechazó la versión 1 ("no me gustó el guion", sin decir el motivo) y pidió investigar cómo se estructura un anuncio (`../copywriting-investigacion.md`). De tres moldes cortos escogió este: "probemos el C". Sobre el precio dijo: "está claro que debemos decirlo, pero no sé si tanto como para meterlo en la voz". En esta versión **el precio va escrito (tarjeta final y texto del anuncio) y no lo dice la voz**.
+
+Nivel 02 (Consciente del problema) · Emoción: alivio.
+Culpable: el "todo o nada". Salida: en el día pesado, hacer lo más pequeño. Cuenta.
+Estilo pensado: todo animado (palabras grandes y pantallas reales de la app), con voz en off de ElevenLabs (Linda Gomez). Las letras en pantalla son las mismas palabras de la voz, para que se entienda sin sonido.
+
+| # | Dice la voz | Qué se ve |
+|---|---|---|
+| 1 · Gancho | "Un día malo no daña un hábito." | La frase en letras grandes |
+| 2 · El giro | "Lo que lo daña es que ese día no haces nada, y al otro tampoco." | La frase; dos días seguidos sin marcar |
+| 3 · Racha | "En Racha, a tus hábitos les pones una versión mínima para esos días." | La app: "¿Día pesado? Haz solo lo mínimo" y la hoja "Día difícil" |
+| 4 · El ejemplo | "En vez de leer diez páginas, lees una." | "Leer 10 páginas" con su "Mínimo: una página" |
+| 5 · La prueba | "La marcas, y ese día cuenta como cumplido." | El hábito marcado, "+5 ganados · versión mínima" |
+| 6 · Cierre | "Racha es una app para llevar tus hábitos y tus tareas. Escríbenos aquí abajo." | La tarjeta final: Racha, es una app, $37.900, UN SOLO PAGO, 7 días para probarla, Escríbenos por WhatsApp |
+
+65 palabras: unos 22 segundos. Racha se nombra hacia el segundo 8.
+
+Ganchos de repuesto para la segunda tanda:
+- "No dejaste el hábito por flojo. Lo dejaste por un día malo."
+- "Leer una página también cuenta."
+
+Cambio frente al ejemplo que se le mostró en el chat: decía "lo que lo daña es no hacer nada ese día" y "cada hábito tiene una versión mínima". Lo primero se cambió por lo que le pasa a la persona (ese día y el siguiente), porque como afirmación general no se puede sostener. Lo segundo no es exacto: la versión mínima la escribe la persona en cada hábito, es opcional y los hábitos de evitar no la tienen (`dificilUtils.ts`: `tieneMinimo`, `puedeTenerMinimo`).
+
+Comprobado en la app: lo mismo de la versión 1 (abajo).
+
+## Guion 3 · El día malo (versión 1, 8 oct, RECHAZADA: "no me gustó el guion")
+
+Nivel 02 (Consciente del problema) · Emoción: sentirse entendido.
+Culpable: el "todo o nada". Un día no puedes con todo, no haces nada, y al otro día piensas "ya fallé" y tampoco haces nada.
+Salida: en el día pesado, hacer lo más pequeño. Cuenta.
+Se diferencia de los otros: el guion 1 habla de empezar demasiadas cosas; el del lunes, de cuándo se retoma; este, de qué hacer el mismo día en que no se puede.
+Estilo pensado: todo animado (palabras grandes y pantallas reales de la app), con voz en off de ElevenLabs (Linda Gomez). Como no es un clip de Flow, la voz sí podría decir "WhatsApp"; se dejó la frase de cierre ya aprobada.
+
+| # | Dice la voz |
+|---|---|
+| 1 · Gancho | "¿Hoy no hiciste nada de lo que te habías propuesto?" |
+| 2 · Se reconoce | "Llegaste tarde, con hambre y sin ganas. No leíste, no entrenaste, nada." |
+| 3 · Lo que pasa | "El problema no es ese día. Es que mañana piensas 'ya fallé' y tampoco haces nada." |
+| 4 · La salida | "En un día así no tienes que hacerlo todo. Haz lo más pequeño: una página en vez de diez." |
+| 5 · Racha | "Racha es una app donde llevas tus hábitos y tus tareas, y está hecha para esos días. Tocas 'Haz solo lo mínimo' y eliges la versión más pequeña de cada hábito." |
+| 6 · La prueba | "La haces, la marcas, y ese día cuenta como cumplido." |
+| 7 · Cierre | "Se paga una sola vez y tienes siete días para probarla. Escríbenos aquí abajo." |
+
+Unas 110 palabras: cerca de 45 segundos.
+
+Ganchos de repuesto para la segunda tanda:
+- "¿Tuviste un día pesado y no hiciste nada?"
+- "Un día sin hacer nada no es el problema."
+
+Comprobado en la app (8 oct): en Hoy sale "¿Día pesado? Haz solo lo mínimo" (`TodayScreen.tsx`); abre la hoja "Día difícil", que dice "Haz la versión más pequeña de cada hábito. Cuenta como cumplido. Cada uno suma 5 puntos." y muestra el "Mínimo:" de cada hábito pendiente (`HojaDificil.tsx`); lo hecho con la mínima cuenta igual en racha, constancia y Día completo (`dificilUtils.ts`). El ejemplo "una página en vez de diez" es el hábito "Leer 10 páginas" de la Biblioteca, con mínimo "una página". No se dice que la racha nunca se rompe.
+
+## Guion 4 · Lo aplazado, en pasos (8 oct, TRES OPCIONES SIN ESCOGER): estilo orgánico
+
+Pedido de Johnatan (8 oct): "otro estilo… que no suene tan a anuncio, que no suene a que le estamos vendiendo algo, algo más orgánico", siguiendo las reglas de copy de `../copywriting-investigacion.md`. El guion 3 (versión 2 del video) ya lo aprobó: "así está bien".
+
+Nivel 03 (Consciente de la solución) · Emoción: alivio de ver por dónde empezar.
+Qué lo hace orgánico: da un consejo que sirve aunque no compres; la app sale como el sitio donde se hace y se nombra una sola vez; no hay tarjeta grande de precio (el precio va en una línea pequeña al final y en el texto del anuncio).
+Límite: el avatar es de IA; no se hace pasar por clienta ni cuenta "a mí me funcionó". Todo va de "tú".
+
+**A · El consejo** (Lina a cámara, como un reel de consejos, con cortes a la app)
+> "Si llevas semanas aplazando organizar el cuarto, deja de anotarlo así. Así de grande nunca lo vas a empezar. Pártelo: recoger la ropa del piso, sacar los platos y la basura, llenar una bolsa con lo que ya no usas. Y hoy haces solo el primero. En Racha lo dejas escrito por pasos y a cada uno le pones su día."
+
+**B · Mira la pantalla** (voz casual encima de la app grabada, como quien enseña un truco)
+> "Mira cómo dejar de aplazar una tarea grande. Escribes 'Organizar el cuarto'. Ahora la partes: recoger la ropa del piso, sacar los platos y la basura, llenar una bolsa con lo que ya no usas. A cada paso le pones un día. Y hoy solo te aparece uno: recoger la ropa. Esto es Racha, una app para tus tareas y tus hábitos."
+
+**C · Sin voz, con letras de reel** (Luis y letras como las de Instagram)
+> Letra 1: "Llevas tres semanas diciendo 'mañana organizo el cuarto'."
+> Letra 2: "Hoy solo te toca un paso: recoger la ropa del piso."
+> Letra 3, sobre la app: "Así lo llevo en pasos." → se cambia por "Así se ve en Racha." (el avatar no dice "yo").
+
+Comprobado en la app: "Organizar el cuarto" es una tarea de la Biblioteca y su primer paso es "Recoger la ropa del piso y de la silla" (`src/data/biblioteca.ts`); cada paso puede llevar su día y los de hoy salen en "Tareas de hoy" de la pantalla Hoy. Los tres pasos que se nombran son los tres primeros de esa tarea en la Biblioteca.

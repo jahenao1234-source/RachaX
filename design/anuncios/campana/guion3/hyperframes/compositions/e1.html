@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("assets/fuentes/barlow-condensed-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 500; src: url("assets/fuentes/barlow-500.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.005em; white-space: nowrap; text-align: center; color: #0F1113; opacity: 0; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 0 30px 10px; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 0 30px 10px; }
+        .vin { position: absolute; overflow: hidden; border: 10px solid #0F1113; box-shadow: 18px 18px 0 #0F1113; background: #FFB547; opacity: 0; }
+        .vin img { position: absolute; left: 0; top: 0; width: 100%; display: block; transform-origin: 50% 40%; }
+        #e1-col { top: 285px; gap: 14px; }
+        #e1-a { font-size: 172px; opacity: 1; }
+        #e1-b { font-size: 204px; }
+        #e1-c { font-size: 172px; }
+        #e1-v { left: 110px; top: 884px; width: 860px; height: 740px; opacity: 1; }
+      </style>
+      <div id="root" data-composition-id="e1" data-width="1080" data-height="1920">
+        <div class="fondo" style="background: #FFB547"></div>
+        <div class="vin" id="e1-v" data-layout-allow-overflow><img id="e1-i" src="assets/d-cama.jpg" alt="" data-layout-allow-overflow /></div>
+        <div class="col" id="e1-col">
+          <p class="l" id="e1-a">Un día malo</p>
+          <p class="l" id="e1-b"><span class="negra">no daña</span></p>
+          <p class="l" id="e1-c">un hábito.</p>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#e1-a", { scale: 1.1 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 0);
+          tl.fromTo("#e1-v", { rotation: 4, scale: 1.06 }, { rotation: 2, scale: 1, duration: 0.5, ease: "power3.out" }, 0);
+          tl.fromTo("#e1-i", { scale: 1.2, y: -40 }, { scale: 1.04, y: 0, duration: 2.22, ease: "none" }, 0);
+          tl.fromTo("#e1-b", { opacity: 0, scale: 1.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.2, ease: "power4.in" }, 0.98);
+          tl.fromTo("#e1-c", { opacity: 0, y: 36, scale: 0.94, rotation: 0 }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.2, ease: "back.out(1.7)" }, 1.43);
+          window.__timelines["e1"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

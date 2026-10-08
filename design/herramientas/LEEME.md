@@ -92,3 +92,14 @@ Luis haciendo cosas, después la pantalla grabada por Johnatan, una frase fija a
 5. Pruebas de las tomas sueltas: `prueba-pantalla.sh` (primera grabación, corrige el azul) y `prueba-pantalla-2.sh` (tomas horizontales en 4K).
 
 Las reglas de guiones y de edición están en las skills `guiones-anuncios` y `editor-anuncios` (en `C:\Users\jahen\.claude\skills\`).
+
+## El anuncio todo animado con voz en off (`design/anuncios/campana/guion3/`)
+
+Estilo de la referencia 7: palabras grandes que entran cuando la voz las dice, dibujos estilo cómic (los del PDF, en `design/pdf/imagenes/`), la app en movimiento dentro de un celular y la tarjeta del precio. Sin presentador.
+
+1. **La voz** (ElevenLabs, Linda Gomez). Con los ajustes de fábrica suena robótica; la que le gustó a Johnatan se hizo así:
+   `MODELO=eleven_v3 AJUSTES='{"stability":0.5}' node design/herramientas/elevenlabs.mjs decir TsKSGPuG26FpNj0JzQBq "<texto con indicaciones como [conversational, warm] y [upbeat]>" <salida.mp3>`
+   Después se le recortan las pausas con `silenceremove` de ffmpeg y se transcribe (`transcribir-assembly.mjs`) para comprobar que dijo el texto y tener el momento de cada palabra.
+2. **La app en movimiento:** con la muestra prendida (`npm.cmd run muestra`), `node design/herramientas/grabar-campana-g3.cjs` (con el `NODE_PATH` de puppeteer-core). Abre la muestra en un Chrome invisible, hace los toques en los segundos del anuncio que dice `TOQUES` (arriba en el script) y deja `guion3/app/celular.mp4` (858 x 1760, empieza en el segundo 6 del anuncio) y `celular.json` (cuándo fue cada toque y dónde está cada cosa en la pantalla). Para que salga nítida, Chrome va con `--force-device-scale-factor=3`: con la densidad emulada de `setViewport` la grabación en movimiento sale de 390 x 800. Si cambia la voz, se ajustan los `TOQUES` y se graba otra vez. (`capturas-campana-g3.cjs` toma las mismas pantallas, quietas; se usó en la versión 1.)
+3. **El proyecto:** `node design/herramientas/hf-animado.mjs guion3` (`--solo-html` para no rehacer el sonido). Cada escena es una pieza en `compositions/` y empieza en la primera palabra de su frase; los números de palabra están en el script. El celular vive en `index.html` y la línea de tiempo principal lo mueve y lo acerca (`CAM`).
+4. Dentro de `guion3/hyperframes`: `check`, `snapshot --at ...` y, con el visto bueno, `render --low-memory-mode -w 1 -f 30 -o ../guion3-el-dia-malo-v1.mp4`.

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow Condensed"; font-weight: 600; src: url("assets/fuentes/barlow-condensed-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 500; src: url("assets/fuentes/barlow-500.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.005em; white-space: nowrap; text-align: center; color: #0F1113; opacity: 0; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 0 30px 10px; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 0 30px 10px; }
+        .vin { position: absolute; overflow: hidden; border: 10px solid #0F1113; box-shadow: 18px 18px 0 #0F1113; background: #FFB547; opacity: 0; }
+        .vin img { position: absolute; left: 0; top: 0; width: 100%; display: block; transform-origin: 50% 40%; }
+        #f3-bola { position: absolute; left: -110px; top: 560px; width: 1300px; height: 1300px; border-radius: 650px; background: #FFB547; }
+        #f3-puntos { position: absolute; inset: 0; background-image: radial-gradient(rgba(15, 17, 19, 0.16) 3px, transparent 3.5px); background-size: 34px 34px; }
+      </style>
+      <div id="root" data-composition-id="f3" data-width="1080" data-height="1920">
+        <div class="fondo" style="background: #F4EFE6"></div>
+        <div id="f3-puntos"></div>
+        <div id="f3-bola" data-layout-allow-overflow></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#f3-bola", { scale: 0.2 }, { scale: 1, duration: 0.7, ease: "power3.out" }, 0);
+          tl.to("#f3-bola", { scale: 1.12, y: -120, duration: 8.82, ease: "sine.inOut" }, 0.7);
+          window.__timelines["f3"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
