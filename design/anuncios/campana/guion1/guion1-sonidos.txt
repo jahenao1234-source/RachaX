@@ -1,0 +1,76 @@
+  0.53 s  whoosh    -11 dB  cambio de plano
+  0.95 s  whoosh    -11 dB  cambio de plano
+  1.14 s  golpe      -6 dB  gancho: última palabra
+  1.50 s  whoosh     -8 dB  cambio de plano
+  1.58 s  pop       -10 dB  entra el calendario
+  1.97 s  tachar    -12 dB  se encierra el lunes
+  2.40 s  pop        -7 dB  letrero del lunes
+  2.82 s  pop        -7 dB  letrero del lunes
+  3.45 s  pop        -7 dB  letrero del lunes
+  5.34 s  whoosh     -8 dB  cambio de plano
+  5.89 s  whoosh    -12 dB  tarjeta que vuela
+  6.06 s  pop        -8 dB  tarjeta que llega
+  6.70 s  whoosh    -12 dB  tarjeta que vuela
+  6.87 s  pop        -8 dB  tarjeta que llega
+  7.42 s  whoosh    -12 dB  tarjeta que vuela
+  7.59 s  pop        -8 dB  tarjeta que llega
+  8.35 s  whoosh    -12 dB  tarjeta que vuela
+  8.53 s  pop        -8 dB  tarjeta que llega
+  9.74 s  whoosh    -12 dB  tarjeta que vuela
+  9.92 s  pop        -8 dB  tarjeta que llega
+ 10.25 s  whoosh     -8 dB  cambio de plano
+ 10.34 s  pop        -7 dB  ventana de semanas
+ 11.49 s  toque     -11 dB  casilla semana 1
+ 11.57 s  toque     -11 dB  casilla semana 1
+ 11.65 s  toque     -11 dB  casilla semana 1
+ 11.73 s  toque     -11 dB  casilla semana 1
+ 11.81 s  toque     -11 dB  casilla semana 1
+ 12.40 s  toque     -11 dB  casilla semana 2
+ 12.50 s  toque     -11 dB  casilla semana 2
+ 12.60 s  toque     -11 dB  casilla semana 2
+ 13.06 s  caida      -9 dB  las dos que no se hicieron
+ 13.96 s  whoosh     -8 dB  cambio de plano
+ 14.01 s  whoosh    -10 dB  cae el papel
+ 14.15 s  pop        -6 dB  el papel llega
+ 15.77 s  pop        -7 dB  título del papel
+ 17.05 s  tachar    -11 dB  tachón 1
+ 17.47 s  tachar    -11 dB  tachón 2
+ 17.89 s  tachar    -11 dB  tachón 3
+ 18.31 s  tachar    -11 dB  tachón 4
+ 18.72 s  tachar    -11 dB  tachón 5
+ 18.82 s  caida      -7 dB  el contador llega a cero
+ 19.96 s  whoosh     -8 dB  cambio de plano
+ 20.08 s  pop        -7 dB  franja
+ 21.05 s  tachar    -11 dB  raya sobre "disciplina"
+ 21.74 s  pop        -7 dB  sube la tira
+ 24.84 s  whoosh     -8 dB  cambio de plano
+ 24.95 s  pop        -7 dB  entran las cinco tarjetas
+ 25.55 s  pop        -9 dB  letrero
+ 26.12 s  whoosh     -9 dB  se van cuatro tarjetas
+ 26.45 s  pop        -7 dB  queda una
+ 26.58 s  campana    -9 dB  la llama
+ 27.95 s  pop       -10 dB  resalta
+ 28.63 s  pop       -10 dB  resalta
+ 30.88 s  whoosh     -8 dB  cambio de plano
+ 30.97 s  pop        -7 dB  ventana del ejemplo
+ 32.00 s  teclado   -13 dB  se escribe la línea 1
+ 33.00 s  whoosh     -8 dB  cambio de plano
+ 33.08 s  teclado   -13 dB  se escribe la línea 2
+ 35.54 s  whoosh     -8 dB  cambio de plano
+ 35.83 s  pop        -7 dB  ficha de Racha
+ 36.61 s  whoosh    -10 dB  llega el celular
+ 36.77 s  pop        -6 dB  el celular se asienta
+ 39.14 s  toque      -7 dB  el celular late
+ 39.88 s  whoosh     -8 dB  cambio de plano
+ 40.01 s  pop        -7 dB  recorte de la app 1
+ 40.32 s  tachar    -12 dB  se encierra en la app
+ 42.00 s  pop        -7 dB  recorte de la app 2
+ 42.85 s  tachar    -12 dB  se subraya en la app
+ 43.58 s  whoosh     -8 dB  cambio de plano
+ 43.82 s  campana   -11 dB  la llama
+ 44.11 s  golpe      -3 dB  cae el precio
+ 44.79 s  pop        -7 dB  chapa 1
+ 46.16 s  pop        -7 dB  chapa 2
+ 47.99 s  pop        -7 dB  escríbenos
+ 49.53 s  whoosh     -8 dB  tarjeta final
+ 49.66 s  logro      -9 dB  tarjeta final

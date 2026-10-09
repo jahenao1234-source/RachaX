@@ -65,6 +65,21 @@ const CIERRE = 2.4, PAUSA = 0.26, ANTES = 0.09, DESPUES = 0.13, GANANCIA = 8;
 
 // ---------- Recursos ----------
 const copiar = (de, a) => fs.copyFileSync(de, path.join(A, a));
+// Los clips de Lina llevan el filtro de la campaña (pedido de Johnatan, 8 oct). Se filtra una sola vez por clip:
+// si el filtrado ya está en assets y es más nuevo que el original, no se rehace. Los recortes (.webm con fondo
+// transparente) se filtran sin tocar la transparencia.
+const FILTRO = fs.readFileSync(path.join(AQUI, '..', 'anuncios', 'campana', 'filtro', 'filtro-campana.txt'), 'utf8').trim();
+const MARCA = path.join(A, 'filtrados.json');
+const filtrados = fs.existsSync(MARCA) ? JSON.parse(fs.readFileSync(MARCA, 'utf8')) : {};
+const conFiltro = (de, a) => {
+  const sello = fs.statSync(de).mtimeMs + '|' + FILTRO;
+  if (filtrados[a] === sello && fs.existsSync(path.join(A, a))) return;
+  const ff = (args) => execFileSync(FFDIR + 'ffmpeg.exe', ['-hide_banner', '-loglevel', 'error', '-y', ...args], { stdio: ['ignore', 'inherit', 'inherit'] });
+  if (a.endsWith('.webm')) ff(['-c:v', 'libvpx-vp9', '-i', de, '-filter_complex', `[0:v]format=yuva420p,split[c][t];[t]alphaextract[m];[c]format=yuv420p,${FILTRO}[f];[f][m]alphamerge,format=yuva420p`, '-c:v', 'libvpx-vp9', '-crf', '18', '-b:v', '0', '-deadline', 'good', '-cpu-used', '4', '-row-mt', '1', '-auto-alt-ref', '0', '-an', path.join(A, a)]);
+  else ff(['-i', de, '-vf', FILTRO, '-c:v', 'libx264', '-crf', '14', '-preset', 'fast', '-pix_fmt', 'yuv420p', '-g', '24', '-c:a', 'copy', '-movflags', '+faststart', path.join(A, a)]);
+  filtrados[a] = sello; fs.writeFileSync(MARCA, JSON.stringify(filtrados, null, 1), 'utf8');
+  console.log('con filtro:', a);
+};
 const hay = (f) => fs.existsSync(f) && fs.statSync(f).size > 0;
 const RELLENO = '1-gancho';
 const faltan = [];
@@ -75,8 +90,8 @@ for (const c of CLIPS) {
   c.video = (c.real ? c.id : RELLENO) + '.mp4';
   const web = path.join(G, 'clips', (c.real ? c.id : RELLENO) + '-recorte.webm');
   c.recorte = hay(web) ? (c.real ? c.id : RELLENO) + '-recorte.webm' : null;
-  copiar(path.join(G, 'clips', c.video), c.video);
-  if (c.recorte) copiar(web, c.recorte);
+  conFiltro(path.join(G, 'clips', c.video), c.video);
+  if (c.recorte) conFiltro(web, c.recorte);
   c.dur = duracion(path.join(G, 'clips', c.video));
   const pj = path.join(G, 'clips', c.id + '.palabras.json');
   // La transcripción escribe los números con cifras; en los subtítulos van con letras.
@@ -88,7 +103,7 @@ for (const c of CLIPS) {
   }
 }
 const LEYENDO = hay(path.join(G, 'clips', '9-leyendo.mp4')) ? '9-leyendo.mp4' : null;
-if (LEYENDO) copiar(path.join(G, 'clips', LEYENDO), LEYENDO); else faltan.push('9-leyendo');
+if (LEYENDO) conFiltro(path.join(G, 'clips', LEYENDO), LEYENDO); else faltan.push('9-leyendo');
 // Capturas reales de la app (salen de capturas-campana-g1.cjs): la pantalla para el celular y dos recortes grandes.
 const APP = path.join(G, 'app');
 copiar(path.join(APP, 'n2-minimo.png'), 'app-pantalla.png');

@@ -20,7 +20,7 @@ const v = medir(video), m = medir(musica);
 const ganancia = v.lufs - BAJO - m.lufs;
 const vuelta = COMPASES * 4 * GOLPE;
 const filtro = [
-  `[1:a]aresample=48000,atrim=${FASE}:${FASE + vuelta},asetpts=N/SR/TB,aloop=loop=-1:size=${Math.round(vuelta * 48000)},atrim=0:${(v.dura - EMPIEZA).toFixed(3)},volume=${ganancia.toFixed(2)}dB,afade=t=in:d=${SUBE},afade=t=out:st=${(v.dura - EMPIEZA - 1.6).toFixed(3)}:d=1.6,adelay=${Math.round(EMPIEZA * 1000)}:all=1[m]`,
+  `[1:a]aresample=48000,atrim=${FASE}:${FASE + vuelta},asetpts=N/SR/TB,afade=t=in:d=0.004,afade=t=out:st=${(vuelta - 0.006).toFixed(4)}:d=0.006,aloop=loop=-1:size=${Math.round(vuelta * 48000)},atrim=0:${(v.dura - EMPIEZA).toFixed(3)},volume=${ganancia.toFixed(2)}dB,afade=t=in:d=${SUBE},afade=t=out:st=${(v.dura - EMPIEZA - 1.6).toFixed(3)}:d=1.6,adelay=${Math.round(EMPIEZA * 1000)}:all=1[m]`,
   `[0:a][m]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.89[a]`,
 ].join(';');
 execFileSync(FFMPEG, ['-v', 'error', '-y', '-i', video, '-i', musica, '-filter_complex', filtro, '-map', '0:v', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', salida], { stdio: 'inherit' });
