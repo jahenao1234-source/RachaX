@@ -22,7 +22,8 @@ cinta|0.7|Short tape rewind scratch, quick record scratch stop, dry
 campana|1.2|Single soft bright bell chime, gentle positive notification ding, clean
 toque|0.5|Single soft smartphone touchscreen tap, subtle interface click, dry
 logro|1.0|Short cheerful success chime with two rising notes, mobile app reward sound, clean
-obturador|0.5|Single soft camera shutter click, short and clean, close microphone, no voice'
+obturador|0.5|Single soft camera shutter click, short and clean, close microphone, no voice
+teclado|1.2|Fast typing on a laptop keyboard, soft clicky keys, steady, close microphone, no voice, no music'
 
 echo "$LISTA" | while IFS='|' read -r nombre seg texto; do
   if [ $# -gt 0 ] && ! printf '%s\n' "$@" | grep -qx "$nombre"; then continue; fi

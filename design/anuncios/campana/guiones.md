@@ -376,3 +376,11 @@ Cambios: "día" pasa de 9 veces a 4 y "hábito" de 4 a 2; se quitan dos "todo"; 
 152 palabras, unos 57 segundos. Tarjeta del clip 4 (texto PROVISIONAL): "Estudio con 96 personas: faltar un día no afectó el hábito" (Lally y otros, 2010). SIN APROBAR.
 
 **Guion 5, versión 3: APROBADO ("el guion está bien", 8 oct).** Pidió para las escenas: que Lina tenga el carisma y la naturalidad de la creadora del video de referencia, que en el clip 2 cuente con los dedos, estilo Viral, y gancho visual (le gustó el de la referencia: ella repetida, dos veces en el cuadro). Plan de escenas versión 1, sin aprobar, y el clip de prueba: `guion5-textos-flow.md`.
+
+### Guion 5 · VIDEO TERMINADO Y APROBADO (8 oct, noche)
+
+**"Todo está muy bien, el mejor resultado hasta ahora."** Es la referencia de cómo le gustan los anuncios de persona.
+
+- Con música (el vigente): `guion5/guion5-otra-vez-desde-cero-v3-con-musica.mp4`. Limpio: `guion5/guion5-otra-vez-desde-cero-v3.mp4`. 47 s, estilo Viral.
+- Textos en pantalla aprobados con ese mensaje: "días seguidos" (contador 23 → 0), "ESTUDIO CON 96 PERSONAS / Faltar un día no afectó el hábito / Lally y otros, 2010 · University College London", "Racha · es una app" y la pastilla "Racha · app · $37.900, un solo pago".
+- Qué lo hizo funcionar: guion con tensión (contraria, culpable, historia, prueba, paso siguiente gratis), Lina con carisma en selfie en el carro, gancho moviendo el celular, cortes sin las entradas que Flow inventó, tarjetas y la app en movimiento, efectos de sonido en el punto exacto, transiciones solo en los cambios de parte, y música con ritmo que entra en el primer destello.

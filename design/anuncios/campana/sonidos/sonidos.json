@@ -98,6 +98,15 @@
   "pico_db": -1.7,
   "forma": "--.:-##+++=-=+*%@@%#=.  "
  },
+ "teclado": {
+  "dura": 1.133,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.754,
+  "mitad_de_la_energia_en": 0.678,
+  "centro_hz": 4295,
+  "pico_db": -1.0,
+  "forma": " :::. %-**.:- +%@ =:-.. "
+ },
  "toque": {
   "dura": 0.119,
   "quitado_al_comienzo": 0.0,
