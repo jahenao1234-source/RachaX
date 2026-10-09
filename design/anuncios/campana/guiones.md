@@ -199,3 +199,180 @@ Límite: el avatar es de IA; no se hace pasar por clienta ni cuenta "a mí me fu
 > Letra 3, sobre la app: "Así lo llevo en pasos." → se cambia por "Así se ve en Racha." (el avatar no dice "yo").
 
 Comprobado en la app: "Organizar el cuarto" es una tarea de la Biblioteca y su primer paso es "Recoger la ropa del piso y de la silla" (`src/data/biblioteca.ts`); cada paso puede llevar su día y los de hoy salen en "Tareas de hoy" de la pantalla Hoy. Los tres pasos que se nombran son los tres primeros de esa tarea en la Biblioteca.
+
+### Guion 4 · escogida la A ("sí, arranca con el A", 8 oct) · plan de producción versión 1, sin aprobar
+
+Estilo: persona que explica, con cortes a la acción (referencia 5). 61 palabras, unos 22 segundos sin pausas. Textos para Flow: `guion4-textos-flow.md`.
+
+| # | Dice Lina | Qué se ve |
+|---|---|---|
+| 1 | "Si llevas semanas aplazando organizar el cuarto," | Lina sentada en la cama, hablándole a la cámara; señala la silla con ropa. Corte de 1 s al cuarto desordenado desde el piso (b1) |
+| 2 | "deja de anotarlo así. Así de grande, nunca lo vas a empezar." | Lina; corte a la app: una tarea suelta que dice solo "Organizar el cuarto" |
+| 3 | "Pártelo:" | Lina, gesto de partir |
+| 4 | "recoger la ropa del piso," | Sus manos recogen la ropa (b2) |
+| 5 | "sacar los platos y la basura," | Sus manos se llevan los platos (b3) |
+| 6 | "llenar una bolsa con lo que ya no usas." | Sus manos llenan la bolsa (b4) |
+| 7 | "Y hoy haces solo el primero." | Lina levanta un dedo; corte a la app: Hoy › "Tareas de hoy" con "Recoger la ropa del piso y de la silla" |
+| 8 | "En Racha lo dejas escrito por pasos, y a cada uno le pones su día." | La app a pantalla completa, en movimiento: la tarea con sus pasos y se le pone día a uno. Vuelve Lina para cerrar |
+
+Letras: subtítulos pequeños en el centro, dos o tres palabras a la vez, con la palabra clave en ámbar (como la referencia).
+Texto nuevo en pantalla, PROVISIONAL (falta que lo apruebe): una pastilla pequeña al final, "Racha · app · $37.900, un solo pago". No hay tarjeta grande de precio.
+
+### Guion 4 · texto versión 2 (8 oct, SIN APROBAR): frases literales
+
+Johnatan generó el clip 1 con el texto anterior y lo rechazó: "vuelve y juega, las frases que no entiendo". Las que había que interpretar: "deja de anotarlo así", "así de grande nunca lo vas a empezar", "pártelo", "le pones su día". Al acortar el guion quedaron frases a medias que solo se entienden viendo la imagen.
+
+| Clip | Dice Lina (en el carro) |
+|---|---|
+| 1 | "Si llevas semanas aplazando organizar el cuarto, es porque es mucho trabajo y no sabes por dónde empezar." |
+| 2 | "Divídelo en pasos pequeños: recoger la ropa del piso, sacar los platos y llenar una bolsa con lo que no usas." |
+| 3 | "Hoy haces solo el primero. Racha es una app donde escribes la tarea por pasos y eliges qué día haces cada uno." |
+
+60 palabras, unos 22 segundos. Los cortes a la acción y a la app son los mismos del plan.
+
+## El filtro de la campaña (8 oct, EN PRUEBA)
+
+Johnatan recordó que los anuncios iban a llevar un filtro y pasó la configuración (de CapCut): temp -3, tint 2, saturation -6, exposure -3, contrast 12, highlight -35, shadow 18, fade 6.
+Claude lo armó con ffmpeg, acercándose a ojo a esos números (no es el motor de CapCut): `campana\filtro\filtro-campana.txt`. Pruebas de antes y después: `filtro\prueba-lina-antes-despues.jpg` y `prueba-luis-antes-despues.jpg`. Propuesta: ponerlo solo en los clips de persona, no encima de la app ni de las letras. Falta que lo vea.
+
+### Guion 4 · clip 1, texto versión 3 (8 oct)
+
+El clip 1 con la versión 2 salió entonado como una sola pregunta larga y a Johnatan no le gustó ("esa pregunta es muy larga, suena rara"). Dio él las palabras: "es porque es mucho trabajo y es muy difícil saber por dónde empezar" y "si llevas semanas aplazando cómo organizar tu cuarto". Queda:
+
+> "Si llevas semanas aplazando organizar tu cuarto, es porque es mucho trabajo y es difícil saber por dónde empezar."
+
+Claude quitó el "cómo" (se aplaza organizar, no "cómo organizar") y en el texto de Flow pide que lo diga como afirmación, sin subir el tono al final. Los clips 2 y 3 no cambian.
+
+### Guion 4 · texto versión 4 (8 oct, SIN APROBAR): gancho general y el cuarto como ejemplo
+
+Johnatan: "ese organizar tu cuarto es tan específico, me gustaría como por ejemplo: si te cuesta semanas empezar una tarea porque es muy compleja, o algo así". Propuesta de Claude: el gancho habla de cualquier tarea y el cuarto pasa a ser el ejemplo (lo concreto se conserva, y las tomas de la app ya muestran esa tarea).
+
+| Clip | Dice Lina |
+|---|---|
+| 1 | "Si llevas semanas sin empezar una tarea porque es muy compleja, divídela en pasos pequeños." |
+| 2 | "Por ejemplo, organizar el cuarto: recoger la ropa del piso, sacar los platos y llenar una bolsa con lo que no usas." |
+| 3 | "Hoy haces solo el primero. Racha es una app donde escribes la tarea por pasos y eliges qué día haces cada uno." |
+
+57 palabras, unos 20 segundos. El clip 1 termina en una orden ("divídela"), así que no se presta para que Flow lo entone como pregunta.
+
+**Respuesta de Johnatan a la versión 4:** "ahora sí, el 1 y 2 me gusta, pero ese 'hoy haces solo el primero' no se entiende, le falta algo más concreto". Clips 1 y 2 APROBADOS. Propuesta de Claude para el final, en dos clips cortos (sin aprobar):
+
+| Clip | Dice Lina |
+|---|---|
+| 3 | "Hoy solo haces el primer paso: recoger la ropa. Mañana haces el siguiente." |
+| 4 | "Racha es una app donde escribes la tarea por pasos y eliges qué día haces cada uno." |
+
+Con eso el anuncio queda en 65 palabras, unos 23 segundos.
+
+**Clips 3 y 4 APROBADOS ("así me gusta").** Texto completo aprobado (versión 4): 1 "Si llevas semanas sin empezar una tarea porque es muy compleja, divídela en pasos pequeños." · 2 "Por ejemplo, organizar el cuarto: recoger la ropa del piso, sacar los platos y llenar una bolsa con lo que no usas." · 3 "Hoy solo haces el primer paso: recoger la ropa. Mañana haces el siguiente." · 4 "Racha es una app donde escribes la tarea por pasos y eliges qué día haces cada uno."
+
+### Guion 4 · análisis del copy pedido por Johnatan (8 oct)
+
+Pidió revisar si el guion cumple lo de un buen copy (si vende, estructura, gancho) y dijo que quiere **un gancho visual en la escena**. Lectura de Claude contra `../copywriting-investigacion.md`:
+
+- Cumple: duración (65 palabras, unos 23 s), lenguaje literal, ejemplo concreto, una sola idea, dice qué es Racha, se entiende sin sonido con las letras, la app en movimiento sirve de prueba.
+- A medias: el gancho dicho (es una condición general y tranquila, sin detalle ni sorpresa; el consejo de "dividir en pasos" ya lo conoce mucha gente); Racha se nombra tarde (hacia el segundo 17), aunque la app se ve antes.
+- No cumple: no da una razón para usar Racha y no un papel; no tiene cierre (no dice qué hacer después de ver el anuncio).
+
+Propuestas, sin aprobar:
+1. Razón para Racha, cambiando solo el clip 4: "Racha es una app que trae tareas como esta ya divididas en pasos, y tú eliges qué día haces cada uno." (cierto: la Biblioteca trae 18 tareas con sus pasos, entre ellas "Organizar el cuarto").
+2. Cierre: "Escríbenos aquí abajo." al final del clip 4, y en la pastilla el precio.
+3. Gancho visual: un letrero grande en el primer cuadro (lo pone la edición) y que el clip 1 arranque con un movimiento real (ella acomoda el celular y la imagen se sacude un instante). Sin utilería.
+
+### Guion 4 · TEXTO FINAL APROBADO (8 oct), versión 5
+
+Decisiones de Johnatan sobre el análisis: le gustó el gancho visual de **ella acomodando el celular** al arrancar; rechazó el cierre "Escríbenos aquí abajo" ("vuelvo y repito, no queremos vender, debe haber otra manera de cerrar"); de tres cierres que no venden escogió el C ("tiene más coherencia con lo demás").
+
+| Clip | Dice Lina |
+|---|---|
+| 1 · `1-aplazando` | (acomoda el celular) "Si llevas semanas sin empezar una tarea porque es muy compleja, divídela en pasos pequeños." |
+| 2 · `2-partelo` | "Por ejemplo, organizar el cuarto: recoger la ropa del piso, sacar los platos y llenar una bolsa con lo que no usas." |
+| 3 · `3-primer-paso` | "Hoy solo haces el primer paso: recoger la ropa. Mañana haces el siguiente." |
+| 4 · `4-racha` | "Racha es una app que trae tareas como esta ya divididas en pasos." |
+| 5 · `5-pruebalo` | "Pruébalo hoy con esa tarea que tienes pendiente." |
+
+70 palabras, unos 25 segundos sin pausas. La voz no pide escribir ni comprar. El clip 4 (la razón para Racha) y el letrero grande del primer cuadro se dieron por buenos porque no los objetó; el texto del letrero es de Claude y sigue PROVISIONAL ("Esa tarea que llevas semanas sin empezar"), igual que la pastilla final ("Racha · app · $37.900, un solo pago").
+Comprobado: la Biblioteca trae 18 tareas con sus pasos, entre ellas "Organizar el cuarto" (`src/data/biblioteca.ts`).
+
+## Guion 4 · EN PAUSA (8 oct, 5 p. m.)
+
+Johnatan sintió que los guiones no iban a vender lo suficiente y pasó la referencia 8 (`../referencias/oct8/ref8-analisis.md`). El guion 4 queda aprobado pero sin producir; se le recomendó no generar más clips de él.
+
+## Guion 5 · Otra vez desde cero (versión 1, 8 oct, SIN APROBAR): con tensión, estilo Viral, Lina en el carro
+
+Nivel 02 (Consciente del problema) · Emoción: alivio de que no era culpa suya.
+Es el concepto "Otra vez desde cero" de la tanda (ángulo 8), que faltaba. No repite "El día malo": aquel habla de qué hacer el día en que no puedes; este, de lo que pasa después de fallar (sentir que volviste a cero y dejarlo).
+No es nivel 01: lleva la contraria a un consejo, así que le habla a quien ya intentó crear hábitos y falló.
+
+Las siete piezas (ver la skill `guiones-anuncios` › "que el guion tenga tensión"):
+1. Creencia que se contradice: para crear un hábito no puedes fallar ni un día.
+2. Culpable: esa creencia y las apps que ponen la cuenta en cero.
+3. Nombre: en Racha un día sin cumplir no borra los demás; la versión pequeña del hábito.
+4. Historia: la de Johnatan, contada por Lina como suya (decisión de él: "que Lina cuente mi historia pero como si fuera de ella").
+5. Prueba: un estudio real y la app en movimiento.
+6. Curiosidad: "por creer eso dejé todo" (¿qué pasó?), "pero hay un estudio" (¿qué dice?).
+7. Paso siguiente gratis: "te la muestro".
+
+| Clip | Dice Lina |
+|---|---|
+| 1 · Gancho | "Te dijeron que para crear un hábito no puedes fallar ni un día. Por creer eso, yo dejé casi todo lo que empecé." |
+| 2 · Historia | "Dejé el gimnasio, dejé cursos y dejé libros por la mitad. Iba bien, fallaba un día y sentía que lo había perdido todo." |
+| 3 · Culpable | "Las apps que usaba hacían lo mismo: un día sin marcar y la cuenta volvía a cero. Y yo decía: el lunes empiezo otra vez." |
+| 4 · Prueba | "Pero hay un estudio con noventa y seis personas que estaban creando un hábito, y faltar un día no les dañó el hábito." |
+| 5 · La idea | "El problema nunca fue fallar un día. Fue creer que ese día lo borraba todo." |
+| 6 · Racha | "Por eso hicimos Racha, una app donde un día sin cumplir no borra los demás." |
+| 7 · La versión pequeña | "Y el día que no puedes, haces una versión pequeña, como leer una sola página, y ese día cuenta." |
+| 8 · Cierre | "Si quieres verla por dentro, te la muestro." |
+
+147 palabras, unos 55 segundos sin pausas.
+
+Ganchos de repuesto:
+- "Si fallas un día y sientes que volviste a cero, mira esto."
+- "Yo no dejaba las cosas por falta de ganas. Las dejaba por un día malo."
+
+De dónde sale cada cosa (para que nada sea inventado):
+- La historia: `design/pdf/metodo-texto.md` › "Lo que contó Johnatan" (dejó el ejercicio, un curso, leer, un proyecto; "el lunes empiezo de cero: sí, muchas veces") y `design/manychat-mensajes.md`, mensajes 57 y 19b, aprobados ("A mí me pasó igual. Muchas te ponen la racha en cero si fallas un día").
+- El estudio: Lally, van Jaarsveld, Potts y Wardle (2010), European Journal of Social Psychology, 40(6), 998–1009. Resumen del propio artículo: 96 voluntarios, 12 semanas; "missing one opportunity to perform the behaviour did not materially affect the habit formation process". Comprobado en el resumen (no se leyó el artículo completo). El mismo resumen dice que hacerlo con más constancia se asoció con mejor resultado: no decir que fallar "no importa".
+- La app: en Hoy se lee "Un día sin cumplir no borra los demás." junto a "N/M del mes"; la versión mínima cuenta como cumplido. La racha de días seguidos sí se rompe sin comodín: no decir "nunca vuelves a cero".
+- "Hicimos", no "hice": para no chocar con Johnatan, que en el chat habla como él mismo.
+
+### Guion 5 · versión 2 (8 oct): Johnatan reescribió los clips 6, 7 y 8
+
+Sus palabras: "6 por eso hicimos racha una app donde un día que no cumples, sientes que debes empezar de cero · 7 y ese día que no puedes, conviertes ese hábito en una versión más pequeña, por ejemplo en vez de leer 10 páginas lees 1 y así ese día cuenta · 8 así que si quieres verla por dentro, te la muestro… algo así, optimízalo".
+
+Ajustes de Claude: en el 6 faltaba el "no" y se dijo como propósito ("para que… no te haga empezar de cero", la misma frase del subtítulo aprobado del PDF), porque la racha de días seguidos sí se rompe sin comodín y no se puede afirmar que nunca se vuelve a cero; el 7 se partió en dos clips porque no cabía en uno (25 palabras); el 8 quedó como él lo escribió.
+
+| Clip | Dice Lina |
+|---|---|
+| 1 | "Te dijeron que para crear un hábito no puedes fallar ni un día. Por creer eso, yo dejé casi todo lo que empecé." |
+| 2 | "Dejé el gimnasio, dejé cursos y dejé libros por la mitad. Iba bien, fallaba un día y sentía que lo había perdido todo." |
+| 3 | "Las apps que usaba hacían lo mismo: un día sin marcar y la cuenta volvía a cero. Y yo decía: el lunes empiezo otra vez." |
+| 4 | "Pero hay un estudio con noventa y seis personas que estaban creando un hábito, y faltar un día no les dañó el hábito." |
+| 5 | "El problema nunca fue fallar un día. Fue creer que ese día lo borraba todo." |
+| 6 | "Por eso hicimos Racha: una app para que un día que no cumples no te haga empezar de cero." |
+| 7 | "Y el día que no puedes, conviertes el hábito en una versión más pequeña." |
+| 8 | "En vez de leer diez páginas, lees una. Y ese día cuenta." |
+| 9 | "Así que si quieres verla por dentro, te la muestro." |
+
+158 palabras, cerca de un minuto sin pausas. SIN APROBAR del todo: falta su sí a esta versión (no comentó los clips 1 a 5).
+
+### Guion 5 · versión 3 (8 oct): menos palabras repetidas y el estudio fuera de la voz
+
+Johnatan: "hay varias palabras repetidas, ¿se podrán cambiar por otras para que no suene redundante?" y "el 4, el estudio, está como metido a la fuerza".
+Cambios: "día" pasa de 9 veces a 4 y "hábito" de 4 a 2; se quitan dos "todo"; "empiezo" pasa a "arranco". Se dejan a propósito los tres "dejé" (son una lista con ritmo) y "cero", que vuelve al final para cerrar la idea. El clip 4 ya no cita el estudio: es lo que Johnatan entendió, con sus palabras ("algunos días pueden ser malos"; `design/pdf/metodo-texto.md`). El estudio pasa a ser una tarjeta en pantalla durante ese clip (estilo Viral), sin decirlo.
+
+| Clip | Dice Lina |
+|---|---|
+| 1 | "Te dijeron que para crear un hábito no puedes fallar ni un día. Por creer eso, yo abandoné casi todo lo que empecé." |
+| 2 | "Dejé el gimnasio, dejé cursos y dejé libros por la mitad. Iba bien, fallaba una vez y sentía que ya no servía de nada." |
+| 3 | "Las aplicaciones que usaba hacían lo mismo: un día sin marcar y la cuenta volvía a cero. Y yo decía: el lunes arranco otra vez." |
+| 4 | "Hasta que entendí algo: nadie cumple siempre. Va a haber días malos, y hay que contar con ellos." |
+| 5 | "El problema nunca fue fallar. Fue creer que por una vez se perdía todo lo demás." |
+| 6 | "Por eso hicimos Racha: una app para que el día que no cumples no te haga empezar de cero." |
+| 7 | "Y cuando no puedes, conviertes el hábito en una versión más pequeña." |
+| 8 | "En vez de leer diez páginas, lees una. Y eso cuenta." |
+| 9 | "Así que si quieres verla por dentro, te la muestro." |
+
+152 palabras, unos 57 segundos. Tarjeta del clip 4 (texto PROVISIONAL): "Estudio con 96 personas: faltar un día no afectó el hábito" (Lally y otros, 2010). SIN APROBAR.
+
+**Guion 5, versión 3: APROBADO ("el guion está bien", 8 oct).** Pidió para las escenas: que Lina tenga el carisma y la naturalidad de la creadora del video de referencia, que en el clip 2 cuente con los dedos, estilo Viral, y gancho visual (le gustó el de la referencia: ella repetida, dos veces en el cuadro). Plan de escenas versión 1, sin aprobar, y el clip de prueba: `guion5-textos-flow.md`.

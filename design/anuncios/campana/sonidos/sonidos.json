@@ -1,0 +1,110 @@
+{
+ "caida": {
+  "dura": 0.688,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.109,
+  "mitad_de_la_energia_en": 0.169,
+  "centro_hz": 186,
+  "pico_db": -9.3,
+  "forma": "+#=@%*#=++-----.:: .    "
+ },
+ "campana": {
+  "dura": 0.789,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.0,
+  "mitad_de_la_energia_en": 0.05,
+  "centro_hz": 4718,
+  "pico_db": -2.6,
+  "forma": "@#*+-::..........       "
+ },
+ "cinta": {
+  "dura": 0.669,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.017,
+  "mitad_de_la_energia_en": 0.168,
+  "centro_hz": 556,
+  "pico_db": -5.3,
+  "forma": "@+*%#%@---**==-===:::.  "
+ },
+ "cuenta": {
+  "dura": 0.68,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.097,
+  "mitad_de_la_energia_en": 0.319,
+  "centro_hz": 8900,
+  "pico_db": -1.0,
+  "forma": "%# @-#%.%+.@:#+ #-*%.%* "
+ },
+ "flash": {
+  "dura": 0.604,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.0,
+  "mitad_de_la_energia_en": 0.092,
+  "centro_hz": 8657,
+  "pico_db": -1.2,
+  "forma": "@%##++==-+==+---:+=     "
+ },
+ "golpe": {
+  "dura": 0.582,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.023,
+  "mitad_de_la_energia_en": 0.095,
+  "centro_hz": 116,
+  "pico_db": -11.8,
+  "forma": "@@+%%*%%:::.  ..        "
+ },
+ "logro": {
+  "dura": 0.587,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.005,
+  "mitad_de_la_energia_en": 0.11,
+  "centro_hz": 1841,
+  "pico_db": -7.6,
+  "forma": "@@#@@###*#+=-::..       "
+ },
+ "manejo": {
+  "dura": 0.886,
+  "quitado_al_comienzo": 0.016,
+  "golpe_en": 0.602,
+  "mitad_de_la_energia_en": 0.331,
+  "centro_hz": 5505,
+  "pico_db": -5.0,
+  "forma": ".:---=+%@%==-:.=@*..    "
+ },
+ "pop": {
+  "dura": 0.095,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.0,
+  "mitad_de_la_energia_en": 0.005,
+  "centro_hz": 476,
+  "pico_db": -4.1,
+  "forma": "@%*=::..                "
+ },
+ "tachar": {
+  "dura": 0.446,
+  "quitado_al_comienzo": 0.006,
+  "golpe_en": 0.294,
+  "mitad_de_la_energia_en": 0.286,
+  "centro_hz": 7204,
+  "pico_db": -1.7,
+  "forma": "--.:-##+++=-=+*%@@%#=.  "
+ },
+ "toque": {
+  "dura": 0.119,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.002,
+  "mitad_de_la_energia_en": 0.011,
+  "centro_hz": 1874,
+  "pico_db": -1.1,
+  "forma": "@%##*==-:.              "
+ },
+ "whoosh": {
+  "dura": 0.198,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.089,
+  "mitad_de_la_energia_en": 0.081,
+  "centro_hz": 2434,
+  "pico_db": -7.7,
+  "forma": "...:-=*#%@%@%=:.        "
+ }
+}

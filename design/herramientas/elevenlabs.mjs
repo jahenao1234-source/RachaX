@@ -6,6 +6,8 @@
 //     (con MODELO=eleven_v3 cambia el modelo; con AJUSTES='{"stability":0.3,"style":0.45,"speed":1.1}' cambia cómo lo dice)
 //   node design/herramientas/elevenlabs.mjs cambiar <idVoz> <audio de entrada> <salida.mp3>
 //   node design/herramientas/elevenlabs.mjs efecto "<descripción en inglés>" <segundos> <salida.mp3>
+//     (con INFLUENCIA=0.6 el efecto se pega más a la descripción; va de 0 a 1 y por defecto es 0.3)
+//   node design/herramientas/elevenlabs.mjs saldo      (créditos gastados y disponibles; la clave necesita el permiso de usuario)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,9 +48,12 @@ try {
     fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
   } else if (orden === 'efecto') {
     const [texto, seg, salida] = a;
-    const audio = await pedir('/v1/sound-generation?output_format=mp3_44100_128', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: texto, duration_seconds: +seg || undefined }) }, true);
+    const audio = await pedir('/v1/sound-generation?output_format=mp3_44100_128', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: texto, duration_seconds: +seg || undefined, ...(process.env.INFLUENCIA ? { prompt_influence: +process.env.INFLUENCIA } : {}) }) }, true);
     fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
-  } else console.log('Órdenes: voces | decir | cambiar | efecto');
+  } else if (orden === 'saldo') {
+    const j = await pedir('/v1/user/subscription');
+    console.log(`plan ${j.tier}: gastados ${j.character_count} de ${j.character_limit} créditos (quedan ${j.character_limit - j.character_count})`);
+  } else console.log('Órdenes: voces | decir | cambiar | efecto | saldo');
 } catch (e) {
   console.log('FALLA:', e.message, e.cause ? '(' + (e.cause.code || e.cause.message) + ')' : '');
 }

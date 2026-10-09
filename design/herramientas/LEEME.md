@@ -103,3 +103,28 @@ Estilo de la referencia 7: palabras grandes que entran cuando la voz las dice, d
 2. **La app en movimiento:** con la muestra prendida (`npm.cmd run muestra`), `node design/herramientas/grabar-campana-g3.cjs` (con el `NODE_PATH` de puppeteer-core). Abre la muestra en un Chrome invisible, hace los toques en los segundos del anuncio que dice `TOQUES` (arriba en el script) y deja `guion3/app/celular.mp4` (858 x 1760, empieza en el segundo 6 del anuncio) y `celular.json` (cuándo fue cada toque y dónde está cada cosa en la pantalla). Para que salga nítida, Chrome va con `--force-device-scale-factor=3`: con la densidad emulada de `setViewport` la grabación en movimiento sale de 390 x 800. Si cambia la voz, se ajustan los `TOQUES` y se graba otra vez. (`capturas-campana-g3.cjs` toma las mismas pantallas, quietas; se usó en la versión 1.)
 3. **El proyecto:** `node design/herramientas/hf-animado.mjs guion3` (`--solo-html` para no rehacer el sonido). Cada escena es una pieza en `compositions/` y empieza en la primera palabra de su frase; los números de palabra están en el script. El celular vive en `index.html` y la línea de tiempo principal lo mueve y lo acerca (`CAM`).
 4. Dentro de `guion3/hyperframes`: `check`, `snapshot --at ...` y, con el visto bueno, `render --low-memory-mode -w 1 -f 30 -o ../guion3-el-dia-malo-v1.mp4`.
+
+## El anuncio orgánico de persona que explica (`design/anuncios/campana/guion4/`)
+
+Estilo de la referencia 5: Lina habla a cámara unos segundos y se corta a la acción y a la app. Los clips los genera Johnatan en Flow con `campana/guion4-textos-flow.md`.
+
+- **La app en movimiento, a pantalla completa:** con la muestra prendida, `node design/herramientas/grabar-campana-g4.cjs` (con el `NODE_PATH` de puppeteer-core). Deja en `guion4/app/` tres tomas de 1080 x 1920 con su `.json` (en qué segundo fue cada toque): `1-escribe` (se escribe "Organizar el cuarto" en Nueva tarea), `2-pasos` (la tarea con sus pasos; se le pone día a dos) y `3-hoy` (Hoy con el paso en "Tareas de hoy"; se marca). En la muestra esa tarea viene terminada: el script la deja sin hacer solo dentro de su navegador invisible, sin tocar la muestra.
+- Falta el generador de HyperFrames de este estilo.
+
+## El estilo Viral (`design/anuncios/campana/guion5/`)
+
+Persona hablando de cerca con cortes secos, acercamientos de golpe, destellos, una copia de sí misma al oído, palabras grandes en ámbar y subtítulos pequeños. Referencia y descripción cuadro a cuadro: `design/anuncios/referencias/oct8/ref8-analisis.md`.
+
+1. Transcribir cada clip (`transcribir-assembly.mjs`; para un video en otro idioma, `IDIOMA=auto`) y compararlo con el guion: Flow a veces agrega o repite palabras.
+2. La copia para el gancho: un clip de la presentadora de perfil sobre pared lisa, sin voz, y recortarlo del fondo dentro de `guion5/clips`: `npx --yes hyperframes@0.8.138 remove-background copia-susurra.mp4 -o copia-susurra-recorte.webm` (unos 3 minutos).
+3. `node design/herramientas/hf-viral.mjs guion5-gancho` (`--solo-html` para no rehacer los cortes). En el script, cada pedazo hablado es `[archivo, palabra inicial, palabra final]`: así entra solo el tramo que sirve. Los acercamientos, el destello, la copia y las palabras grandes se ubican con `[número del pedazo, número de palabra]`.
+4. Dentro de `guion5/hyperframes-gancho`: `check`, `snapshot --at ...` y `render --low-memory-mode -w 1 -f 30 -o ../guion5-gancho-v1.mp4`.
+5. El anuncio completo es la pieza `guion5` (proyecto en `guion5/hyperframes`). Además de lo anterior lleva tarjetas, la app en movimiento, **transiciones** en los cambios de parte (`transiciones: [{ en, tipo: 'barrido' | 'zoom' | 'salto' }]`) y **efectos de sonido**.
+
+### Efectos de sonido y música
+
+- `bash design/herramientas/sonidos-campana.sh` genera con ElevenLabs los efectos que falten (la lista, con su descripción en inglés, está dentro del script) en `campana/sonidos/originales/`. Para repetir uno: borrarlo y correr `bash design/herramientas/sonidos-campana.sh <nombre>`.
+- `python design/herramientas/sonidos-preparar.py` los deja listos en `campana/sonidos/<nombre>.wav` y escribe `sonidos.json` con las medidas.
+- `hf-viral.mjs` pone cada efecto donde pasa algo (el volumen de cada uno está en `VOLUMEN`, en dB), los mezcla en `assets/efectos.wav` y deja la lista con los segundos en `guion5/guion5-sonidos.txt`. Con `SIN_SONIDOS=1` no los pone.
+- `node design/herramientas/poner-musica.mjs <video.mp4> <musica.wav> <salida.mp4>` le pone música a un video ya exportado sin volver a exportar la imagen (`BAJO=16` es cuántos dB queda por debajo de la voz).
+- `node design/herramientas/elevenlabs.mjs saldo` dice cuántos créditos quedan.

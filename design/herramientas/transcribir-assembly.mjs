@@ -28,7 +28,8 @@ async function transcribir(archivo) {
   const subida = await pedir(`${API}/upload`, { method: 'POST', headers: { ...cab, 'content-type': 'application/octet-stream' }, body: datos });
   const trabajo = await pedir(`${API}/transcript`, {
     method: 'POST', headers: { ...cab, 'content-type': 'application/json' },
-    body: JSON.stringify({ audio_url: subida.upload_url, language_code: 'es' }),
+    // Por defecto español. Para un video en otro idioma: IDIOMA=en (o IDIOMA=auto para que lo detecte)
+    body: JSON.stringify({ audio_url: subida.upload_url, ...(process.env.IDIOMA === 'auto' ? { language_detection: true } : { language_code: process.env.IDIOMA || 'es' }) }),
   });
   for (let i = 0; i < 120; i++) {
     const t = await pedir(`${API}/transcript/${trabajo.id}`, { headers: cab });

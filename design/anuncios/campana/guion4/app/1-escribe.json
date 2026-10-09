@@ -1,0 +1,26 @@
+{
+ "dura": 5.76,
+ "cuadros": 73,
+ "marcas": [
+  {
+   "que": "nueva tarea",
+   "t": 0.86,
+   "x": 306,
+   "y": 97
+  },
+  {
+   "que": "campo",
+   "t": 2.03,
+   "x": 220,
+   "y": 250
+  },
+  {
+   "que": "empieza a escribir",
+   "t": 2.48
+  },
+  {
+   "que": "termina de escribir",
+   "t": 4.15
+  }
+ ]
+}

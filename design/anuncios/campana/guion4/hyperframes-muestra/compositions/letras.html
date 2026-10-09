@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .gr { position: absolute; left: 0; right: 0; top: 1118px; margin: 0; text-align: center; white-space: nowrap; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 98px; line-height: 1; letter-spacing: 0.005em; color: #ffffff; text-shadow: 0 4px 0 rgba(15, 17, 19, 0.9), 0 0 18px rgba(15, 17, 19, 0.85), 0 0 4px rgba(15, 17, 19, 0.9); opacity: 0; }
+        .gr .k { color: #FFB547; }
+      </style>
+      <div id="root" data-composition-id="letras" data-width="1080" data-height="1920">
+        <p class="gr" id="gr-0">Si llevas <span class="k">semanas</span></p>
+        <p class="gr" id="gr-1">aplazando organizar</p>
+        <p class="gr" id="gr-2">el <span class="k">cuarto,</span></p>
+        <p class="gr" id="gr-3">¿es porque es</p>
+        <p class="gr" id="gr-4">mucho <span class="k">trabajo</span> y</p>
+        <p class="gr" id="gr-5">no sabes por</p>
+        <p class="gr" id="gr-6">dónde <span class="k">empezar?</span></p>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#gr-0", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 0.02);
+          tl.set("#gr-0", { opacity: 0 }, 1);
+          tl.fromTo("#gr-1", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 1);
+          tl.set("#gr-1", { opacity: 0 }, 2.46);
+          tl.fromTo("#gr-2", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 2.46);
+          tl.set("#gr-2", { opacity: 0 }, 3.22);
+          tl.fromTo("#gr-3", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 3.22);
+          tl.set("#gr-3", { opacity: 0 }, 3.72);
+          tl.fromTo("#gr-4", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 3.72);
+          tl.set("#gr-4", { opacity: 0 }, 4.77);
+          tl.fromTo("#gr-5", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 4.77);
+          tl.set("#gr-5", { opacity: 0 }, 5.46);
+          tl.fromTo("#gr-6", { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.1, ease: "back.out(2)" }, 5.46);
+          tl.set("#gr-6", { opacity: 0 }, 6.45);
+          window.__timelines["letras"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

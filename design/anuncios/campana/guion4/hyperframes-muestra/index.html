@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · campaña · guion 4 · muestra del estilo</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .clip { position: absolute; inset: 0; }
+      video.clip { width: 100%; height: 100%; object-fit: cover; }
+      #persona { z-index: 1; }
+      .corte { z-index: 2; }
+      #letras { z-index: 3; }
+      #pastilla { z-index: 4; }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="6.6" data-width="1080" data-height="1920">
+      <!-- Lina, ya sin pausas y con el filtro -->
+      <video id="persona" class="clip" src="assets/persona.mp4" playsinline muted data-start="0" data-duration="6.6" data-media-start="0" data-track-index="0"></video>
+
+      <!-- Los cortes a la acción y a la app, encima de su voz -->
+      <video id="corte-0" class="clip corte" src="assets/1-escribe.mp4" playsinline muted data-start="1" data-duration="2.166667" data-media-start="2.3" data-track-index="1"></video>
+
+      <!-- Las letras -->
+      <div id="letras" class="clip" data-composition-id="letras" data-composition-src="compositions/letras.html" data-start="0" data-duration="6.6" data-track-index="2" data-width="1080" data-height="1920"></div>
+
+      <!-- La voz de Lina -->
+      <audio id="voz" src="assets/voz.wav" data-start="0" data-duration="6.6" data-media-start="0" data-track-index="4" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
