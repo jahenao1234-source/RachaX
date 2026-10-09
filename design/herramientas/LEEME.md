@@ -128,3 +128,6 @@ Persona hablando de cerca con cortes secos, acercamientos de golpe, destellos, u
 - `hf-viral.mjs` pone cada efecto donde pasa algo (el volumen de cada uno está en `VOLUMEN`, en dB), los mezcla en `assets/efectos.wav` y deja la lista con los segundos en `guion5/guion5-sonidos.txt`. Con `SIN_SONIDOS=1` no los pone.
 - `node design/herramientas/poner-musica.mjs <video.mp4> <musica.wav> <salida.mp4>` le pone música a un video ya exportado sin volver a exportar la imagen (`BAJO=16` es cuántos dB queda por debajo de la voz).
 - `node design/herramientas/elevenlabs.mjs saldo` dice cuántos créditos quedan.
+- **Si solo cambian los sonidos (cuál, dónde o qué tan fuerte), no hay que exportar otra vez** (son 5 minutos): `node design/herramientas/hf-viral.mjs guion5 --solo-html` rehace `assets/efectos.wav`, y el audio se vuelve a pegar sobre el video ya exportado:
+  `ffmpeg -i guion5-...-v3.mp4 -i hyperframes/assets/voz.wav -i hyperframes/assets/efectos.wav -filter_complex "[1:a][2:a]amix=inputs=2:normalize=0:duration=first[a]" -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 192k salida.mp4`
+- Sincronía: en el script, `suena(nombre, segundo, { alGolpe, desde, dura, db })`. `alGolpe` pone el punto más fuerte del efecto en ese segundo; `desde` y `dura` usan solo un pedazo. Los toques de una grabación de la app se miden en la grabación (el cuadro donde cambia la pantalla).

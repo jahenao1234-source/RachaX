@@ -90,8 +90,8 @@ const PIEZAS = {
     ],
     // La app en movimiento (guion3/app/celular.mp4, grabada de la Racha de muestra): en una tarjeta con forma de celular
     apps: [
-      { archivo: path.join(C, 'guion3', 'app', 'celular.mp4'), desde: 1.55, de: [11, 10], a: [11, 17], toques: [2.269] },   // se toca "¿Día pesado?" y sube la hoja con "Mínimo: una página"
-      { archivo: path.join(C, 'guion3', 'app', 'celular.mp4'), desde: 6.35, de: [12, 26], a: [13, 13], toques: [7.112], logro: 7.3 },   // baja a "Leer 10 páginas" y se marca: "+5 ganados · versión mínima"
+      { archivo: path.join(C, 'guion3', 'app', 'celular.mp4'), desde: 1.55, de: [11, 10], a: [11, 17], toques: [2.5] },   // se toca "¿Día pesado?" y sube la hoja con "Mínimo: una página"
+      { archivo: path.join(C, 'guion3', 'app', 'celular.mp4'), desde: 6.35, de: [12, 26], a: [13, 13], toques: [7.4], logro: 7.47 },   // baja a "Leer 10 páginas" y se marca: "+5 ganados · versión mínima"
     ],
     claves: ['hábito', 'abandoné', 'gimnasio', 'cursos', 'libros', 'nada', 'cero', 'lunes', 'siempre', 'malos', 'perdía', 'racha', 'pequeña', 'muestro'],
     reemplazos: { 10: 'diez' },
@@ -129,10 +129,14 @@ const COLA = pz.cola ?? 0.3;
 const TOTAL = cursor + COLA;
 const pal = ([h, k]) => { const w = palabras.find((x) => x.h === h && x.k === k); if (!w) throw new Error(`No hay palabra ${k} en el pedazo ${h}`); return w; };
 const cuadro = (t) => Math.round(t * 30) / 30;
-const ini = (ref) => cuadro(Math.max(0, pal(ref).i - 0.05));
-const fin = (ref) => cuadro(pal(ref).f + 0.08);
+// OJO: un cambio escrito justo en el segundo de un cuadro (5.266667) entra un cuadro tarde, porque el cuadro 158 es
+// 5.2666666 y todavía no ha llegado. Por eso todo lo que va pegado a un cuadro se escribe 4 milésimas antes (medido en la versión 2).
+const PELO = 0.004;
+const justo = (t) => Math.max(0, cuadro(t) - PELO);
+const ini = (ref) => justo(Math.max(0, pal(ref).i - 0.05));
+const fin = (ref) => justo(pal(ref).f + 0.08);
 // Si la palabra abre un pedazo, el cambio se pega al cuadro exacto del corte; si va en la mitad, a la palabra
-const enCorte = (ref) => { const w = pal(ref); const p = [...pedazos].reverse().find((x) => x.en <= w.i + 1e-6); return p && w.i - p.en < 0.14 ? cuadro(p.en) : ini(ref); };
+const enCorte = (ref) => { const w = pal(ref); const p = [...pedazos].reverse().find((x) => x.en <= w.i + 1e-6); return p && w.i - p.en < 0.14 ? justo(p.en) : ini(ref); };
 
 if (!process.argv.includes('--solo-html')) {
   const tmp = path.join(P, 'tmp'); fs.mkdirSync(tmp, { recursive: true });
@@ -155,12 +159,13 @@ if (!process.argv.includes('--solo-html')) {
 
 // ---------- los efectos de sonido ----------
 // Cuánto suena cada uno frente a la voz (en dB; todos vienen emparejados a -16 dB en su tramo más fuerte)
-const VOLUMEN = { manejo: -5, whoosh: -6, golpe: -3, flash: -10, pop: -5, tachar: -12, cuenta: -11, caida: -6, cinta: -8, campana: -8, toque: -6, logro: -8 };
+const VOLUMEN = { manejo: -5, whoosh: -6, golpe: -3, obturador: -9, pop: -5, tachar: -12, cuenta: -11, caida: -6, campana: -8, toque: -6, logro: -8 };
 const SON = path.join(C, 'sonidos');
 const MEDIDAS = fs.existsSync(path.join(SON, 'sonidos.json')) ? JSON.parse(fs.readFileSync(path.join(SON, 'sonidos.json'), 'utf8')) : {};
 const sonidos = [];
 // alGolpe: el momento más fuerte del efecto cae en t (para los que crecen, como el whoosh); si no, el efecto empieza en t
-const suena = (s, t, { alGolpe = false, db = 0 } = {}) => { if (MEDIDAS[s]) sonidos.push({ s, t: Math.max(0, t - (alGolpe ? MEDIDAS[s].golpe_en : 0)), db: VOLUMEN[s] + db }); };
+// desde y dura: se usa solo un pedazo del efecto (por ejemplo, sin el comienzo suave, o cortado para que acabe con lo que se ve)
+const suena = (s, t, { alGolpe = false, db = 0, desde = 0, dura = 0 } = {}) => { if (MEDIDAS[s]) sonidos.push({ s, t: Math.max(0, t - (alGolpe ? MEDIDAS[s].golpe_en - desde : 0)), db: VOLUMEN[s] + db, desde, dura }); };
 
 // ---------- 2. letras ----------
 const fuente = (paquete, archivo, destino) => fs.copyFileSync(path.join(RAIZ, 'node_modules', '@fontsource', paquete, 'files', archivo), path.join(A, 'fuentes', destino));
@@ -264,18 +269,18 @@ const tHtml = [], tCss = [], tPasos = [];
       tCss.push(`        #${id}-${j} { left: ${izq + j * (lado + hueco)}px; top: 992px; width: ${lado}px; height: ${lado}px; }`);
       tHtml.push(`        <div class="tj cuad" id="${id}-${j}"><svg viewBox="0 0 24 24" fill="none" stroke="${TINTA}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icono(nombre)}</svg><span class="raya" id="${id}-${j}-r"></span></div>`);
       const t = ini(ref);
-      suena('pop', t + 0.04); suena('tachar', t + 0.49, { alGolpe: true });
-      tPasos.push(salta(`#${id}-${j}`, t), `tl.fromTo("#${id}-${j}-r", { scaleX: 0, rotation: -38 }, { scaleX: 1, rotation: -38, duration: 0.14, ease: "power2.out" }, ${n(t + 0.42)});`, `tl.to("#${id}-${j}", { backgroundColor: "#B9B2A6", duration: 0.14 }, ${n(t + 0.42)});`, sale(`#${id}-${j}`, fin(tj.a)));
+      suena('pop', t + 0.04); suena('tachar', t + 0.42, { desde: 0.09, dura: 0.3 });   // el rayón suena lo que dura la raya
+      tPasos.push(salta(`#${id}-${j}`, t), `tl.fromTo("#${id}-${j}-r", { scaleX: 0, rotation: -38 }, { scaleX: 1, rotation: -38, duration: 0.22, ease: "power2.out" }, ${n(t + 0.42)});`, `tl.to("#${id}-${j}", { backgroundColor: "#B9B2A6", duration: 0.14 }, ${n(t + 0.42)});`, sale(`#${id}-${j}`, fin(tj.a)));
     });
   } else if (tj.tipo === 'contador') {
     const pasosNum = [tj.desdeNumero, Math.round(tj.desdeNumero * 0.6), Math.round(tj.desdeNumero * 0.25), 0];
     tCss.push(`        #${id} { left: 240px; top: 985px; width: 600px; height: 190px; display: flex; align-items: center; justify-content: center; gap: 26px; }`);
     tHtml.push(`        <div class="tj caja" id="${id}"><span class="num">${pasosNum.map((v, j) => `<b id="${id}-n${j}"${j ? ' style="opacity: 0"' : ''}>${v}</b>`).join('')}</span><span class="rot">${tj.rotulo}</span></div>`);
     const tc = ini(tj.cae);
-    suena('pop', ini(tj.de) + 0.04); suena('cuenta', tc - 0.1); suena('caida', tc + 0.27);
+    suena('pop', ini(tj.de) + 0.04); suena('cuenta', tc - 0.03, { dura: 0.26 }); suena('caida', tc + 0.18);   // el tictac dura lo que baja el número; el tono cae cuando llega a 0
     tPasos.push(salta(`#${id}`, ini(tj.de)));
     pasosNum.slice(1).forEach((_, j) => tPasos.push(`tl.set("#${id}-n${j}", { opacity: 0 }, ${n(tc + j * 0.09)});`, `tl.set("#${id}-n${j + 1}", { opacity: 1 }, ${n(tc + j * 0.09)});`));
-    tPasos.push(`tl.to("#${id}", { x: -12, duration: 0.05, repeat: 5, yoyo: true, ease: "power1.inOut" }, ${n(tc + 0.3)});`, sale(`#${id}`, fin(tj.a) - 0.06));
+    tPasos.push(`tl.to("#${id}", { x: -12, duration: 0.05, repeat: 5, yoyo: true, ease: "power1.inOut" }, ${n(tc + 0.2)});`, sale(`#${id}`, fin(tj.a) - 0.06));
   } else if (tj.tipo === 'estudio') {
     tCss.push(`        #${id} { left: 60px; top: 690px; width: 960px; height: 330px; padding: 38px 46px 0; }`);
     tHtml.push(`        <div class="tj caja" id="${id}"><p class="e-rot">${tj.rotulo}</p><p class="e-txt">${tj.texto}</p><p class="e-fte">${tj.fuente}</p></div>`);
@@ -321,11 +326,11 @@ if (pz.arranque) {
   const mov = [[0, -9, 90, 130, 1.34], [0.11, 6, -60, -50, 1.26], [0.22, -3.5, 34, 40, 1.18], [0.33, 2, -16, -14, 1.1], [0.44, -0.8, 6, 6, 1.04], [0.55, 0, 0, 0, 1]];
   pasos.push(`tl.set("#persona", { rotation: ${mov[0][1]}, x: ${mov[0][2]}, y: ${mov[0][3]}, scale: ${mov[0][4]} }, 0);`);
   mov.slice(1).forEach(([t, rot, x, y, sc], i) => pasos.push(`tl.to("#persona", { rotation: ${rot}, x: ${x}, y: ${y}, scale: ${sc}, duration: ${n(t - mov[i][0])}, ease: "sine.inOut" }, ${mov[i][0]});`));
-  suena('manejo', 0);
+  suena('manejo', 0, { desde: 0.18 });   // sin el comienzo suave: lo fuerte cae mientras la imagen se mueve
 }
 // Acercamientos de golpe (la escala se queda hasta el siguiente)
 (pz.acercar || []).forEach((z) => pasos.push(`tl.set("#persona", { scale: ${z.escala}, y: ${z.sube || 0} }, ${n(enCorte(z.en))});`));
-(pz.destellos || []).forEach((r) => { pasos.push(`tl.fromTo("#destello", { autoAlpha: 0.95 }, { autoAlpha: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, ${n(enCorte(r))});`); suena('flash', enCorte(r)); });
+(pz.destellos || []).forEach((r) => { pasos.push(`tl.fromTo("#destello", { autoAlpha: 0.95 }, { autoAlpha: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, ${n(enCorte(r))});`); suena('obturador', enCorte(r) + PELO, { alGolpe: true }); });
 // Transiciones: la mitad de salida va antes del corte (sobre la toma que se va) y la de entrada después
 (pz.transiciones || []).forEach((tr) => {
   const t = enCorte(tr.en), d = tr.lado || 1;
@@ -339,7 +344,7 @@ if (pz.arranque) {
     suena('whoosh', t, { alGolpe: true, db: -1 });
   } else if (tr.tipo === 'salto') {
     [[0, -26, 1.07], [1, 20, 1.07], [2, -12, 1.05], [3, 6, 1.03], [4, 0, 1]].forEach(([c, x, sc]) => pasos.push(`tl.set("#tr", { x: ${x}, scale: ${sc} }, ${n(t + c / 30)});`));
-    suena('cinta', t);
+    suena('whoosh', t, { alGolpe: true, db: -2 });
   }
   if (tr.tipo !== 'salto') pasos.push(`tl.set("#tr", { filter: "none" }, ${n(t + 0.24)});`);
 });
@@ -350,10 +355,10 @@ const NITIDO = 'blur(0px) brightness(1)', BORROSO = 'blur(16px) brightness(0.42)
 const borroso = (a, b) => pasos.push(`tl.fromTo("#persona", { filter: "${NITIDO}" }, { filter: "${BORROSO}", duration: 0.18, ease: "power2.out", immediateRender: false }, ${n(a)});`,
   `tl.fromTo("#persona", { filter: "${BORROSO}" }, { filter: "${NITIDO}", duration: 0.18, ease: "power2.out", immediateRender: false }, ${n(b - 0.04)});`, `tl.set("#persona", { filter: "none" }, ${n(b + 0.16)});`);
 (pz.tarjetas || []).filter((tj) => tj.fondo).forEach((tj) => borroso(ini(tj.de), fin(tj.a)));
-const apps = (pz.apps || []).map((ap, i) => ({ ...ap, i, a: ini(ap.de), dura: cuadro(fin(ap.a) - ini(ap.de)) }));
+const apps = (pz.apps || []).map((ap, i) => ({ ...ap, i, a: cuadro(ini(ap.de) + PELO), dura: cuadro(fin(ap.a) - ini(ap.de)) }));
 apps.forEach((ap) => {
-  borroso(ap.a, ap.a + ap.dura);
-  pasos.push(`tl.fromTo("#app-caja-${ap.i}", { autoAlpha: 0, y: 140, scale: 0.86, rotation: 3 }, { autoAlpha: 1, y: 0, scale: 1, rotation: 0, duration: 0.26, ease: "back.out(1.5)", immediateRender: false }, ${n(ap.a)});`,
+  borroso(ap.a - PELO, ap.a + ap.dura);
+  pasos.push(`tl.fromTo("#app-caja-${ap.i}", { autoAlpha: 0, y: 140, scale: 0.86, rotation: 3 }, { autoAlpha: 1, y: 0, scale: 1, rotation: 0, duration: 0.26, ease: "back.out(1.5)", immediateRender: false }, ${n(ap.a - PELO)});`,
     `tl.to("#app-caja-${ap.i}", { y: 130, scale: 0.88, rotation: -2, duration: 0.16, ease: "power2.in" }, ${n(ap.a + ap.dura - 0.16)});`, `tl.to("#app-caja-${ap.i}", { autoAlpha: 0, duration: 0.08 }, ${n(ap.a + ap.dura - 0.08)});`);
   suena('whoosh', ap.a + 0.02, { db: -2 });
   (ap.toques || []).forEach((tq) => suena('toque', ap.a + (tq - ap.desde)));
@@ -365,8 +370,10 @@ const CON_SONIDOS = !process.env.SIN_SONIDOS && sonidos.length > 0;
 if (CON_SONIDOS) {
   const SR = 48000, mezcla = new Float32Array(Math.ceil(TOTAL * SR) * 2);
   sonidos.forEach((ev) => {
-    const b = fs.readFileSync(path.join(SON, ev.s + '.wav')), datos = b.subarray(b.indexOf('data') + 8), g = 10 ** (ev.db / 20) / 32768, desde = Math.round(ev.t * SR) * 2;
-    for (let i = 0; i < datos.length / 2 && desde + i < mezcla.length; i++) mezcla[desde + i] += datos.readInt16LE(i * 2) * g;
+    const b = fs.readFileSync(path.join(SON, ev.s + '.wav')), todo = b.subarray(b.indexOf('data') + 8), g = 10 ** (ev.db / 20) / 32768, en = Math.round(ev.t * SR) * 2;
+    const datos = todo.subarray(Math.round(ev.desde * SR) * 4, ev.dura ? Math.round((ev.desde + ev.dura) * SR) * 4 : undefined), largo = datos.length / 2;
+    const entra = ev.desde ? 0.004 * SR * 2 : 0, sale = ev.dura ? 0.05 * SR * 2 : 0;
+    for (let i = 0; i < largo && en + i < mezcla.length; i++) mezcla[en + i] += datos.readInt16LE(i * 2) * g * (i < entra ? i / entra : 1) * (largo - i < sale ? (largo - i) / sale : 1);
   });
   const sal = Buffer.alloc(44 + mezcla.length * 2);
   sal.write('RIFF', 0); sal.writeUInt32LE(36 + mezcla.length * 2, 4); sal.write('WAVEfmt ', 8); sal.writeUInt32LE(16, 16); sal.writeUInt16LE(1, 20); sal.writeUInt16LE(2, 22);

@@ -71,6 +71,15 @@
   "pico_db": -5.0,
   "forma": ".:---=+%@%==-:.=@*..    "
  },
+ "obturador": {
+  "dura": 0.116,
+  "quitado_al_comienzo": 0.092,
+  "golpe_en": 0.046,
+  "mitad_de_la_energia_en": 0.049,
+  "centro_hz": 7980,
+  "pico_db": -1.0,
+  "forma": "  .:::..#@@%=..         "
+ },
  "pop": {
   "dura": 0.095,
   "quitado_al_comienzo": 0.0,
