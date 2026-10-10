@@ -1,4 +1,22 @@
 {
+ "boom": {
+  "dura": 1.275,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.02,
+  "mitad_de_la_energia_en": 0.101,
+  "centro_hz": 115,
+  "pico_db": -9.0,
+  "forma": "@@***:-:::...           "
+ },
+ "brillo": {
+  "dura": 0.908,
+  "quitado_al_comienzo": 0.852,
+  "golpe_en": 0.85,
+  "mitad_de_la_energia_en": 0.74,
+  "centro_hz": 6538,
+  "pico_db": -3.4,
+  "forma": "   ...:.:--==++*#%%@@@@@"
+ },
  "caida": {
   "dura": 0.688,
   "quitado_al_comienzo": 0.0,
@@ -35,6 +53,15 @@
   "pico_db": -1.0,
   "forma": "%# @-#%.%+.@:#+ #-*%.%* "
  },
+ "diapositiva": {
+  "dura": 0.239,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.075,
+  "mitad_de_la_energia_en": 0.082,
+  "centro_hz": 4992,
+  "pico_db": -1.9,
+  "forma": ".  .:.=@@*:..           "
+ },
  "flash": {
   "dura": 0.604,
   "quitado_al_comienzo": 0.0,
@@ -44,6 +71,15 @@
   "pico_db": -1.2,
   "forma": "@%##++==-+==+---:+=     "
  },
+ "garabato": {
+  "dura": 0.88,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.723,
+  "mitad_de_la_energia_en": 0.414,
+  "centro_hz": 8076,
+  "pico_db": -4.4,
+  "forma": "%*##@+*== ###::#++=@@+:."
+ },
  "golpe": {
   "dura": 0.582,
   "quitado_al_comienzo": 0.0,
@@ -52,6 +88,15 @@
   "centro_hz": 116,
   "pico_db": -11.8,
   "forma": "@@+%%*%%:::.  ..        "
+ },
+ "latido": {
+  "dura": 0.214,
+  "quitado_al_comienzo": 0.063,
+  "golpe_en": 0.033,
+  "mitad_de_la_energia_en": 0.041,
+  "centro_hz": 115,
+  "pico_db": -11.1,
+  "forma": " -%@@##-:....           "
  },
  "logro": {
   "dura": 0.587,
@@ -71,6 +116,15 @@
   "pico_db": -5.0,
   "forma": ".:---=+%@%==-:.=@*..    "
  },
+ "neon": {
+  "dura": 1.188,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.998,
+  "mitad_de_la_energia_en": 0.782,
+  "centro_hz": 8356,
+  "pico_db": -1.0,
+  "forma": "*:---+*#.  **%%%@@@@@@=."
+ },
  "obturador": {
   "dura": 0.116,
   "quitado_al_comienzo": 0.092,
@@ -88,6 +142,15 @@
   "centro_hz": 476,
   "pico_db": -4.1,
   "forma": "@%*=::..                "
+ },
+ "subida": {
+  "dura": 1.372,
+  "quitado_al_comienzo": 0.427,
+  "golpe_en": 0.711,
+  "mitad_de_la_energia_en": 0.869,
+  "centro_hz": 2412,
+  "pico_db": -9.1,
+  "forma": " ..::-==+%@@@@@%%@#####+"
  },
  "tachar": {
   "dura": 0.446,

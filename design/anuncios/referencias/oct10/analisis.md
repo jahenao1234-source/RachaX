@@ -59,6 +59,27 @@ Los otros tres siguen el mismo orden. En ref2 y ref3 no hay invitación: cierran
 - **Objetos que cuentan:** el detector, el mazo, la linterna, el cuadro robado. El gancho visual es el objeto más el vestuario.
 - **La app o la pantalla casi no sale.** En ref2 se ve un celular dos segundos.
 
+### El estilo visual a fondo (segunda mirada, pedida por Johnatan)
+
+Johnatan corrigió el mismo día: **"el estilo visual no es copiar lo que actúa o dice"** y **"la estructura, cómo manda el mensaje, es lo más importante"**. Las escenas (juicio, interrogatorio) y las frases son del creador: no se copian. Se copia cómo se ve y, sobre todo, la manera de mandar el mensaje, con una idea nuestra. Cuadros grandes en `hojas/det/`.
+
+**Cuando sale la persona**
+- Imagen oscura, con las sombras casi negras y la piel con poca saturación; un tinte frío (verde azulado) en todo el cuadro.
+- Cara muy cerca, lente ancho, cámara un poco torcida o desde abajo.
+- Subtítulos blancos, pequeños (más o menos una cuarta parte del ancho), en minúscula, sin caja ni sombra dura, de dos renglones, al lado del cuerpo y debajo de la cara. Las palabras entran una por una, de gris a blanco.
+
+**Cuando cuenta la historia (es donde está lo más propio)**
+- Fondo casi negro. Imágenes en blanco y negro con grano de película, polvo y rayas, y los bordes oscurecidos.
+- **Un solo color de acento, naranja rojizo que brilla, puesto solo sobre el objeto del que se habla** (la caja, el ventilador, el frasco, las fotos). Lo demás queda gris. Para Racha sería el ámbar.
+- Garabatos a mano que brillan (un círculo crema alrededor de lo que se nombra), como rayados con un marcador de luz.
+- **Las letras cambian de sitio y de color:** suben al tercio de arriba, van en crema con un brillo suave alrededor, y entran palabra por palabra con las palabras separadas que después se juntan.
+- Los nombres propios van en letra con serifa, grandes, crema y con brillo ("Jiro Ono", "Nigiris", "michelin").
+- Recursos que se repiten: una foto en una tarjeta sobre un fondo de cuadrícula oscura; un montón de fotos viejas con borde blanco; trama de puntos (como periódico) sobre una cara; recortes pegados unos sobre otros con cuadritos y líneas finas que señalan un detalle; respuestas de redes sociales dibujadas ("User.348", sin nombres reales).
+- Acercamiento lento en cada imagen. Varias se mueven de verdad (manos que acomodan cajas): son clips, no fotos.
+- Cada imagen dura lo que dura la frase que ilustra (1 a 3 segundos) y muestra exactamente lo que se nombra.
+
+**Lo que hace que todo se sienta de una sola pieza:** dos mundos claros (la persona en color frío; la historia en blanco y negro con un color que brilla), las mismas letras de principio a fin y ningún adorno que no ilustre una palabra.
+
 ## Qué se suma a lo que ya sabíamos
 
 A la lista de revisión de seis puntos (9 de octubre) se le agregan cuatro, para cuando el anuncio cuente una historia:

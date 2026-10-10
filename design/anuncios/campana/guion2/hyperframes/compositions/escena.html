@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        @font-face { font-family: "Serifa Racha"; font-weight: 400; src: local("Bodoni MT"), local("Bodoni MT Regular"), local("Georgia"); }
+        #root { position: absolute; inset: 0; overflow: hidden; background: #050506; }
+        #mundo { position: absolute; inset: 0; transform-origin: 50% 50%; }
+        #rejilla { position: absolute; inset: -40px; opacity: 0; background-color: #08080A; background-image: linear-gradient(rgba(244, 231, 195, 0.055) 2px, transparent 2px), linear-gradient(90deg, rgba(244, 231, 195, 0.055) 2px, transparent 2px); background-size: 116px 116px; }
+        .toma { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+        .cam { position: absolute; left: 0; top: 0; width: 1536px; height: 2730px; transform-origin: 0 0; }
+        .cam .bn { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .amb { position: absolute; inset: 0; background-size: 100% 100%; opacity: 0; }
+        .bri { filter: blur(30px) brightness(1.2) saturate(1.15); mix-blend-mode: screen; }
+        .gar { position: absolute; inset: 0; width: 1536px; height: 2730px; overflow: visible; }
+        .gar path, .trazo path { fill: none; stroke: #F4E7C3; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; filter: drop-shadow(0 0 10px rgba(255, 214, 140, 0.9)) drop-shadow(0 0 26px rgba(255, 181, 71, 0.55)); }
+        .vin { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 64% at 50% 54%, transparent 42%, rgba(0, 0, 0, 0.7) 100%), linear-gradient(180deg, rgba(0, 0, 0, 0.62) 0, rgba(0, 0, 0, 0) 560px), linear-gradient(0deg, rgba(0, 0, 0, 0.92) 0, rgba(0, 0, 0, 0) 470px), linear-gradient(90deg, #000 0, rgba(0, 0, 0, 0) 90px), linear-gradient(270deg, #000 0, rgba(0, 0, 0, 0) 90px); }
+        #destello { position: absolute; inset: 0; background: #FFF3D6; opacity: 0; }
+        #grano { position: absolute; left: 0; top: 0; width: 1480px; height: 2320px; background: url("assets/grano.jpg"); mix-blend-mode: overlay; opacity: 0.3; }
+        .bl { position: absolute; left: 0; right: 0; top: 300px; display: flex; flex-direction: column; align-items: center; }
+        .r { margin: 0; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 58px; line-height: 1.12; letter-spacing: -0.025em; color: #F4E7C3; white-space: nowrap; text-shadow: 0 0 3px rgba(255, 236, 200, 0.55), 0 0 18px rgba(255, 200, 120, 0.5), 0 2px 10px rgba(0, 0, 0, 0.9); }
+        .w { display: inline-block; opacity: 0; }
+        .ser { margin: 0; font-family: "Serifa Racha", serif; font-weight: 400; line-height: 1; letter-spacing: -0.02em; color: #F4E7C3; white-space: nowrap; text-shadow: 0 0 6px rgba(255, 236, 200, 0.6), 0 0 34px rgba(255, 190, 100, 0.55), 0 3px 14px rgba(0, 0, 0, 0.9); }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .g { display: inline-block; opacity: 0; }
+        #anio { position: absolute; left: 0; right: 0; top: 452px; text-align: center; font-size: 230px; opacity: 0; }
+        #yaque { top: 690px; } #yaque .ser { font-size: 330px; }
+        #tarjeta { top: 560px; }
+        #ingles { position: relative; font-size: 84px; font-style: italic; opacity: 0; }
+        #tapa { position: absolute; left: 31%; top: 16%; width: 44%; height: 74%; background: #F4E7C3; transform-origin: 0 50%; opacity: 0; box-shadow: 0 0 22px rgba(255, 200, 120, 0.6); }
+        #tarjeta .chico { font-size: 120px; margin-top: 44px; } #tarjeta .grande { font-size: 290px; margin-top: 6px; }
+        #raya { position: static; width: 760px; height: 60px; margin-top: 4px; overflow: visible; }
+        #raya path { stroke: #FFB547; stroke-width: 11; }
+        .tira { position: absolute; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; opacity: 0; }
+        .dia { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .le { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 36px; color: rgba(244, 231, 195, 0.75); }
+        .ce { position: relative; display: block; width: 96px; height: 96px; border-radius: 26px; border: 4px solid rgba(244, 231, 195, 0.4); background-color: rgba(0, 0, 0, 0.35); }
+        .x2 { position: absolute; left: 14px; top: 14px; width: 60px; height: 60px; opacity: 0; } .x2 path { fill: none; stroke: #F4E7C3; stroke-width: 5; stroke-linecap: round; }
+        #tira { top: 520px; } #tira2 { top: 860px; }
+        .trazo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+        #veredicto { top: 410px; } #veredicto .ser { font-size: 108px; line-height: 1.12; }
+        #manana { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; font-size: 250px; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="escena" data-width="1080" data-height="1920">
+        <div id="mundo" data-layout-allow-overflow>
+          <div id="rejilla" data-layout-allow-overflow></div>
+        <div class="toma" id="t-malteadas" style="opacity: 1; visibility: visible" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/malteadas-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/malteadas-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 13% 21% at 35% 68%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 65% 68%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 13% 21% at 35% 68%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 65% 68%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/malteadas-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 13% 21% at 35% 68%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 65% 68%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 13% 21% at 35% 68%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 65% 68%, #000 55%, transparent 100%)"></div>
+            <svg class="gar" viewBox="0 0 1536 2730"><path class="aro0" pathLength="1" d="M489.9 1521.9 L534.7 1493.5 L581.7 1470.5 L630.3 1453.2 L679.7 1441.5 L729.5 1435.5 L778.9 1435.0 L827.5 1440.0 L874.9 1450.3 L920.7 1465.9 L964.5 1486.6 L1006.2 1512.4 L1045.3 1543.1 L1081.6 1578.6 L1114.9 1618.8 L1144.8 1663.4 L1171.0 1712.1 L1193.2 1764.6 L1211.0 1820.4 L1223.9 1878.9 L1231.7 1939.4 L1234.1 2001.1 L1230.8 2063.0 L1221.6 2124.3 L1206.5 2183.9 L1185.5 2240.7 L1158.8 2293.8 L1126.7 2342.2 L1089.7 2385.1 L1048.3 2421.8 L1003.1 2451.9 L955.0 2474.8 L904.7 2490.5 L853.1 2498.8 L800.8 2500.1 L748.9 2494.6 L697.8 2482.7 L648.4 2464.9 L601.2 2441.7 L556.7 2413.8 L515.2 2381.7 L477.0 2345.8 L442.5 2306.6 L411.7 2264.5 L384.9 2219.8 L362.2 2172.7 L343.7 2123.5 L329.5 2072.3 L319.8 2019.3 L314.7 1964.8 L314.4 1909.0 L319.1 1852.4 L328.8 1795.5 L343.8 1738.8 L363.9 1683.1 L389.4 1629.2 L419.8 1578.0 L455.2 1530.5 L495.1 1487.6 L539.0 1450.2 L586.4 1419.2 L636.5 1395.3 L688.7 1379.1 L742.1 1371.0 L795.8 1371.1 L848.9 1379.5 L900.7 1396.0 L950.4 1420.0 L997.1 1451.1 L1040.5 1488.6 L1079.8 1531.5 L1114.7 1578.9 L1145.0 1630.1 L1170.5 1684.0 L1191.0 1739.9 L1206.6 1796.9 L1217.2 1854.4 L1223.0 1911.7 L1223.9 1968.5 L1220.2 2024.3 L1211.7 2078.8 L1198.7 2131.6 L1181.1 2182.6 L1159.1 2231.5 L1132.6 2277.9 L1101.8 2321.5 L1066.8 2362.0 L1027.7 2398.9 L985.0 2431.7 L939.0 2459.8 L890.0 2482.8 L838.8 2500.0 L785.9 2511.0 L732.2 2515.4 L678.3 2512.7 L625.2 2502.8 L573.8 2485.6 L524.7 2461.2 L479.0 2429.9 L437.1 2392.0 L399.9 2348.1 L367.7 2298.9 L341.0 2245.3 L320.1 2188.0 L304.9 2127.9 L295.6 2066.1 L292.1 2003.4 L294.1 1940.7 L301.5 1878.8 L313.9 1818.5 L331.2 1760.4 L352.9 1705.2 L378.8 1653.4 L408.7 1605.3 L442.2 1561.5 L479.2 1522.2 L519.4 1487.8 L562.6 1458.6 L608.4 1434.8 L656.5 1416.8 L706.6 1404.7" /></svg>
+          </div>
+        </div>
+        <div class="toma" id="t-helado" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/helado-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/helado-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 12% 8.5% at 21% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 50% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 80% 60%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 12% 8.5% at 21% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 50% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 80% 60%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/helado-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 12% 8.5% at 21% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 50% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 80% 60%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 12% 8.5% at 21% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 50% 60%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8.5% at 80% 60%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-grupo" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/grupo-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/grupo-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 4% 5% at 12.6% 56.5%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 28.5% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 2.8% 3.6% at 38.5% 39%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 72% 44%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 4% 5% at 12.6% 56.5%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 28.5% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 2.8% 3.6% at 38.5% 39%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 72% 44%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/grupo-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 4% 5% at 12.6% 56.5%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 28.5% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 2.8% 3.6% at 38.5% 39%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 72% 44%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 4% 5% at 12.6% 56.5%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 28.5% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 2.8% 3.6% at 38.5% 39%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 4% at 72% 44%, #000 55%, transparent 100%)"></div>
+            <svg class="gar" viewBox="0 0 1536 2730"><path class="aro0" pathLength="1" d="M1191.2 1686.3 L1212.1 1679.5 L1234.0 1673.5 L1256.7 1668.5 L1279.8 1664.4 L1303.0 1661.2 L1326.0 1659.2 L1348.7 1658.3 L1370.9 1658.8 L1392.2 1660.6 L1412.7 1663.9 L1432.1 1668.8 L1450.4 1675.4 L1467.3 1683.7 L1482.9 1693.8 L1496.8 1705.5 L1509.0 1718.9 L1519.4 1733.7 L1527.7 1749.7 L1533.7 1766.8 L1537.4 1784.5 L1538.5 1802.5 L1536.9 1820.5 L1532.6 1838.1 L1525.6 1854.9 L1515.8 1870.5 L1503.3 1884.7 L1488.4 1897.1 L1471.1 1907.5 L1451.7 1915.8 L1430.7 1922.0 L1408.2 1926.0 L1384.8 1927.9 L1360.7 1927.8 L1336.3 1926.0 L1312.0 1922.5 L1288.2 1917.7 L1265.2 1911.9 L1243.1 1905.1 L1222.3 1897.7 L1203.0 1889.7 L1185.2 1881.3 L1169.0 1872.5 L1154.7 1863.4 L1142.2 1854.0 L1131.6 1844.1 L1123.0 1833.7 L1116.3 1822.7 L1111.8 1811.0 L1109.4 1798.6 L1109.3 1785.4 L1111.5 1771.5 L1116.0 1756.9 L1123.0 1741.8 L1132.4 1726.5 L1144.3 1711.2 L1158.5 1696.2 L1175.0 1681.9 L1193.6 1668.7 L1214.1 1656.9 L1236.2 1647.0 L1259.6 1639.1 L1284.0 1633.6 L1308.9 1630.6 L1333.9 1630.3 L1358.7 1632.7 L1382.9 1637.7 L1406.1 1645.1 L1427.9 1654.7 L1448.1 1666.3 L1466.5 1679.5 L1482.8 1693.9 L1496.9 1709.1 L1508.8 1724.9 L1518.4 1740.8 L1525.6 1756.6 L1530.6 1771.9 L1533.3 1786.7 L1533.7 1800.8 L1532.0 1814.1 L1528.0 1826.6 L1522.0 1838.4 L1513.8 1849.3 L1503.5 1859.7 L1491.1 1869.3 L1476.7 1878.5 L1460.4 1887.1 L1442.2 1895.1 L1422.2 1902.6 L1400.7 1909.5 L1377.9 1915.5 L1354.0 1920.6 L1329.3 1924.7 L1304.2 1927.4 L1279.1 1928.7 L1254.3 1928.3 L1230.3 1926.2 L1207.4 1922.1 L1186.1 1916.0 L1166.6 1907.9 L1149.2 1897.8 L1134.2 1885.9 L1121.7 1872.3 L1111.9 1857.1 L1104.9 1840.8 L1100.5 1823.5 L1098.9 1805.7 L1099.8 1787.5 L1103.2 1769.4 L1109.1 1751.8 L1117.1 1734.8 L1127.2 1718.8 L1139.3 1704.1 L1153.3 1690.8 L1168.9 1679.1 L1186.2 1669.2 L1205.0 1661.0 L1225.1 1654.7 L1246.5 1650.2 L1268.9 1647.5 L1292.3 1646.6" /></svg>
+          </div>
+        </div>
+        <div class="toma" id="t-manos" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/manos-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/manos-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 14% 8% at 50% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8% at 91% 47%, #000 55%, transparent 100%), radial-gradient(ellipse 14% 8% at 78% 64.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 14% 8% at 50% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8% at 91% 47%, #000 55%, transparent 100%), radial-gradient(ellipse 14% 8% at 78% 64.5%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/manos-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 14% 8% at 50% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8% at 91% 47%, #000 55%, transparent 100%), radial-gradient(ellipse 14% 8% at 78% 64.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 14% 8% at 50% 44%, #000 55%, transparent 100%), radial-gradient(ellipse 12% 8% at 91% 47%, #000 55%, transparent 100%), radial-gradient(ellipse 14% 8% at 78% 64.5%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-copa" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/copa-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/copa-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 16% 7.5% at 50% 53.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 16% 7.5% at 50% 53.5%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/copa-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 16% 7.5% at 50% 53.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 16% 7.5% at 50% 53.5%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-espaldas" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/espaldas-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/espaldas-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 13% 6% at 84% 58%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 13% 6% at 84% 58%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/espaldas-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 13% 6% at 84% 58%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 13% 6% at 84% 58%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-vacias" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/vacias-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/vacias-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 37% 18.5% at 48% 68%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 37% 18.5% at 48% 68%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/vacias-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 37% 18.5% at 48% 68%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 37% 18.5% at 48% 68%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-cama" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/cama-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/cama-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 7.5% 5% at 70% 37.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 7.5% 5% at 70% 37.5%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/cama-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 7.5% 5% at 70% 37.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 7.5% 5% at 70% 37.5%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-tenis" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/tenis-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/tenis-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 24% 8% at 50% 79%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 24% 8% at 50% 79%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/tenis-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 24% 8% at 50% 79%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 24% 8% at 50% 79%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-carro" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/carro-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/carro-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 9% 8.5% at 41% 66.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 9% 8.5% at 41% 66.5%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/carro-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 9% 8.5% at 41% 66.5%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 9% 8.5% at 41% 66.5%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-vasos" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/vasos-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/vasos-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 13% 21% at 34% 64%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 67% 64%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 13% 21% at 34% 64%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 67% 64%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/vasos-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 13% 21% at 34% 64%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 67% 64%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 13% 21% at 34% 64%, #000 55%, transparent 100%), radial-gradient(ellipse 13% 21% at 67% 64%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+        <div class="toma" id="t-puerta" data-layout-allow-overflow>
+          <div class="cam" data-layout-allow-overflow>
+            <img class="bn" src="assets/puerta-bn.jpg" alt="" />
+            <div class="amb" style="background-image: url('assets/puerta-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 25% 31% at 34% 34%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 25% 31% at 34% 34%, #000 55%, transparent 100%)"></div>
+            <div class="amb bri" style="background-image: url('assets/puerta-ambar.jpg'); -webkit-mask-image: radial-gradient(ellipse 25% 31% at 34% 34%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 25% 31% at 34% 34%, #000 55%, transparent 100%)"></div>
+          </div>
+        </div>
+          <div class="vin"></div>
+          <div class="tira" id="tira">
+            <div class="dia"><span class="le">L</span><span class="ce c0"></span></div>
+            <div class="dia"><span class="le">M</span><span class="ce c1"></span></div>
+            <div class="dia"><span class="le">M</span><span class="ce c2"><svg class="x2" viewBox="0 0 40 40"><path d="M9 10 L31 31 M30 9 L10 30" /></svg></span></div>
+            <div class="dia"><span class="le">J</span><span class="ce c3"></span></div>
+            <div class="dia"><span class="le">V</span><span class="ce c4"></span></div>
+            <div class="dia"><span class="le">S</span><span class="ce c5"></span></div>
+            <div class="dia"><span class="le">D</span><span class="ce c6"></span></div>
+            <div class="dia"><span class="le">L</span><span class="ce c7"></span></div>
+          </div>
+          <svg class="trazo" id="tacha" viewBox="0 0 1080 1920"><path pathLength="1" d="M446 632 C 560 600, 700 660, 846 618 S 880 640, 870 628" /></svg>
+          <svg class="trazo" id="otro" viewBox="0 0 1080 1920"><path pathLength="1" d="M990 566 C 1050 560, 1066 640, 1010 690 C 950 720, 884 690, 900 620 C 912 566, 980 552, 1030 590" /></svg>
+          <div class="col" id="yaque"><p class="ser"><span class="g" id="yq-ya">ya</span> <span class="g" id="yq-que">qué</span></p></div>
+          <div class="col" id="tarjeta">
+            <p class="ser" id="ingles">what-the-hell effect<span id="tapa"></span></p>
+            <p class="ser chico"><span class="g" id="ef-el">el efecto</span></p>
+            <p class="ser grande"><span class="g" id="ef-ya">«ya</span> <span class="g" id="ef-que">qué»</span></p>
+            <svg class="trazo" id="raya" viewBox="0 0 760 60"><path pathLength="1" d="M20 34 C 180 10, 380 52, 560 24 S 700 30, 742 22" /></svg>
+          </div>
+          <div class="col" id="veredicto">
+            <p class="ser"><span class="g" id="v121">El</span> <span class="g" id="v122">miércoles</span></p>
+            <p class="ser"><span class="g" id="v123">solo</span> <span class="g" id="v124">dañó</span> <span class="g" id="v125">el</span> <span class="g" id="v126">miércoles.</span></p>
+          </div>
+          <div class="tira" id="tira2">
+            <div class="dia"><span class="le">L</span><span class="ce c0"></span></div>
+            <div class="dia"><span class="le">M</span><span class="ce c1"></span></div>
+            <div class="dia"><span class="le">M</span><span class="ce c2"><svg class="x2" viewBox="0 0 40 40"><path d="M9 10 L31 31 M30 9 L10 30" /></svg></span></div>
+            <div class="dia"><span class="le">J</span><span class="ce c3"></span></div>
+            <div class="dia"><span class="le">V</span><span class="ce c4"></span></div>
+            <div class="dia"><span class="le">S</span><span class="ce c5"></span></div>
+            <div class="dia"><span class="le">D</span><span class="ce c6"></span></div>
+          </div>
+          <p class="ser" id="anio">1975</p>
+          <p class="ser" id="manana">mañana.</p>
+        </div>
+        <div class="bl" id="b0">
+          <p class="r"><span class="w" id="w0">no</span> <span class="w" id="w1">dices</span> <span class="w" id="w2">«el</span> <span class="w" id="w3">lunes</span> <span class="w" id="w4">empiezo»</span></p>
+          <p class="r"><span class="w" id="w5">por</span> <span class="w" id="w6">flojo.</span></p>
+        </div>
+        <div class="bl" id="b1">
+          <p class="r"><span class="w" id="w7">lo</span> <span class="w" id="w8">dices</span> <span class="w" id="w9">por</span> <span class="w" id="w10">algo</span> <span class="w" id="w11">que</span></p>
+          <p class="r"><span class="w" id="w12">se</span> <span class="w" id="w13">descubrió</span> <span class="w" id="w14">en</span></p>
+        </div>
+        <div class="bl" id="b2">
+          <p class="r"><span class="w" id="w16">con</span> <span class="w" id="w17">malteadas</span></p>
+          <p class="r"><span class="w" id="w18">y</span> <span class="w" id="w19">helado.</span></p>
+        </div>
+        <div class="bl" id="b3">
+          <p class="r"><span class="w" id="w20">a</span> <span class="w" id="w21">un</span> <span class="w" id="w22">grupo</span> <span class="w" id="w23">de</span> <span class="w" id="w24">personas</span></p>
+          <p class="r"><span class="w" id="w25">les</span> <span class="w" id="w26">dieron</span> <span class="w" id="w27">una</span> <span class="w" id="w28">malteada.</span></p>
+        </div>
+        <div class="bl" id="b4">
+          <p class="r"><span class="w" id="w29">a</span> <span class="w" id="w30">otras,</span> <span class="w" id="w31">dos.</span></p>
+        </div>
+        <div class="bl" id="b5">
+          <p class="r"><span class="w" id="w32">y</span> <span class="w" id="w33">a</span> <span class="w" id="w34">otras,</span> <span class="w" id="w35">nada.</span></p>
+        </div>
+        <div class="bl" id="b6">
+          <p class="r"><span class="w" id="w36">después</span> <span class="w" id="w37">les</span> <span class="w" id="w38">pusieron</span> <span class="w" id="w39">helado,</span></p>
+        </div>
+        <div class="bl" id="b7">
+          <p class="r"><span class="w" id="w40">para</span> <span class="w" id="w41">que</span> <span class="w" id="w42">comieran</span></p>
+          <p class="r"><span class="w" id="w43">el</span> <span class="w" id="w44">que</span> <span class="w" id="w45">quisieran.</span></p>
+        </div>
+        <div class="bl" id="b8">
+          <p class="r"><span class="w" id="w46">los</span> <span class="w" id="w47">que</span> <span class="w" id="w48">no</span> <span class="w" id="w49">estaban</span> <span class="w" id="w50">a</span> <span class="w" id="w51">dieta</span></p>
+          <p class="r"><span class="w" id="w52">comieron</span> <span class="w" id="w53">menos:</span></p>
+        </div>
+        <div class="bl" id="b9">
+          <p class="r"><span class="w" id="w54">ya</span> <span class="w" id="w55">estaban</span> <span class="w" id="w56">llenos.</span></p>
+        </div>
+        <div class="bl" id="b10">
+          <p class="r"><span class="w" id="w57">los</span> <span class="w" id="w58">que</span> <span class="w" id="w59">sí</span> <span class="w" id="w60">estaban</span> <span class="w" id="w61">a</span> <span class="w" id="w62">dieta</span></p>
+          <p class="r"><span class="w" id="w63">hicieron</span> <span class="w" id="w64">lo</span> <span class="w" id="w65">contrario:</span></p>
+        </div>
+        <div class="bl" id="b11">
+          <p class="r"><span class="w" id="w66">comieron</span> <span class="w" id="w67">más</span> <span class="w" id="w68">helado.</span></p>
+        </div>
+        <div class="bl" id="b12">
+          <p class="r"><span class="w" id="w69">como</span> <span class="w" id="w70">ya</span> <span class="w" id="w71">habían</span> <span class="w" id="w72">dañado</span> <span class="w" id="w73">la</span> <span class="w" id="w74">dieta,</span></p>
+          <p class="r"><span class="w" id="w75">pensaron:</span></p>
+        </div>
+        <div class="bl" id="b14">
+          <p class="r"><span class="w" id="w78">eso</span> <span class="w" id="w79">tiene</span> <span class="w" id="w80">nombre.</span></p>
+        </div>
+        <div class="bl" id="b15">
+          <p class="r"><span class="w" id="w81">en</span> <span class="w" id="w82">inglés</span> <span class="w" id="w83">es</span></p>
+          <p class="r"><span class="w" id="w84">medio</span> <span class="w" id="w85">grosero;</span></p>
+        </div>
+        <div class="bl" id="b16">
+          <p class="r"><span class="w" id="w86">aquí</span> <span class="w" id="w87">sería</span></p>
+        </div>
+        <div class="bl" id="b17">
+          <p class="r"><span class="w" id="w92">yo</span> <span class="w" id="w93">hacía</span> <span class="w" id="w94">lo</span> <span class="w" id="w95">mismo</span></p>
+          <p class="r"><span class="w" id="w96">con</span> <span class="w" id="w97">todo.</span></p>
+        </div>
+        <div class="bl" id="b18">
+          <p class="r"><span class="w" id="w98">fallaba</span> <span class="w" id="w99">un</span> <span class="w" id="w100">miércoles</span></p>
+          <p class="r"><span class="w" id="w101">y</span> <span class="w" id="w102">decía:</span></p>
+        </div>
+        <div class="bl" id="b19">
+          <p class="r"><span class="w" id="w103">ya</span> <span class="w" id="w104">qué,</span></p>
+          <p class="r"><span class="w" id="w105">el</span> <span class="w" id="w106">lunes</span> <span class="w" id="w107">empiezo.</span></p>
+        </div>
+        <div class="bl" id="b20">
+          <p class="r"><span class="w" id="w108">es</span> <span class="w" id="w109">como</span> <span class="w" id="w110">pinchar</span> <span class="w" id="w111">una</span> <span class="w" id="w112">llanta</span></p>
+        </div>
+        <div class="bl" id="b21">
+          <p class="r"><span class="w" id="w113">y,</span> <span class="w" id="w114">de</span> <span class="w" id="w115">la</span> <span class="w" id="w116">rabia,</span></p>
+          <p class="r"><span class="w" id="w117">pinchar</span> <span class="w" id="w118">las</span> <span class="w" id="w119">otras</span> <span class="w" id="w120">tres.</span></p>
+        </div>
+        <div class="bl" id="b23">
+          <p class="r"><span class="w" id="w127">así</span> <span class="w" id="w128">que</span> <span class="w" id="w129">si</span> <span class="w" id="w130">hoy</span> <span class="w" id="w131">ya</span> <span class="w" id="w132">te</span> <span class="w" id="w133">tomaste</span></p>
+          <p class="r"><span class="w" id="w134">las</span> <span class="w" id="w135">dos</span> <span class="w" id="w136">malteadas,</span></p>
+        </div>
+        <div class="bl" id="b24">
+          <p class="r"><span class="w" id="w137">sigues</span> <span class="w" id="w138">mañana.</span></p>
+        </div>
+        <div class="bl" id="b25">
+          <p class="r"><span class="w" id="w139">no</span> <span class="w" id="w140">el</span> <span class="w" id="w141">lunes:</span></p>
+        </div>
+        <div class="bl" id="b26">
+          <p class="r"><span class="w" id="w143">yo</span> <span class="w" id="w144">lo</span> <span class="w" id="w145">llevo</span> <span class="w" id="w146">en</span> <span class="w" id="w147">Racha,</span></p>
+          <p class="r"><span class="w" id="w148">una</span> <span class="w" id="w149">app</span> <span class="w" id="w150">que</span> <span class="w" id="w151">hicimos</span> <span class="w" id="w152">para</span> <span class="w" id="w153">eso.</span></p>
+        </div>
+        <div class="bl" id="b27">
+          <p class="r"><span class="w" id="w154">si</span> <span class="w" id="w155">quieres</span> <span class="w" id="w156">verla</span> <span class="w" id="w157">por</span> <span class="w" id="w158">dentro,</span></p>
+          <p class="r"><span class="w" id="w159">te</span> <span class="w" id="w160">la</span> <span class="w" id="w161">muestro.</span></p>
+        </div>
+        <div id="destello"></div>
+        <div id="grano" data-layout-allow-overflow></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.set("#t-malteadas", { autoAlpha: 0 }, 9.106);
+          tl.set("#t-malteadas .cam", { x: -17.28, y: -217.05025, scale: 0.725625 }, 0);
+          tl.to("#t-malteadas .cam", { x: -45.144, y: -284.402763, scale: 0.761906, duration: 5.44, ease: "none" }, 0);
+          tl.to("#t-malteadas .cam", { x: -120.96, y: -447.66425, scale: 0.860625, duration: 0.2, ease: "power3.out" }, 5.44);
+          tl.to("#t-malteadas .cam", { x: -154.008, y: -527.547463, scale: 0.903656, duration: 2.29, ease: "none" }, 5.64);
+          tl.to("#t-malteadas .cam", { x: -56.16, y: -301.0305, scale: 0.77625, duration: 0.2, ease: "power3.out" }, 7.93);
+          tl.to("#t-malteadas .cam", { x: -85.968, y: -373.082025, scale: 0.815063, duration: 0.98, ease: "none" }, 8.13);
+          tl.fromTo("#t-malteadas .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 0.12);
+          tl.to("#t-malteadas .amb", { opacity: 0.2, duration: 0.04 }, 0.2);
+          tl.to("#t-malteadas .amb", { opacity: 1, duration: 0.1 }, 0.27);
+          tl.fromTo("#t-malteadas .aro0", { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power1.inOut", immediateRender: false }, 7.93);
+          tl.set("#t-helado", { autoAlpha: 1 }, 9.106);
+          tl.set("#t-helado", { autoAlpha: 0 }, 9.756);
+          tl.set("#t-helado .cam", { x: -43.2, y: -246.78, scale: 0.759375 }, 9.106);
+          tl.to("#t-helado .cam", { x: -72.36, y: -313.119, scale: 0.797344, duration: 0.65, ease: "none" }, 9.11);
+          tl.fromTo("#t-helado .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 9.21);
+          tl.to("#t-helado .amb", { opacity: 0.2, duration: 0.04 }, 9.29);
+          tl.to("#t-helado .amb", { opacity: 1, duration: 0.1 }, 9.36);
+          tl.set("#t-grupo", { autoAlpha: 1 }, 9.756);
+          tl.set("#t-grupo", { autoAlpha: 0 }, 15.606);
+          tl.set("#t-grupo .cam", { x: -108, y: -119.58125, scale: 0.84375 }, 9.756);
+          tl.to("#t-grupo .cam", { x: -140.4, y: -172.560313, scale: 0.885938, duration: 1.4, ease: "none" }, 9.76);
+          tl.to("#t-grupo .cam", { x: 0, y: -1513.78125, scale: 1.6875, duration: 0.2, ease: "power3.out" }, 11.16);
+          tl.to("#t-grupo .cam", { x: 0, y: -1640.470313, scale: 1.771875, duration: 1.08, ease: "none" }, 11.36);
+          tl.to("#t-grupo .cam", { x: -231.12, y: -693.026562, scale: 1.476563, duration: 0.2, ease: "power3.out" }, 12.44);
+          tl.to("#t-grupo .cam", { x: -269.676, y: -777.677891, scale: 1.550391, duration: 1.47, ease: "none" }, 12.64);
+          tl.to("#t-grupo .cam", { x: -864, y: -1102.196875, scale: 1.265625, duration: 0.2, ease: "power3.out" }, 14.11);
+          tl.to("#t-grupo .cam", { x: -961.2, y: -1209.306719, scale: 1.328906, duration: 1.3, ease: "none" }, 14.31);
+          tl.fromTo("#t-grupo .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 9.86);
+          tl.to("#t-grupo .amb", { opacity: 0.2, duration: 0.04 }, 9.94);
+          tl.to("#t-grupo .amb", { opacity: 1, duration: 0.1 }, 10.01);
+          tl.fromTo("#t-grupo .aro0", { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power1.inOut", immediateRender: false }, 15.08);
+          tl.set("#t-manos", { autoAlpha: 1 }, 15.606);
+          tl.set("#t-manos", { autoAlpha: 0 }, 19.056);
+          tl.set("#t-manos .cam", { x: -108, y: -191.71875, scale: 0.84375 }, 15.606);
+          tl.to("#t-manos .cam", { x: -140.4, y: -249.304688, scale: 0.885938, duration: 1.47, ease: "none" }, 15.61);
+          tl.to("#t-manos .cam", { x: -548.64, y: -687.578125, scale: 1.265625, duration: 0.2, ease: "power3.out" }, 17.08);
+          tl.to("#t-manos .cam", { x: -603.072, y: -773.957031, scale: 1.328906, duration: 1.78, ease: "none" }, 17.28);
+          tl.fromTo("#t-manos .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 15.71);
+          tl.to("#t-manos .amb", { opacity: 0.2, duration: 0.04 }, 15.79);
+          tl.to("#t-manos .amb", { opacity: 1, duration: 0.1 }, 15.86);
+          tl.set("#t-copa", { autoAlpha: 1 }, 19.056);
+          tl.set("#t-copa", { autoAlpha: 0 }, 23.226);
+          tl.set("#t-copa .cam", { x: -75.6, y: -278.607344, scale: 0.801562 }, 19.056);
+          tl.to("#t-copa .cam", { x: -106.38, y: -347.537711, scale: 0.841641, duration: 2.76, ease: "none" }, 19.06);
+          tl.to("#t-copa .cam", { x: -302.4, y: -626.847188, scale: 1.096875, duration: 0.2, ease: "power3.out" }, 21.82);
+          tl.to("#t-copa .cam", { x: -344.52, y: -712.189547, scale: 1.151719, duration: 1.21, ease: "none" }, 22.02);
+          tl.fromTo("#t-copa .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 19.16);
+          tl.to("#t-copa .amb", { opacity: 0.2, duration: 0.04 }, 19.24);
+          tl.to("#t-copa .amb", { opacity: 1, duration: 0.1 }, 19.31);
+          tl.set("#t-espaldas", { autoAlpha: 1 }, 23.226);
+          tl.set("#t-espaldas", { autoAlpha: 0 }, 26.606);
+          tl.set("#t-espaldas .cam", { x: -108, y: -191.71875, scale: 0.84375 }, 23.226);
+          tl.to("#t-espaldas .cam", { x: -140.4, y: -249.304688, scale: 0.885938, duration: 1.9, ease: "none" }, 23.23);
+          tl.to("#t-espaldas .cam", { x: -743.04, y: -860.335938, scale: 1.265625, duration: 0.2, ease: "power3.out" }, 25.13);
+          tl.to("#t-espaldas .cam", { x: -807.192, y: -955.352734, scale: 1.328906, duration: 1.28, ease: "none" }, 25.33);
+          tl.fromTo("#t-espaldas .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 23.33);
+          tl.to("#t-espaldas .amb", { opacity: 0.2, duration: 0.04 }, 23.41);
+          tl.to("#t-espaldas .amb", { opacity: 1, duration: 0.1 }, 23.48);
+          tl.set("#t-vacias", { autoAlpha: 1 }, 26.606);
+          tl.set("#t-vacias", { autoAlpha: 0 }, 31.036);
+          tl.set("#t-vacias .cam", { x: -156.7296, y: -634.298, scale: 0.945 }, 26.606);
+          tl.to("#t-vacias .cam", { x: -191.56608, y: -722.0129, scale: 0.99225, duration: 1.79, ease: "none" }, 26.61);
+          tl.to("#t-vacias .cam", { x: -32.3136, y: -311.0305, scale: 0.77625, duration: 0.2, ease: "power3.out" }, 28.4);
+          tl.to("#t-vacias .cam", { x: -60.92928, y: -383.082025, scale: 0.815063, duration: 2.44, ease: "none" }, 28.6);
+          tl.fromTo("#t-vacias .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 26.71);
+          tl.to("#t-vacias .amb", { opacity: 0.2, duration: 0.04 }, 26.79);
+          tl.to("#t-vacias .amb", { opacity: 1, duration: 0.1 }, 26.86);
+          tl.to("#t-vacias .amb", { opacity: 0, duration: 0.5, ease: "power2.in" }, 30.04);
+          tl.to("#t-vacias .bn", { opacity: 0.35, duration: 0.6, ease: "power2.in" }, 30.04);
+          tl.set("#t-cama", { autoAlpha: 1 }, 39.046);
+          tl.set("#t-cama", { autoAlpha: 0 }, 40.496);
+          tl.set("#t-cama .cam", { x: -108, y: -191.71875, scale: 0.84375 }, 39.046);
+          tl.to("#t-cama .cam", { x: -140.4, y: -249.304688, scale: 0.885938, duration: 0.83, ease: "none" }, 39.05);
+          tl.to("#t-cama .cam", { x: -785.808, y: -424.255312, scale: 1.392187, duration: 0.2, ease: "power3.out" }, 39.88);
+          tl.to("#t-cama .cam", { x: -852.0984, y: -496.468078, scale: 1.461797, duration: 0.42, ease: "none" }, 40.08);
+          tl.fromTo("#t-cama .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 39.15);
+          tl.to("#t-cama .amb", { opacity: 0.2, duration: 0.04 }, 39.23);
+          tl.to("#t-cama .amb", { opacity: 1, duration: 0.1 }, 39.3);
+          tl.set("#t-tenis", { autoAlpha: 1 }, 40.496);
+          tl.set("#t-tenis", { autoAlpha: 0 }, 44.606);
+          tl.set("#t-tenis .cam", { x: -75.6, y: -369.316562, scale: 0.801562 }, 40.496);
+          tl.to("#t-tenis .cam", { x: -106.38, y: -450.282391, scale: 0.841641, duration: 2.11, ease: "none" }, 40.5);
+          tl.to("#t-tenis .cam", { x: -172.8, y: -655.67375, scale: 0.928125, duration: 0.2, ease: "power3.out" }, 42.61);
+          tl.to("#t-tenis .cam", { x: -208.44, y: -751.957438, scale: 0.974531, duration: 1.8, ease: "none" }, 42.81);
+          tl.fromTo("#t-tenis .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 40.6);
+          tl.to("#t-tenis .amb", { opacity: 0.2, duration: 0.04 }, 40.68);
+          tl.to("#t-tenis .amb", { opacity: 1, duration: 0.1 }, 40.75);
+          tl.set("#t-carro", { autoAlpha: 1 }, 44.606);
+          tl.set("#t-carro", { autoAlpha: 0 }, 48.776);
+          tl.set("#t-carro .cam", { x: -108, y: -266.890625, scale: 0.84375 }, 44.606);
+          tl.to("#t-carro .cam", { x: -140.4, y: -330.235156, scale: 0.885938, duration: 0.89, ease: "none" }, 44.61);
+          tl.to("#t-carro .cam", { x: -435.24, y: -1580.470313, scale: 1.476563, duration: 0.2, ease: "power3.out" }, 45.5);
+          tl.to("#t-carro .cam", { x: -484.002, y: -1713.493828, scale: 1.550391, duration: 1.41, ease: "none" }, 45.7);
+          tl.to("#t-carro .cam", { x: -237.6, y: -638.475, scale: 1.0125, duration: 0.2, ease: "power3.out" }, 47.11);
+          tl.to("#t-carro .cam", { x: -276.48, y: -721.39875, scale: 1.063125, duration: 1.47, ease: "none" }, 47.31);
+          tl.fromTo("#t-carro .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 44.71);
+          tl.to("#t-carro .amb", { opacity: 0.2, duration: 0.04 }, 44.79);
+          tl.to("#t-carro .amb", { opacity: 1, duration: 0.1 }, 44.86);
+          tl.set("#t-vasos", { autoAlpha: 1 }, 52.146);
+          tl.set("#t-vasos", { autoAlpha: 0 }, 55.186);
+          tl.set("#t-vasos .cam", { x: -17.28, y: -177.431125, scale: 0.725625 }, 52.146);
+          tl.to("#t-vasos .cam", { x: -45.144, y: -242.802681, scale: 0.761906, duration: 1.95, ease: "none" }, 52.15);
+          tl.to("#t-vasos .cam", { x: -140.4, y: -456.282188, scale: 0.885938, duration: 0.2, ease: "power3.out" }, 54.1);
+          tl.to("#t-vasos .cam", { x: -174.42, y: -536.096297, scale: 0.930234, duration: 0.89, ease: "none" }, 54.3);
+          tl.fromTo("#t-vasos .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 52.25);
+          tl.to("#t-vasos .amb", { opacity: 0.2, duration: 0.04 }, 52.33);
+          tl.to("#t-vasos .amb", { opacity: 1, duration: 0.1 }, 52.4);
+          tl.set("#t-puerta", { autoAlpha: 1 }, 55.186);
+          tl.set("#t-puerta", { autoAlpha: 0 }, 58.546);
+          tl.set("#t-puerta .cam", { x: -108, y: -136.546875, scale: 0.84375 }, 55.186);
+          tl.to("#t-puerta .cam", { x: -140.4, y: -188.374219, scale: 0.885938, duration: 1.32, ease: "none" }, 55.19);
+          tl.to("#t-puerta .cam", { x: -437.184, y: -497.234375, scale: 1.096875, duration: 0.2, ease: "power3.out" }, 56.51);
+          tl.to("#t-puerta .cam", { x: -486.0432, y: -572.096094, scale: 1.151719, duration: 0.84, ease: "none" }, 56.71);
+          tl.to("#t-puerta .cam", { x: -108, y: -136.546875, scale: 0.84375, duration: 0.2, ease: "power3.out" }, 57.55);
+          tl.to("#t-puerta .cam", { x: -140.4, y: -188.374219, scale: 0.885938, duration: 0.8, ease: "none" }, 57.75);
+          tl.fromTo("#t-puerta .amb", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 55.29);
+          tl.to("#t-puerta .amb", { opacity: 0.2, duration: 0.04 }, 55.37);
+          tl.to("#t-puerta .amb", { opacity: 1, duration: 0.1 }, 55.44);
+          tl.fromTo("#w0", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 0.56);
+          tl.fromTo("#w1", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 0.72);
+          tl.fromTo("#w2", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 1.05);
+          tl.fromTo("#w3", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 1.2);
+          tl.fromTo("#w4", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 1.53);
+          tl.fromTo("#w5", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 2.32);
+          tl.fromTo("#w6", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 2.48);
+          tl.to("#b0", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 3.25);
+          tl.fromTo("#w7", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 3.37);
+          tl.fromTo("#w8", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 3.45);
+          tl.fromTo("#w9", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 3.85);
+          tl.fromTo("#w10", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 4.02);
+          tl.fromTo("#w11", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 4.25);
+          tl.fromTo("#w12", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 4.41);
+          tl.fromTo("#w13", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 4.44);
+          tl.fromTo("#w14", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 5.31);
+          tl.to("#b1", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 7.58);
+          tl.fromTo("#w16", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 7.7);
+          tl.fromTo("#w17", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 7.94);
+          tl.fromTo("#w18", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 9.15);
+          tl.fromTo("#w19", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 9.16);
+          tl.to("#b2", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 9.68);
+          tl.fromTo("#w20", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 9.8);
+          tl.fromTo("#w21", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 9.88);
+          tl.fromTo("#w22", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 9.95);
+          tl.fromTo("#w23", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 10.19);
+          tl.fromTo("#w24", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 10.35);
+          tl.fromTo("#w25", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 10.83);
+          tl.fromTo("#w26", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 10.93);
+          tl.fromTo("#w27", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 11.17);
+          tl.fromTo("#w28", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 11.39);
+          tl.to("#b3", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 12.33);
+          tl.fromTo("#w29", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 12.45);
+          tl.fromTo("#w30", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 12.53);
+          tl.fromTo("#w31", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 13.32);
+          tl.to("#b4", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 14);
+          tl.fromTo("#w32", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 14.12);
+          tl.fromTo("#w33", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 14.22);
+          tl.fromTo("#w34", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 14.3);
+          tl.fromTo("#w35", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 15.09);
+          tl.to("#b5", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 15.53);
+          tl.fromTo("#w36", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 15.65);
+          tl.fromTo("#w37", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 15.97);
+          tl.fromTo("#w38", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 16.21);
+          tl.fromTo("#w39", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 16.55);
+          tl.to("#b6", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 16.97);
+          tl.fromTo("#w40", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 17.09);
+          tl.fromTo("#w41", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 17.25);
+          tl.fromTo("#w42", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 17.41);
+          tl.fromTo("#w43", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 17.91);
+          tl.fromTo("#w44", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 18.06);
+          tl.fromTo("#w45", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 18.22);
+          tl.to("#b7", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 18.98);
+          tl.fromTo("#w46", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 19.1);
+          tl.fromTo("#w47", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 19.26);
+          tl.fromTo("#w48", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 19.29);
+          tl.fromTo("#w49", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 19.48);
+          tl.fromTo("#w50", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 19.84);
+          tl.fromTo("#w51", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 19.9);
+          tl.fromTo("#w52", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 20.46);
+          tl.fromTo("#w53", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 20.95);
+          tl.to("#b8", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 21.71);
+          tl.fromTo("#w54", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 21.83);
+          tl.fromTo("#w55", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 22.09);
+          tl.fromTo("#w56", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 22.47);
+          tl.to("#b9", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 23.15);
+          tl.fromTo("#w57", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 23.27);
+          tl.fromTo("#w58", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 23.6);
+          tl.fromTo("#w59", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 23.76);
+          tl.fromTo("#w60", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 23.93);
+          tl.fromTo("#w61", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 24.41);
+          tl.fromTo("#w62", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 24.51);
+          tl.fromTo("#w63", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 25.14);
+          tl.fromTo("#w64", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 25.6);
+          tl.fromTo("#w65", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 25.68);
+          tl.to("#b10", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 26.53);
+          tl.fromTo("#w66", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 26.65);
+          tl.fromTo("#w67", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 27.45);
+          tl.fromTo("#w68", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 27.87);
+          tl.to("#b11", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 28.29);
+          tl.fromTo("#w69", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 28.41);
+          tl.fromTo("#w70", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 28.72);
+          tl.fromTo("#w71", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 28.83);
+          tl.fromTo("#w72", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 29.05);
+          tl.fromTo("#w73", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 29.41);
+          tl.fromTo("#w74", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 29.54);
+          tl.fromTo("#w75", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 30.1);
+          tl.to("#b12", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 31.18);
+          tl.fromTo("#w78", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 32.28);
+          tl.fromTo("#w79", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 32.51);
+          tl.fromTo("#w80", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 32.75);
+          tl.to("#b14", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 33.29);
+          tl.fromTo("#w81", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 33.41);
+          tl.fromTo("#w82", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 33.49);
+          tl.fromTo("#w83", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 34.13);
+          tl.fromTo("#w84", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 34.27);
+          tl.fromTo("#w85", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 34.47);
+          tl.to("#b15", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 35.05);
+          tl.fromTo("#w86", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 35.17);
+          tl.fromTo("#w87", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 35.4);
+          tl.to("#b16", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 38.97);
+          tl.fromTo("#w92", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 39.09);
+          tl.fromTo("#w93", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 39.23);
+          tl.fromTo("#w94", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 39.41);
+          tl.fromTo("#w95", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 39.52);
+          tl.fromTo("#w96", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 39.89);
+          tl.fromTo("#w97", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 40.13);
+          tl.to("#b17", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 40.42);
+          tl.fromTo("#w98", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 40.54);
+          tl.fromTo("#w99", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 40.87);
+          tl.fromTo("#w100", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 41.02);
+          tl.fromTo("#w101", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 41.59);
+          tl.fromTo("#w102", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 41.66);
+          tl.to("#b18", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 42.5);
+          tl.fromTo("#w103", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 42.62);
+          tl.fromTo("#w104", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 42.86);
+          tl.fromTo("#w105", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 43.36);
+          tl.fromTo("#w106", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 43.43);
+          tl.fromTo("#w107", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 43.76);
+          tl.to("#b19", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 44.53);
+          tl.fromTo("#w108", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 44.65);
+          tl.fromTo("#w109", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 44.71);
+          tl.fromTo("#w110", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 44.95);
+          tl.fromTo("#w111", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 45.29);
+          tl.fromTo("#w112", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 45.51);
+          tl.to("#b20", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 46.05);
+          tl.fromTo("#w113", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 46.17);
+          tl.fromTo("#w114", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 46.19);
+          tl.fromTo("#w115", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 46.31);
+          tl.fromTo("#w116", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 46.43);
+          tl.fromTo("#w117", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 47.12);
+          tl.fromTo("#w118", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 47.52);
+          tl.fromTo("#w119", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 47.7);
+          tl.fromTo("#w120", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 48);
+          tl.to("#b21", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 48.7);
+          tl.fromTo("#w127", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 52.19);
+          tl.fromTo("#w128", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 52.5);
+          tl.fromTo("#w129", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 52.66);
+          tl.fromTo("#w130", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 52.92);
+          tl.fromTo("#w131", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 53.32);
+          tl.fromTo("#w132", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 53.41);
+          tl.fromTo("#w133", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 53.54);
+          tl.fromTo("#w134", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 54.11);
+          tl.fromTo("#w135", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 54.27);
+          tl.fromTo("#w136", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 54.43);
+          tl.to("#b23", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 55.11);
+          tl.fromTo("#w137", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 55.23);
+          tl.fromTo("#w138", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 55.63);
+          tl.to("#b24", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 56.4);
+          tl.fromTo("#w139", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 56.52);
+          tl.fromTo("#w140", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 56.69);
+          tl.fromTo("#w141", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 56.76);
+          tl.to("#b25", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 58.49);
+          tl.fromTo("#w143", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 58.61);
+          tl.fromTo("#w144", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 58.77);
+          tl.fromTo("#w145", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 58.85);
+          tl.fromTo("#w146", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 59.11);
+          tl.fromTo("#w147", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 59.17);
+          tl.fromTo("#w148", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 59.75);
+          tl.fromTo("#w149", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 60.07);
+          tl.fromTo("#w150", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 60.22);
+          tl.fromTo("#w151", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 60.31);
+          tl.fromTo("#w152", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 60.78);
+          tl.fromTo("#w153", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 60.96);
+          tl.to("#b26", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 61.3);
+          tl.fromTo("#w154", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 61.42);
+          tl.fromTo("#w155", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 61.58);
+          tl.fromTo("#w156", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 61.91);
+          tl.fromTo("#w157", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 62.15);
+          tl.fromTo("#w158", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 62.34);
+          tl.fromTo("#w159", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 63.03);
+          tl.fromTo("#w160", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 63.19);
+          tl.fromTo("#w161", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, 63.27);
+          tl.to("#b27", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, 65.8);
+          tl.fromTo("#anio", { opacity: 0, filter: "blur(16px)", scale: 1.06 }, { opacity: 0.5, filter: "blur(0px)", scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 0.3);
+          tl.to("#anio", { opacity: 1, scale: 1.14, duration: 0.14, ease: "power2.out" }, 5.47);
+          tl.to("#anio", { scale: 1.04, duration: 0.5, ease: "power2.inOut" }, 5.63);
+          tl.to("#mundo", { x: -12.6, y: 8.1, rotation: -0.45, duration: 0.04, ease: "none" }, 5.49);
+          tl.to("#mundo", { x: 9.9, y: -6.3, rotation: 0.36, duration: 0.05, ease: "none" }, 5.53);
+          tl.to("#mundo", { x: -5.4, y: 3.6, rotation: -0.18, duration: 0.05, ease: "none" }, 5.58);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 5.63);
+          tl.fromTo("#destello", { opacity: 0 }, { opacity: 0.16, duration: 0.03, immediateRender: false }, 5.49);
+          tl.to("#destello", { opacity: 0, duration: 0.16, ease: "power2.out" }, 5.52);
+          tl.to("#anio", { opacity: 0, duration: 0.1, ease: "power1.in" }, 9.01);
+          tl.to("#mundo", { x: -9.8, y: 6.3, rotation: -0.35, duration: 0.04, ease: "none" }, 26.63);
+          tl.to("#mundo", { x: 7.7, y: -4.9, rotation: 0.28, duration: 0.05, ease: "none" }, 26.67);
+          tl.to("#mundo", { x: -4.2, y: 2.8, rotation: -0.14, duration: 0.05, ease: "none" }, 26.72);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 26.77);
+          tl.fromTo("#destello", { opacity: 0 }, { opacity: 0.12, duration: 0.03, immediateRender: false }, 26.61);
+          tl.to("#destello", { opacity: 0, duration: 0.16, ease: "power2.out" }, 26.64);
+          tl.fromTo("#yq-ya", { opacity: 0, filter: "blur(20px)", scale: 1.15 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 31.31);
+          tl.fromTo("#yq-que", { opacity: 0, filter: "blur(10px)", scale: 1.25 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.16, ease: "power2.out", immediateRender: false }, 31.47);
+          tl.to("#mundo", { x: -16.8, y: 10.8, rotation: -0.6, duration: 0.04, ease: "none" }, 31.5);
+          tl.to("#mundo", { x: 13.2, y: -8.4, rotation: 0.48, duration: 0.05, ease: "none" }, 31.54);
+          tl.to("#mundo", { x: -7.2, y: 4.8, rotation: -0.24, duration: 0.05, ease: "none" }, 31.59);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 31.64);
+          tl.fromTo("#destello", { opacity: 0 }, { opacity: 0.14, duration: 0.03, immediateRender: false }, 31.5);
+          tl.to("#destello", { opacity: 0, duration: 0.16, ease: "power2.out" }, 31.53);
+          tl.to("#yaque", { opacity: 0, duration: 0.14, ease: "power1.in" }, 32.12);
+          tl.set("#rejilla", { opacity: 1 }, 32.256);
+          tl.fromTo("#ingles", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, 33.4);
+          tl.fromTo("#tapa", { scaleX: 0, opacity: 1 }, { scaleX: 1, opacity: 1, duration: 0.18, ease: "power3.out", immediateRender: false }, 34.28);
+          tl.to("#ingles", { y: -120, scale: 0.72, opacity: 0.45, duration: 0.3, ease: "power2.inOut" }, 35.16);
+          tl.fromTo("#ef-el", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.22, ease: "power2.out", immediateRender: false }, 36.14);
+          tl.fromTo("#ef-ya", { opacity: 0, filter: "blur(18px)", scale: 1.15 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, 37.41);
+          tl.fromTo("#ef-que", { opacity: 0, filter: "blur(10px)", scale: 1.25 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.15, ease: "power2.out", immediateRender: false }, 38.06);
+          tl.to("#mundo", { x: -12.6, y: 8.1, rotation: -0.45, duration: 0.04, ease: "none" }, 38.09);
+          tl.to("#mundo", { x: 9.9, y: -6.3, rotation: 0.36, duration: 0.05, ease: "none" }, 38.13);
+          tl.to("#mundo", { x: -5.4, y: 3.6, rotation: -0.18, duration: 0.05, ease: "none" }, 38.18);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 38.23);
+          tl.fromTo("#destello", { opacity: 0 }, { opacity: 0.12, duration: 0.03, immediateRender: false }, 38.09);
+          tl.to("#destello", { opacity: 0, duration: 0.16, ease: "power2.out" }, 38.12);
+          tl.fromTo("#raya path", { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.4, ease: "power1.inOut", immediateRender: false }, 38.15);
+          tl.to("#tarjeta", { opacity: 0, duration: 0.12, ease: "power1.in" }, 38.93);
+          tl.set("#rejilla", { opacity: 0 }, 39.046);
+          tl.fromTo("#tira", { opacity: 0, filter: "blur(8px)", scale: 1.04 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.2, ease: "power2.out", immediateRender: false }, 40.56);
+          tl.to("#tira .c0", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 40.7);
+          tl.to("#tira .c1", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 40.84);
+          tl.to("#tira .c2", { borderColor: "#F4E7C3", scale: 1.18, duration: 0.1, yoyo: true, repeat: 1 }, 41.06);
+          tl.fromTo("#tira .x2", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power3.in", immediateRender: false }, 41.11);
+          tl.fromTo("#tacha path", { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.45, ease: "power1.inOut", immediateRender: false }, 42.64);
+          tl.to("#tira .c3, #tira .c4, #tira .c5, #tira .c6", { opacity: 0.3, duration: 0.3 }, 42.76);
+          tl.fromTo("#otro path", { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.35, ease: "power1.inOut", immediateRender: false }, 43.43);
+          tl.to("#tira .c7", { borderColor: "#F4E7C3", scale: 1.15, duration: 0.14 }, 43.47);
+          tl.to("#tira", { opacity: 0, duration: 0.1, ease: "power1.in" }, 44.51);
+          tl.to("#tacha", { opacity: 0, duration: 0.1, ease: "power1.in" }, 44.51);
+          tl.to("#otro", { opacity: 0, duration: 0.1, ease: "power1.in" }, 44.51);
+          tl.to("#mundo", { x: -11.2, y: 7.2, rotation: -0.4, duration: 0.04, ease: "none" }, 45.52);
+          tl.to("#mundo", { x: 8.8, y: -5.6, rotation: 0.32, duration: 0.05, ease: "none" }, 45.56);
+          tl.to("#mundo", { x: -4.8, y: 3.2, rotation: -0.16, duration: 0.05, ease: "none" }, 45.61);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 45.66);
+          tl.to("#mundo", { x: -6.3, y: 4.05, rotation: -0.225, duration: 0.04, ease: "none" }, 47.56);
+          tl.to("#mundo", { x: 4.95, y: -3.15, rotation: 0.18, duration: 0.05, ease: "none" }, 47.6);
+          tl.to("#mundo", { x: -2.7, y: 1.8, rotation: -0.09, duration: 0.05, ease: "none" }, 47.65);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 47.7);
+          tl.to("#mundo", { x: -8.4, y: 5.4, rotation: -0.3, duration: 0.04, ease: "none" }, 47.74);
+          tl.to("#mundo", { x: 6.6, y: -4.2, rotation: 0.24, duration: 0.05, ease: "none" }, 47.78);
+          tl.to("#mundo", { x: -3.6, y: 2.4, rotation: -0.12, duration: 0.05, ease: "none" }, 47.83);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 47.88);
+          tl.to("#mundo", { x: -10.5, y: 6.75, rotation: -0.375, duration: 0.04, ease: "none" }, 48.04);
+          tl.to("#mundo", { x: 8.25, y: -5.25, rotation: 0.3, duration: 0.05, ease: "none" }, 48.08);
+          tl.to("#mundo", { x: -4.5, y: 3, rotation: -0.15, duration: 0.05, ease: "none" }, 48.13);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 48.18);
+          tl.set("#rejilla", { opacity: 1 }, 48.776);
+          tl.set("#rejilla", { opacity: 0 }, 52.146);
+          tl.fromTo("#v121", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 48.82);
+          tl.fromTo("#v122", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 48.92);
+          tl.fromTo("#v123", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 50.17);
+          tl.fromTo("#v124", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 50.49);
+          tl.fromTo("#v125", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 50.76);
+          tl.fromTo("#v126", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 50.89);
+          tl.fromTo("#tira2", { opacity: 0, filter: "blur(8px)", scale: 1.04 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.2, ease: "power2.out", immediateRender: false }, 48.84);
+          tl.fromTo("#tira2 .x2", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power3.in", immediateRender: false }, 49.01);
+          tl.to("#mundo", { x: -9.8, y: 6.3, rotation: -0.35, duration: 0.04, ease: "none" }, 50.21);
+          tl.to("#mundo", { x: 7.7, y: -4.9, rotation: 0.28, duration: 0.05, ease: "none" }, 50.25);
+          tl.to("#mundo", { x: -4.2, y: 2.8, rotation: -0.14, duration: 0.05, ease: "none" }, 50.3);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 50.35);
+          tl.to("#tira2 .c0", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 50.39);
+          tl.to("#tira2 .c1", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 50.48);
+          tl.to("#tira2 .c3", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 50.57);
+          tl.to("#tira2 .c4", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 50.66);
+          tl.to("#tira2 .c5", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 50.75);
+          tl.to("#tira2 .c6", { backgroundColor: "#FFB547", borderColor: "#FFB547", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1 }, 50.84);
+          tl.to("#veredicto", { opacity: 0, duration: 0.1, ease: "power1.in" }, 52.05);
+          tl.to("#tira2", { opacity: 0, duration: 0.1, ease: "power1.in" }, 52.05);
+          tl.fromTo("#manana", { opacity: 0, filter: "blur(18px)", scale: 1.12 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 57.56);
+          tl.to("#manana", { opacity: 0, duration: 0.12, ease: "power1.in" }, 58.43);
+          tl.set("#rejilla", { opacity: 1 }, 58.546);
+          tl.set("#grano", { x: 0, y: -350 }, 0);
+          tl.set("#grano", { x: -110, y: -80 }, 0.066667);
+          tl.set("#grano", { x: -277, y: -202 }, 0.133333);
+          tl.set("#grano", { x: -125, y: -286 }, 0.2);
+          tl.set("#grano", { x: -287, y: -206 }, 0.266667);
+          tl.set("#grano", { x: -260, y: -242 }, 0.333333);
+          tl.set("#grano", { x: -310, y: -92 }, 0.4);
+          tl.set("#grano", { x: -142, y: -269 }, 0.466667);
+          tl.set("#grano", { x: -265, y: -20 }, 0.533333);
+          tl.set("#grano", { x: -260, y: -178 }, 0.6);
+          tl.set("#grano", { x: -351, y: -307 }, 0.666667);
+          tl.set("#grano", { x: -47, y: -195 }, 0.733333);
+          tl.set("#grano", { x: -351, y: -262 }, 0.8);
+          tl.set("#grano", { x: -245, y: -219 }, 0.866667);
+          tl.set("#grano", { x: -347, y: -345 }, 0.933333);
+          tl.set("#grano", { x: -141, y: -127 }, 1);
+          tl.set("#grano", { x: -318, y: -126 }, 1.066667);
+          tl.set("#grano", { x: -58, y: -113 }, 1.133333);
+          tl.set("#grano", { x: -163, y: -112 }, 1.2);
+          tl.set("#grano", { x: -356, y: -212 }, 1.266667);
+          tl.set("#grano", { x: -277, y: -334 }, 1.333333);
+          tl.set("#grano", { x: -22, y: -104 }, 1.4);
+          tl.set("#grano", { x: -213, y: -193 }, 1.466667);
+          tl.set("#grano", { x: -160, y: -73 }, 1.533333);
+          tl.set("#grano", { x: -345, y: -21 }, 1.6);
+          tl.set("#grano", { x: -139, y: -131 }, 1.666667);
+          tl.set("#grano", { x: -252, y: -351 }, 1.733333);
+          tl.set("#grano", { x: -196, y: -63 }, 1.8);
+          tl.set("#grano", { x: -154, y: -108 }, 1.866667);
+          tl.set("#grano", { x: -138, y: -161 }, 1.933333);
+          tl.set("#grano", { x: -126, y: -202 }, 2);
+          tl.set("#grano", { x: -233, y: -89 }, 2.066667);
+          tl.set("#grano", { x: -344, y: -174 }, 2.133333);
+          tl.set("#grano", { x: -328, y: -241 }, 2.2);
+          tl.set("#grano", { x: -241, y: -196 }, 2.266667);
+          tl.set("#grano", { x: -192, y: -262 }, 2.333333);
+          tl.set("#grano", { x: -357, y: -151 }, 2.4);
+          tl.set("#grano", { x: -269, y: -95 }, 2.466667);
+          tl.set("#grano", { x: -223, y: -133 }, 2.533333);
+          tl.set("#grano", { x: -126, y: -149 }, 2.6);
+          tl.set("#grano", { x: -302, y: -333 }, 2.666667);
+          tl.set("#grano", { x: -42, y: -311 }, 2.733333);
+          tl.set("#grano", { x: -30, y: -155 }, 2.8);
+          tl.set("#grano", { x: -58, y: -30 }, 2.866667);
+          tl.set("#grano", { x: -379, y: -84 }, 2.933333);
+          tl.set("#grano", { x: -240, y: -55 }, 3);
+          tl.set("#grano", { x: -174, y: -225 }, 3.066667);
+          tl.set("#grano", { x: -52, y: -350 }, 3.133333);
+          tl.set("#grano", { x: -336, y: -338 }, 3.2);
+          tl.set("#grano", { x: -336, y: -345 }, 3.266667);
+          tl.set("#grano", { x: -289, y: -105 }, 3.333333);
+          tl.set("#grano", { x: -4, y: -94 }, 3.4);
+          tl.set("#grano", { x: -29, y: -1 }, 3.466667);
+          tl.set("#grano", { x: -234, y: -88 }, 3.533333);
+          tl.set("#grano", { x: -282, y: -186 }, 3.6);
+          tl.set("#grano", { x: -261, y: -90 }, 3.666667);
+          tl.set("#grano", { x: -335, y: -89 }, 3.733333);
+          tl.set("#grano", { x: -142, y: -340 }, 3.8);
+          tl.set("#grano", { x: -45, y: -186 }, 3.866667);
+          tl.set("#grano", { x: -1, y: -347 }, 3.933333);
+          tl.set("#grano", { x: -242, y: -350 }, 4);
+          tl.set("#grano", { x: -8, y: -342 }, 4.066667);
+          tl.set("#grano", { x: -71, y: -368 }, 4.133333);
+          tl.set("#grano", { x: -215, y: -258 }, 4.2);
+          tl.set("#grano", { x: -101, y: -85 }, 4.266667);
+          tl.set("#grano", { x: -79, y: -214 }, 4.333333);
+          tl.set("#grano", { x: -20, y: -292 }, 4.4);
+          tl.set("#grano", { x: -266, y: -271 }, 4.466667);
+          tl.set("#grano", { x: -189, y: -12 }, 4.533333);
+          tl.set("#grano", { x: -42, y: -349 }, 4.6);
+          tl.set("#grano", { x: -50, y: -261 }, 4.666667);
+          tl.set("#grano", { x: -339, y: -14 }, 4.733333);
+          tl.set("#grano", { x: -336, y: -327 }, 4.8);
+          tl.set("#grano", { x: -377, y: -363 }, 4.866667);
+          tl.set("#grano", { x: -291, y: -159 }, 4.933333);
+          tl.set("#grano", { x: -94, y: -277 }, 5);
+          tl.set("#grano", { x: -335, y: -151 }, 5.066667);
+          tl.set("#grano", { x: -89, y: -154 }, 5.133333);
+          tl.set("#grano", { x: -337, y: -212 }, 5.2);
+          tl.set("#grano", { x: -134, y: -236 }, 5.266667);
+          tl.set("#grano", { x: -279, y: -127 }, 5.333333);
+          tl.set("#grano", { x: -276, y: -161 }, 5.4);
+          tl.set("#grano", { x: -75, y: -118 }, 5.466667);
+          tl.set("#grano", { x: -374, y: -378 }, 5.533333);
+          tl.set("#grano", { x: -240, y: -331 }, 5.6);
+          tl.set("#grano", { x: -349, y: -76 }, 5.666667);
+          tl.set("#grano", { x: -245, y: -51 }, 5.733333);
+          tl.set("#grano", { x: -189, y: -212 }, 5.8);
+          tl.set("#grano", { x: -293, y: -359 }, 5.866667);
+          tl.set("#grano", { x: -183, y: -71 }, 5.933333);
+          tl.set("#grano", { x: -170, y: -63 }, 6);
+          tl.set("#grano", { x: -252, y: -198 }, 6.066667);
+          tl.set("#grano", { x: -213, y: -193 }, 6.133333);
+          tl.set("#grano", { x: -288, y: -138 }, 6.2);
+          tl.set("#grano", { x: -285, y: -10 }, 6.266667);
+          tl.set("#grano", { x: -114, y: -206 }, 6.333333);
+          tl.set("#grano", { x: -77, y: -275 }, 6.4);
+          tl.set("#grano", { x: -111, y: -90 }, 6.466667);
+          tl.set("#grano", { x: -251, y: -163 }, 6.533333);
+          tl.set("#grano", { x: -29, y: -294 }, 6.6);
+          tl.set("#grano", { x: -313, y: -348 }, 6.666667);
+          tl.set("#grano", { x: -346, y: -259 }, 6.733333);
+          tl.set("#grano", { x: -364, y: -10 }, 6.8);
+          tl.set("#grano", { x: -290, y: -228 }, 6.866667);
+          tl.set("#grano", { x: -275, y: -341 }, 6.933333);
+          tl.set("#grano", { x: -14, y: -52 }, 7);
+          tl.set("#grano", { x: -31, y: -41 }, 7.066667);
+          tl.set("#grano", { x: -32, y: -4 }, 7.133333);
+          tl.set("#grano", { x: -230, y: -359 }, 7.2);
+          tl.set("#grano", { x: -73, y: -51 }, 7.266667);
+          tl.set("#grano", { x: -77, y: -256 }, 7.333333);
+          tl.set("#grano", { x: -92, y: -173 }, 7.4);
+          tl.set("#grano", { x: -378, y: -161 }, 7.466667);
+          tl.set("#grano", { x: -256, y: -294 }, 7.533333);
+          tl.set("#grano", { x: -151, y: -158 }, 7.6);
+          tl.set("#grano", { x: -23, y: -87 }, 7.666667);
+          tl.set("#grano", { x: -307, y: -370 }, 7.733333);
+          tl.set("#grano", { x: -58, y: -352 }, 7.8);
+          tl.set("#grano", { x: -193, y: -46 }, 7.866667);
+          tl.set("#grano", { x: -80, y: -229 }, 7.933333);
+          tl.set("#grano", { x: -65, y: -30 }, 8);
+          tl.set("#grano", { x: -104, y: -246 }, 8.066667);
+          tl.set("#grano", { x: -211, y: -183 }, 8.133333);
+          tl.set("#grano", { x: -378, y: -29 }, 8.2);
+          tl.set("#grano", { x: -157, y: -119 }, 8.266667);
+          tl.set("#grano", { x: -2, y: -2 }, 8.333333);
+          tl.set("#grano", { x: -157, y: -35 }, 8.4);
+          tl.set("#grano", { x: -89, y: -351 }, 8.466667);
+          tl.set("#grano", { x: -295, y: -290 }, 8.533333);
+          tl.set("#grano", { x: -166, y: -325 }, 8.6);
+          tl.set("#grano", { x: -366, y: -304 }, 8.666667);
+          tl.set("#grano", { x: -251, y: -217 }, 8.733333);
+          tl.set("#grano", { x: -132, y: -155 }, 8.8);
+          tl.set("#grano", { x: -189, y: -188 }, 8.866667);
+          tl.set("#grano", { x: -216, y: -274 }, 8.933333);
+          tl.set("#grano", { x: -253, y: -240 }, 9);
+          tl.set("#grano", { x: -277, y: -336 }, 9.066667);
+          tl.set("#grano", { x: -321, y: -376 }, 9.133333);
+          tl.set("#grano", { x: -166, y: -185 }, 9.2);
+          tl.set("#grano", { x: -364, y: -371 }, 9.266667);
+          tl.set("#grano", { x: -136, y: -30 }, 9.333333);
+          tl.set("#grano", { x: -130, y: -335 }, 9.4);
+          tl.set("#grano", { x: -269, y: -280 }, 9.466667);
+          tl.set("#grano", { x: -363, y: -299 }, 9.533333);
+          tl.set("#grano", { x: -79, y: -91 }, 9.6);
+          tl.set("#grano", { x: -303, y: -40 }, 9.666667);
+          tl.set("#grano", { x: -348, y: -304 }, 9.733333);
+          tl.set("#grano", { x: -241, y: -270 }, 9.8);
+          tl.set("#grano", { x: -204, y: -168 }, 9.866667);
+          tl.set("#grano", { x: -331, y: -214 }, 9.933333);
+          tl.set("#grano", { x: -332, y: -103 }, 10);
+          tl.set("#grano", { x: -261, y: -165 }, 10.066667);
+          tl.set("#grano", { x: -150, y: -71 }, 10.133333);
+          tl.set("#grano", { x: -224, y: -88 }, 10.2);
+          tl.set("#grano", { x: -342, y: -312 }, 10.266667);
+          tl.set("#grano", { x: -128, y: -259 }, 10.333333);
+          tl.set("#grano", { x: -333, y: -44 }, 10.4);
+          tl.set("#grano", { x: -117, y: -350 }, 10.466667);
+          tl.set("#grano", { x: -1, y: -50 }, 10.533333);
+          tl.set("#grano", { x: -151, y: -8 }, 10.6);
+          tl.set("#grano", { x: -263, y: -341 }, 10.666667);
+          tl.set("#grano", { x: -66, y: -81 }, 10.733333);
+          tl.set("#grano", { x: -360, y: -266 }, 10.8);
+          tl.set("#grano", { x: -67, y: -44 }, 10.866667);
+          tl.set("#grano", { x: -238, y: -6 }, 10.933333);
+          tl.set("#grano", { x: -309, y: -225 }, 11);
+          tl.set("#grano", { x: -285, y: -49 }, 11.066667);
+          tl.set("#grano", { x: -126, y: -272 }, 11.133333);
+          tl.set("#grano", { x: -363, y: -208 }, 11.2);
+          tl.set("#grano", { x: -224, y: -295 }, 11.266667);
+          tl.set("#grano", { x: -267, y: -279 }, 11.333333);
+          tl.set("#grano", { x: -227, y: -38 }, 11.4);
+          tl.set("#grano", { x: -17, y: -233 }, 11.466667);
+          tl.set("#grano", { x: -85, y: -221 }, 11.533333);
+          tl.set("#grano", { x: -95, y: -85 }, 11.6);
+          tl.set("#grano", { x: -236, y: -239 }, 11.666667);
+          tl.set("#grano", { x: -309, y: -91 }, 11.733333);
+          tl.set("#grano", { x: -344, y: -20 }, 11.8);
+          tl.set("#grano", { x: -262, y: -155 }, 11.866667);
+          tl.set("#grano", { x: -301, y: -251 }, 11.933333);
+          tl.set("#grano", { x: -306, y: -40 }, 12);
+          tl.set("#grano", { x: -349, y: -190 }, 12.066667);
+          tl.set("#grano", { x: -313, y: -161 }, 12.133333);
+          tl.set("#grano", { x: -329, y: -300 }, 12.2);
+          tl.set("#grano", { x: -276, y: -345 }, 12.266667);
+          tl.set("#grano", { x: -326, y: -72 }, 12.333333);
+          tl.set("#grano", { x: -273, y: -59 }, 12.4);
+          tl.set("#grano", { x: -48, y: -360 }, 12.466667);
+          tl.set("#grano", { x: -363, y: -21 }, 12.533333);
+          tl.set("#grano", { x: -29, y: -100 }, 12.6);
+          tl.set("#grano", { x: -357, y: -331 }, 12.666667);
+          tl.set("#grano", { x: -364, y: -105 }, 12.733333);
+          tl.set("#grano", { x: -75, y: -11 }, 12.8);
+          tl.set("#grano", { x: -179, y: -213 }, 12.866667);
+          tl.set("#grano", { x: -54, y: -123 }, 12.933333);
+          tl.set("#grano", { x: -183, y: -86 }, 13);
+          tl.set("#grano", { x: -21, y: -17 }, 13.066667);
+          tl.set("#grano", { x: -36, y: -239 }, 13.133333);
+          tl.set("#grano", { x: -178, y: -307 }, 13.2);
+          tl.set("#grano", { x: -277, y: -194 }, 13.266667);
+          tl.set("#grano", { x: -266, y: -147 }, 13.333333);
+          tl.set("#grano", { x: -233, y: -367 }, 13.4);
+          tl.set("#grano", { x: -293, y: -366 }, 13.466667);
+          tl.set("#grano", { x: -270, y: -229 }, 13.533333);
+          tl.set("#grano", { x: -305, y: -65 }, 13.6);
+          tl.set("#grano", { x: -25, y: -276 }, 13.666667);
+          tl.set("#grano", { x: -246, y: -164 }, 13.733333);
+          tl.set("#grano", { x: -207, y: -147 }, 13.8);
+          tl.set("#grano", { x: -188, y: -46 }, 13.866667);
+          tl.set("#grano", { x: -25, y: -30 }, 13.933333);
+          tl.set("#grano", { x: -135, y: -131 }, 14);
+          tl.set("#grano", { x: -76, y: -243 }, 14.066667);
+          tl.set("#grano", { x: -48, y: -20 }, 14.133333);
+          tl.set("#grano", { x: -1, y: -318 }, 14.2);
+          tl.set("#grano", { x: -330, y: -17 }, 14.266667);
+          tl.set("#grano", { x: -292, y: -121 }, 14.333333);
+          tl.set("#grano", { x: -153, y: -345 }, 14.4);
+          tl.set("#grano", { x: -303, y: -4 }, 14.466667);
+          tl.set("#grano", { x: -377, y: -78 }, 14.533333);
+          tl.set("#grano", { x: -244, y: -162 }, 14.6);
+          tl.set("#grano", { x: -13, y: -66 }, 14.666667);
+          tl.set("#grano", { x: -287, y: -286 }, 14.733333);
+          tl.set("#grano", { x: -95, y: -326 }, 14.8);
+          tl.set("#grano", { x: -309, y: -121 }, 14.866667);
+          tl.set("#grano", { x: -175, y: -114 }, 14.933333);
+          tl.set("#grano", { x: -96, y: -335 }, 15);
+          tl.set("#grano", { x: -331, y: -258 }, 15.066667);
+          tl.set("#grano", { x: -189, y: -329 }, 15.133333);
+          tl.set("#grano", { x: -312, y: -309 }, 15.2);
+          tl.set("#grano", { x: -289, y: -369 }, 15.266667);
+          tl.set("#grano", { x: -263, y: -108 }, 15.333333);
+          tl.set("#grano", { x: -271, y: -123 }, 15.4);
+          tl.set("#grano", { x: -328, y: -62 }, 15.466667);
+          tl.set("#grano", { x: -321, y: -250 }, 15.533333);
+          tl.set("#grano", { x: -310, y: -177 }, 15.6);
+          tl.set("#grano", { x: -302, y: -315 }, 15.666667);
+          tl.set("#grano", { x: -16, y: -88 }, 15.733333);
+          tl.set("#grano", { x: -74, y: -9 }, 15.8);
+          tl.set("#grano", { x: -219, y: -309 }, 15.866667);
+          tl.set("#grano", { x: -238, y: -324 }, 15.933333);
+          tl.set("#grano", { x: -329, y: -309 }, 16);
+          tl.set("#grano", { x: -79, y: -214 }, 16.066667);
+          tl.set("#grano", { x: -175, y: -147 }, 16.133333);
+          tl.set("#grano", { x: -205, y: -285 }, 16.2);
+          tl.set("#grano", { x: -197, y: -146 }, 16.266667);
+          tl.set("#grano", { x: -190, y: -93 }, 16.333333);
+          tl.set("#grano", { x: -267, y: -293 }, 16.4);
+          tl.set("#grano", { x: -113, y: -97 }, 16.466667);
+          tl.set("#grano", { x: -233, y: -210 }, 16.533333);
+          tl.set("#grano", { x: -357, y: -216 }, 16.6);
+          tl.set("#grano", { x: -120, y: -228 }, 16.666667);
+          tl.set("#grano", { x: -218, y: -242 }, 16.733333);
+          tl.set("#grano", { x: -217, y: -61 }, 16.8);
+          tl.set("#grano", { x: -79, y: -45 }, 16.866667);
+          tl.set("#grano", { x: -127, y: -241 }, 16.933333);
+          tl.set("#grano", { x: -332, y: -245 }, 17);
+          tl.set("#grano", { x: -148, y: -132 }, 17.066667);
+          tl.set("#grano", { x: -151, y: -48 }, 17.133333);
+          tl.set("#grano", { x: -59, y: -20 }, 17.2);
+          tl.set("#grano", { x: -181, y: -143 }, 17.266667);
+          tl.set("#grano", { x: -35, y: -241 }, 17.333333);
+          tl.set("#grano", { x: -153, y: -174 }, 17.4);
+          tl.set("#grano", { x: -38, y: -319 }, 17.466667);
+          tl.set("#grano", { x: -104, y: -115 }, 17.533333);
+          tl.set("#grano", { x: -46, y: -77 }, 17.6);
+          tl.set("#grano", { x: -166, y: -76 }, 17.666667);
+          tl.set("#grano", { x: -231, y: -220 }, 17.733333);
+          tl.set("#grano", { x: -287, y: -298 }, 17.8);
+          tl.set("#grano", { x: -187, y: -329 }, 17.866667);
+          tl.set("#grano", { x: -260, y: -46 }, 17.933333);
+          tl.set("#grano", { x: -237, y: -280 }, 18);
+          tl.set("#grano", { x: -339, y: -220 }, 18.066667);
+          tl.set("#grano", { x: -368, y: -110 }, 18.133333);
+          tl.set("#grano", { x: -378, y: -14 }, 18.2);
+          tl.set("#grano", { x: -39, y: -117 }, 18.266667);
+          tl.set("#grano", { x: -325, y: -341 }, 18.333333);
+          tl.set("#grano", { x: -275, y: -208 }, 18.4);
+          tl.set("#grano", { x: -91, y: -203 }, 18.466667);
+          tl.set("#grano", { x: -295, y: -70 }, 18.533333);
+          tl.set("#grano", { x: -309, y: -260 }, 18.6);
+          tl.set("#grano", { x: -221, y: -361 }, 18.666667);
+          tl.set("#grano", { x: -117, y: -11 }, 18.733333);
+          tl.set("#grano", { x: -279, y: -196 }, 18.8);
+          tl.set("#grano", { x: -233, y: -263 }, 18.866667);
+          tl.set("#grano", { x: -259, y: -17 }, 18.933333);
+          tl.set("#grano", { x: -268, y: -373 }, 19);
+          tl.set("#grano", { x: -321, y: -258 }, 19.066667);
+          tl.set("#grano", { x: -215, y: -83 }, 19.133333);
+          tl.set("#grano", { x: -239, y: -216 }, 19.2);
+          tl.set("#grano", { x: -167, y: -9 }, 19.266667);
+          tl.set("#grano", { x: -328, y: -248 }, 19.333333);
+          tl.set("#grano", { x: -371, y: -117 }, 19.4);
+          tl.set("#grano", { x: -283, y: -357 }, 19.466667);
+          tl.set("#grano", { x: -217, y: -236 }, 19.533333);
+          tl.set("#grano", { x: -75, y: -92 }, 19.6);
+          tl.set("#grano", { x: -170, y: -164 }, 19.666667);
+          tl.set("#grano", { x: -18, y: -216 }, 19.733333);
+          tl.set("#grano", { x: -297, y: -319 }, 19.8);
+          tl.set("#grano", { x: -32, y: -116 }, 19.866667);
+          tl.set("#grano", { x: -234, y: -160 }, 19.933333);
+          tl.set("#grano", { x: -121, y: -110 }, 20);
+          tl.set("#grano", { x: -28, y: -140 }, 20.066667);
+          tl.set("#grano", { x: -164, y: -241 }, 20.133333);
+          tl.set("#grano", { x: -192, y: -207 }, 20.2);
+          tl.set("#grano", { x: -164, y: -237 }, 20.266667);
+          tl.set("#grano", { x: -341, y: -359 }, 20.333333);
+          tl.set("#grano", { x: -176, y: -316 }, 20.4);
+          tl.set("#grano", { x: -373, y: -246 }, 20.466667);
+          tl.set("#grano", { x: -154, y: -239 }, 20.533333);
+          tl.set("#grano", { x: -20, y: -109 }, 20.6);
+          tl.set("#grano", { x: -11, y: -319 }, 20.666667);
+          tl.set("#grano", { x: -42, y: -91 }, 20.733333);
+          tl.set("#grano", { x: -253, y: -84 }, 20.8);
+          tl.set("#grano", { x: -103, y: -54 }, 20.866667);
+          tl.set("#grano", { x: -289, y: -117 }, 20.933333);
+          tl.set("#grano", { x: -237, y: -287 }, 21);
+          tl.set("#grano", { x: -5, y: -314 }, 21.066667);
+          tl.set("#grano", { x: -346, y: -292 }, 21.133333);
+          tl.set("#grano", { x: -362, y: -28 }, 21.2);
+          tl.set("#grano", { x: -69, y: -15 }, 21.266667);
+          tl.set("#grano", { x: -374, y: -181 }, 21.333333);
+          tl.set("#grano", { x: -105, y: -199 }, 21.4);
+          tl.set("#grano", { x: -317, y: -269 }, 21.466667);
+          tl.set("#grano", { x: -300, y: -4 }, 21.533333);
+          tl.set("#grano", { x: -44, y: -234 }, 21.6);
+          tl.set("#grano", { x: -285, y: -33 }, 21.666667);
+          tl.set("#grano", { x: -109, y: -154 }, 21.733333);
+          tl.set("#grano", { x: -293, y: -257 }, 21.8);
+          tl.set("#grano", { x: -240, y: -60 }, 21.866667);
+          tl.set("#grano", { x: -354, y: -379 }, 21.933333);
+          tl.set("#grano", { x: -235, y: -274 }, 22);
+          tl.set("#grano", { x: -61, y: -338 }, 22.066667);
+          tl.set("#grano", { x: -61, y: -131 }, 22.133333);
+          tl.set("#grano", { x: -265, y: -160 }, 22.2);
+          tl.set("#grano", { x: -176, y: -374 }, 22.266667);
+          tl.set("#grano", { x: -170, y: -210 }, 22.333333);
+          tl.set("#grano", { x: -251, y: -39 }, 22.4);
+          tl.set("#grano", { x: -65, y: -70 }, 22.466667);
+          tl.set("#grano", { x: -318, y: -128 }, 22.533333);
+          tl.set("#grano", { x: -378, y: -206 }, 22.6);
+          tl.set("#grano", { x: -49, y: -182 }, 22.666667);
+          tl.set("#grano", { x: -193, y: -5 }, 22.733333);
+          tl.set("#grano", { x: -206, y: -311 }, 22.8);
+          tl.set("#grano", { x: -165, y: -80 }, 22.866667);
+          tl.set("#grano", { x: -25, y: -241 }, 22.933333);
+          tl.set("#grano", { x: -166, y: -49 }, 23);
+          tl.set("#grano", { x: -316, y: -8 }, 23.066667);
+          tl.set("#grano", { x: -347, y: -274 }, 23.133333);
+          tl.set("#grano", { x: -338, y: -254 }, 23.2);
+          tl.set("#grano", { x: -259, y: -320 }, 23.266667);
+          tl.set("#grano", { x: -105, y: -257 }, 23.333333);
+          tl.set("#grano", { x: -177, y: 0 }, 23.4);
+          tl.set("#grano", { x: -46, y: -34 }, 23.466667);
+          tl.set("#grano", { x: -22, y: -196 }, 23.533333);
+          tl.set("#grano", { x: -45, y: -84 }, 23.6);
+          tl.set("#grano", { x: -137, y: -249 }, 23.666667);
+          tl.set("#grano", { x: -93, y: -93 }, 23.733333);
+          tl.set("#grano", { x: -272, y: -285 }, 23.8);
+          tl.set("#grano", { x: -259, y: -328 }, 23.866667);
+          tl.set("#grano", { x: -68, y: -106 }, 23.933333);
+          tl.set("#grano", { x: -208, y: -154 }, 24);
+          tl.set("#grano", { x: -225, y: -155 }, 24.066667);
+          tl.set("#grano", { x: -209, y: -334 }, 24.133333);
+          tl.set("#grano", { x: -324, y: -155 }, 24.2);
+          tl.set("#grano", { x: -136, y: -370 }, 24.266667);
+          tl.set("#grano", { x: -281, y: -356 }, 24.333333);
+          tl.set("#grano", { x: -91, y: -365 }, 24.4);
+          tl.set("#grano", { x: -351, y: -271 }, 24.466667);
+          tl.set("#grano", { x: -216, y: -246 }, 24.533333);
+          tl.set("#grano", { x: -340, y: -69 }, 24.6);
+          tl.set("#grano", { x: -183, y: -168 }, 24.666667);
+          tl.set("#grano", { x: -293, y: -284 }, 24.733333);
+          tl.set("#grano", { x: -263, y: -233 }, 24.8);
+          tl.set("#grano", { x: -2, y: -113 }, 24.866667);
+          tl.set("#grano", { x: -289, y: -213 }, 24.933333);
+          tl.set("#grano", { x: -13, y: -210 }, 25);
+          tl.set("#grano", { x: -352, y: -4 }, 25.066667);
+          tl.set("#grano", { x: -362, y: -253 }, 25.133333);
+          tl.set("#grano", { x: -208, y: -327 }, 25.2);
+          tl.set("#grano", { x: -348, y: -349 }, 25.266667);
+          tl.set("#grano", { x: -21, y: -287 }, 25.333333);
+          tl.set("#grano", { x: -138, y: -266 }, 25.4);
+          tl.set("#grano", { x: -34, y: -157 }, 25.466667);
+          tl.set("#grano", { x: -30, y: -115 }, 25.533333);
+          tl.set("#grano", { x: -140, y: -120 }, 25.6);
+          tl.set("#grano", { x: -148, y: -5 }, 25.666667);
+          tl.set("#grano", { x: -151, y: -159 }, 25.733333);
+          tl.set("#grano", { x: -305, y: -312 }, 25.8);
+          tl.set("#grano", { x: -20, y: -168 }, 25.866667);
+          tl.set("#grano", { x: -217, y: -241 }, 25.933333);
+          tl.set("#grano", { x: -51, y: -44 }, 26);
+          tl.set("#grano", { x: -154, y: -17 }, 26.066667);
+          tl.set("#grano", { x: -105, y: -252 }, 26.133333);
+          tl.set("#grano", { x: -71, y: -368 }, 26.2);
+          tl.set("#grano", { x: -337, y: -212 }, 26.266667);
+          tl.set("#grano", { x: -60, y: -160 }, 26.333333);
+          tl.set("#grano", { x: -266, y: -108 }, 26.4);
+          tl.set("#grano", { x: -166, y: -117 }, 26.466667);
+          tl.set("#grano", { x: -148, y: -74 }, 26.533333);
+          tl.set("#grano", { x: -3, y: -84 }, 26.6);
+          tl.set("#grano", { x: -237, y: -249 }, 26.666667);
+          tl.set("#grano", { x: -12, y: -357 }, 26.733333);
+          tl.set("#grano", { x: -33, y: -41 }, 26.8);
+          tl.set("#grano", { x: -275, y: -260 }, 26.866667);
+          tl.set("#grano", { x: -258, y: -220 }, 26.933333);
+          tl.set("#grano", { x: -357, y: -22 }, 27);
+          tl.set("#grano", { x: -93, y: -63 }, 27.066667);
+          tl.set("#grano", { x: -139, y: -124 }, 27.133333);
+          tl.set("#grano", { x: -77, y: -12 }, 27.2);
+          tl.set("#grano", { x: -59, y: -194 }, 27.266667);
+          tl.set("#grano", { x: -369, y: -58 }, 27.333333);
+          tl.set("#grano", { x: -196, y: -239 }, 27.4);
+          tl.set("#grano", { x: -48, y: -349 }, 27.466667);
+          tl.set("#grano", { x: -256, y: -275 }, 27.533333);
+          tl.set("#grano", { x: -357, y: -263 }, 27.6);
+          tl.set("#grano", { x: -56, y: -146 }, 27.666667);
+          tl.set("#grano", { x: -170, y: -105 }, 27.733333);
+          tl.set("#grano", { x: -57, y: -154 }, 27.8);
+          tl.set("#grano", { x: -301, y: -244 }, 27.866667);
+          tl.set("#grano", { x: -258, y: -309 }, 27.933333);
+          tl.set("#grano", { x: -324, y: -204 }, 28);
+          tl.set("#grano", { x: -1, y: -131 }, 28.066667);
+          tl.set("#grano", { x: -365, y: -253 }, 28.133333);
+          tl.set("#grano", { x: -280, y: -316 }, 28.2);
+          tl.set("#grano", { x: -153, y: -292 }, 28.266667);
+          tl.set("#grano", { x: -137, y: -204 }, 28.333333);
+          tl.set("#grano", { x: -6, y: -213 }, 28.4);
+          tl.set("#grano", { x: -1, y: -196 }, 28.466667);
+          tl.set("#grano", { x: -186, y: -147 }, 28.533333);
+          tl.set("#grano", { x: -59, y: -189 }, 28.6);
+          tl.set("#grano", { x: -70, y: -201 }, 28.666667);
+          tl.set("#grano", { x: -38, y: -9 }, 28.733333);
+          tl.set("#grano", { x: -293, y: -214 }, 28.8);
+          tl.set("#grano", { x: -307, y: -326 }, 28.866667);
+          tl.set("#grano", { x: -254, y: -282 }, 28.933333);
+          tl.set("#grano", { x: -317, y: -147 }, 29);
+          tl.set("#grano", { x: -344, y: -142 }, 29.066667);
+          tl.set("#grano", { x: -142, y: -11 }, 29.133333);
+          tl.set("#grano", { x: -31, y: -38 }, 29.2);
+          tl.set("#grano", { x: -11, y: -219 }, 29.266667);
+          tl.set("#grano", { x: -257, y: -76 }, 29.333333);
+          tl.set("#grano", { x: -2, y: -16 }, 29.4);
+          tl.set("#grano", { x: -263, y: -368 }, 29.466667);
+          tl.set("#grano", { x: -337, y: -311 }, 29.533333);
+          tl.set("#grano", { x: -359, y: -280 }, 29.6);
+          tl.set("#grano", { x: -210, y: -236 }, 29.666667);
+          tl.set("#grano", { x: -26, y: -136 }, 29.733333);
+          tl.set("#grano", { x: -180, y: -200 }, 29.8);
+          tl.set("#grano", { x: -195, y: -225 }, 29.866667);
+          tl.set("#grano", { x: -244, y: -191 }, 29.933333);
+          tl.set("#grano", { x: -276, y: -129 }, 30);
+          tl.set("#grano", { x: -325, y: -5 }, 30.066667);
+          tl.set("#grano", { x: -15, y: -254 }, 30.133333);
+          tl.set("#grano", { x: -373, y: -77 }, 30.2);
+          tl.set("#grano", { x: -3, y: -82 }, 30.266667);
+          tl.set("#grano", { x: -15, y: -169 }, 30.333333);
+          tl.set("#grano", { x: -256, y: -234 }, 30.4);
+          tl.set("#grano", { x: -156, y: -323 }, 30.466667);
+          tl.set("#grano", { x: -14, y: -318 }, 30.533333);
+          tl.set("#grano", { x: -331, y: -168 }, 30.6);
+          tl.set("#grano", { x: -130, y: -78 }, 30.666667);
+          tl.set("#grano", { x: -242, y: -35 }, 30.733333);
+          tl.set("#grano", { x: -111, y: -251 }, 30.8);
+          tl.set("#grano", { x: -31, y: -214 }, 30.866667);
+          tl.set("#grano", { x: -352, y: -8 }, 30.933333);
+          tl.set("#grano", { x: -345, y: -93 }, 31);
+          tl.set("#grano", { x: -229, y: -13 }, 31.066667);
+          tl.set("#grano", { x: -340, y: -237 }, 31.133333);
+          tl.set("#grano", { x: -97, y: -233 }, 31.2);
+          tl.set("#grano", { x: -133, y: -196 }, 31.266667);
+          tl.set("#grano", { x: -159, y: -366 }, 31.333333);
+          tl.set("#grano", { x: -312, y: -364 }, 31.4);
+          tl.set("#grano", { x: -333, y: -19 }, 31.466667);
+          tl.set("#grano", { x: -102, y: -191 }, 31.533333);
+          tl.set("#grano", { x: -205, y: -48 }, 31.6);
+          tl.set("#grano", { x: -222, y: -92 }, 31.666667);
+          tl.set("#grano", { x: -150, y: -232 }, 31.733333);
+          tl.set("#grano", { x: -319, y: -134 }, 31.8);
+          tl.set("#grano", { x: -43, y: -65 }, 31.866667);
+          tl.set("#grano", { x: -91, y: -19 }, 31.933333);
+          tl.set("#grano", { x: -349, y: -278 }, 32);
+          tl.set("#grano", { x: -250, y: -317 }, 32.066667);
+          tl.set("#grano", { x: -26, y: -232 }, 32.133333);
+          tl.set("#grano", { x: -332, y: -50 }, 32.2);
+          tl.set("#grano", { x: -171, y: -138 }, 32.266667);
+          tl.set("#grano", { x: -294, y: -251 }, 32.333333);
+          tl.set("#grano", { x: -362, y: -15 }, 32.4);
+          tl.set("#grano", { x: -51, y: -327 }, 32.466667);
+          tl.set("#grano", { x: -320, y: -235 }, 32.533333);
+          tl.set("#grano", { x: -43, y: -190 }, 32.6);
+          tl.set("#grano", { x: -170, y: -283 }, 32.666667);
+          tl.set("#grano", { x: -247, y: -100 }, 32.733333);
+          tl.set("#grano", { x: -32, y: -37 }, 32.8);
+          tl.set("#grano", { x: -162, y: -356 }, 32.866667);
+          tl.set("#grano", { x: -252, y: -312 }, 32.933333);
+          tl.set("#grano", { x: -347, y: -325 }, 33);
+          tl.set("#grano", { x: -280, y: -126 }, 33.066667);
+          tl.set("#grano", { x: -260, y: -286 }, 33.133333);
+          tl.set("#grano", { x: -276, y: -194 }, 33.2);
+          tl.set("#grano", { x: -243, y: -267 }, 33.266667);
+          tl.set("#grano", { x: -224, y: -67 }, 33.333333);
+          tl.set("#grano", { x: -335, y: -277 }, 33.4);
+          tl.set("#grano", { x: -79, y: -142 }, 33.466667);
+          tl.set("#grano", { x: -53, y: -324 }, 33.533333);
+          tl.set("#grano", { x: -82, y: -138 }, 33.6);
+          tl.set("#grano", { x: -331, y: -267 }, 33.666667);
+          tl.set("#grano", { x: -282, y: -38 }, 33.733333);
+          tl.set("#grano", { x: -255, y: -308 }, 33.8);
+          tl.set("#grano", { x: 0, y: -278 }, 33.866667);
+          tl.set("#grano", { x: -152, y: -69 }, 33.933333);
+          tl.set("#grano", { x: -8, y: -86 }, 34);
+          tl.set("#grano", { x: -175, y: -375 }, 34.066667);
+          tl.set("#grano", { x: -226, y: -239 }, 34.133333);
+          tl.set("#grano", { x: -13, y: -159 }, 34.2);
+          tl.set("#grano", { x: -80, y: -363 }, 34.266667);
+          tl.set("#grano", { x: -37, y: -89 }, 34.333333);
+          tl.set("#grano", { x: -244, y: -107 }, 34.4);
+          tl.set("#grano", { x: -360, y: -60 }, 34.466667);
+          tl.set("#grano", { x: -88, y: -318 }, 34.533333);
+          tl.set("#grano", { x: -156, y: -374 }, 34.6);
+          tl.set("#grano", { x: -103, y: -16 }, 34.666667);
+          tl.set("#grano", { x: -312, y: -160 }, 34.733333);
+          tl.set("#grano", { x: -141, y: -345 }, 34.8);
+          tl.set("#grano", { x: -239, y: -270 }, 34.866667);
+          tl.set("#grano", { x: -256, y: -129 }, 34.933333);
+          tl.set("#grano", { x: -338, y: -277 }, 35);
+          tl.set("#grano", { x: 0, y: -198 }, 35.066667);
+          tl.set("#grano", { x: -19, y: -181 }, 35.133333);
+          tl.set("#grano", { x: -134, y: -274 }, 35.2);
+          tl.set("#grano", { x: -186, y: -5 }, 35.266667);
+          tl.set("#grano", { x: -365, y: -343 }, 35.333333);
+          tl.set("#grano", { x: -294, y: -195 }, 35.4);
+          tl.set("#grano", { x: -225, y: -203 }, 35.466667);
+          tl.set("#grano", { x: -260, y: -315 }, 35.533333);
+          tl.set("#grano", { x: -122, y: -259 }, 35.6);
+          tl.set("#grano", { x: -358, y: -269 }, 35.666667);
+          tl.set("#grano", { x: -281, y: -311 }, 35.733333);
+          tl.set("#grano", { x: -266, y: -328 }, 35.8);
+          tl.set("#grano", { x: -37, y: -204 }, 35.866667);
+          tl.set("#grano", { x: -155, y: -358 }, 35.933333);
+          tl.set("#grano", { x: -60, y: -281 }, 36);
+          tl.set("#grano", { x: -120, y: -200 }, 36.066667);
+          tl.set("#grano", { x: -174, y: -13 }, 36.133333);
+          tl.set("#grano", { x: -253, y: -25 }, 36.2);
+          tl.set("#grano", { x: -174, y: -38 }, 36.266667);
+          tl.set("#grano", { x: -17, y: -70 }, 36.333333);
+          tl.set("#grano", { x: -215, y: -266 }, 36.4);
+          tl.set("#grano", { x: -317, y: -78 }, 36.466667);
+          tl.set("#grano", { x: -21, y: -149 }, 36.533333);
+          tl.set("#grano", { x: -23, y: -341 }, 36.6);
+          tl.set("#grano", { x: -319, y: -207 }, 36.666667);
+          tl.set("#grano", { x: -359, y: -371 }, 36.733333);
+          tl.set("#grano", { x: -324, y: -72 }, 36.8);
+          tl.set("#grano", { x: -279, y: -195 }, 36.866667);
+          tl.set("#grano", { x: -377, y: -95 }, 36.933333);
+          tl.set("#grano", { x: -325, y: -58 }, 37);
+          tl.set("#grano", { x: -371, y: -157 }, 37.066667);
+          tl.set("#grano", { x: -188, y: -14 }, 37.133333);
+          tl.set("#grano", { x: -88, y: -192 }, 37.2);
+          tl.set("#grano", { x: -282, y: -328 }, 37.266667);
+          tl.set("#grano", { x: -142, y: -209 }, 37.333333);
+          tl.set("#grano", { x: -305, y: -189 }, 37.4);
+          tl.set("#grano", { x: -371, y: -252 }, 37.466667);
+          tl.set("#grano", { x: -174, y: -190 }, 37.533333);
+          tl.set("#grano", { x: -132, y: -120 }, 37.6);
+          tl.set("#grano", { x: -12, y: -188 }, 37.666667);
+          tl.set("#grano", { x: -135, y: -146 }, 37.733333);
+          tl.set("#grano", { x: -304, y: -204 }, 37.8);
+          tl.set("#grano", { x: -337, y: -49 }, 37.866667);
+          tl.set("#grano", { x: -90, y: -305 }, 37.933333);
+          tl.set("#grano", { x: -101, y: -221 }, 38);
+          tl.set("#grano", { x: -160, y: -257 }, 38.066667);
+          tl.set("#grano", { x: -192, y: -121 }, 38.133333);
+          tl.set("#grano", { x: -47, y: -152 }, 38.2);
+          tl.set("#grano", { x: -189, y: -287 }, 38.266667);
+          tl.set("#grano", { x: -42, y: -312 }, 38.333333);
+          tl.set("#grano", { x: -55, y: -345 }, 38.4);
+          tl.set("#grano", { x: -154, y: -226 }, 38.466667);
+          tl.set("#grano", { x: -203, y: -176 }, 38.533333);
+          tl.set("#grano", { x: -215, y: -1 }, 38.6);
+          tl.set("#grano", { x: -165, y: -346 }, 38.666667);
+          tl.set("#grano", { x: -172, y: -274 }, 38.733333);
+          tl.set("#grano", { x: -190, y: -18 }, 38.8);
+          tl.set("#grano", { x: -177, y: -169 }, 38.866667);
+          tl.set("#grano", { x: -369, y: -165 }, 38.933333);
+          tl.set("#grano", { x: -146, y: -81 }, 39);
+          tl.set("#grano", { x: -39, y: -165 }, 39.066667);
+          tl.set("#grano", { x: -290, y: -108 }, 39.133333);
+          tl.set("#grano", { x: -373, y: -77 }, 39.2);
+          tl.set("#grano", { x: -98, y: -335 }, 39.266667);
+          tl.set("#grano", { x: -234, y: -355 }, 39.333333);
+          tl.set("#grano", { x: -317, y: -335 }, 39.4);
+          tl.set("#grano", { x: -159, y: -96 }, 39.466667);
+          tl.set("#grano", { x: -189, y: -81 }, 39.533333);
+          tl.set("#grano", { x: -282, y: -244 }, 39.6);
+          tl.set("#grano", { x: -145, y: -299 }, 39.666667);
+          tl.set("#grano", { x: -216, y: -372 }, 39.733333);
+          tl.set("#grano", { x: -26, y: -320 }, 39.8);
+          tl.set("#grano", { x: -252, y: -232 }, 39.866667);
+          tl.set("#grano", { x: -121, y: -160 }, 39.933333);
+          tl.set("#grano", { x: -307, y: -376 }, 40);
+          tl.set("#grano", { x: -231, y: -225 }, 40.066667);
+          tl.set("#grano", { x: -302, y: -74 }, 40.133333);
+          tl.set("#grano", { x: -223, y: -143 }, 40.2);
+          tl.set("#grano", { x: -344, y: -261 }, 40.266667);
+          tl.set("#grano", { x: -340, y: -85 }, 40.333333);
+          tl.set("#grano", { x: -287, y: -312 }, 40.4);
+          tl.set("#grano", { x: -27, y: -265 }, 40.466667);
+          tl.set("#grano", { x: -319, y: -254 }, 40.533333);
+          tl.set("#grano", { x: -7, y: -49 }, 40.6);
+          tl.set("#grano", { x: -212, y: -226 }, 40.666667);
+          tl.set("#grano", { x: -4, y: -51 }, 40.733333);
+          tl.set("#grano", { x: -330, y: -202 }, 40.8);
+          tl.set("#grano", { x: -60, y: -226 }, 40.866667);
+          tl.set("#grano", { x: -241, y: -6 }, 40.933333);
+          tl.set("#grano", { x: -212, y: -101 }, 41);
+          tl.set("#grano", { x: -123, y: -140 }, 41.066667);
+          tl.set("#grano", { x: -219, y: -194 }, 41.133333);
+          tl.set("#grano", { x: -309, y: -69 }, 41.2);
+          tl.set("#grano", { x: -346, y: -173 }, 41.266667);
+          tl.set("#grano", { x: -189, y: -350 }, 41.333333);
+          tl.set("#grano", { x: -243, y: -321 }, 41.4);
+          tl.set("#grano", { x: -55, y: -366 }, 41.466667);
+          tl.set("#grano", { x: -38, y: -303 }, 41.533333);
+          tl.set("#grano", { x: -146, y: -78 }, 41.6);
+          tl.set("#grano", { x: -217, y: -204 }, 41.666667);
+          tl.set("#grano", { x: -268, y: -36 }, 41.733333);
+          tl.set("#grano", { x: -339, y: -149 }, 41.8);
+          tl.set("#grano", { x: -302, y: -301 }, 41.866667);
+          tl.set("#grano", { x: -263, y: -222 }, 41.933333);
+          tl.set("#grano", { x: -334, y: -54 }, 42);
+          tl.set("#grano", { x: -188, y: -326 }, 42.066667);
+          tl.set("#grano", { x: -270, y: -105 }, 42.133333);
+          tl.set("#grano", { x: -135, y: -308 }, 42.2);
+          tl.set("#grano", { x: -196, y: -103 }, 42.266667);
+          tl.set("#grano", { x: -247, y: -237 }, 42.333333);
+          tl.set("#grano", { x: -226, y: -112 }, 42.4);
+          tl.set("#grano", { x: -342, y: -364 }, 42.466667);
+          tl.set("#grano", { x: -80, y: -313 }, 42.533333);
+          tl.set("#grano", { x: -362, y: -329 }, 42.6);
+          tl.set("#grano", { x: -68, y: -83 }, 42.666667);
+          tl.set("#grano", { x: -48, y: -132 }, 42.733333);
+          tl.set("#grano", { x: -263, y: -351 }, 42.8);
+          tl.set("#grano", { x: -9, y: -327 }, 42.866667);
+          tl.set("#grano", { x: -188, y: -21 }, 42.933333);
+          tl.set("#grano", { x: -15, y: -164 }, 43);
+          tl.set("#grano", { x: -224, y: -1 }, 43.066667);
+          tl.set("#grano", { x: -150, y: -162 }, 43.133333);
+          tl.set("#grano", { x: -115, y: -169 }, 43.2);
+          tl.set("#grano", { x: -269, y: -87 }, 43.266667);
+          tl.set("#grano", { x: -2, y: -367 }, 43.333333);
+          tl.set("#grano", { x: -302, y: -269 }, 43.4);
+          tl.set("#grano", { x: -352, y: -149 }, 43.466667);
+          tl.set("#grano", { x: -75, y: -136 }, 43.533333);
+          tl.set("#grano", { x: -18, y: -279 }, 43.6);
+          tl.set("#grano", { x: -380, y: -378 }, 43.666667);
+          tl.set("#grano", { x: -73, y: -170 }, 43.733333);
+          tl.set("#grano", { x: -219, y: -149 }, 43.8);
+          tl.set("#grano", { x: -78, y: -304 }, 43.866667);
+          tl.set("#grano", { x: -290, y: -156 }, 43.933333);
+          tl.set("#grano", { x: -11, y: -227 }, 44);
+          tl.set("#grano", { x: -89, y: -97 }, 44.066667);
+          tl.set("#grano", { x: -352, y: -224 }, 44.133333);
+          tl.set("#grano", { x: -336, y: -10 }, 44.2);
+          tl.set("#grano", { x: -285, y: -253 }, 44.266667);
+          tl.set("#grano", { x: -275, y: -1 }, 44.333333);
+          tl.set("#grano", { x: -129, y: -285 }, 44.4);
+          tl.set("#grano", { x: -185, y: -347 }, 44.466667);
+          tl.set("#grano", { x: -51, y: -123 }, 44.533333);
+          tl.set("#grano", { x: -7, y: -79 }, 44.6);
+          tl.set("#grano", { x: -241, y: -311 }, 44.666667);
+          tl.set("#grano", { x: -36, y: -338 }, 44.733333);
+          tl.set("#grano", { x: -174, y: -115 }, 44.8);
+          tl.set("#grano", { x: -180, y: -113 }, 44.866667);
+          tl.set("#grano", { x: -302, y: -106 }, 44.933333);
+          tl.set("#grano", { x: -131, y: -154 }, 45);
+          tl.set("#grano", { x: -64, y: -76 }, 45.066667);
+          tl.set("#grano", { x: -105, y: -367 }, 45.133333);
+          tl.set("#grano", { x: -372, y: -43 }, 45.2);
+          tl.set("#grano", { x: -235, y: -213 }, 45.266667);
+          tl.set("#grano", { x: -241, y: -230 }, 45.333333);
+          tl.set("#grano", { x: -31, y: -352 }, 45.4);
+          tl.set("#grano", { x: -295, y: -105 }, 45.466667);
+          tl.set("#grano", { x: -303, y: -360 }, 45.533333);
+          tl.set("#grano", { x: -39, y: -275 }, 45.6);
+          tl.set("#grano", { x: -312, y: -160 }, 45.666667);
+          tl.set("#grano", { x: -124, y: -293 }, 45.733333);
+          tl.set("#grano", { x: -359, y: -322 }, 45.8);
+          tl.set("#grano", { x: -339, y: -338 }, 45.866667);
+          tl.set("#grano", { x: -123, y: -158 }, 45.933333);
+          tl.set("#grano", { x: -44, y: -162 }, 46);
+          tl.set("#grano", { x: -29, y: -4 }, 46.066667);
+          tl.set("#grano", { x: -372, y: -321 }, 46.133333);
+          tl.set("#grano", { x: -331, y: -351 }, 46.2);
+          tl.set("#grano", { x: -126, y: -247 }, 46.266667);
+          tl.set("#grano", { x: -226, y: -309 }, 46.333333);
+          tl.set("#grano", { x: -77, y: -44 }, 46.4);
+          tl.set("#grano", { x: -370, y: -374 }, 46.466667);
+          tl.set("#grano", { x: -308, y: -71 }, 46.533333);
+          tl.set("#grano", { x: -367, y: -167 }, 46.6);
+          tl.set("#grano", { x: -182, y: -245 }, 46.666667);
+          tl.set("#grano", { x: -101, y: -371 }, 46.733333);
+          tl.set("#grano", { x: -84, y: -6 }, 46.8);
+          tl.set("#grano", { x: -24, y: -148 }, 46.866667);
+          tl.set("#grano", { x: -263, y: -119 }, 46.933333);
+          tl.set("#grano", { x: -266, y: -269 }, 47);
+          tl.set("#grano", { x: -19, y: -298 }, 47.066667);
+          tl.set("#grano", { x: -75, y: -68 }, 47.133333);
+          tl.set("#grano", { x: -310, y: -170 }, 47.2);
+          tl.set("#grano", { x: -61, y: -10 }, 47.266667);
+          tl.set("#grano", { x: -89, y: -94 }, 47.333333);
+          tl.set("#grano", { x: -147, y: -258 }, 47.4);
+          tl.set("#grano", { x: -274, y: -237 }, 47.466667);
+          tl.set("#grano", { x: -100, y: -102 }, 47.533333);
+          tl.set("#grano", { x: -93, y: -249 }, 47.6);
+          tl.set("#grano", { x: -35, y: -44 }, 47.666667);
+          tl.set("#grano", { x: -13, y: -214 }, 47.733333);
+          tl.set("#grano", { x: -226, y: -67 }, 47.8);
+          tl.set("#grano", { x: -238, y: -162 }, 47.866667);
+          tl.set("#grano", { x: -73, y: -43 }, 47.933333);
+          tl.set("#grano", { x: -60, y: -290 }, 48);
+          tl.set("#grano", { x: -201, y: -353 }, 48.066667);
+          tl.set("#grano", { x: -284, y: -273 }, 48.133333);
+          tl.set("#grano", { x: -63, y: -80 }, 48.2);
+          tl.set("#grano", { x: -77, y: -78 }, 48.266667);
+          tl.set("#grano", { x: -149, y: -316 }, 48.333333);
+          tl.set("#grano", { x: -79, y: -156 }, 48.4);
+          tl.set("#grano", { x: -266, y: -211 }, 48.466667);
+          tl.set("#grano", { x: -31, y: -320 }, 48.533333);
+          tl.set("#grano", { x: -115, y: -104 }, 48.6);
+          tl.set("#grano", { x: -124, y: -79 }, 48.666667);
+          tl.set("#grano", { x: -224, y: -252 }, 48.733333);
+          tl.set("#grano", { x: -303, y: -292 }, 48.8);
+          tl.set("#grano", { x: -13, y: -42 }, 48.866667);
+          tl.set("#grano", { x: -69, y: -89 }, 48.933333);
+          tl.set("#grano", { x: -344, y: -286 }, 49);
+          tl.set("#grano", { x: -52, y: -333 }, 49.066667);
+          tl.set("#grano", { x: -365, y: -365 }, 49.133333);
+          tl.set("#grano", { x: -320, y: -260 }, 49.2);
+          tl.set("#grano", { x: -258, y: -243 }, 49.266667);
+          tl.set("#grano", { x: -314, y: -180 }, 49.333333);
+          tl.set("#grano", { x: -324, y: -59 }, 49.4);
+          tl.set("#grano", { x: -112, y: -113 }, 49.466667);
+          tl.set("#grano", { x: -131, y: -197 }, 49.533333);
+          tl.set("#grano", { x: -111, y: -30 }, 49.6);
+          tl.set("#grano", { x: -110, y: -71 }, 49.666667);
+          tl.set("#grano", { x: -278, y: -52 }, 49.733333);
+          tl.set("#grano", { x: -183, y: -328 }, 49.8);
+          tl.set("#grano", { x: -83, y: -65 }, 49.866667);
+          tl.set("#grano", { x: -363, y: -341 }, 49.933333);
+          tl.set("#grano", { x: -373, y: -127 }, 50);
+          tl.set("#grano", { x: -62, y: -183 }, 50.066667);
+          tl.set("#grano", { x: -53, y: -97 }, 50.133333);
+          tl.set("#grano", { x: -250, y: -186 }, 50.2);
+          tl.set("#grano", { x: -82, y: -100 }, 50.266667);
+          tl.set("#grano", { x: -131, y: -208 }, 50.333333);
+          tl.set("#grano", { x: -307, y: -166 }, 50.4);
+          tl.set("#grano", { x: -6, y: -292 }, 50.466667);
+          tl.set("#grano", { x: -29, y: -232 }, 50.533333);
+          tl.set("#grano", { x: -106, y: -4 }, 50.6);
+          tl.set("#grano", { x: -307, y: -268 }, 50.666667);
+          tl.set("#grano", { x: -87, y: -262 }, 50.733333);
+          tl.set("#grano", { x: -169, y: -60 }, 50.8);
+          tl.set("#grano", { x: -341, y: -310 }, 50.866667);
+          tl.set("#grano", { x: -111, y: -276 }, 50.933333);
+          tl.set("#grano", { x: -189, y: -206 }, 51);
+          tl.set("#grano", { x: -270, y: -297 }, 51.066667);
+          tl.set("#grano", { x: -24, y: -266 }, 51.133333);
+          tl.set("#grano", { x: -372, y: -321 }, 51.2);
+          tl.set("#grano", { x: -67, y: -365 }, 51.266667);
+          tl.set("#grano", { x: -263, y: -343 }, 51.333333);
+          tl.set("#grano", { x: -116, y: -119 }, 51.4);
+          tl.set("#grano", { x: -370, y: -121 }, 51.466667);
+          tl.set("#grano", { x: -242, y: -375 }, 51.533333);
+          tl.set("#grano", { x: -315, y: -238 }, 51.6);
+          tl.set("#grano", { x: -37, y: -83 }, 51.666667);
+          tl.set("#grano", { x: -358, y: -138 }, 51.733333);
+          tl.set("#grano", { x: 0, y: -187 }, 51.8);
+          tl.set("#grano", { x: -94, y: -273 }, 51.866667);
+          tl.set("#grano", { x: -104, y: -17 }, 51.933333);
+          tl.set("#grano", { x: -199, y: -196 }, 52);
+          tl.set("#grano", { x: -109, y: -15 }, 52.066667);
+          tl.set("#grano", { x: -154, y: -315 }, 52.133333);
+          tl.set("#grano", { x: -307, y: -310 }, 52.2);
+          tl.set("#grano", { x: -146, y: -124 }, 52.266667);
+          tl.set("#grano", { x: -314, y: -135 }, 52.333333);
+          tl.set("#grano", { x: -34, y: -86 }, 52.4);
+          tl.set("#grano", { x: -239, y: -239 }, 52.466667);
+          tl.set("#grano", { x: -299, y: -134 }, 52.533333);
+          tl.set("#grano", { x: -228, y: -68 }, 52.6);
+          tl.set("#grano", { x: -105, y: -322 }, 52.666667);
+          tl.set("#grano", { x: -225, y: -167 }, 52.733333);
+          tl.set("#grano", { x: -151, y: -364 }, 52.8);
+          tl.set("#grano", { x: -138, y: -70 }, 52.866667);
+          tl.set("#grano", { x: -191, y: -366 }, 52.933333);
+          tl.set("#grano", { x: -338, y: -189 }, 53);
+          tl.set("#grano", { x: -308, y: -91 }, 53.066667);
+          tl.set("#grano", { x: -233, y: -315 }, 53.133333);
+          tl.set("#grano", { x: -145, y: -75 }, 53.2);
+          tl.set("#grano", { x: -269, y: -372 }, 53.266667);
+          tl.set("#grano", { x: -142, y: -143 }, 53.333333);
+          tl.set("#grano", { x: -350, y: -302 }, 53.4);
+          tl.set("#grano", { x: -68, y: -121 }, 53.466667);
+          tl.set("#grano", { x: -179, y: -319 }, 53.533333);
+          tl.set("#grano", { x: -232, y: -320 }, 53.6);
+          tl.set("#grano", { x: -246, y: -247 }, 53.666667);
+          tl.set("#grano", { x: -233, y: -133 }, 53.733333);
+          tl.set("#grano", { x: -249, y: -65 }, 53.8);
+          tl.set("#grano", { x: -94, y: -254 }, 53.866667);
+          tl.set("#grano", { x: -58, y: -279 }, 53.933333);
+          tl.set("#grano", { x: -244, y: -301 }, 54);
+          tl.set("#grano", { x: -299, y: -85 }, 54.066667);
+          tl.set("#grano", { x: -210, y: -118 }, 54.133333);
+          tl.set("#grano", { x: -66, y: -322 }, 54.2);
+          tl.set("#grano", { x: -270, y: -348 }, 54.266667);
+          tl.set("#grano", { x: -189, y: -239 }, 54.333333);
+          tl.set("#grano", { x: -323, y: -355 }, 54.4);
+          tl.set("#grano", { x: -153, y: -42 }, 54.466667);
+          tl.set("#grano", { x: -311, y: -258 }, 54.533333);
+          tl.set("#grano", { x: -170, y: -120 }, 54.6);
+          tl.set("#grano", { x: -58, y: -311 }, 54.666667);
+          tl.set("#grano", { x: -143, y: -330 }, 54.733333);
+          tl.set("#grano", { x: -55, y: -217 }, 54.8);
+          tl.set("#grano", { x: -31, y: -81 }, 54.866667);
+          tl.set("#grano", { x: -171, y: -292 }, 54.933333);
+          tl.set("#grano", { x: -310, y: -194 }, 55);
+          tl.set("#grano", { x: -340, y: -260 }, 55.066667);
+          tl.set("#grano", { x: -141, y: -280 }, 55.133333);
+          tl.set("#grano", { x: -327, y: -347 }, 55.2);
+          tl.set("#grano", { x: -223, y: -339 }, 55.266667);
+          tl.set("#grano", { x: -48, y: -30 }, 55.333333);
+          tl.set("#grano", { x: -372, y: -270 }, 55.4);
+          tl.set("#grano", { x: -84, y: -365 }, 55.466667);
+          tl.set("#grano", { x: -334, y: -334 }, 55.533333);
+          tl.set("#grano", { x: -312, y: -50 }, 55.6);
+          tl.set("#grano", { x: -182, y: -250 }, 55.666667);
+          tl.set("#grano", { x: -327, y: -130 }, 55.733333);
+          tl.set("#grano", { x: -342, y: -204 }, 55.8);
+          tl.set("#grano", { x: -269, y: -194 }, 55.866667);
+          tl.set("#grano", { x: -110, y: -248 }, 55.933333);
+          tl.set("#grano", { x: -263, y: -172 }, 56);
+          tl.set("#grano", { x: -353, y: -195 }, 56.066667);
+          tl.set("#grano", { x: -26, y: -179 }, 56.133333);
+          tl.set("#grano", { x: -364, y: -93 }, 56.2);
+          tl.set("#grano", { x: -171, y: -28 }, 56.266667);
+          tl.set("#grano", { x: -232, y: -333 }, 56.333333);
+          tl.set("#grano", { x: -41, y: -14 }, 56.4);
+          tl.set("#grano", { x: -328, y: -1 }, 56.466667);
+          tl.set("#grano", { x: -207, y: -190 }, 56.533333);
+          tl.set("#grano", { x: -41, y: -220 }, 56.6);
+          tl.set("#grano", { x: -197, y: -80 }, 56.666667);
+          tl.set("#grano", { x: -265, y: -236 }, 56.733333);
+          tl.set("#grano", { x: -323, y: -58 }, 56.8);
+          tl.set("#grano", { x: -378, y: -273 }, 56.866667);
+          tl.set("#grano", { x: -96, y: -204 }, 56.933333);
+          tl.set("#grano", { x: -285, y: -287 }, 57);
+          tl.set("#grano", { x: -376, y: -323 }, 57.066667);
+          tl.set("#grano", { x: -12, y: -231 }, 57.133333);
+          tl.set("#grano", { x: -154, y: -176 }, 57.2);
+          tl.set("#grano", { x: -4, y: -336 }, 57.266667);
+          tl.set("#grano", { x: -54, y: -156 }, 57.333333);
+          tl.set("#grano", { x: -272, y: -373 }, 57.4);
+          tl.set("#grano", { x: -374, y: -305 }, 57.466667);
+          tl.set("#grano", { x: -43, y: -245 }, 57.533333);
+          tl.set("#grano", { x: -326, y: -115 }, 57.6);
+          tl.set("#grano", { x: -311, y: -346 }, 57.666667);
+          tl.set("#grano", { x: -9, y: -298 }, 57.733333);
+          tl.set("#grano", { x: -292, y: -171 }, 57.8);
+          tl.set("#grano", { x: -360, y: -310 }, 57.866667);
+          tl.set("#grano", { x: -19, y: -54 }, 57.933333);
+          tl.set("#grano", { x: -321, y: -340 }, 58);
+          tl.set("#grano", { x: -33, y: -125 }, 58.066667);
+          tl.set("#grano", { x: -247, y: -219 }, 58.133333);
+          tl.set("#grano", { x: -249, y: -293 }, 58.2);
+          tl.set("#grano", { x: -62, y: -163 }, 58.266667);
+          tl.set("#grano", { x: -153, y: -56 }, 58.333333);
+          tl.set("#grano", { x: -367, y: -145 }, 58.4);
+          tl.set("#grano", { x: -210, y: -39 }, 58.466667);
+          tl.set("#grano", { x: -199, y: -241 }, 58.533333);
+          tl.set("#grano", { x: -46, y: -277 }, 58.6);
+          tl.set("#grano", { x: -125, y: -235 }, 58.666667);
+          tl.set("#grano", { x: -282, y: -29 }, 58.733333);
+          tl.set("#grano", { x: -125, y: -67 }, 58.8);
+          tl.set("#grano", { x: -175, y: -345 }, 58.866667);
+          tl.set("#grano", { x: -259, y: -289 }, 58.933333);
+          tl.set("#grano", { x: -167, y: -306 }, 59);
+          tl.set("#grano", { x: -340, y: -150 }, 59.066667);
+          tl.set("#grano", { x: -144, y: -295 }, 59.133333);
+          tl.set("#grano", { x: -37, y: -357 }, 59.2);
+          tl.set("#grano", { x: -232, y: -131 }, 59.266667);
+          tl.set("#grano", { x: -317, y: -264 }, 59.333333);
+          tl.set("#grano", { x: -325, y: -24 }, 59.4);
+          tl.set("#grano", { x: -41, y: -122 }, 59.466667);
+          tl.set("#grano", { x: -110, y: -2 }, 59.533333);
+          tl.set("#grano", { x: -311, y: -94 }, 59.6);
+          tl.set("#grano", { x: 0, y: -230 }, 59.666667);
+          tl.set("#grano", { x: -244, y: -356 }, 59.733333);
+          tl.set("#grano", { x: -286, y: -256 }, 59.8);
+          tl.set("#grano", { x: -82, y: -216 }, 59.866667);
+          tl.set("#grano", { x: -332, y: -364 }, 59.933333);
+          tl.set("#grano", { x: -182, y: -14 }, 60);
+          tl.set("#grano", { x: -231, y: -157 }, 60.066667);
+          tl.set("#grano", { x: -185, y: -191 }, 60.133333);
+          tl.set("#grano", { x: -178, y: -295 }, 60.2);
+          tl.set("#grano", { x: -2, y: -64 }, 60.266667);
+          tl.set("#grano", { x: -27, y: -119 }, 60.333333);
+          tl.set("#grano", { x: -141, y: -175 }, 60.4);
+          tl.set("#grano", { x: -92, y: -287 }, 60.466667);
+          tl.set("#grano", { x: -101, y: -299 }, 60.533333);
+          tl.set("#grano", { x: -105, y: -121 }, 60.6);
+          tl.set("#grano", { x: -175, y: -207 }, 60.666667);
+          tl.set("#grano", { x: -108, y: -321 }, 60.733333);
+          tl.set("#grano", { x: -270, y: -308 }, 60.8);
+          tl.set("#grano", { x: -163, y: -16 }, 60.866667);
+          tl.set("#grano", { x: -319, y: -295 }, 60.933333);
+          tl.set("#grano", { x: -152, y: -150 }, 61);
+          tl.set("#grano", { x: -163, y: -69 }, 61.066667);
+          tl.set("#grano", { x: -354, y: -173 }, 61.133333);
+          tl.set("#grano", { x: -201, y: -74 }, 61.2);
+          tl.set("#grano", { x: -306, y: -344 }, 61.266667);
+          tl.set("#grano", { x: -175, y: -100 }, 61.333333);
+          tl.set("#grano", { x: -319, y: -195 }, 61.4);
+          tl.set("#grano", { x: -358, y: -205 }, 61.466667);
+          tl.set("#grano", { x: -370, y: -337 }, 61.533333);
+          tl.set("#grano", { x: -165, y: -233 }, 61.6);
+          tl.set("#grano", { x: -5, y: -236 }, 61.666667);
+          tl.set("#grano", { x: -224, y: -243 }, 61.733333);
+          tl.set("#grano", { x: -276, y: -304 }, 61.8);
+          tl.set("#grano", { x: -111, y: -228 }, 61.866667);
+          tl.set("#grano", { x: -250, y: -11 }, 61.933333);
+          tl.set("#grano", { x: -116, y: -259 }, 62);
+          tl.set("#grano", { x: -292, y: -32 }, 62.066667);
+          tl.set("#grano", { x: -222, y: -95 }, 62.133333);
+          tl.set("#grano", { x: -375, y: -350 }, 62.2);
+          tl.set("#grano", { x: -183, y: -314 }, 62.266667);
+          tl.set("#grano", { x: -290, y: -203 }, 62.333333);
+          tl.set("#grano", { x: -258, y: -162 }, 62.4);
+          tl.set("#grano", { x: -270, y: -291 }, 62.466667);
+          tl.set("#grano", { x: -112, y: -289 }, 62.533333);
+          tl.set("#grano", { x: -273, y: -349 }, 62.6);
+          tl.set("#grano", { x: -274, y: -28 }, 62.666667);
+          tl.set("#grano", { x: -80, y: -344 }, 62.733333);
+          tl.set("#grano", { x: -57, y: -85 }, 62.8);
+          tl.set("#grano", { x: -256, y: -347 }, 62.866667);
+          tl.set("#grano", { x: -66, y: -11 }, 62.933333);
+          tl.set("#grano", { x: -144, y: -346 }, 63);
+          tl.set("#grano", { x: -104, y: -283 }, 63.066667);
+          tl.set("#grano", { x: -113, y: -250 }, 63.133333);
+          tl.set("#grano", { x: -61, y: -291 }, 63.2);
+          tl.set("#grano", { x: -308, y: -8 }, 63.266667);
+          tl.set("#grano", { x: -352, y: -73 }, 63.333333);
+          tl.set("#grano", { x: -318, y: -196 }, 63.4);
+          tl.set("#grano", { x: -60, y: -160 }, 63.466667);
+          tl.set("#grano", { x: -197, y: -49 }, 63.533333);
+          tl.set("#grano", { x: -190, y: -269 }, 63.6);
+          tl.set("#grano", { x: -3, y: -70 }, 63.666667);
+          tl.set("#grano", { x: -139, y: -193 }, 63.733333);
+          tl.set("#grano", { x: -54, y: -332 }, 63.8);
+          tl.set("#grano", { x: -124, y: -202 }, 63.866667);
+          tl.set("#grano", { x: -358, y: -340 }, 63.933333);
+          tl.set("#grano", { x: -280, y: -323 }, 64);
+          tl.set("#grano", { x: -134, y: -137 }, 64.066667);
+          tl.set("#grano", { x: -166, y: -78 }, 64.133333);
+          tl.set("#grano", { x: -291, y: -29 }, 64.2);
+          tl.set("#grano", { x: -47, y: -338 }, 64.266667);
+          tl.set("#grano", { x: -292, y: -272 }, 64.333333);
+          tl.set("#grano", { x: -183, y: -19 }, 64.4);
+          tl.set("#grano", { x: -74, y: -265 }, 64.466667);
+          tl.set("#grano", { x: -118, y: -161 }, 64.533333);
+          tl.set("#grano", { x: -240, y: -309 }, 64.6);
+          tl.set("#grano", { x: -145, y: -210 }, 64.666667);
+          tl.set("#grano", { x: -129, y: -128 }, 64.733333);
+          tl.set("#grano", { x: -111, y: -111 }, 64.8);
+          tl.set("#grano", { x: -330, y: -140 }, 64.866667);
+          tl.set("#grano", { x: -220, y: -371 }, 64.933333);
+          tl.set("#grano", { x: -193, y: -361 }, 65);
+          tl.set("#grano", { x: -269, y: -351 }, 65.066667);
+          tl.set("#grano", { x: -108, y: -35 }, 65.133333);
+          tl.set("#grano", { x: -338, y: -104 }, 65.2);
+          tl.set("#grano", { x: -335, y: -272 }, 65.266667);
+          tl.set("#grano", { x: -174, y: -29 }, 65.333333);
+          tl.set("#grano", { x: -305, y: -246 }, 65.4);
+          tl.set("#grano", { x: -375, y: -252 }, 65.466667);
+          tl.set("#grano", { x: -232, y: -287 }, 65.533333);
+          tl.set("#grano", { x: -307, y: -29 }, 65.6);
+          tl.set("#grano", { x: -82, y: -103 }, 65.666667);
+          tl.set("#grano", { x: -109, y: -157 }, 65.733333);
+          tl.set("#grano", { x: -323, y: -185 }, 65.8);
+          tl.set("#grano", { x: -41, y: -59 }, 65.866667);
+          tl.set("#grano", { x: -58, y: -65 }, 65.933333);
+          window.__timelines["escena"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

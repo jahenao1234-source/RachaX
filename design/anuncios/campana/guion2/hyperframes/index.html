@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · campaña · guion2 · El efecto ya qué</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .clip { position: absolute; inset: 0; }
+      #halo { position: absolute; left: 90px; top: 520px; width: 900px; height: 1200px; z-index: 4; background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255, 181, 71, 0.34), rgba(255, 181, 71, 0) 70%); opacity: 0; }
+      #cel { position: absolute; left: 277px; top: 560px; z-index: 5; width: 526px; height: 1052px; padding: 13px; border-radius: 66px; background: #24272D; box-shadow: 0 0 0 3px #0F1113, 0 0 60px rgba(255, 181, 71, 0.28); opacity: 0; visibility: hidden; }
+      #cel-pantalla { position: relative; width: 100%; height: 100%; border-radius: 54px; overflow: hidden; background: #0F1113; }
+      #cel-video { width: 100%; height: 100%; object-fit: cover; }
+      #pastilla { position: absolute; left: 0; right: 0; top: 1150px; z-index: 6; display: flex; justify-content: center; opacity: 0; }
+      #pastilla span { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 40px; letter-spacing: -0.01em; color: #F4E7C3; background: #0F1113; border: 3px solid #FFB547; border-radius: 999px; padding: 16px 36px 20px; white-space: nowrap; box-shadow: 0 0 34px rgba(255, 181, 71, 0.4); }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="65.96" data-width="1080" data-height="1920">
+      <div id="escena" class="clip" style="z-index: 1" data-composition-id="escena" data-composition-src="compositions/escena.html" data-start="0" data-duration="65.96" data-track-index="0" data-width="1080" data-height="1920"></div>
+      <div id="halo"></div>
+      <div id="cel" data-layout-allow-overflow>
+        <div id="cel-pantalla">
+          <video id="cel-video" class="clip" src="assets/celular.mp4" playsinline muted data-start="58.55" data-duration="7.41" data-media-start="2.8" data-track-index="7"></video>
+        </div>
+      </div>
+      <div id="pastilla"><span>Racha · app · $37.900, un solo pago</span></div>
+      <audio id="voz" src="assets/voz.wav" data-start="0.5" data-duration="63.66" data-media-start="0" data-track-index="3" data-volume="1"></audio>
+      <audio id="efectos" src="assets/efectos.wav" data-start="0" data-duration="65.96" data-media-start="0" data-track-index="5" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#cel", { autoAlpha: 0, y: 260, rotation: 5 }, { autoAlpha: 1, y: 0, rotation: -1.5, duration: 0.5, ease: "power3.out", immediateRender: false }, 58.55);
+      tl.fromTo("#halo", { opacity: 0 }, { opacity: 1, duration: 0.6, immediateRender: false }, 58.65);
+      tl.to("#cel", { rotation: 1, scale: 1.04, duration: 6.91, ease: "none" }, 59.05);
+      tl.fromTo("#pastilla", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, 62.97);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

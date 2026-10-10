@@ -576,3 +576,87 @@ Johnatan vio el gancho: "va bien, ¿por qué no lo terminas todo?". Se arma con 
 **Dibujos que no son pantallas de la app (provisionales):** la tira de siete días y el dibujo de la portada del PDF.
 
 38 efectos de sonido (`guion8/guion8-sonidos.txt`). Sin música: la escoge él y entra al terminar el gancho (segundo 16,5).
+
+## Guion 2 · El que empieza cada lunes · versión 2 "El efecto ya qué" (10 oct, SIN APROBAR)
+
+Rehecho con la manera de mandar el mensaje de las referencias del 10 de octubre (`referencias/oct10/analisis.md`) más todo lo anterior. **Voz en off de Juan Restrepo** (lo decidió Johnatan: "se asemeja mucho al influencer"), sin avatar. **Estilo visual: el de esas referencias** (sin nombre todavía): blanco y negro con grano, un solo color que brilla (ámbar) sobre el objeto que se nombra, letras crema arriba y nombres en letra con serifa.
+
+Nivel 01 (Inconsciente) · Emoción: reconocerse ("ese soy yo") · Creencia que se contradice: "digo 'el lunes empiezo' porque soy flojo" · Culpable: el efecto "ya qué", no la persona · Nombre: el efecto "ya qué" · Historia de otro: el experimento de las malteadas (Herman y Mack, 1975) · Historia propia: la de Johnatan ("el lunes empiezo de cero: sí, muchas veces") · Salida: seguir mañana, no el lunes · Paso siguiente gratis: "te la muestro".
+No repite el dolor de los otros: el guion 1 es empezar con muchas cosas; el 5, las apps que devuelven a cero; el 7, la regla de los dos días. Aquí es por qué uno suelta toda la semana por un día.
+
+### Gancho visual (SIN ESCOGER)
+1. **Las dos malteadas** (recomendado): fondo negro con grano; dos vasos de malteada en blanco y negro y solo ellos brillan en ámbar; arriba "1975" en letra con serifa crema. Una imagen quieta (gratis en Flow) y el brillo lo pone la edición.
+2. **El calendario:** una hoja de calendario en blanco y negro; un círculo de luz hecho a mano encierra el LUNES y los otros días se apagan uno por uno. Lo hace todo la edición.
+3. **La palabra que se repite:** "lunes" cuatro veces hacia abajo en letra con serifa crema, cada vez más apagada, y la última se enciende en ámbar. Lo hace todo la edición.
+4. **El helado que se derrite:** un helado en primer plano, en blanco y negro, que gotea; la gota es lo único en ámbar. Una imagen quieta.
+
+Usados antes y que no se repiten: tres aspectos del cuadro (guion 1), acomodar el celular (5), la bola de papel (6), Lina que se encoge con una X (7), el párpado y las frases que caen (8).
+
+### Texto
+
+| Parte | Dice | Qué hace |
+|---|---|---|
+| 1 · Tensión | "No dices «el lunes empiezo» por flojo. Lo dices por algo que se descubrió en 1975, con malteadas y helado." | Lleva la contraria y deja la pregunta abierta |
+| 2 · La historia | "A un grupo de personas les dieron una malteada. A otras, dos. Y a otras, nada. Después les pusieron helado, para que comieran el que quisieran." | Historia de otro, verdadera |
+| 3 · Lo normal | "Los que no estaban a dieta comieron menos: ya estaban llenos." | Prepara el giro |
+| 4 · El giro | "Los que sí estaban a dieta hicieron lo contrario: comieron más helado. Como ya habían dañado la dieta, pensaron: ya qué." | "Y eso no es lo raro" |
+| 5 · El nombre | "Eso tiene nombre. En inglés es medio grosero; aquí sería el efecto «ya qué»." | Idea con nombre propio; algo imperfecto |
+| 6 · El puente | "Yo hacía lo mismo con todo. Fallaba un miércoles y decía: ya qué, el lunes empiezo." | La historia se vuelve sobre uno |
+| 7 · La comparación | "Es como pinchar una llanta y, de la rabia, pinchar las otras tres." | Comparación de la vida diaria |
+| 8 · La frase para llevarse | "Si llevabas doce días y fallaste uno, no tienes cero. Tienes doce días y un hueco." | Es del PDF aprobado (página 4) |
+| 9 · Racha | "Por eso hicimos Racha: una app para tus hábitos donde un día que fallas no borra los días que llevas en el mes." | Qué se vende, literal |
+| 10 · Cierre | "Así que si hoy ya te tomaste las dos malteadas, sigues mañana. No el lunes: mañana. Si quieres ver la app por dentro, te la muestro." | Vuelve al comienzo; paso gratis |
+
+Unas 186 palabras: cerca de un minuto con la voz de Juan (en el guion 8 dijo 145 palabras en 46 s). Si se quiere de 50 s, se quita la parte 3 o la 7.
+
+Palabras que se repiten a propósito: "malteada" (cuatro veces: abre, cuenta y cierra), "ya qué" (cuatro: es el nombre de la idea), "lunes" (tres), "mañana" (dos seguidas, al cierre).
+
+Ganchos de repuesto:
+- "Todos te dicen que empieces el lunes. Nadie te dice qué hacer el jueves."
+- "¿Cuántas veces has dicho «el lunes empiezo» un miércoles?"
+
+### De dónde sale cada cosa
+- **El experimento:** Herman y Mack, 1975, "Restrained and unrestrained eating", Journal of Personality 43, 647-660. Leído en el resumen de la Society for the Study of Ingestive Behavior (ssib.org/web/classic17.php): nada, una o dos malteadas antes de una supuesta prueba de sabor de helado; los que se cuidaban en la comida comieron cerca de 66 % más helado después de la malteada que sin ella, y los que no, cerca de 47 % menos. **Claude NO leyó el artículo original** (no dice cuántas personas ni en qué universidad: por eso el guion no lo dice).
+- **El nombre:** "what-the-hell effect", de Janet Polivy y Peter Herman (biografía de Polivy en la Universidad de Alberta; revista de la Universidad de Toronto). "Ya qué" es una traducción nuestra, y el guion lo dice así ("aquí sería").
+- **"Pensaron: ya qué":** es la explicación de los investigadores, no algo que se les oyó decir.
+- **La historia de Johnatan:** "el lunes empiezo de cero: sí, muchas veces" (`design/pdf/metodo-texto.md`). Por confirmar con él: "fallaba un miércoles".
+- **La app:** en la pantalla Hoy sale "N/M del mes" y esa cuenta no vuelve a cero por un día sin cumplir (`TodayScreen.tsx` línea 827, `constanciaMes`; mirado otra vez el 10 oct). La racha de días seguidos sí se rompe sin comodín: por eso el guion habla de los días del mes.
+- **Riesgo que se le avisó:** el guion nombra personas "a dieta". No dice nada del que mira, pero el peso y la comida son tema delicado en Meta. Salida si molesta: "personas que se estaban cuidando con el dulce".
+
+### Textos en pantalla que no vienen del guion (PROVISIONALES)
+"1975" · "Herman y Mack · Journal of Personality" · "66 % más helado" · "what-the-hell effect · Polivy y Herman" · la pastilla "Racha · app · $37.900, un solo pago".
+
+### Contra la lista de revisión
+| Punto | Cómo queda |
+|---|---|
+| 1. El gancho deja algo sin cerrar | Sí: qué pasó con las malteadas se responde en la parte 4; qué tiene que ver con el lunes, en la 6 |
+| 2. Promesa, curiosidad y romper el patrón | Promesa: saber por qué lo dices. Curiosidad: 1975. Rompe el patrón: malteadas en un anuncio de hábitos |
+| 3. 5-30-10 | Primeros 5 s: lleva la contraria. Medio: una sola idea (el "ya qué"). Final: un paso concreto |
+| 4. Invitación en la mitad | No lleva (la de "quédate un momento" no le gustó); el giro de la parte 4 hace de segundo gancho |
+| 5. Idea con nombre | El efecto "ya qué" |
+| 6. Algo imperfecto | "En inglés es medio grosero"; las dos malteadas al cierre |
+| 7. Dos personajes en conflicto | No: Johnatan pidió no copiar lo que el creador actúa. La tensión sale de llevar la contraria |
+| 8. Historia de otro, verdadera | Sí, con año. El nombre de los investigadores y la cifra van escritos, no en la voz |
+| 9. Puente y frase para llevarse | Partes 6 y 8 |
+| 10. El final vuelve al comienzo | Las malteadas y el lunes |
+
+### Guion 2 versión 2 · TEXTO FINAL APROBADO (10 oct)
+
+Johnatan respondió "intentémoslo", escogió el gancho visual de las dos malteadas, confirmó que la parte 6 es verdad de su historia y dejó "a dieta". Después rechazó dos frases: la 8 ("un poco enredada") y la 9 ("cuando mete Racha es como tan a la fuerza; la idea es que no se sienta que se vende"). Escogió las dos opciones A.
+
+| Parte | Dice |
+|---|---|
+| 1 | "No dices «el lunes empiezo» por flojo. Lo dices por algo que se descubrió en 1975, con malteadas y helado." |
+| 2 | "A un grupo de personas les dieron una malteada. A otras, dos. Y a otras, nada. Después les pusieron helado, para que comieran el que quisieran." |
+| 3 | "Los que no estaban a dieta comieron menos: ya estaban llenos." |
+| 4 | "Los que sí estaban a dieta hicieron lo contrario: comieron más helado. Como ya habían dañado la dieta, pensaron: ya qué." |
+| 5 | "Eso tiene nombre. En inglés es medio grosero; aquí sería el efecto «ya qué»." |
+| 6 | "Yo hacía lo mismo con todo. Fallaba un miércoles y decía: ya qué, el lunes empiezo." |
+| 7 | "Es como pinchar una llanta y, de la rabia, pinchar las otras tres." |
+| 8 | "El miércoles solo dañó el miércoles." |
+| 9 | "Así que si hoy ya te tomaste las dos malteadas, sigues mañana. No el lunes: mañana." |
+| 10 | "Yo lo llevo en Racha, una app que hicimos para eso. Si quieres verla por dentro, te la muestro." |
+
+162 palabras. "Yo lo llevo en Racha" lo aprobó él al escoger la opción A (es su historia, no un resultado).
+
+**Voz (Juan Restrepo, v3):** la primera toma (`guion2/voz/ya-que-v1-juan…`, con el texto viejo) la oyó y pidió otra entonación: "que sonara como más misteriosa; el influencer tenía una voz similar pero le metía más misterio, entretenía, más drama; por ejemplo cuando dice «ya qué» se siente un tono más dramático; usa la entonación en puntos claves". Segunda toma: `guion2/voz/ya-que-v2-juan.mp3` (texto con indicaciones en `texto-v2-misterio.txt`, estabilidad 0,2) y **`ya-que-v2-juan-sin-pausas.mp3` (62 s)**, que dice el texto exacto y conserva las pausas de suspenso (0,4 a 0,65 s antes de "con malteadas", "y helado", "comieron más", los "ya qué", "solo dañó", "no el lunes", "mañana" y "te la muestro"; `voz-sin-pausas.py` ahora acepta `@N=segundos`). SIN OÍR por Johnatan todavía. Si no le alcanza el drama: probar estabilidad 0, o que él grabe la frase con su entonación y pasarla a la voz de Juan con `elevenlabs.mjs cambiar`.

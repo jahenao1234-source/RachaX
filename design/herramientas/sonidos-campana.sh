@@ -23,7 +23,14 @@ campana|1.2|Single soft bright bell chime, gentle positive notification ding, cl
 toque|0.5|Single soft smartphone touchscreen tap, subtle interface click, dry
 logro|1.0|Short cheerful success chime with two rising notes, mobile app reward sound, clean
 obturador|0.5|Single soft camera shutter click, short and clean, close microphone, no voice
-teclado|1.2|Fast typing on a laptop keyboard, soft clicky keys, steady, close microphone, no voice, no music'
+teclado|1.2|Fast typing on a laptop keyboard, soft clicky keys, steady, close microphone, no voice, no music
+boom|2.6|Single deep cinematic sub bass impact, huge dark low boom with a long reverb tail, movie trailer hit, no music
+subida|2.0|Dark cinematic riser, tension whoosh building up and stopping abruptly at the end, movie trailer, no music
+neon|1.2|Neon sign flickering on, electric buzz with two short crackles and a steady hum, close microphone
+diapositiva|0.6|Vintage slide projector advancing one slide, single heavy mechanical clunk click, dry, close microphone
+garabato|0.9|Marker pen quickly scribbling a circle twice on paper, two fast loops, dry, close microphone
+latido|1.2|Two deep slow heartbeat thumps, low and close, dark, dry, no music
+brillo|1.8|Soft warm cinematic swell, gentle rising airy shimmer, hopeful, no melody, no voice'
 
 echo "$LISTA" | while IFS='|' read -r nombre seg texto; do
   if [ $# -gt 0 ] && ! printf '%s\n' "$@" | grep -qx "$nombre"; then continue; fi

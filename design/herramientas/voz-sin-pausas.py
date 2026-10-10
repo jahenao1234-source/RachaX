@@ -4,6 +4,7 @@
 # Uso: python design/herramientas/voz-sin-pausas.py <voz.mp3> <voz.palabras.json> <salida.mp3> [pausa] [palabra=segundos ...]
 #   pausa: lo máximo que queda entre dos palabras (por defecto 0.22 s)
 #   palabra=segundos: una pausa más larga ANTES de esa palabra (ej. "¿Hace=0.6" deja 0.6 s antes de la pregunta)
+#   @N=segundos: lo mismo, pero antes de la palabra número N de la transcripción (desde 0); sirve si la palabra se repite
 import sys, json, subprocess, re, unicodedata
 import numpy as np
 
@@ -14,9 +15,12 @@ extra = [a for a in sys.argv[4:]]
 pausa = 0.22
 largas = {}
 norm = lambda s: re.sub(r'[^a-z0-9]', '', unicodedata.normalize('NFD', s.lower()).encode('ascii', 'ignore').decode())
+por_indice = {}   # "@57=0.6": pausa más larga antes de la palabra número 57 (contando desde 0), para cuando la palabra se repite
 for a in extra:
     if '=' in a:
-        k, v = a.rsplit('=', 1); largas[norm(k)] = float(v)
+        k, v = a.rsplit('=', 1)
+        if k.startswith('@'): por_indice[int(k[1:])] = float(v)
+        else: largas[norm(k)] = float(v)
     else:
         pausa = float(a)
 
@@ -27,11 +31,13 @@ MARGEN = 0.09   # lo que se respeta antes y después de cada palabra aunque la p
 usadas = set()
 tramos = []     # (inicio, fin) en segundos que se conservan
 ini = max(0.0, ws[0]['i'] - 0.08)
-for a, b in zip(ws, ws[1:]):
+for n, (a, b) in enumerate(zip(ws, ws[1:])):
     hueco = b['i'] - a['f']
     quiero = pausa
     k = norm(b['t'])
-    if k in largas and k not in usadas:
+    if (n + 1) in por_indice:
+        quiero = por_indice[n + 1]
+    elif k in largas and k not in usadas:
         quiero = largas[k]; usadas.add(k)
     if hueco > max(quiero, 2 * MARGEN) + 0.02:
         mitad = max(quiero, 2 * MARGEN) / 2
