@@ -721,3 +721,92 @@ Ganchos de repuesto:
 ### Guion 9 · TEXTO APROBADO (10 oct)
 
 Johnatan: "gancho visual me gusta el 1"; "apruebo el texto"; la parte 6 ("Yo me creí ese número…") "sí me pasó". Sobre el avatar: "las imágenes no sé cuál encaja más para el gancho" (Claude recomendó la A, la cabina con micrófono de estudio, porque el gancho necesita el micrófono grande y adelante). Pidió para las imágenes: foto de Maxwell y del libro, el reloj de Londres, "un tercio" en números, y más imágenes así. El plan y los textos para Flow están en `guion9-textos-imagenes.md`. Voz narrada generada: `guion9/voz/dia22-v1-juan.mp3` y `…-sin-pausas.mp3` (133 palabras, texto exacto; gastó unos 2.300 créditos: quedan 7.429).
+
+
+---
+
+## Guion 10 · "El golpe 101" · versión 1, SIN APROBAR (10 oct)
+
+Tercer video del estilo **Dark** (después de "El efecto ya qué" y "El día 22"). **Tema aprobado por Johnatan el 10 oct ("me gusta el 1, así es").** Misma estrategia: historia verdadera de otro, **Jhonny** (el avatar narrador) con micrófono, voz de Juan Restrepo y final con las tomas del computador. Lo nuevo: el cierre con una acción ("Escribe Racha y te la muestro", pedido por él) y el efecto de la persona que resalta y se mueve en un par de tomas. Dolor nuevo en la campaña: **cumples y no ves ningún cambio, y por eso lo dejas** (en "El día 22" el dolor era que todavía cuesta; aquí es que no se nota).
+
+### Ganchos visuales (para escoger; ninguno repite uno ya usado)
+1. **La piedra y el contador:** negro; un mazo golpea una piedra y salta una chispa ámbar; un número enorme corre con cada golpe (1… 37… 100) y la piedra sigue entera; en el 100 corta a la cara del avatar. Primeros dos segundos: golpe, chispa y número grande. Una foto y la edición.
+2. **La piedra en la mano:** el avatar tiene una piedra en la mano junto al micrófono y la deja sobre la mesa con un golpe seco; la piedra queda alumbrada en ámbar. Lo hace el clip (riesgo: que Flow dañe la mano).
+3. **La pantalla se raja:** el avatar habla y, cuando dice "piedra", una grieta de luz ámbar parte la pantalla de arriba abajo; por la grieta entra la historia en blanco y negro. Un clip y la edición.
+4. **La frase en la pared:** un pasillo oscuro de camerino, un texto pintado en la pared con una sola luz ámbar; la cámara se acerca y corta al avatar. Una foto y la edición.
+5. **El año que se rasga:** la foto real de Jacob Riis en blanco y negro con "1870" enorme; se rasga como papel y detrás está el avatar. Una foto real y la edición.
+
+Recomendado: 1 para abrir y 3 como paso a la historia.
+
+### Texto
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Avatar | "Un reportero escribió casi catorce años contra lo mismo, sin ver ningún cambio. Lo que no lo dejó rendirse fue una piedra." |
+| 2 · La historia | Voz | "Se llamaba Jacob Riis. En 1870 llegó a Nueva York sin un peso. Una noche durmió en una estación de policía, y ahí le robaron y le mataron el perro." |
+| 3 · El intento | Voz | "Ya de reportero, escribió contra esos dormitorios. Un artículo. Otro. Otro más. Y nada." |
+| 4 · La piedra | Voz | "Cuando sentía que no servía de nada, iba a ver a un hombre partir piedra. Cien golpes, y ni una raya. Al ciento uno, se abría en dos." |
+| 5 · El giro | Voz | "Y él sabía que no había sido ese golpe. Habían sido todos los de antes." |
+| 6 · La prueba | Voz | "Los cerraron en 1896. Hoy su frase está pintada en el camerino de un equipo con cinco campeonatos de la NBA." |
+| 7 · El puente | Avatar | "Yo hacía lo contrario. Miraba si ya se notaba, veía que no, y lo dejaba." |
+| 8 · El nombre | Voz | "A esos días les digo los golpes que no se ven: cumples, no notas nada, y son los que cuentan." |
+| 9 · El cierre | Jhonny | "Si hoy cumpliste y no notaste nada, no lo dejes. Fue un golpe más." |
+| 10 · Racha | Jhonny (cierre A, recomendado) o la voz (cierre B) | "Yo los cuento en Racha, una app que hicimos para eso. Escribe Racha y te la muestro." |
+
+Unas 190 palabras: cerca de 75 segundos. **Cierre A (recomendado):** Jhonny dice también la parte 10, en un cuarto clip; arranca en su cara, corta a las tomas de la app cuando dice "Racha" y vuelve a su cara en "Escribe Racha y te la muestro", con la palabra RACHA escrita grande. Son cuatro clips (22, 15, 14 y 17 palabras: uno de 10 s y tres de 8 s, unos 51 créditos de Flow) y la voz narrada baja a unas 125 palabras (unos 2.100 créditos de ElevenLabs). **Cierre B:** como en "El día 22", la parte 10 la dice la voz sobre las tomas de la app (tres clips, unos 39 créditos). Si se quiere más corto, se quita la parte 3.
+
+**Dónde va el efecto nuevo (la persona resalta y se mueve):** en el retrato de Jacob Riis cuando la voz dice su nombre (recortado del fondo, con el nombre escrito encima) y en el picapedrero. **La foto que se mueve de verdad:** el picapedrero dando el golpe, como clip de Flow sin voz (unos 12 a 15 créditos), porque es la imagen central del video.
+
+Ganchos hablados de repuesto:
+- "Si llevas semanas cumpliendo y no notas ningún cambio, te falta conocer a un hombre que le pegaba a una piedra."
+- "En 1870 a un muchacho le mataron el perro en una estación de policía de Nueva York. Tardó veintiséis años en cerrar ese lugar." (más fuerte y más oscuro; 1870 a 1896 es cuenta nuestra)
+
+Texto escrito del primer cuadro (provisional): "¿Cumples y no ves cambios?"
+
+### De dónde sale cada cosa
+- **Jacob Riis, 1870, sin plata:** su autobiografía, *The Making of an American* (1901), leída en Project Gutenberg (libro 6125). Llegó a Nueva York en 1870; dice que llegó con un centavo.
+- **La noche en la estación:** capítulo III. Una noche de tormenta de octubre durmió en el dormitorio de la estación de policía de Church Street; otro de los que dormían ahí le cortó el cordón y le robó un relicario de oro; al reclamar lo echaron, su perro atacó al portero y el portero lo mató contra los escalones.
+- **Los artículos y los años:** el mismo libro. Empezó su campaña en los periódicos contra los dormitorios de la policía en 1883; la junta de policía, presidida por Theodore Roosevelt, ordenó cerrarlos el 15 de febrero de 1896. Él escribe que las murallas cayeron "though it took nearly twice seven years" (casi catorce años).
+- **La piedra:** el mismo pasaje. Dice que cuando parecía que nada servía iba a mirar a un picapedrero dar cien golpes sin que se viera una grieta, que al golpe ciento uno la piedra se partía en dos, y que él sabía que no había sido ese golpe sino todos los anteriores.
+- **El camerino:** R. C. Buford (directivo de los San Antonio Spurs), en una entrevista de la escuela de negocios de Stanford: la historia está pintada en la pared del pasillo del camerino desde 2002 y traducida a los idiomas de los jugadores ("19 idiomas"). Sports Illustrated (4 mar 2009) cuenta que el entrenador Gregg Popovich la mandó enmarcar y traducir. Las fuentes no coinciden en el año: el guion no lo dice. Cinco campeonatos: 1999, 2003, 2005, 2007 y 2014 (por comprobar en una fuente antes de producir).
+- **"Yo hacía lo contrario… y lo dejaba":** se le preguntó si le pasaba y respondió "así es" junto con la aprobación del tema (10 oct); Claude lo toma como sí.
+- **"Los golpes que no se ven"** es un nombre nuestro.
+- **Racha:** la app cuenta los días cumplidos (la racha, la constancia del mes, el calendario). No se promete ningún resultado ni cuándo se va a notar.
+
+### Cuidados
+- El equipo: sin escudo, sin uniformes y sin fotos de jugadores (son marcas y personas con derechos). Por decidir: nombrarlo o dejarlo en "un equipo".
+- Riis murió en 1914 y Roosevelt en 1919: sus fotos de la época están en dominio público. Se bajan con el permiso de Johnatan (archivo, fuente y peso) y el molde las pasa a blanco y negro.
+- La muerte del perro se cuenta, no se muestra: la imagen es el perro esperando en los escalones bajo la lluvia.
+
+### Contra la lista de revisión
+| Punto | Cómo queda |
+|---|---|
+| 1. El gancho deja algo sin cerrar | Sí: qué tiene que ver una piedra se responde en la parte 4 |
+| 2. Promesa, curiosidad y romper el patrón | Cómo no rendirse cuando no se ve cambio; "una piedra" rompe lo esperado |
+| 3. 5-30-10 | Primeros 5 s: catorce años sin ver cambio. Medio: una sola idea (lo que no se ve también cuenta). Final: un paso concreto |
+| 4. Invitación en la mitad | No lleva; el avatar vuelve en la parte 7 y hace de segundo gancho |
+| 5. Idea con nombre | "Los golpes que no se ven" |
+| 6. Algo imperfecto | "Un artículo. Otro. Otro más. Y nada." |
+| 7. Tensión desde la primera frase | Catorce años haciendo lo mismo sin resultado |
+| 8. Historia de otro, verdadera | Jacob Riis, leída en su propio libro |
+| 9. Puente y frase para llevarse | Partes 7 y 5 ("no había sido ese golpe; habían sido todos los de antes") |
+| 10. El final vuelve al comienzo | "Fue un golpe más" recoge la piedra del gancho |
+
+### Guion 10 · TEXTO APROBADO (10 oct, 3 p. m.)
+
+Johnatan: tema "me gusta el 1, así es"; gancho visual "1 y 3 juntas"; cierre dicho por Jhonny a cámara; encontró un hueco entre la piedra y "los cerraron en 1896" ("falta una aclaración de que por intentarlo logró su objetivo") y escogió la versión B; preguntó cuál era "la frase" del camerino, así que ahora dice "lo que escribió sobre esa piedra"; la frase se muestra en una pared recreada; "sí, genera la voz".
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny | "Un reportero escribió casi catorce años contra lo mismo, sin ver ningún cambio. Lo que no lo dejó rendirse fue una piedra." |
+| 2 · La historia | Voz | "Se llamaba Jacob Riis. En 1870 llegó a Nueva York sin un peso. Una noche durmió en una estación de policía, y ahí le robaron y le mataron el perro." |
+| 3 · El intento | Voz | "Ya de reportero, escribió contra esos dormitorios. Un artículo. Otro. Otro más. Y nada." |
+| 4 · La piedra | Voz | "Cuando sentía que no servía de nada, iba a ver a un hombre partir piedra. Cien golpes, y ni una raya. Al ciento uno, se abría en dos." |
+| 5 · El giro | Voz | "Y él sabía que no había sido ese golpe. Habían sido todos los de antes." |
+| 6 · Lo logró | Voz | "Por eso no dejó de escribir. Y en 1896, por insistir, logró que cerraran esos dormitorios. Hoy lo que escribió sobre esa piedra está pintado en el camerino de un equipo con cinco campeonatos de la NBA." |
+| 7 · El puente | Jhonny | "Yo hacía lo contrario. Miraba si ya se notaba, veía que no, y lo dejaba." |
+| 8 · El nombre | Voz | "A esos días les digo los golpes que no se ven: cumples, no notas nada, y son los que cuentan." |
+| 9 · El cierre | Jhonny | "Si hoy cumpliste y no notaste nada, no lo dejes. Fue un golpe más." |
+| 10 · Racha | Jhonny | "Yo los cuento en Racha, una app que hicimos para eso. Escribe Racha y te la muestro." |
+
+Voz narrada generada: `guion10/voz/golpe101-v1-juan.mp3` (63,6 s) y `…-sin-pausas.mp3` (53,9 s; 143 palabras, texto exacto; texto con indicaciones en `voz/texto-v1.txt`; el saldo bajó de 7.149 a 6.609 créditos). Ojo al quitar pausas: la transcripción daba por terminado "1896" antes de tiempo y el corte se comía "y seis"; se dejó entera la pausa que sigue (`@95=0.97`). El plan de imágenes está en `guion10-textos-imagenes.md` y los cuatro clips de Jhonny en `guion10-textos-flow.md`.
