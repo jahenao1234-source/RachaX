@@ -660,3 +660,64 @@ Johnatan respondió "intentémoslo", escogió el gancho visual de las dos maltea
 162 palabras. "Yo lo llevo en Racha" lo aprobó él al escoger la opción A (es su historia, no un resultado).
 
 **Voz (Juan Restrepo, v3):** la primera toma (`guion2/voz/ya-que-v1-juan…`, con el texto viejo) la oyó y pidió otra entonación: "que sonara como más misteriosa; el influencer tenía una voz similar pero le metía más misterio, entretenía, más drama; por ejemplo cuando dice «ya qué» se siente un tono más dramático; usa la entonación en puntos claves". Segunda toma: `guion2/voz/ya-que-v2-juan.mp3` (texto con indicaciones en `texto-v2-misterio.txt`, estabilidad 0,2) y **`ya-que-v2-juan-sin-pausas.mp3` (62 s)**, que dice el texto exacto y conserva las pausas de suspenso (0,4 a 0,65 s antes de "con malteadas", "y helado", "comieron más", los "ya qué", "solo dañó", "no el lunes", "mañana" y "te la muestro"; `voz-sin-pausas.py` ahora acepta `@N=segundos`). SIN OÍR por Johnatan todavía. Si no le alcanza el drama: probar estabilidad 0, o que él grabe la frase con su entonación y pasarla a la voz de Juan con `elevenlabs.mjs cambiar`.
+
+## Guion 9 · El día 22 (el mito de los 21 días) · versión 1 (10 oct, SIN APROBAR)
+
+Pedido de Johnatan después de "El efecto ya qué": el mismo estilo (historia con voz en off, fotos en blanco y negro con ámbar), pero con **un avatar nuevo que aparece solo dos o tres veces**, hablando cerca de la cámara con un micrófono, con la voz de Juan Restrepo. Escogió esta historia ("quiero hacer primero el de 21 días"). Tiene 290 créditos en Flow.
+
+Nivel 02 (Consciente del problema) · Emoción: alivio ("no era yo") · Creencia que se contradice: "un hábito se forma en 21 días; si a las tres semanas me cuesta, no sirvo para esto" · Culpable: un número mal citado de 1960 · Nombre: "el día veintidós" · Historia de otro: Maxwell Maltz, cirujano plástico · Prueba: el estudio de Londres (promedio 66 días) · Historia propia: la de Johnatan (POR CONFIRMAR la frase) · Paso siguiente gratis: "te la muestro".
+No repite el dolor de los otros: aquí es soltar en la tercera semana por creer que ya debería salir solo.
+
+### Gancho visual (SIN ESCOGER)
+1. **El micrófono primero** (recomendado): negro; se enciende en ámbar solo el micrófono, como un neón; un segundo después sube la luz y aparece la cara detrás, muy cerca, mirando fijo; encima, "21" en letra grande. Un clip y la edición.
+2. **El número tachado:** negro con "21 días" grande; un garabato de luz lo tacha y en el tachón corta a la cara del avatar ya hablando. Un clip y la edición.
+3. **De espaldas:** el avatar está de espaldas, gira hacia la cámara y se acerca al micrófono, como quien va a contar un secreto. Todo lo hace el clip (riesgo: que Flow no haga bien el giro).
+4. **Media cara:** solo media cara con luz y el resto negro; cuando dice "un cirujano plástico" se ilumina la otra mitad. Un clip y la edición.
+
+### Texto
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Avatar | "¿Quién te dijo que un hábito se forma en veintiún días? Un cirujano plástico. Y no hablaba de hábitos." |
+| 2 · La historia | Voz | "Se llamaba Maxwell Maltz. En 1960 escribió que sus pacientes tardaban mínimo unos veintiún días en acostumbrarse a su cara nueva." |
+| 3 · El giro | Voz | "El libro se volvió famoso. Con los años se perdió el «mínimo», se perdió la cara nueva, y quedó la frase que te dijeron a ti." |
+| 4 · La prueba | Voz | "Casi cincuenta años después lo midieron de verdad, en Londres, durante doce semanas. El promedio no fue veintiuno. Fue sesenta y seis." |
+| 5 · Los extremos | Voz | "A una persona le tomó dieciocho días. Otra iba para doscientos cincuenta y cuatro." |
+| 6 · El puente | Avatar | "Yo me creí ese número. Llegaba a la tercera semana, todavía me costaba, y pensaba: esto no es para mí." |
+| 7 · El nombre | Voz | "A eso le digo el día veintidós: el día en que crees que fallaste, y apenas ibas por un tercio." |
+| 8 · La comparación | Voz | "Es como apagar el arroz a los cinco minutos y decir que no sabes cocinar." |
+| 9 · El cierre | Avatar | "Si hoy es tu día veintidós y todavía te cuesta, vas bien." |
+| 10 · Racha | Voz | "Yo llevo la cuenta en Racha, una app que hicimos para eso. Si quieres verla por dentro, te la muestro." |
+
+Unas 185 palabras: algo más de un minuto con las pausas. El avatar dice tres frases (19, 20 y 12 palabras: un clip de 10 s y dos de 8 s, unos 39 créditos). Si se quiere más corto, se quita la parte 5 o la 8.
+
+Ganchos de repuesto:
+- "Si llevas tres semanas con un hábito y todavía te cuesta, no eres tú. Es un número de 1960."
+- "Los veintiún días no salieron de un estudio. Salieron de un consultorio de cirugía plástica."
+
+### De dónde sale cada cosa
+- **Maltz:** cirujano plástico; en el prefacio de *Psycho-Cybernetics* (1960) escribió "Following plastic surgery it takes about 21 days for the average patient to get used to his new face" y "a minimum of about 21 days". Leído en el blog del centro de la University College London que hizo el estudio (Ben Gardner, 29 jun 2012: "Busting the 21 days habit formation myth"). Claude NO leyó el libro.
+- **El estudio:** Lally y otros, University College London (publicado en 2009-2010): se siguió a las personas 84 días (doce semanas); promedio 66 días; a una persona le tomó 18; a otra se le calcularon 254. Misma fuente. "Casi cincuenta años después": de 1960 a 2009.
+- **"El libro se volvió famoso":** viene de fuentes de segunda mano (hablan de millones de copias); el guion no da cifra.
+- **"Apenas ibas por un tercio":** 21 de 66, sobre el promedio.
+- **"Yo me creí ese número… esto no es para mí":** POR CONFIRMAR con Johnatan; solo va si es verdad de su historia.
+- **"El día veintidós"** es un nombre nuestro.
+- No se promete que en 66 días el hábito queda: se dice lo que midió el estudio.
+
+### Contra la lista de revisión
+| Punto | Cómo queda |
+|---|---|
+| 1. El gancho deja algo sin cerrar | Sí: de qué hablaba el cirujano se responde en la parte 2 |
+| 2. Promesa, curiosidad y romper el patrón | Saber de dónde salió el número; "un cirujano plástico" rompe lo esperado |
+| 3. 5-30-10 | Primeros 5 s: lleva la contraria. Medio: una sola idea (el número está mal). Final: un paso concreto |
+| 4. Invitación en la mitad | No lleva; el avatar vuelve en la parte 6 y hace de segundo gancho |
+| 5. Idea con nombre | "El día veintidós" |
+| 6. Algo imperfecto | El arroz |
+| 7. Tensión desde la primera frase | Una pregunta que acusa al número |
+| 8. Historia de otro, verdadera | Maltz, 1960, con fuente |
+| 9. Puente y frase para llevarse | Partes 6 y 7 |
+| 10. El final vuelve al comienzo | "Tu día veintidós" recoge los veintiún días del gancho |
+
+### Guion 9 · TEXTO APROBADO (10 oct)
+
+Johnatan: "gancho visual me gusta el 1"; "apruebo el texto"; la parte 6 ("Yo me creí ese número…") "sí me pasó". Sobre el avatar: "las imágenes no sé cuál encaja más para el gancho" (Claude recomendó la A, la cabina con micrófono de estudio, porque el gancho necesita el micrófono grande y adelante). Pidió para las imágenes: foto de Maxwell y del libro, el reloj de Londres, "un tercio" en números, y más imágenes así. El plan y los textos para Flow están en `guion9-textos-imagenes.md`. Voz narrada generada: `guion9/voz/dia22-v1-juan.mp3` y `…-sin-pausas.mp3` (133 palabras, texto exacto; gastó unos 2.300 créditos: quedan 7.429).
