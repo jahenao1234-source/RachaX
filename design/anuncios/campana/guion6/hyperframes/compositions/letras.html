@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .gr { position: absolute; left: 0; right: 0; top: 1200px; margin: 0; text-align: center; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 60px; line-height: 1; color: #ffffff; text-shadow: 0 3px 0 rgba(15, 17, 19, 0.85), 0 0 16px rgba(15, 17, 19, 0.85), 0 0 4px rgba(15, 17, 19, 0.9); opacity: 0; }
+        .gr .k { color: #FFB547; }
+        .bg { position: absolute; left: 0; right: 0; top: 985px; display: flex; flex-direction: column; align-items: center; }
+        .bg p { margin: 0; white-space: nowrap; text-align: center; text-shadow: 0 3px 0 rgba(15, 17, 19, 0.85), 0 0 16px rgba(15, 17, 19, 0.85), 0 0 4px rgba(15, 17, 19, 0.9); opacity: 0; }
+        .bg .ch { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 58px; line-height: 1.05; color: #ffffff; }
+        .bg .gd { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 188px; line-height: 0.95; letter-spacing: 0.005em; color: #FFB547; }
+      </style>
+      <div id="root" data-composition-id="letras" data-width="1080" data-height="1920">
+        <p class="gr" id="gr-0">Te dijeron que dejas</p>
+        <p class="gr" id="gr-1">las cosas para <span class="k">después</span></p>
+        <p class="gr" id="gr-2">por <span class="k">pereza.</span></p>
+        <p class="gr" id="gr-3">Yo dejé un proyecto</p>
+        <p class="gr" id="gr-4">mío a medias</p>
+        <p class="gr" id="gr-5">y pensaba que me</p>
+        <p class="gr" id="gr-6">faltaban <span class="k">ganas</span></p>
+        <p class="gr" id="gr-7">Hasta que vi</p>
+        <p class="gr" id="gr-8">cómo lo tenía</p>
+        <p class="gr" id="gr-9">anotado en un solo</p>
+        <p class="gr" id="gr-10"><span class="k">renglón,</span></p>
+        <p class="gr" id="gr-11">y así es difícil</p>
+        <p class="gr" id="gr-12">saber por dónde</p>
+        <p class="gr" id="gr-13"><span class="k">comenzar.</span></p>
+        <p class="gr" id="gr-14">Mira esta:</p>
+        <p class="gr" id="gr-15">organizar el cuarto.</p>
+        <p class="gr" id="gr-16">Eso no es una</p>
+        <p class="gr" id="gr-17"><span class="k">tarea,</span></p>
+        <p class="gr" id="gr-18">son ocho.</p>
+        <p class="gr" id="gr-19">Recoger la <span class="k">ropa</span></p>
+        <p class="gr" id="gr-20">del piso,</p>
+        <p class="gr" id="gr-21">sacar los <span class="k">platos,</span></p>
+        <p class="gr" id="gr-22">llenar una <span class="k">bolsa</span></p>
+        <p class="gr" id="gr-23">con lo que no</p>
+        <p class="gr" id="gr-24">usas.</p>
+        <p class="gr" id="gr-25">Hoy solo haces</p>
+        <p class="gr" id="gr-26">el <span class="k">primer</span> paso:</p>
+        <p class="gr" id="gr-27">recoger la <span class="k">ropa.</span></p>
+        <p class="gr" id="gr-28">Mañana haces el <span class="k">siguiente.</span></p>
+        <p class="gr" id="gr-29">la app que hicimos,</p>
+        <p class="gr" id="gr-30">trae tareas como</p>
+        <p class="gr" id="gr-31">esa ya divididas</p>
+        <p class="gr" id="gr-32">en <span class="k">pasos.</span></p>
+        <p class="gr" id="gr-33">Tú eliges el <span class="k">día</span></p>
+        <p class="gr" id="gr-34">para realizar cada</p>
+        <p class="gr" id="gr-35">paso y lo ajustas</p>
+        <p class="gr" id="gr-36">en tu <span class="k">semana,</span></p>
+        <p class="gr" id="gr-37">Si quieres verla</p>
+        <p class="gr" id="gr-38">por dentro,</p>
+        <p class="gr" id="gr-39">te la <span class="k">muestro.</span></p>
+        <div class="bg" id="bg-0"><p class="ch" id="bg-0-a">no es</p><p class="gd" id="bg-0-g">PEREZA</p></div>
+        <div class="bg" id="bg-1"><p class="gd" id="bg-1-g">RACHA</p></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#gr-0", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 1.21);
+          tl.set("#gr-0", { opacity: 0 }, 2.25);
+          tl.fromTo("#gr-1", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 2.25);
+          tl.set("#gr-1", { opacity: 0 }, 3.46);
+          tl.fromTo("#gr-2", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 3.46);
+          tl.set("#gr-2", { opacity: 0 }, 4.23);
+          tl.fromTo("#gr-3", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 5.11);
+          tl.set("#gr-3", { opacity: 0 }, 6.19);
+          tl.fromTo("#gr-4", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 6.19);
+          tl.set("#gr-4", { opacity: 0 }, 7.543333);
+          tl.fromTo("#gr-5", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 7.543333);
+          tl.set("#gr-5", { opacity: 0 }, 8.573333);
+          tl.fromTo("#gr-6", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 8.573333);
+          tl.set("#gr-6", { opacity: 0 }, 9.833333);
+          tl.fromTo("#gr-7", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 9.843333);
+          tl.set("#gr-7", { opacity: 0 }, 10.393333);
+          tl.fromTo("#gr-8", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 10.393333);
+          tl.set("#gr-8", { opacity: 0 }, 11.053333);
+          tl.fromTo("#gr-9", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 11.053333);
+          tl.set("#gr-9", { opacity: 0 }, 12.223333);
+          tl.fromTo("#gr-10", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 12.223333);
+          tl.set("#gr-10", { opacity: 0 }, 12.776667);
+          tl.fromTo("#gr-11", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 12.776667);
+          tl.set("#gr-11", { opacity: 0 }, 14.246667);
+          tl.fromTo("#gr-12", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 14.246667);
+          tl.set("#gr-12", { opacity: 0 }, 15.456667);
+          tl.fromTo("#gr-13", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 15.456667);
+          tl.set("#gr-13", { opacity: 0 }, 16.1);
+          tl.fromTo("#gr-14", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 16.11);
+          tl.set("#gr-14", { opacity: 0 }, 16.776667);
+          tl.fromTo("#gr-15", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 16.776667);
+          tl.set("#gr-15", { opacity: 0 }, 18.143333);
+          tl.fromTo("#gr-16", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 18.143333);
+          tl.set("#gr-16", { opacity: 0 }, 18.773333);
+          tl.fromTo("#gr-17", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 18.773333);
+          tl.set("#gr-17", { opacity: 0 }, 19.093333);
+          tl.fromTo("#gr-18", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 19.093333);
+          tl.set("#gr-18", { opacity: 0 }, 20.033333);
+          tl.fromTo("#gr-19", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 20.043333);
+          tl.set("#gr-19", { opacity: 0 }, 20.853333);
+          tl.fromTo("#gr-20", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 20.853333);
+          tl.set("#gr-20", { opacity: 0 }, 21.41);
+          tl.fromTo("#gr-21", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 21.41);
+          tl.set("#gr-21", { opacity: 0 }, 22.566667);
+          tl.fromTo("#gr-22", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 22.576667);
+          tl.set("#gr-22", { opacity: 0 }, 23.6);
+          tl.fromTo("#gr-23", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 23.61);
+          tl.set("#gr-23", { opacity: 0 }, 24.19);
+          tl.fromTo("#gr-24", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 24.19);
+          tl.set("#gr-24", { opacity: 0 }, 24.666667);
+          tl.fromTo("#gr-25", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 24.676667);
+          tl.set("#gr-25", { opacity: 0 }, 25.326667);
+          tl.fromTo("#gr-26", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 25.326667);
+          tl.set("#gr-26", { opacity: 0 }, 26.31);
+          tl.fromTo("#gr-27", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 26.31);
+          tl.set("#gr-27", { opacity: 0 }, 27.276667);
+          tl.fromTo("#gr-28", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 27.276667);
+          tl.set("#gr-28", { opacity: 0 }, 28.886667);
+          tl.fromTo("#gr-29", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 29.41);
+          tl.set("#gr-29", { opacity: 0 }, 30.543333);
+          tl.fromTo("#gr-30", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 30.543333);
+          tl.set("#gr-30", { opacity: 0 }, 31.533333);
+          tl.fromTo("#gr-31", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 31.533333);
+          tl.set("#gr-31", { opacity: 0 }, 32.956667);
+          tl.fromTo("#gr-32", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 32.956667);
+          tl.set("#gr-32", { opacity: 0 }, 33.6);
+          tl.fromTo("#gr-33", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 33.61);
+          tl.set("#gr-33", { opacity: 0 }, 34.66);
+          tl.fromTo("#gr-34", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 34.66);
+          tl.set("#gr-34", { opacity: 0 }, 35.79);
+          tl.fromTo("#gr-35", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 35.79);
+          tl.set("#gr-35", { opacity: 0 }, 36.893333);
+          tl.fromTo("#gr-36", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 36.893333);
+          tl.set("#gr-36", { opacity: 0 }, 37.7);
+          tl.fromTo("#gr-37", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 37.71);
+          tl.set("#gr-37", { opacity: 0 }, 38.52);
+          tl.fromTo("#gr-38", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 38.52);
+          tl.set("#gr-38", { opacity: 0 }, 39.176667);
+          tl.fromTo("#gr-39", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 39.176667);
+          tl.set("#gr-39", { opacity: 0 }, 39.946667);
+          tl.fromTo("#bg-0-a", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 4.21);
+          tl.fromTo("#bg-0-g", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in" }, 4.538);
+          tl.set("#bg-0 p", { opacity: 0 }, 5.03);
+          tl.fromTo("#bg-1-g", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in" }, 29.038);
+          tl.set("#bg-1 p", { opacity: 0 }, 29.33);
+          window.__timelines["letras"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

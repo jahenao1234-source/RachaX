@@ -1,0 +1,10 @@
+  0.38 s  golpe    -10 dB
+  2.30 s  golpe    -9 dB
+  3.99 s  golpe    -8 dB
+  4.87 s  golpe    -7 dB
+  6.95 s  golpe    -6 dB
+  8.40 s  golpe    -5 dB
+ 10.00 s  golpe    -4 dB
+ 11.79 s  whoosh   -7 dB
+ 12.02 s  caida    -6 dB
+ 15.52 s  pop      -5 dB

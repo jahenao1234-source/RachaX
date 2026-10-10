@@ -7,6 +7,7 @@
 //   node design/herramientas/elevenlabs.mjs cambiar <idVoz> <audio de entrada> <salida.mp3>
 //   node design/herramientas/elevenlabs.mjs efecto "<descripción en inglés>" <segundos> <salida.mp3>
 //     (con INFLUENCIA=0.6 el efecto se pega más a la descripción; va de 0 a 1 y por defecto es 0.3)
+//   node design/herramientas/elevenlabs.mjs musica "<descripción en inglés>" <segundos> <salida.mp3>   (unos 15 créditos por segundo)
 //   node design/herramientas/elevenlabs.mjs saldo      (créditos gastados y disponibles; la clave necesita el permiso de usuario)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -49,6 +50,10 @@ try {
   } else if (orden === 'efecto') {
     const [texto, seg, salida] = a;
     const audio = await pedir('/v1/sound-generation?output_format=mp3_44100_128', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: texto, duration_seconds: +seg || undefined, ...(process.env.INFLUENCIA ? { prompt_influence: +process.env.INFLUENCIA } : {}) }) }, true);
+    fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
+  } else if (orden === 'musica') {
+    const [texto, seg, salida] = a;
+    const audio = await pedir('/v1/music?output_format=mp3_44100_128', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt: texto, music_length_ms: Math.round((+seg || 40) * 1000) }) }, true);
     fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
   } else if (orden === 'saldo') {
     const j = await pedir('/v1/user/subscription');

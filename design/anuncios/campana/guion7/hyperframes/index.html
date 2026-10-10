@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · campaña · guion 7 · la regla (pizarra)</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .clip { position: absolute; inset: 0; }
+      video.clip { width: 100%; height: 100%; object-fit: cover; }
+      #tablero { z-index: 0; }
+      #velo { position: absolute; inset: 0; z-index: 1; background: rgba(16, 17, 20, 0.78); opacity: 0; visibility: hidden; }
+      #lina { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; z-index: 2; transform-origin: 0 0; clip-path: circle(1300px at 540px 822px); }
+      #aro { position: absolute; z-index: 3; left: 682px; top: 1202px; width: 356px; height: 356px; border-radius: 50%; border: 9px solid #0F1113; box-shadow: 8px 10px 0 rgba(22, 19, 15, 0.3); opacity: 0; visibility: hidden; }
+      #equis { position: absolute; z-index: 4; left: 60px; top: 380px; width: 300px; height: 300px; overflow: visible; }
+      #equis path { fill: none; stroke: #D5320F; stroke-width: 46; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; }
+      #tarjetas { z-index: 5; }
+      #letras { z-index: 6; }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="39.183333" data-width="1080" data-height="1920">
+      <!-- El tablero, dibujado por el motor de la skill video-pizarra -->
+      <video id="tablero" class="clip" src="assets/tablero.mp4" playsinline muted data-start="0" data-duration="39.183333" data-media-start="0" data-track-index="0"></video>
+      <div id="velo"></div>
+
+      <!-- Lina: grande en el gancho, después en su círculo -->
+      <div id="lina" data-layout-allow-overflow><video id="persona" class="clip" src="assets/persona.mp4" playsinline muted data-start="0" data-duration="39.183333" data-media-start="0" data-track-index="1" data-layout-allow-overflow></video></div>
+      <div id="aro"></div>
+      <svg id="equis" viewBox="0 0 300 300" aria-hidden="true"><path id="equis-1" d="M30,30 L270,270" /><path id="equis-2" d="M270,30 L30,270" /></svg>
+
+      <div id="tarjetas" class="clip" data-composition-id="tarjetas" data-composition-src="compositions/tarjetas.html" data-start="0" data-duration="39.183333" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="letras" class="clip" data-composition-id="letras" data-composition-src="compositions/letras.html" data-start="0" data-duration="39.183333" data-track-index="3" data-width="1080" data-height="1920"></div>
+
+      <audio id="voz" src="assets/voz.wav" data-start="0" data-duration="39.183333" data-media-start="0" data-track-index="4" data-volume="1"></audio>
+      <audio id="efectos" src="assets/efectos.wav" data-start="0" data-duration="39.183333" data-media-start="0" data-track-index="5" data-volume="1"></audio>
+      <audio id="tablero-sfx" src="assets/tablero-sfx.wav" data-start="0" data-duration="39.183333" data-media-start="0" data-track-index="6" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      // la X roja del gancho
+      tl.to("#equis-1", { strokeDashoffset: 0, duration: 0.1, ease: "power2.in" }, 0.5);
+      tl.to("#equis-2", { strokeDashoffset: 0, duration: 0.1, ease: "power2.in" }, 0.61);
+      tl.fromTo("#equis", { scale: 1.25, rotation: -8 }, { scale: 1, rotation: -8, duration: 0.14, ease: "back.out(3)" }, 0.5);
+      tl.to("#equis", { autoAlpha: 0, scale: 0.6, duration: 0.14, ease: "power2.in" }, 1.142667);
+      // Lina se encoge a su círculo y aparece el tablero
+      tl.to("#lina", { clipPath: "circle(309.090909px at 540px 822px)", x: 563, y: 927.9, scale: 0.55, duration: 0.42, ease: "power3.inOut" }, 1.162667);
+      tl.fromTo("#aro", { autoAlpha: 0, scale: 1.3 }, { autoAlpha: 1, scale: 1, duration: 0.2, ease: "back.out(2)", immediateRender: false }, 1.462667);
+      // el cierre: el mosaico se oscurece para que se lea el letrero
+      tl.fromTo("#velo", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, 34.929333);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

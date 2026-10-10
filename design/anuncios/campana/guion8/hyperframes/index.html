@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · campaña · guion8 · Deberías</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .clip { position: absolute; inset: 0; }
+      #cel { position: absolute; left: 0; top: 0; z-index: 5; width: 886px; height: 1788px; padding: 14px; border-radius: 104px; background: #24272D; box-shadow: 0 0 0 4px #0F1113, 26px 30px 0 rgba(15, 17, 19, 0.9); transform-origin: 0 0; opacity: 0; visibility: hidden; }
+      #cel-pantalla { position: relative; width: 100%; height: 100%; border-radius: 90px; overflow: hidden; background: #0F1113; }
+      #cel-video { width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+      .cap { position: absolute; left: 0; top: 0; width: 100%; display: block; opacity: 0; }
+      #cel-aro { position: absolute; left: 36px; top: 702px; width: 786px; height: 120px; border: 7px solid #FFB547; border-radius: 30px; box-shadow: 0 0 0 8px rgba(255, 181, 71, 0.25); opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="49.25" data-width="1080" data-height="1920">
+      <div id="pregunta" class="clip" style="z-index: 1" data-composition-id="pregunta" data-composition-src="compositions/pregunta.html" data-start="11.95" data-duration="4.59" data-track-index="0" data-width="1080" data-height="1920"></div>
+      <div id="lista" class="clip" style="z-index: 2" data-composition-id="lista" data-composition-src="compositions/lista.html" data-start="0" data-duration="12.43" data-track-index="1" data-width="1080" data-height="1920"></div>
+      <div id="creencia" class="clip" style="z-index: 1" data-composition-id="creencia" data-composition-src="compositions/creencia.html" data-start="16.54" data-duration="3.13" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="dias" class="clip" style="z-index: 1" data-composition-id="dias" data-composition-src="compositions/dias.html" data-start="19.67" data-duration="8.74" data-track-index="0" data-width="1080" data-height="1920"></div>
+      <div id="nombre" class="clip" style="z-index: 1" data-composition-id="nombre" data-composition-src="compositions/nombre.html" data-start="28.41" data-duration="2.17" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="fondo" class="clip" style="z-index: 1" data-composition-id="fondo" data-composition-src="compositions/fondo.html" data-start="30.58" data-duration="18.67" data-track-index="0" data-width="1080" data-height="1920"></div>
+      <div id="letreros" class="clip" style="z-index: 8" data-composition-id="letreros" data-composition-src="compositions/letreros.html" data-start="30.58" data-duration="18.67" data-track-index="6" data-width="1080" data-height="1920"></div>
+
+      <!-- El celular: dos pantallas reales de "Nuevo hábito" y después la app en movimiento -->
+      <div id="cel" data-layout-allow-overflow>
+        <div id="cel-pantalla">
+          <img class="cap" id="cap-despues" src="assets/cap-despues.png" alt="" />
+          <img class="cap" id="cap-minimo" src="assets/cap-minimo.png" alt="" />
+          <div id="cel-aro"></div>
+          <video id="cel-video" class="clip" src="assets/celular.mp4" playsinline muted data-start="40.01" data-duration="9.24" data-media-start="3.79" data-track-index="7"></video>
+        </div>
+      </div>
+
+      <audio id="voz" src="assets/voz.wav" data-start="0.3" data-duration="47.6" data-media-start="0" data-track-index="3" data-volume="1"></audio>
+      <audio id="efectos" src="assets/efectos.wav" data-start="0" data-duration="49.25" data-media-start="0" data-track-index="5" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      // El celular sube con la pantalla de "¿Después de qué?", pasa a la versión mínima, y después es la app en movimiento
+      tl.set("#cap-despues", { opacity: 1 }, 33.32);
+      tl.fromTo("#cel", { autoAlpha: 1, x: 97, y: 1960, scale: 1, rotation: 7 }, { x: 97, y: 474.8, scale: 1, autoAlpha: 1, rotation: -1.5, duration: 0.55, ease: "power3.out", immediateRender: false }, 33.42);
+      tl.to("#cel", { x: 97, y: 474.8, scale: 1, rotation: -0.5, duration: 2, ease: "none" }, 34.02);
+      tl.set("#cap-minimo", { opacity: 1 }, 36.766);
+      tl.set("#cap-despues", { opacity: 0 }, 36.766);
+      tl.to("#cel", { x: 70.42, y: 428.288, scale: 1.06, rotation: 1.2, duration: 0.45, ease: "back.out(1.4)" }, 36.766);
+      tl.fromTo("#cel-aro", { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)", immediateRender: false }, 34.47);
+      tl.fromTo("#cel-aro", { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2)", immediateRender: false }, 37.2);
+      tl.set("#cel-aro", { opacity: 0 }, 36.766);
+      tl.set("#cel-aro", { opacity: 0 }, 40.006);
+      tl.set("#cel-video", { opacity: 1 }, 40.006);
+      tl.set("#cap-minimo", { opacity: 0 }, 40.006);
+      tl.to("#cel", { x: 74.85, y: 144.31, scale: 1.05, rotation: -1, duration: 0.5, ease: "power2.inOut" }, 40.006);
+      tl.to("#cel", { x: 43.84, y: 143.36, scale: 1.12, rotation: 1, duration: 0.6, ease: "power2.inOut" }, 42.822);
+      tl.to("#cel", { x: -9.32, y: 38.72, scale: 1.24, rotation: -1, duration: 0.4, ease: "back.out(1.4)" }, 43.74);
+      tl.to("#cel", { x: 141.3, y: 658.6, scale: 0.9, rotation: 0, duration: 0.6, ease: "power2.inOut" }, 44.55);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .tj { position: absolute; opacity: 0; }
+        .cuad, .caja { background: #F4EFE6; border: 6px solid #0F1113; border-radius: 34px; box-shadow: 10px 10px 0 #0F1113; }
+        .cuad { display: flex; align-items: center; justify-content: center; }
+        .cuad svg { width: 112px; height: 112px; display: block; }
+        .raya { position: absolute; left: 14px; right: 14px; top: 50%; height: 12px; margin-top: -6px; background: #0F1113; border-radius: 6px; opacity: 1; }
+        .num { position: relative; width: 190px; height: 150px; }
+        .r-raya { flex: 1; height: 22px; border-radius: 11px; background: #B9B2A6; }
+        .casilla { width: 70px; height: 70px; border: 6px solid #0F1113; border-radius: 16px; flex: none; }
+        .r-txt { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 64px; line-height: 1; color: #0F1113; white-space: nowrap; }
+        .num b { position: absolute; inset: 0; text-align: right; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 168px; line-height: 150px; color: #0F1113; }
+        .rot { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 50px; line-height: 1.05; color: #6E675C; white-space: nowrap; }
+        .e-rot { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 58px; line-height: 1; letter-spacing: 0.05em; color: #9A5B00; }
+        .e-txt { margin: 16px 0 0; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 66px; line-height: 1.08; color: #0F1113; }
+        .e-fte { margin: 20px 0 0; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 32px; line-height: 1; color: #6E675C; }
+        .m-ico { width: 176px; height: 176px; border-radius: 40px; background: #FFB547; display: flex; align-items: center; justify-content: center; }
+        .m-ico svg { width: 122px; height: 122px; display: block; }
+        .m-txt { display: flex; flex-direction: column; }
+        .m-txt b { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 176px; line-height: 0.95; color: #F4EFE6; }
+        .m-txt i { font-style: normal; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 54px; line-height: 1.1; color: #A89F92; }
+        .pas { height: 112px; padding: 0 44px; border-radius: 56px; background: #F4EFE6; color: #0F1113; border: 5px solid #0F1113; box-shadow: 8px 8px 0 #0F1113; display: flex; align-items: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 46px; white-space: nowrap; }
+        .pas b { font-weight: 600; color: #9A5B00; margin: 0 0 0 12px; }
+        #tj-0 { left: 150px; top: 1000px; width: 780px; height: 150px; display: flex; align-items: center; gap: 28px; padding: 0 40px; }
+        #tj-1 { left: 150px; top: 1000px; width: 780px; height: 150px; display: flex; align-items: center; gap: 28px; padding: 0 40px; }
+        #tj-2 { left: 240px; top: 985px; width: 600px; height: 190px; display: flex; align-items: center; justify-content: center; gap: 26px; }
+        #tj-3-0 { left: 56px; top: 300px; width: 168px; height: 168px; }
+        #tj-3-1 { left: 56px; top: 490px; width: 168px; height: 168px; }
+        #tj-3-2 { left: 56px; top: 680px; width: 168px; height: 168px; }
+        #tj-4 { left: 0; right: 0; top: 1035px; display: flex; justify-content: center; }
+      </style>
+      <div id="root" data-composition-id="tarjetas" data-width="1080" data-height="1920">
+        <div class="tj caja" id="tj-0"><span class="casilla"></span><span class="r-raya"></span></div>
+        <div class="tj caja" id="tj-1"><span class="casilla"></span><span class="r-txt">Organizar el cuarto</span></div>
+        <div class="tj caja" id="tj-2"><span class="num"><b id="tj-2-n0">1</b><b id="tj-2-n1" style="opacity: 0">3</b><b id="tj-2-n2" style="opacity: 0">6</b><b id="tj-2-n3" style="opacity: 0">8</b></span><span class="rot">pasos</span></div>
+        <div class="tj cuad" id="tj-3-0"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" /></svg></div>
+        <div class="tj cuad" id="tj-3-1"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></svg></div>
+        <div class="tj cuad" id="tj-3-2"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0" /><path d="M3.103 6.034h17.794" /><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z" /></svg></div>
+        <div class="tj" id="tj-4"><span class="pas">Racha · app · <b>$37.900</b>, un solo pago</span></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#tj-0", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 12.762667);
+          tl.to("#tj-0", { opacity: 0, scale: 0.85, duration: 0.12, ease: "power2.in" }, 15.976);
+          tl.fromTo("#tj-1", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 16.762667);
+          tl.to("#tj-1", { opacity: 0, scale: 0.85, duration: 0.12, ease: "power2.in" }, 18.776);
+          tl.fromTo("#tj-2", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 18.762667);
+          tl.set("#tj-2-n0", { opacity: 0 }, 19.096);
+          tl.set("#tj-2-n1", { opacity: 1 }, 19.096);
+          tl.set("#tj-2-n1", { opacity: 0 }, 19.186);
+          tl.set("#tj-2-n2", { opacity: 1 }, 19.186);
+          tl.set("#tj-2-n2", { opacity: 0 }, 19.276);
+          tl.set("#tj-2-n3", { opacity: 1 }, 19.276);
+          tl.fromTo("#tj-2", { scale: 1.12 }, { scale: 1, duration: 0.2, ease: "back.out(3)", immediateRender: false }, 19.276);
+          tl.to("#tj-2", { opacity: 0, scale: 0.85, duration: 0.12, ease: "power2.in" }, 19.769333);
+          tl.fromTo("#tj-3-0", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 20.596);
+          tl.to("#tj-3-0", { opacity: 0, scale: 0.85, duration: 0.12, ease: "power2.in" }, 24.662667);
+          tl.fromTo("#tj-3-1", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 21.962667);
+          tl.to("#tj-3-1", { opacity: 0, scale: 0.85, duration: 0.12, ease: "power2.in" }, 24.662667);
+          tl.fromTo("#tj-3-2", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 23.129333);
+          tl.to("#tj-3-2", { opacity: 0, scale: 0.85, duration: 0.12, ease: "power2.in" }, 24.662667);
+          tl.fromTo("#tj-4", { opacity: 0, scale: 0.4, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(2)" }, 39.162667);
+          window.__timelines["tarjetas"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

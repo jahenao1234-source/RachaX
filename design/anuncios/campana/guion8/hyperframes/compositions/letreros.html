@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; white-space: nowrap; text-transform: uppercase; text-align: center; opacity: 0; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 2px 28px 12px; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 2px 28px 12px; }
+        .caja { display: inline-block; background: #F4EFE6; color: #0F1113; padding: 0 26px 10px; border: 6px solid #0F1113; box-shadow: 8px 8px 0 #0F1113; }
+        .caja.amb { background: #FFB547; }
+        .grupo { top: 276px; gap: 14px; }
+        .n1 { font-size: 84px; }
+        .n2 { font-size: 104px; }
+        .num { display: inline-flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 48px; background: #0F1113; color: #FFB547; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 76px; line-height: 1; margin-right: 18px; vertical-align: middle; padding-bottom: 8px; }
+        #t-marca { display: flex; align-items: center; gap: 18px; opacity: 0; }
+        #t-ico { width: 116px; height: 116px; border-radius: 26px; background: #FFB547; border: 6px solid #0F1113; display: flex; align-items: center; justify-content: center; }
+        #t-ico svg { width: 78px; height: 78px; display: block; }
+        #t-marca .l { font-size: 112px; opacity: 1; }
+        #t-pastilla { position: absolute; left: 0; right: 0; top: 1136px; display: flex; justify-content: center; opacity: 0; }
+        #t-pastilla div { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #FFB547; color: #0F1113; border: 6px solid #0F1113; border-radius: 40px; padding: 20px 46px 26px; box-shadow: 10px 10px 0 #0F1113; font-family: "Barlow", sans-serif; font-weight: 600; white-space: nowrap; }
+        #t-pastilla b { font-size: 46px; color: #0F1113; font-weight: 600; }
+        #t-pastilla span { font-size: 42px; }
+      </style>
+      <div id="root" data-composition-id="letreros" data-width="1080" data-height="1920">
+        <div class="col grupo" id="t-g1">
+          <p class="l n1" id="t-a"><span class="num">1</span><span class="caja">De toda esa lista</span></p>
+          <p class="l n2" id="t-b"><span class="caja amb">escoges una sola cosa.</span></p>
+        </div>
+        <div class="col grupo" id="t-g2">
+          <p class="l n1" id="t-c"><span class="num">2</span><span class="caja">La haces después de</span></p>
+          <p class="l n1" id="t-d"><span class="caja amb">algo que ya haces</span></p>
+          <p class="l n1" id="t-e"><span class="caja">todos los días.</span></p>
+        </div>
+        <div class="col grupo" id="t-g3">
+          <p class="l n1" id="t-f"><span class="num">3</span><span class="caja">Y le dejas</span></p>
+          <p class="l n1" id="t-g"><span class="caja amb">una versión pequeña</span></p>
+          <p class="l n1" id="t-h"><span class="caja">para el día que no puedas.</span></p>
+        </div>
+        <div class="col grupo" id="t-g4">
+          <p class="l n1" id="t-i"><span class="caja">El método viene dentro de</span></p>
+          <div id="t-marca">
+            <div id="t-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F1113" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></div>
+            <p class="l"><span class="caja amb">Racha,</span></p>
+          </div>
+        </div>
+        <div class="col grupo" id="t-g5">
+          <p class="l n1" id="t-j"><span class="caja">una app que</span></p>
+          <p class="l n1" id="t-k"><span class="caja amb">te lo recuerda</span></p>
+          <p class="l n1" id="t-m"><span class="caja">y lleva la cuenta por ti.</span></p>
+        </div>
+        <div class="col grupo" id="t-g6">
+          <p class="l n1" id="t-n"><span class="caja">Si quieres verla por dentro,</span></p>
+          <p class="l" id="t-o" style="font-size: 150px"><span class="negra">te la muestro.</span></p>
+        </div>
+        <div id="t-pastilla"><div><b>Método Anti-Abandono · app Racha</b><span>$37.900 · un solo pago</span></div></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#t-a", { opacity: 0, y: 34, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 0.06);
+          tl.fromTo("#t-b", { opacity: 0, scale: 1.5, rotation: -4.5 }, { opacity: 1, scale: 1, rotation: 1.5, duration: 0.18, ease: "power4.in", immediateRender: false }, 0.99);
+          tl.to("#t-g1", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 2.88);
+          tl.fromTo("#t-c", { opacity: 0, y: 34, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 3.04);
+          tl.fromTo("#t-d", { opacity: 0, scale: 1.5, rotation: -7.5 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.18, ease: "power4.in", immediateRender: false }, 3.8);
+          tl.fromTo("#t-e", { opacity: 0, y: 34, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 4.89);
+          tl.to("#t-g2", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 6.03);
+          tl.fromTo("#t-f", { opacity: 0, y: 34, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 6.19);
+          tl.fromTo("#t-g", { opacity: 0, scale: 1.5, rotation: -4.5 }, { opacity: 1, scale: 1, rotation: 1.5, duration: 0.18, ease: "power4.in", immediateRender: false }, 6.53);
+          tl.fromTo("#t-h", { opacity: 0, y: 34, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 8.02);
+          tl.to("#t-g3", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 9.33);
+          tl.fromTo("#t-i", { opacity: 0, y: 34, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 9.49);
+          tl.to("#t-g4", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 11.18);
+          tl.fromTo("#t-marca", { opacity: 0, scale: 0.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.3, ease: "back.out(2)", immediateRender: false }, 10.66);
+          tl.fromTo("#t-j", { opacity: 0, y: 34, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 11.34);
+          tl.fromTo("#t-k", { opacity: 0, scale: 1.5, rotation: -4.5 }, { opacity: 1, scale: 1, rotation: 1.5, duration: 0.18, ease: "power4.in", immediateRender: false }, 11.74);
+          tl.fromTo("#t-m", { opacity: 0, y: 34, scale: 0.94, rotation: -1 }, { opacity: 1, y: 0, scale: 1, rotation: -1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 12.86);
+          tl.to("#t-g5", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 13.97);
+          tl.fromTo("#t-n", { opacity: 0, y: 34, scale: 0.94, rotation: 1 }, { opacity: 1, y: 0, scale: 1, rotation: 1, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 14.13);
+          tl.fromTo("#t-o", { opacity: 0, scale: 1.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.18, ease: "power4.in", immediateRender: false }, 15.52);
+          tl.fromTo("#t-pastilla", { opacity: 0, y: 60, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.7)", immediateRender: false }, 16.11);
+          window.__timelines["letreros"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; white-space: nowrap; text-transform: uppercase; text-align: center; opacity: 0; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 2px 28px 12px; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 2px 28px 12px; }
+        .caja { display: inline-block; background: #F4EFE6; color: #0F1113; padding: 0 26px 10px; border: 6px solid #0F1113; box-shadow: 8px 8px 0 #0F1113; }
+        .caja.amb { background: #FFB547; }
+        #c-col { top: 600px; gap: 34px; }
+        #c-a { font-size: 82px; color: #F4EFE6; letter-spacing: 0.02em; }
+        #c-b { font-size: 132px; }
+        #c-c { font-size: 118px; }
+        .papel { display: inline-block; background: #F4EFE6; color: #0F1113; padding: 6px 34px 16px; box-shadow: 10px 10px 0 rgba(255, 181, 71, 0.9); }
+      </style>
+      <div id="root" data-composition-id="creencia" data-width="1080" data-height="1920">
+        <div class="fondo" style="background: #0B0C0F"></div>
+        <div class="col" id="c-col">
+          <p class="l" id="c-a">Te han dicho que</p>
+          <p class="l" id="c-b"><span class="papel">«te faltan ganas»</span></p>
+          <p class="l" id="c-c"><span class="papel">«te falta disciplina»</span></p>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#c-a", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.2, ease: "power2.out" }, 0.06);
+          tl.fromTo("#c-b", { opacity: 0, scale: 1.5, rotation: -9 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.18, ease: "power4.in", immediateRender: false }, 0.56);
+          tl.fromTo("#c-c", { opacity: 0, scale: 1.5, rotation: -4 }, { opacity: 1, scale: 1, rotation: 2, duration: 0.18, ease: "power4.in", immediateRender: false }, 1.68);
+          window.__timelines["creencia"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

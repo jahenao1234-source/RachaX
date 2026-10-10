@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .fondo { position: absolute; inset: 0; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; white-space: nowrap; text-transform: uppercase; text-align: center; opacity: 0; }
+        .ambar { display: inline-block; background: #FFB547; color: #0F1113; padding: 2px 28px 12px; }
+        .negra { display: inline-block; background: #0F1113; color: #FFB547; padding: 2px 28px 12px; }
+        .caja { display: inline-block; background: #F4EFE6; color: #0F1113; padding: 0 26px 10px; border: 6px solid #0F1113; box-shadow: 8px 8px 0 #0F1113; }
+        .caja.amb { background: #FFB547; }
+        .g { top: 330px; gap: 20px; }
+        #d-a, #d-c, #d-e { font-size: 92px; color: #F4EFE6; }
+        #d-b { font-size: 138px; }
+        #d-d { font-size: 96px; }
+        #d-f { font-size: 230px; }
+        #d-g { font-size: 96px; color: #F4EFE6; }
+        #d-fila { position: absolute; left: 82px; top: 1010px; display: flex; gap: 22px; }
+        .dia { width: 112px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .dia i { font: 600 40px "Barlow", sans-serif; font-style: normal; color: #F4EFE6; opacity: 0.6; }
+        .o { width: 112px; height: 112px; border-radius: 56px; border: 6px dashed rgba(244, 239, 230, 0.45); display: flex; align-items: center; justify-content: center; }
+        .o svg { width: 62px; height: 62px; opacity: 0; }
+        .malo { font: 600 34px "Barlow", sans-serif; color: #FFB547; white-space: nowrap; opacity: 0; }
+      </style>
+      <div id="root" data-composition-id="dias" data-width="1080" data-height="1920">
+        <div class="fondo" style="background: #0B0C0F"></div>
+        <div class="col g" id="d-g1">
+          <p class="l" id="d-a">Las ganas sirven</p>
+          <p class="l" id="d-b"><span class="ambar">en los días buenos.</span></p>
+        </div>
+        <div class="col g" id="d-g2">
+          <p class="l" id="d-c">Y los días buenos</p>
+          <p class="l" id="d-d"><span class="caja">nunca fueron el problema.</span></p>
+        </div>
+        <div class="col g" id="d-g3">
+          <p class="l" id="d-e">Lo que te falta es</p>
+          <p class="l" id="d-f"><span class="ambar">un sistema</span></p>
+          <p class="l" id="d-g">para los días malos.</p>
+        </div>
+        <div id="d-fila">
+          <div class="dia"><i>L</i><div class="o" id="d-o0"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div></div>
+          <div class="dia"><i>M</i><div class="o" id="d-o1"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div></div>
+          <div class="dia"><i>M</i><div class="o" id="d-o2"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div></div>
+          <div class="dia"><i>J</i><div class="o" id="d-o3"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div><span class="malo" id="d-m3" data-layout-allow-overflow>día malo</span></div>
+          <div class="dia"><i>V</i><div class="o" id="d-o4"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div></div>
+          <div class="dia"><i>S</i><div class="o" id="d-o5"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div></div>
+          <div class="dia"><i>D</i><div class="o" id="d-o6"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div><span class="malo" id="d-m6" data-layout-allow-overflow>día malo</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#d-a", { opacity: 0, y: 34, scale: 0.94, rotation: 0 }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 0.06);
+          tl.fromTo("#d-b", { opacity: 0, scale: 1.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.18, ease: "power4.in", immediateRender: false }, 0.8);
+          tl.fromTo("#d-o0", { scale: 0.4, backgroundColor: "rgba(255,181,71,0)" }, { scale: 1, backgroundColor: "#FFB547", duration: 0.2, ease: "back.out(2.4)", immediateRender: false }, 0.31);
+          tl.fromTo("#d-o1", { scale: 0.4, backgroundColor: "rgba(255,181,71,0)" }, { scale: 1, backgroundColor: "#FFB547", duration: 0.2, ease: "back.out(2.4)", immediateRender: false }, 0.47);
+          tl.fromTo("#d-o2", { scale: 0.4, backgroundColor: "rgba(255,181,71,0)" }, { scale: 1, backgroundColor: "#FFB547", duration: 0.2, ease: "back.out(2.4)", immediateRender: false }, 0.63);
+          tl.fromTo("#d-o4", { scale: 0.4, backgroundColor: "rgba(255,181,71,0)" }, { scale: 1, backgroundColor: "#FFB547", duration: 0.2, ease: "back.out(2.4)", immediateRender: false }, 0.79);
+          tl.fromTo("#d-o5", { scale: 0.4, backgroundColor: "rgba(255,181,71,0)" }, { scale: 1, backgroundColor: "#FFB547", duration: 0.2, ease: "back.out(2.4)", immediateRender: false }, 0.95);
+          tl.fromTo("#d-o0 svg", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, 0.36);
+          tl.fromTo("#d-o1 svg", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, 0.52);
+          tl.fromTo("#d-o2 svg", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, 0.68);
+          tl.fromTo("#d-o4 svg", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, 0.84);
+          tl.fromTo("#d-o5 svg", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, 1);
+          tl.to("#d-g1", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 2.56);
+          tl.fromTo("#d-c", { opacity: 0, y: 34, scale: 0.94, rotation: 0 }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 2.72);
+          tl.fromTo("#d-d", { opacity: 0, scale: 1.5, rotation: -4.5 }, { opacity: 1, scale: 1, rotation: 1.5, duration: 0.18, ease: "power4.in", immediateRender: false }, 3.85);
+          tl.fromTo("#d-o3", { scale: 1 }, { scale: 1.25, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 3, immediateRender: false }, 4.09);
+          tl.fromTo("#d-o6", { scale: 1 }, { scale: 1.25, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 3, immediateRender: false }, 4.09);
+          tl.to("#d-g2", { opacity: 0, y: -40, duration: 0.14, ease: "power2.in" }, 5.27);
+          tl.fromTo("#d-e", { opacity: 0, y: 34, scale: 0.94, rotation: 0 }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 5.43);
+          tl.fromTo("#d-f", { opacity: 0, scale: 1.5, rotation: -8 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.18, ease: "power4.in", immediateRender: false }, 6.11);
+          tl.fromTo("#d-g", { opacity: 0, y: 34, scale: 0.94, rotation: 0 }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.2, ease: "back.out(1.7)", immediateRender: false }, 7.2);
+          tl.to("#d-o0", { opacity: 0.22, duration: 0.3 }, 7.2);
+          tl.to("#d-o1", { opacity: 0.22, duration: 0.3 }, 7.2);
+          tl.to("#d-o2", { opacity: 0.22, duration: 0.3 }, 7.2);
+          tl.to("#d-o4", { opacity: 0.22, duration: 0.3 }, 7.2);
+          tl.to("#d-o5", { opacity: 0.22, duration: 0.3 }, 7.2);
+          tl.to("#d-o3", { borderColor: "#FFB547", scale: 1.3, duration: 0.25, ease: "back.out(2)" }, 7.2);
+          tl.to("#d-o6", { borderColor: "#FFB547", scale: 1.3, duration: 0.25, ease: "back.out(2)" }, 7.2);
+          tl.fromTo("#d-m3", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.2, immediateRender: false }, 7.32);
+          tl.fromTo("#d-m6", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.2, immediateRender: false }, 7.32);
+          window.__timelines["dias"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

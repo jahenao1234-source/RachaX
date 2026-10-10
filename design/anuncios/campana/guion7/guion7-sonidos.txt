@@ -1,0 +1,5 @@
+  0.50 s  tachar   -8 dB
+  0.68 s  golpe    -5 dB
+  1.27 s  whoosh   -6 dB
+ 35.53 s  golpe    -3 dB
+ 36.80 s  pop      -5 dB

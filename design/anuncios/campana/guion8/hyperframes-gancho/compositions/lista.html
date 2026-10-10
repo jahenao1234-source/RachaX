@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        #golpe { position: absolute; inset: 0; }
+        #cam { position: absolute; inset: 0; transform-origin: 50% 55%; }
+        .im { position: absolute; left: -108px; top: -192px; width: 1296px; height: 2304px; display: block; opacity: 0; }
+        #im1 { opacity: 1; }
+        #im1 { transform-origin: 38% 56%; }
+        #im2 { transform-origin: 40% 60%; }
+        #im3 { transform-origin: 42% 60%; }
+        #im4 { transform-origin: 52% 68%; }
+        #im5 { transform-origin: 66% 46%; }
+        #im6 { transform-origin: 45% 52%; }
+        #im7 { transform-origin: 45% 55%; }
+        #osc { position: absolute; inset: 0; background: #000; opacity: 0; }
+        .lid { position: absolute; left: -260px; width: 1600px; background: #000; }
+        #lid-a { top: -400px; height: 1300px; border-radius: 0 0 50% 50% / 0 0 24% 24%; }
+        #lid-b { top: 900px; height: 1400px; border-radius: 50% 50% 0 0 / 20% 20% 0 0; }
+        .b { position: absolute; opacity: 0; transform-origin: 30% 50%; font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase; white-space: nowrap; line-height: 0.9; }
+        .b b { display: block; font-size: 116px; letter-spacing: -0.01em; color: #fff; text-shadow: 0 6px 0 rgba(0, 0, 0, 0.6), 0 0 34px rgba(0, 0, 0, 0.7); }
+        .b span { display: inline-block; margin-top: 4px; padding: 5px 20px 9px; font-size: 54px; line-height: 1; background: #FFB547; color: #0F1113; box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.6); }
+        #b1 { left: 64px; top: 226px; z-index: 10; }
+        #b2 { left: 150px; top: 400px; z-index: 11; }
+        #b3 { left: 52px; top: 574px; z-index: 12; }
+        #b4 { left: 128px; top: 748px; z-index: 13; }
+        #b5 { left: 70px; top: 922px; z-index: 14; }
+        #b6 { left: 156px; top: 1096px; z-index: 15; }
+        #b7 { left: 60px; top: 1270px; z-index: 16; }
+      </style>
+      <div id="root" data-composition-id="lista" data-width="1080" data-height="1920">
+        <div id="golpe" data-layout-allow-overflow>
+          <div id="cam" data-layout-allow-overflow>
+            <img class="im" id="im1" src="assets/im1.jpg" alt="" data-layout-allow-overflow />
+            <img class="im" id="im2" src="assets/im2.jpg" alt="" data-layout-allow-overflow />
+            <img class="im" id="im3" src="assets/im3.jpg" alt="" data-layout-allow-overflow />
+            <img class="im" id="im4" src="assets/im4.jpg" alt="" data-layout-allow-overflow />
+            <img class="im" id="im5" src="assets/im5.jpg" alt="" data-layout-allow-overflow />
+            <img class="im" id="im6" src="assets/im6.jpg" alt="" data-layout-allow-overflow />
+            <img class="im" id="im7" src="assets/im7.jpg" alt="" data-layout-allow-overflow />
+          </div>
+        </div>
+        <div id="osc"></div>
+        <div class="lid" id="lid-a" data-layout-allow-overflow></div>
+        <div class="lid" id="lid-b" data-layout-allow-overflow></div>
+        <div class="b" id="b1" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>levantarte más temprano</span></div>
+        <div class="b" id="b2" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>hacer ejercicio</span></div>
+        <div class="b" id="b3" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>leer más</span></div>
+        <div class="b" id="b4" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>dejar el celular por la noche</span></div>
+        <div class="b" id="b5" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>tomar más agua</span></div>
+        <div class="b" id="b6" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>organizar el cuarto</span></div>
+        <div class="b" id="b7" data-layout-allow-overflow data-layout-allow-overlap data-layout-allow-occlusion><b data-layout-allow-overlap data-layout-allow-occlusion>Deberías</b><span data-layout-allow-overlap data-layout-allow-occlusion>retomar el inglés</span></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#lid-a", { y: -430 }, { y: -1260, duration: 0.42, ease: "power2.out" }, 0);
+          tl.fromTo("#lid-b", { y: 330 }, { y: 1320, duration: 0.42, ease: "power2.out" }, 0);
+          tl.fromTo("#cam", { filter: "blur(14px) brightness(0.8)" }, { filter: "blur(0px) brightness(1)", duration: 0.5, ease: "power2.out" }, 0);
+          tl.fromTo("#osc", { opacity: 0 }, { opacity: 0.38, duration: 11.83, ease: "power1.in" }, 0);
+          tl.fromTo("#cam", { scale: 1 }, { scale: 1.07, duration: 11.83, ease: "none" }, 0);
+          tl.fromTo("#im1", { scale: 1.03, rotation: -0.6 }, { scale: 1.15, rotation: 0.5, duration: 2.22, ease: "none" }, 0);
+          tl.fromTo("#b1", { opacity: 1, y: -1500, rotation: -12 }, { opacity: 1, y: 0, rotation: -4, duration: 0.2, ease: "power2.in", immediateRender: false }, 0.2);
+          tl.fromTo("#b1", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 0.4);
+          tl.fromTo("#golpe", { y: 12, rotation: -0.3 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 0.4);
+          tl.set("#im2", { opacity: 1 }, 2.216);
+          tl.set("#im1", { opacity: 0 }, 2.216);
+          tl.fromTo("#im2", { scale: 1.03, rotation: 0.6 }, { scale: 1.15, rotation: -0.5, duration: 1.69, ease: "none", immediateRender: false }, 2.216);
+          tl.fromTo("#b2", { opacity: 1, y: -1500, rotation: 9 }, { opacity: 1, y: 0, rotation: 3, duration: 0.2, ease: "power2.in", immediateRender: false }, 2.12);
+          tl.fromTo("#b2", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 2.32);
+          tl.fromTo("#golpe", { y: 16, rotation: 0.38 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 2.32);
+          tl.set("#im3", { opacity: 1 }, 3.906);
+          tl.set("#im2", { opacity: 0 }, 3.906);
+          tl.fromTo("#im3", { scale: 1.03, rotation: -0.6 }, { scale: 1.15, rotation: 0.5, duration: 0.88, ease: "none", immediateRender: false }, 3.906);
+          tl.fromTo("#b3", { opacity: 1, y: -1500, rotation: -9 }, { opacity: 1, y: 0, rotation: -3, duration: 0.2, ease: "power2.in", immediateRender: false }, 3.81);
+          tl.fromTo("#b3", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 4.01);
+          tl.fromTo("#golpe", { y: 20, rotation: -0.45999999999999996 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 4.01);
+          tl.set("#im4", { opacity: 1 }, 4.786);
+          tl.set("#im3", { opacity: 0 }, 4.786);
+          tl.fromTo("#im4", { scale: 1.03, rotation: 0.6 }, { scale: 1.15, rotation: -0.5, duration: 2.08, ease: "none", immediateRender: false }, 4.786);
+          tl.fromTo("#b4", { opacity: 1, y: -1500, rotation: 12 }, { opacity: 1, y: 0, rotation: 4, duration: 0.2, ease: "power2.in", immediateRender: false }, 4.69);
+          tl.fromTo("#b4", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 4.89);
+          tl.fromTo("#golpe", { y: 24, rotation: 0.54 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 4.89);
+          tl.set("#im5", { opacity: 1 }, 6.866);
+          tl.set("#im4", { opacity: 0 }, 6.866);
+          tl.fromTo("#im5", { scale: 1.03, rotation: -0.6 }, { scale: 1.15, rotation: 0.5, duration: 1.45, ease: "none", immediateRender: false }, 6.866);
+          tl.fromTo("#b5", { opacity: 1, y: -1500, rotation: -12 }, { opacity: 1, y: 0, rotation: -4, duration: 0.2, ease: "power2.in", immediateRender: false }, 6.77);
+          tl.fromTo("#b5", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 6.97);
+          tl.fromTo("#golpe", { y: 28, rotation: -0.62 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 6.97);
+          tl.set("#im6", { opacity: 1 }, 8.316);
+          tl.set("#im5", { opacity: 0 }, 8.316);
+          tl.fromTo("#im6", { scale: 1.03, rotation: 0.6 }, { scale: 1.15, rotation: -0.5, duration: 1.6, ease: "none", immediateRender: false }, 8.316);
+          tl.fromTo("#b6", { opacity: 1, y: -1500, rotation: 9 }, { opacity: 1, y: 0, rotation: 3, duration: 0.2, ease: "power2.in", immediateRender: false }, 8.22);
+          tl.fromTo("#b6", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 8.42);
+          tl.fromTo("#golpe", { y: 32, rotation: 0.7 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 8.42);
+          tl.set("#im7", { opacity: 1 }, 9.916);
+          tl.set("#im6", { opacity: 0 }, 9.916);
+          tl.fromTo("#im7", { scale: 1.03, rotation: -0.6 }, { scale: 1.15, rotation: 0.5, duration: 2.11, ease: "none", immediateRender: false }, 9.916);
+          tl.fromTo("#b7", { opacity: 1, y: -1500, rotation: -6 }, { opacity: 1, y: 0, rotation: -2, duration: 0.2, ease: "power2.in", immediateRender: false }, 9.82);
+          tl.fromTo("#b7", { scaleY: 0.86 }, { scaleY: 1, duration: 0.16, ease: "back.out(3)", immediateRender: false }, 10.02);
+          tl.fromTo("#golpe", { y: 36, rotation: -0.78 }, { y: 0, rotation: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 10.02);
+          tl.to("#b1", { y: 2300, rotation: -20, duration: 0.25, ease: "power2.in" }, 11.9);
+          tl.to("#b2", { y: 2300, rotation: 15, duration: 0.265, ease: "power2.in" }, 11.88);
+          tl.to("#b3", { y: 2300, rotation: -15, duration: 0.28, ease: "power2.in" }, 11.86);
+          tl.to("#b4", { y: 2300, rotation: 20, duration: 0.295, ease: "power2.in" }, 11.84);
+          tl.to("#b5", { y: 2300, rotation: -20, duration: 0.31, ease: "power2.in" }, 11.82);
+          tl.to("#b6", { y: 2300, rotation: 15, duration: 0.325, ease: "power2.in" }, 11.8);
+          tl.to("#b7", { y: 2300, rotation: -10, duration: 0.34, ease: "power2.in" }, 11.78);
+          tl.to("#cam", { opacity: 0, duration: 0.14, ease: "power1.in" }, 11.83);
+          tl.to("#osc", { opacity: 0, duration: 0.14 }, 11.83);
+          window.__timelines["lista"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

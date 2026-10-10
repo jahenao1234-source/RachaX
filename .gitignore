@@ -40,3 +40,8 @@ design/anuncios/**/hyperframes/assets/
 design/anuncios/**/hyperframes/snapshots/
 design/anuncios/**/hyperframes/renders/
 design/anuncios/**/hyperframes/node_modules/
+# Lo mismo para los proyectos de una parte del anuncio (hyperframes-gancho, etc.)
+design/anuncios/**/hyperframes-*/assets/
+design/anuncios/**/hyperframes-*/snapshots/
+design/anuncios/**/hyperframes-*/renders/
+design/anuncios/**/hyperframes-*/node_modules/

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        #p-fondo { position: absolute; inset: 0; background: #0B0C0F; }
+        .col { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; }
+        #p-q { top: 860px; margin: 0; left: 0; right: 0; position: absolute; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 64px; line-height: 1.15; color: #F4EFE6; }
+        #p-q span { opacity: 0; }
+        #p-col { top: 800px; gap: 18px; }
+        .l { margin: 0; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; white-space: nowrap; text-transform: uppercase; opacity: 0; }
+        #p-a { font-size: 104px; color: #F4EFE6; }
+        #p-b { font-size: 102px; }
+        #p-b span { display: inline-block; background: #FFB547; color: #0F1113; padding: 2px 30px 12px; }
+      </style>
+      <div id="root" data-composition-id="pregunta" data-width="1080" data-height="1920">
+        <div id="p-fondo"></div>
+        <p id="p-q"><span id="p-w0">¿Hace</span> <span id="p-w1">cuánto</span> <span id="p-w2">te</span> <span id="p-w3">dices</span> <span id="p-w4">lo</span> <span id="p-w5">mismo?</span></p>
+        <div class="col" id="p-col">
+          <p class="l" id="p-a">Si no lo has hecho,</p>
+          <p class="l" id="p-b"><span>no es por lo que crees.</span></p>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.to("#p-w0", { opacity: 1, duration: 0.12 }, 0.33);
+          tl.to("#p-w1", { opacity: 1, duration: 0.12 }, 0.56);
+          tl.to("#p-w2", { opacity: 1, duration: 0.12 }, 1.04);
+          tl.to("#p-w3", { opacity: 1, duration: 0.12 }, 1.15);
+          tl.to("#p-w4", { opacity: 1, duration: 0.12 }, 1.6);
+          tl.to("#p-w5", { opacity: 1, duration: 0.12 }, 1.68);
+          tl.to("#p-q", { y: -250, scale: 0.78, opacity: 0.45, duration: 0.3, ease: "power2.inOut" }, 2.2);
+          tl.fromTo("#p-a", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 2.4);
+          tl.fromTo("#p-b", { opacity: 0, scale: 1.5, rotation: -5 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.18, ease: "power4.in", immediateRender: false }, 3.39);
+          window.__timelines["pregunta"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

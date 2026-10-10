@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .gr { position: absolute; left: 0; right: 0; top: 1200px; margin: 0; text-align: center; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 60px; line-height: 1; color: #ffffff; text-shadow: 0 3px 0 rgba(15, 17, 19, 0.85), 0 0 16px rgba(15, 17, 19, 0.85), 0 0 4px rgba(15, 17, 19, 0.9); opacity: 0; }
+        .gr .k { color: #FFB547; }
+        .bg { position: absolute; left: 0; right: 0; top: 985px; display: flex; flex-direction: column; align-items: center; }
+        .bg p { margin: 0; white-space: nowrap; text-align: center; text-shadow: 0 3px 0 rgba(15, 17, 19, 0.85), 0 0 16px rgba(15, 17, 19, 0.85), 0 0 4px rgba(15, 17, 19, 0.9); opacity: 0; }
+        .bg .ch { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 58px; line-height: 1.05; color: #ffffff; }
+        .bg .gd { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 188px; line-height: 0.95; letter-spacing: 0.005em; color: #FFB547; }
+      </style>
+      <div id="root" data-composition-id="letras" data-width="1080" data-height="1920">
+        <p class="gr" id="gr-0">Te dijeron que dejas</p>
+        <p class="gr" id="gr-1">las cosas para <span class="k">después</span></p>
+        <p class="gr" id="gr-2">por <span class="k">pereza.</span></p>
+        <div class="bg" id="bg-0"><p class="ch" id="bg-0-a">no es</p><p class="gd" id="bg-0-g">PEREZA</p></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#gr-0", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 1.22);
+          tl.set("#gr-0", { opacity: 0 }, 2.26);
+          tl.fromTo("#gr-1", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 2.26);
+          tl.set("#gr-1", { opacity: 0 }, 3.47);
+          tl.fromTo("#gr-2", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.09, ease: "back.out(2)" }, 3.47);
+          tl.set("#gr-2", { opacity: 0 }, 4.24);
+          tl.fromTo("#bg-0-a", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 4.253333);
+          tl.fromTo("#bg-0-g", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in" }, 4.625333);
+          tl.set("#bg-0 p", { opacity: 0 }, 5.183333);
+          window.__timelines["letras"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

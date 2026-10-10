@@ -1,0 +1,2 @@
+// Segundo del anuncio en que empieza cada frase de Lina. Lo escribe design/herramientas/hf-viral.mjs guion7: no editar a mano.
+window.K = {"shrink":1.18,"sig":2.656667,"c2":4.123333,"c2b":5.99,"c3":7.523333,"c3b":10.403333,"c3c":11.29,"c4":12.09,"c4b":14.57,"c4c":15.39,"c5":16.423333,"c5b":18.623333,"regla":19.956667,"dos":21.123333,"c7":22.29,"c7b":23.79,"min":25.323333,"diez":27.183333,"c8":28.69,"c9":30.523333,"c9b":31.733333,"c9c":32.84,"c9d":33.816667,"c10":34.956667,"fin":39.183333};

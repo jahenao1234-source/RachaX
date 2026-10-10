@@ -384,3 +384,195 @@ Cambios: "día" pasa de 9 veces a 4 y "hábito" de 4 a 2; se quitan dos "todo"; 
 - Con música (el vigente): `guion5/guion5-otra-vez-desde-cero-v3-con-musica.mp4`. Limpio: `guion5/guion5-otra-vez-desde-cero-v3.mp4`. 47 s, estilo Viral.
 - Textos en pantalla aprobados con ese mensaje: "días seguidos" (contador 23 → 0), "ESTUDIO CON 96 PERSONAS / Faltar un día no afectó el hábito / Lally y otros, 2010 · University College London", "Racha · es una app" y la pastilla "Racha · app · $37.900, un solo pago".
 - Qué lo hizo funcionar: guion con tensión (contraria, culpable, historia, prueba, paso siguiente gratis), Lina con carisma en selfie en el carro, gancho moviendo el celular, cortes sin las entradas que Flow inventó, tarjetas y la app en movimiento, efectos de sonido en el punto exacto, transiciones solo en los cambios de parte, y música con ritmo que entra en el primer destello.
+
+## Guion 4 · Lo aplazado, en pasos · versión 6 CON TENSIÓN (8 oct, noche, SIN APROBAR)
+
+Se rehace el guion 4 (que quedó en pausa) con las siete piezas, como el guion 5. Nivel 03 (ya sabe que existen listas y apps; no conoce Racha). Emoción: alivio ("no era pereza"). Culpable: cómo está anotada la tarea, en un solo renglón. Salida: pasos pequeños, uno por día. No repite el dolor del guion 5 (volver a cero) ni el del guion 1 (empezar con todo). Estilo Viral, Lina a cámara.
+
+| Clip | Dice Lina | Pieza |
+|---|---|---|
+| 1 (acomoda el celular) | "Te dijeron que dejas las cosas para después por pereza. No es pereza." | creencia que se contradice + curiosidad |
+| 2 | "Yo dejé un proyecto mío a medias, y pensaba que me faltaban ganas." | historia (la de Johnatan) |
+| 3 | "Hasta que vi cómo lo tenía anotado: en un solo renglón. Y así uno no sabe por dónde empezar." | el culpable |
+| 4 | "Mira esta: 'organizar el cuarto'. Eso no es una tarea, son ocho." | el nombre de la causa |
+| 5 (cuenta con los dedos) | "Recoger la ropa del piso, sacar los platos, llenar una bolsa con lo que no usas…" | ejemplo |
+| 6 | "Hoy solo haces el primer paso: recoger la ropa. Mañana haces el siguiente." | la salida (frase ya aprobada en la versión 5) |
+| 7 | "Racha, la app que hicimos, trae tareas como esa ya divididas en pasos, y tú eliges qué día haces cada uno." | qué es y prueba (la app en movimiento) |
+| 8 | "Si quieres verla por dentro, te la muestro." | paso siguiente gratis (cierre aprobado en el guion 5) |
+
+113 palabras, unos 43 segundos sin pausas.
+
+**Comprobado en el código** (`src/data/biblioteca.ts`): "Organizar el cuarto" trae 8 pasos pequeños en 3 grupos; los tres que se nombran son los primeros ("Recoger la ropa del piso y de la silla", "Sacar platos, vasos y basura", "Llenar una bolsa con lo que ya no uso"). La Biblioteca trae 18 tareas así. A cada paso se le pone día y sale en Hoy › "Tareas de hoy".
+
+**De la historia de Johnatan** (`design/pdf/metodo-texto.md`): abandonó "un proyecto propio" (cierto); "solo me fue posible cuando supe que necesitaba sistemas, pequeños pasos" (cierto). POR CONFIRMAR CON ÉL: "pensaba que me faltaban ganas" y "lo tenía anotado en un solo renglón".
+
+**Prueba en pantalla (opcional, PROVISIONAL):** tarjeta "94 experimentos: decidir de antemano cuándo vas a hacer algo ayuda a cumplirlo · Gollwitzer y Sheeran, 2006". Comprobado en una revisión de 2021 de la revista Frontiers in Psychology que lo cita (94 pruebas independientes, efecto de mediano a grande); el capítulo original no se pudo abrir.
+
+**Textos en pantalla provisionales:** "NO ES PEREZA" en grande; "1 renglón → 8 pasos"; la pastilla del precio (ya aprobada en el guion 5).
+
+**Ganchos de repuesto:** "Esa tarea que llevas semanas sin empezar no es difícil. Está mal anotada." · "Si llevas un mes aplazando algo, el problema no eres tú: es el renglón donde lo escribiste."
+
+### Guion 4 versión 6 · Ganchos visuales (8 oct, noche, SIN ESCOGER)
+
+Johnatan: "el hook, el mismo ya no me gusta; busca en la web hooks visuales y virales que nos sirvan, unos 10 ejemplos". Investigación en `../ganchos-visuales-investigacion.md`. Los 10, adaptados a este anuncio:
+
+1. **Notas que caen.** Papelitos con pendientes ("pasaporte", "hoja de vida", "organizar el cuarto") le van cayendo encima a Lina hasta casi taparla; ella los barre con la mano. Lo hace la edición.
+2. **Los días pasan.** La tarea queda quieta arriba, sin marcar, y debajo pasan rápido "lunes: mañana", "martes: mañana", "miércoles: mañana". Edición.
+3. **Barra de búsqueda.** Lina mira y encima se escribe sola: "por qué dejo todo para después". Edición.
+4. **Sí o no.** Recuadro sobre su cabeza: "¿Llevas semanas aplazando algo?" y se marca SÍ. Edición.
+5. **El celular hacia la cámara.** Lina estira el celular hasta llenar el cuadro; en la pantalla, una lista de pendientes sin marcar. Clip de Flow con la pantalla en negro + captura puesta en la edición.
+6. **El papel que se despliega.** Sostiene un papel doblado, lo abre hacia la cámara: un solo renglón. Flow + letra de la edición.
+7. **La bola de papel.** Arruga una hoja y la tira hacia la cámara; al "golpear", corte al primer plano. Flow (riesgo medio).
+8. **Blanco y negro a color.** Arranca en blanco y negro, ella mirando el celular agobiada; salta a color en "No es pereza". Flow + edición.
+9. **Primer plano del lapicero.** Muy de cerca, un lapicero queda en el aire sobre una casilla vacía y se retira sin marcarla. Flow.
+10. **Letra a mano.** Sobre la imagen, una mano invisible escribe "organizar el cuarto" y lo tacha en "eso no es una tarea". Edición.
+
+Recomendación de Claude: 1 o 2 (se entienden sin sonido, son del tema y los controla la edición).
+
+### Guion 4 versión 7 = pieza `guion6` "No es pereza" (8 oct, noche)
+
+Respuesta de Johnatan a la versión 6: cambió el final del clip 3 ("y así es difícil saber por dónde comenzar"), reescribió la parte de escoger el día ("tú eliges el día para realizar cada tarea, y la ajustas en tu semana… algo así"), pidió que Lina haga acciones en una o dos escenas más además de contar con los dedos, y escogió el gancho de **la bola de papel con la cámara que se tambalea**. El texto versión 7 (9 clips, 121 palabras, unos 46 s), el plan de acciones y los textos para Flow están en `guion6-textos-flow.md`. Lina sale en casa, frente a un escritorio, con las manos libres. Sin respuesta todavía: si son verdad en su historia "pensaba que me faltaban ganas" y "lo tenía anotado en un solo renglón", y si va la tarjeta del estudio.
+
+## Guion 7 · La regla (vender el método, no la app) · versión 1 (9 oct, SIN APROBAR)
+
+Idea de Johnatan: "nos hemos enfocado en la app, pero podríamos vender el método, el sistema". De tres ángulos escogió el A, la regla de una línea. El protagonista es el Método Anti-Abandono; Racha llega al final como la app donde viene. Nivel 02 a 03. Emoción: alivio con un punto de alerta. Culpable: el segundo día, no el primero ni la persona. Se diferencia del guion 5 (que culpa a las apps que devuelven a cero y cuenta la historia) en que este enseña una regla con nombre.
+
+| Clip | Dice | Pieza |
+|---|---|---|
+| 1 | "El día que fallas no daña tu hábito. Lo daña el siguiente." | creencia que se contradice + curiosidad |
+| 2 | "Fallar una vez es un accidente. Le pasa a todo el mundo." | el culpable no eres tú |
+| 3 | "Pero dos veces seguidas ya son el comienzo de otra costumbre: la de no hacerlo." | el culpable: el segundo |
+| 4 | "A mí me pasaba: fallaba, decía 'mañana sí', y mañana tampoco." | historia (la de Johnatan) |
+| 5 | "Por eso hicimos el Método Anti-Abandono. Tiene una sola regla." | el nombre |
+| 6 | "Un día malo se vale. Dos seguidos, no." | la regla (en grande en pantalla) |
+| 7 | "Y cuando no tienes fuerzas, haces la versión más pequeña: en vez de entrenar treinta minutos, haces diez sentadillas." | cómo se cumple |
+| 8 | "Con eso ya no son dos seguidos." | cierra la regla |
+| 9 | "El método viene dentro de Racha, una app que te lo recuerda y lleva la cuenta por ti." | qué se recibe |
+| 10 | "Si quieres ver cómo funciona, te lo muestro." | paso siguiente gratis |
+
+122 palabras, unos 46 segundos sin pausas. "Día" sale tres veces (clips 1 y 6, a propósito).
+
+**De dónde sale cada cosa.** Del PDF aprobado (`design/pdf/metodo-texto.md`, página 6): "un día malo se vale. Dos seguidos, no", "un día en blanco es un accidente", "dos días en blanco ya son el comienzo de otra costumbre: la de no hacerlo", y el "mañana sí". Comprobado en la app: la versión mínima cuenta como cumplido; en la Racha de muestra "Entrenar 30 minutos" tiene de mínimo "10 sentadillas" (se puede mostrar la app de verdad con ese ejemplo); la app manda avisos y lleva la cuenta. POR CONFIRMAR CON ÉL: el clip 4 ("fallaba, decía mañana sí, y mañana tampoco").
+
+**Ojo con la prueba:** el estudio de Lally (2010) respalda la primera mitad del clip 1 (faltar un día no afectó el hábito). La segunda mitad ("lo daña el siguiente") es la regla del método, no un resultado del estudio: la tarjeta en pantalla solo dice lo que dice el estudio.
+
+**En pantalla (provisional):** la regla en grande; las dos tiras de siete días del PDF ("un día malo": la tira sigue; "dos seguidos": se apaga); la tarjeta del estudio; la app con "¿Día pesado?" y "Mínimo: 10 sentadillas"; pastilla "Método Anti-Abandono · app Racha · $37.900, un solo pago".
+
+**Ganchos de repuesto:** "Fallar un día no es el problema. El problema es el segundo." · "Hay una regla de una línea para no abandonar lo que empiezas."
+
+
+## Guion 8 · Deberías (lista de presión; vender el método, ángulo "no necesitas más ganas, necesitas un sistema") · versión 1 (9 oct, TEXTO APROBADO: "el guion está bien, haz la prueba de voz")
+
+Formato nuevo, sacado del video 2 de `referencias\oct9\` (sin nombre todavía; el nombre lo pone Johnatan). **Sin avatar:** voz en off de ElevenLabs (Linda Gomez, modelo v3, sin pausas), una toma de un objeto por cada "deberías", y la app de verdad al final. Lo escogió el 9 oct ("sí, dale con la lista de presión"), con dos límites: no tiene dónde grabar y casi no le quedan créditos en Flow.
+
+Nivel 01 a 02. Emoción: agobio que se vuelve alivio. Creencia que se contradice: "te faltan ganas, te falta disciplina". Culpable: depender de las ganas, que solo están en los días buenos. Nombre: Método Anti-Abandono. Se diferencia del guion 1 (que culpa a empezar cinco cosas el mismo lunes y lo dice Lina) y del guion 7 (la regla de los dos días): aquí el tema es la lista de exigencias que uno se repite y la idea de que hace falta un sistema, no más ganas.
+
+| Parte | Dice la voz | Pieza |
+|---|---|---|
+| 1 · La lista | "Deberías levantarte más temprano. Deberías hacer ejercicio. Deberías leer más. Deberías dejar el celular por la noche. Deberías tomar más agua. Deberías organizar el cuarto. Deberías retomar el inglés." | gancho: una exigencia por toma, cada vez más rápido |
+| 2 · El corte | "¿Hace cuánto te dices lo mismo?" | rompe el patrón: pantalla negra y silencio |
+| 3 · Lo que queda abierto | "Si no lo has hecho, no es por lo que crees." | curiosidad: no se responde todavía |
+| 4 · Invitación corta | "Si esa lista se parece a la tuya, quédate un momento." | invitación en la mitad |
+| 5 · La creencia | "Te han dicho que te faltan ganas. Que te falta disciplina." | creencia que se contradice |
+| 6 · El culpable | "Las ganas sirven en los días buenos. Y los días buenos nunca fueron el problema." | el culpable no eres tú |
+| 7 · La respuesta | "Lo que te falta es un sistema para los días malos." | se cierra lo que quedó abierto |
+| 8 · El nombre | "Se llama Método Anti-Abandono." | nombre propio |
+| 9 · Cómo es | "De toda esa lista escoges una sola cosa. La haces después de algo que ya haces todos los días. Y le dejas una versión pequeña para el día que no puedas." | una sola idea, en tres pasos |
+| 10 · Qué se recibe | "El método viene dentro de Racha, una app que te lo recuerda y lleva la cuenta por ti." | qué se vende |
+| 11 · Cierre | "Si quieres verla por dentro, te la muestro." | paso siguiente gratis |
+
+155 palabras: unos 47 a 50 segundos con la voz sin pausas. "Deberías" va siete veces a propósito (es el formato). "Días" va cuatro veces (partes 6, 7 y 9).
+
+**De dónde sale cada cosa.** Del PDF aprobado (`design/pdf/metodo-texto.md`): página 5, "No necesitas más ganas. Necesitas un sistema" ("más disciplina, más ganas… Eso sirve en los días buenos. Y los días buenos nunca fueron el problema"); la página agregada, "empieza con máximo tres hábitos, mejor con uno" y "amárralo a algo que ya haces"; página 7, la versión mínima. Comprobado en la app: al empezar se crea un solo hábito y se pregunta "¿Después de qué?"; la versión mínima cuenta como cumplido; la app manda avisos y lleva la cuenta ("te lo recuerda y lleva la cuenta por ti" es la frase ya aprobada del guion 7). Las siete cosas de la lista son corrientes y varias están en la Biblioteca (Leer más, Cuerpo activo, Dejar el celular de noche). No se nombra plata ni salud (reglas de Meta). La voz no cuenta vivencias: todo va de "tú".
+
+**Contra la lista de revisión del 9 oct**
+
+| Punto | ¿Cumple? |
+|---|---|
+| El gancho deja algo sin cerrar | Sí: la lista no dice a qué va, y "no es por lo que crees" se responde 12 segundos después |
+| Promesa, curiosidad y romper el patrón | Curiosidad y ruptura sí (la lista se corta en negro y en silencio). La promesa es suave, a propósito: no se prometen resultados |
+| 5 s que incomodan · una sola idea · final con un paso | Sí: arranca con una exigencia directa; la idea es una (un sistema, no más ganas); cierra con "te la muestro" |
+| Invitación en la mitad | Sí, la parte 4. Es la que más dudo: si suena a relleno, se quita |
+| Idea con nombre | Sí: Método Anti-Abandono |
+| Algo imperfecto | En la imagen: tomas de cosas corrientes, sin arreglar. En la voz, no |
+
+**Gancho visual (tres opciones, sin escoger; distinto a todos los anteriores)**
+1. **Las frases se amontonan:** cada "deberías" queda escrito en pequeño y se va apilando sobre la imagen hasta casi taparla; en el corte se borran todas de golpe. (Recomendada.)
+2. **La lista con casillas vacías:** las frases se escriben una debajo de otra, como una lista a mano con su cuadrito sin chulear, encima de las tomas.
+3. **Una frase pequeña por toma**, como en el video de referencia, sin nada más.
+(No se usan notificaciones de celular falsas: Meta no deja mostrar funciones que no existen.)
+
+**De dónde salen las imágenes sin grabar y sin gastar créditos de video (sin decidir)**
+- A. Siete fotos de objetos generadas (despertador, tenis junto a la puerta, libro cerrado, celular prendido sobre la cama, vaso de agua, cama sin tender, cuaderno cerrado), con movimiento puesto en la edición (acercamiento lento, temblor leve, luz que cambia). Por comprobar antes de generar: cuánto cobra Flow o la app de Gemini por imagen.
+- B. Siete fotos de cerca tomadas con su celular. De cerca no se ve el sitio.
+- C. Videos gratis de bancos como Pexels (se pueden usar en anuncios). Riesgo: que se vean "de stock", que ya rechazó una vez.
+- D. Todo dibujado con código. No cuesta nada, pero se parece a la Pizarra.
+- Del resto se encarga Claude sin costo: la app grabada desde la Racha de muestra, las letras, los sonidos y la voz (ElevenLabs tiene créditos de sobra).
+
+**Textos en pantalla, provisionales:** las siete frases de la lista (iguales a la voz), "Método Anti-Abandono", los tres pasos en corto ("1 · Una sola cosa", "2 · Después de algo que ya haces", "3 · Con su versión pequeña") y la pastilla "Método Anti-Abandono · app Racha · $37.900, un solo pago".
+
+**Ganchos de repuesto:** "Deberías, deberías, deberías. ¿Hace cuánto te dices lo mismo?" · "Tienes una lista de cosas que deberías hacer. Y no es por pereza que no las haces."
+
+### Guion 8 · prueba de voz y gancho visual (9 oct, noche)
+
+**Voz de prueba:** `guion8/voz/deberias-v1-linda-sin-pausas.mp3` (50 s; Linda Gomez, modelo v3, estabilidad 0,5, con indicaciones de tono: la lista firme y rápida, la pregunta en voz baja, el resto cercano). Dice el texto exacto (transcripción al lado, con el momento de cada palabra). La lista dura 13 s; la pregunta entra en 13,3 s; "sistema" en 29,8 s; "Método Anti-Abandono" en 32,1 s; "Racha" en 44,7 s. La original con pausas dura 61 s (`deberias-v1-linda.mp3`).
+
+**Gancho visual: Johnatan reclamó que se le olvida a Claude ("y el hook visual, siempre lo olvidas").** Las tres opciones de arriba iban al final y no las tomó como propuesta. Se le volvieron a dar, de primeras y con lo que se ve en los dos primeros segundos (SIN ESCOGER):
+1. **Abrir los ojos:** pantalla negra que se abre como un párpado y lo primero que se ve, desde la cama, es el despertador; cae "DEBERÍAS" en grande. Todas las tomas van como las ven tus ojos. (Toma en primera persona; el parpadeo lo hace la edición; las imágenes se piden desde ese punto de vista.)
+2. **Las frases caen y se amontonan:** cada "deberías" cae desde arriba con un golpe y queda torcido encima de los anteriores, hasta tapar la imagen; en el corte se caen todos. (Algo que cae dentro del cuadro; solo edición.)
+3. **La barra de búsqueda:** una barra donde se escribe sola la palabra "debería…" y debajo se despliegan las siete frases como sugerencias. (Como el anuncio de YogaGo; solo edición; la barra es genérica, sin marca.)
+4. **La lista a mano:** las frases se escriben solas en una hoja, cada una con su cuadrito vacío. (Letra a mano; solo edición.)
+5. **De blanco y negro a color:** toda la lista en blanco y negro; el color vuelve en "un sistema para los días malos". (Ya se usó un momento en el guion 5.)
+Recomendación de Claude: la 1 y la 2 juntas.
+
+### Guion 8 · respuesta de Johnatan (9 oct, noche)
+
+- **Gancho visual escogido: "la 1 y la 2 juntas"** (abrir los ojos + las frases caen y se amontonan). Las imágenes se piden en primera persona: `campana/guion8-textos-imagenes.md`.
+- **La voz: "está muy plana".** Se hicieron dos nuevas, las dos dicen el texto exacto: **B** `guion8/voz/deberias-v2-B-sin-pausas.mp3` (50 s; estabilidad 0,3; la lista va subiendo hasta casi gritar la última y la pregunta va en susurro) y **C** `deberias-v2-C-sin-pausas.mp3` (52 s; estabilidad 0; la lista cansada y pareja, el resto alegre). Medida del tono: la plana variaba 2,4 semitonos; B, 3,0; C, 2,8; la voz que aprobó en el guion 3, 2,9.
+- **La parte 4 ("Si esa lista se parece a la tuya, quédate un momento") no le gustó: "me parece un poco tonto, ¿cómo se mejora?"** Opciones que se le dieron (SIN ESCOGER): A "Ahora te digo qué hacer con esa lista." (anuncia lo que viene, no pide nada; es la que va en las dos voces nuevas, para que la oiga) · B "Casi todo el mundo tiene una lista así." · C quitar la frase.
+
+### Guion 8 · TEXTO FINAL, versión 2 (9 oct, noche): sin la parte 4
+
+Johnatan: "en la frase me gusta la C, quitarla, y pasa más directo". Queda así (10 partes, 145 palabras, unos 46 s):
+
+1. "Deberías levantarte más temprano. Deberías hacer ejercicio. Deberías leer más. Deberías dejar el celular por la noche. Deberías tomar más agua. Deberías organizar el cuarto. Deberías retomar el inglés."
+2. "¿Hace cuánto te dices lo mismo?"
+3. "Si no lo has hecho, no es por lo que crees."
+4. "Te han dicho que te faltan ganas. Que te falta disciplina."
+5. "Las ganas sirven en los días buenos. Y los días buenos nunca fueron el problema."
+6. "Lo que te falta es un sistema para los días malos."
+7. "Se llama Método Anti-Abandono."
+8. "De toda esa lista escoges una sola cosa. La haces después de algo que ya haces todos los días. Y le dejas una versión pequeña para el día que no puedas."
+9. "El método viene dentro de Racha, una app que te lo recuerda y lleva la cuenta por ti."
+10. "Si quieres verla por dentro, te la muestro."
+
+Ya no hay invitación en la mitad (punto 4 de la lista de revisión): fue decisión de él. Lección: una invitación que le pide un favor al que mira ("quédate") le suena tonta.
+
+**La voz: "no me cuadra, busquemos una voz nueva"** (oyó las dos versiones nuevas de Linda Gomez). Se le mandaron cinco voces colombianas de la biblioteca de ElevenLabs con la misma muestra corta de 17 a 20 s (tres "deberías", la pregunta, "no es por lo que crees", lo de las ganas y el cierre), en `guion8/voz/candidatas/voz-<nombre>.mp3`: Sofía (acento suave de Medellín), Marcela, Valentina (de Medellín), Lina y Sebastián (paisa, hombre). Todas dicen el texto exacto. Variación del tono: Lina 4,1 semitonos, Marcela 3,4, Valentina y Sebastián 3,2, Sofía 3,1. Se hizo una sexta (Juan Restrepo) que salió plana (2,35) y no se le mandó. SIN ESCOGER.
+
+### Guion 8 · VOZ ESCOGIDA: Juan Restrepo (9 oct, noche)
+
+"Me gusta la de Juan Restrepo" (era la sexta, la que Claude no le mandó por la medida; la oyó en la carpeta). **Voz completa con el texto final: `guion8/voz/deberias-v3-juan-sin-pausas.mp3`** (46,5 s; la original con pausas, 64,6 s, es `deberias-v3-juan.mp3`). Dice el texto exacto. Las pausas se quitaron con `voz-sin-pausas.py`, dejando 0,7 s antes de "¿Hace cuánto te dices lo mismo?". Momentos (en la versión sin pausas, por confirmar con su `.palabras.json` al armar): la lista dura unos 12 s. Falta que la oiga completa.
+
+### Guion 8 · ANUNCIO COMPLETO, versión 1 (9 oct, 8:20 p. m.)
+
+Johnatan vio el gancho: "va bien, ¿por qué no lo terminas todo?". Se arma con `node design/herramientas/hf-lista.mjs guion8`; sale `guion8/guion8-deberias-v1.mp4` (49 s, sin música).
+
+| Segundo | Qué dice la voz | Qué se ve |
+|---|---|---|
+| 0 a 12 | La lista de siete "deberías" | El párpado se abre; siete fotos (con el filtro); cada bloque cae con su golpe y se amontonan |
+| 12 a 16,5 | "¿Hace cuánto te dices lo mismo? Si no lo has hecho, no es por lo que crees." | Negro; la pregunta palabra por palabra; la frase en franja ámbar |
+| 16,5 a 19,7 | "Te han dicho que te faltan ganas. Que te falta disciplina." | Dos papeles con las frases entre comillas |
+| 19,7 a 28,4 | "Las ganas sirven en los días buenos… Lo que te falta es un sistema para los días malos." | Una tira de siete días: cinco se llenan en ámbar, dos quedan punteados y al final se resaltan como "día malo"; "UN SISTEMA" en grande |
+| 28,4 a 30,6 | "Se llama Método Anti-Abandono." | Fondo ámbar, el nombre en grande y el dibujo de la portada del PDF |
+| 30,6 a 33,6 | "De toda esa lista escoges una sola cosa." | La lista vuelve en pequeño, seis se caen y queda "LEER MÁS" |
+| 33,6 a 36,8 | "La haces después de algo que ya haces todos los días." | El celular con la pantalla real "Nuevo hábito": "¿Después de qué? · Después de tomar café", con un aro |
+| 36,8 a 40 | "Y le dejas una versión pequeña para el día que no puedas." | La misma pantalla: "Tu versión mínima · 1 página", con el aro |
+| 40 a 44,6 | "El método viene dentro de Racha, una app que te lo recuerda y lleva la cuenta por ti." | La app en movimiento: la hoja "Día difícil", se activa, y se marca "Leer 10 páginas" en su versión mínima |
+| 44,6 a 49 | "Si quieres verla por dentro, te la muestro." | El celular con Hoy y la pastilla del precio |
+
+**Textos en pantalla que no vienen del guion (PROVISIONALES, por aprobar):** los números 1, 2 y 3 de los pasos; las letras de los días (L M M J V S D) y la etiqueta "día malo"; las comillas de «te faltan ganas» y «te falta disciplina»; y la pastilla "Método Anti-Abandono · app Racha / $37.900 · un solo pago". Todo lo demás son las palabras de la voz.
+
+**Dibujos que no son pantallas de la app (provisionales):** la tira de siete días y el dibujo de la portada del PDF.
+
+38 efectos de sonido (`guion8/guion8-sonidos.txt`). Sin música: la escoge él y entra al terminar el gancho (segundo 16,5).
