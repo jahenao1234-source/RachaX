@@ -116,6 +116,15 @@
   "pico_db": -5.0,
   "forma": ".:---=+%@%==-:.=@*..    "
  },
+ "mazo": {
+  "dura": 0.812,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.0,
+  "mitad_de_la_energia_en": 0.035,
+  "centro_hz": 1771,
+  "pico_db": -6.1,
+  "forma": "@@+-=-::..              "
+ },
  "neon": {
   "dura": 1.188,
   "quitado_al_comienzo": 0.0,
@@ -134,6 +143,24 @@
   "pico_db": -1.0,
   "forma": "  .:::..#@@%=..         "
  },
+ "periodico": {
+  "dura": 0.148,
+  "quitado_al_comienzo": 0.397,
+  "golpe_en": 0.02,
+  "mitad_de_la_energia_en": 0.024,
+  "centro_hz": 1258,
+  "pico_db": -3.5,
+  "forma": " +@@*+=:::...           "
+ },
+ "piedra": {
+  "dura": 2.7,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 0.386,
+  "mitad_de_la_energia_en": 0.527,
+  "centro_hz": 3381,
+  "pico_db": -11.0,
+  "forma": "#%@@@%%%#-+=*::. ..     "
+ },
  "pop": {
   "dura": 0.095,
   "quitado_al_comienzo": 0.0,
@@ -142,6 +169,15 @@
   "centro_hz": 476,
   "pico_db": -4.1,
   "forma": "@%*=::..                "
+ },
+ "relleno": {
+  "dura": 2.555,
+  "quitado_al_comienzo": 0.0,
+  "golpe_en": 2.38,
+  "mitad_de_la_energia_en": 1.08,
+  "centro_hz": 793,
+  "pico_db": -2.2,
+  "forma": "-:.::.#+=+::...::--=..@ "
  },
  "subida": {
   "dura": 1.372,

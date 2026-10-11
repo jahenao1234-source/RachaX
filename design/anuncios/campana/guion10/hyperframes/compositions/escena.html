@@ -63,9 +63,9 @@
         #gnv1 { top: 560px; font-size: 156px; } #gnv2 { top: 730px; font-size: 156px; }
         #dias { position: absolute; left: 123px; top: 1040px; display: flex; gap: 20px; }
         .dia { width: 102px; height: 102px; border-radius: 50%; border: 4px solid rgba(244, 231, 195, 0.35); background-color: rgba(0, 0, 0, 0.3); color: rgba(244, 231, 195, 0.45); display: flex; align-items: center; justify-content: center; opacity: 0; }
-        #sombra { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 22% at 50% 57%, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0) 100%); opacity: 0; }
-        #esc { top: 880px; font-size: 72px; } #ytela { top: 1190px; font-size: 58px; }
-        #marca { top: 948px; font-size: 220px; }
+        #sombra { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 20% at 50% 60%, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0) 100%); opacity: 0; }
+        #esc { top: 968px; font-size: 68px; } #ytela { top: 1262px; font-size: 56px; }
+        #marca { top: 1030px; font-size: 215px; }
       </style>
       <div id="root" data-composition-id="escena" data-width="1080" data-height="1920">
         <div id="mundo" data-layout-allow-overflow>
@@ -772,15 +772,15 @@
           tl.to("#dias", { opacity: 0, duration: 0.08, ease: "power1.in" }, 71.47);
           tl.set("#root", { backgroundColor: "rgba(0,0,0,0)" }, 77.296);
           tl.set("#grano, .vin", { autoAlpha: 0 }, 77.296);
-          tl.fromTo("#sombra", { opacity: 0, filter: "blur(0px)", scale: 1 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 87.55);
-          tl.fromTo("#esc", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.2, ease: "power2.out", immediateRender: false }, 87.65);
-          tl.fromTo("#marca", { opacity: 0, filter: "blur(18px)", scale: 1.18 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 87.8);
-          tl.to("#marca", { scale: 1.05, duration: 2.2, ease: "none" }, 88.1);
-          tl.fromTo("#ytela", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, 88.35);
-          tl.to("#mundo", { x: -8.4, y: 5.4, rotation: -0.3, duration: 0.04, ease: "none" }, 87.87);
-          tl.to("#mundo", { x: 6.6, y: -4.2, rotation: 0.24, duration: 0.05, ease: "none" }, 87.91);
-          tl.to("#mundo", { x: -3.6, y: 2.4, rotation: -0.12, duration: 0.05, ease: "none" }, 87.96);
-          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 88.01);
+          tl.fromTo("#sombra", { opacity: 0, filter: "blur(0px)", scale: 1 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 90.25);
+          tl.fromTo("#esc", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.2, ease: "power2.out", immediateRender: false }, 90.35);
+          tl.fromTo("#marca", { opacity: 0, filter: "blur(18px)", scale: 1.18 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 90.5);
+          tl.to("#marca", { scale: 1.05, duration: 1.6, ease: "none" }, 90.8);
+          tl.fromTo("#ytela", { opacity: 0, filter: "blur(14px)", scale: 1.08 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, 91.05);
+          tl.to("#mundo", { x: -8.4, y: 5.4, rotation: -0.3, duration: 0.04, ease: "none" }, 90.57);
+          tl.to("#mundo", { x: 6.6, y: -4.2, rotation: 0.24, duration: 0.05, ease: "none" }, 90.61);
+          tl.to("#mundo", { x: -3.6, y: 2.4, rotation: -0.12, duration: 0.05, ease: "none" }, 90.66);
+          tl.to("#mundo", { x: 0, y: 0, rotation: 0, duration: 0.08, ease: "power2.out" }, 90.71);
           tl.set("#grano", { x: 0, y: -350 }, 0);
           tl.set("#grano", { x: -110, y: -80 }, 0.066667);
           tl.set("#grano", { x: -277, y: -202 }, 0.133333);
@@ -2138,6 +2138,38 @@
           tl.set("#grano", { x: -175, y: -3 }, 90.266667);
           tl.set("#grano", { x: -356, y: -150 }, 90.333333);
           tl.set("#grano", { x: -35, y: -25 }, 90.4);
+          tl.set("#grano", { x: -315, y: -105 }, 90.466667);
+          tl.set("#grano", { x: -65, y: -264 }, 90.533333);
+          tl.set("#grano", { x: -271, y: -217 }, 90.6);
+          tl.set("#grano", { x: -202, y: -323 }, 90.666667);
+          tl.set("#grano", { x: -280, y: -28 }, 90.733333);
+          tl.set("#grano", { x: -41, y: -16 }, 90.8);
+          tl.set("#grano", { x: -73, y: -118 }, 90.866667);
+          tl.set("#grano", { x: -76, y: -152 }, 90.933333);
+          tl.set("#grano", { x: -342, y: -319 }, 91);
+          tl.set("#grano", { x: -129, y: -69 }, 91.066667);
+          tl.set("#grano", { x: -137, y: -131 }, 91.133333);
+          tl.set("#grano", { x: -306, y: -150 }, 91.2);
+          tl.set("#grano", { x: -313, y: -186 }, 91.266667);
+          tl.set("#grano", { x: -365, y: -78 }, 91.333333);
+          tl.set("#grano", { x: -213, y: -3 }, 91.4);
+          tl.set("#grano", { x: -205, y: -42 }, 91.466667);
+          tl.set("#grano", { x: -202, y: -124 }, 91.533333);
+          tl.set("#grano", { x: -161, y: -258 }, 91.6);
+          tl.set("#grano", { x: -360, y: -260 }, 91.666667);
+          tl.set("#grano", { x: -161, y: -270 }, 91.733333);
+          tl.set("#grano", { x: -137, y: -138 }, 91.8);
+          tl.set("#grano", { x: -250, y: -237 }, 91.866667);
+          tl.set("#grano", { x: -231, y: -163 }, 91.933333);
+          tl.set("#grano", { x: -107, y: -176 }, 92);
+          tl.set("#grano", { x: -194, y: -330 }, 92.066667);
+          tl.set("#grano", { x: -196, y: -263 }, 92.133333);
+          tl.set("#grano", { x: -180, y: -210 }, 92.2);
+          tl.set("#grano", { x: -109, y: -356 }, 92.266667);
+          tl.set("#grano", { x: -110, y: -62 }, 92.333333);
+          tl.set("#grano", { x: -366, y: -180 }, 92.4);
+          tl.set("#grano", { x: -36, y: -201 }, 92.466667);
+          tl.set("#grano", { x: -291, y: -46 }, 92.533333);
           window.__timelines["escena"] = tl;
         })();
       </script>

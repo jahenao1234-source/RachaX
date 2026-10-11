@@ -167,3 +167,16 @@ El tercer video del estilo Dark. Sale del molde del guion 9 y le suma el gancho 
 5. **Armar:** `node design/herramientas/hf-relato-g10.mjs` (3 minutos; `--solo-html` si solo cambian tiempos, letras o animaciones). Dentro de `guion10/hyperframes`: `check` (los avisos de "content_overlap" de la frase en la pared son por la perspectiva y no importan), `snapshot --at ...` y `render --low-memory-mode -w 1 -f 30 -o ../guion10-golpe-101-v1-maestro.mp4`.
 6. **Música de prueba:** `python design/herramientas/musica-mezcla-g10.py` (lee `guion10/tiempos.json`): el gancho va sin música; entra al empezar la historia; un golpe cae cuando la piedra se abre y otro en "todos los de antes".
 7. Bajar el peso (`-crf 21 -maxrate 9M`) y poner la música con `poner-musica.mjs` (`BAJO=14 FASE=0 GOLPE=0.5 COMPASES=41 EMPIEZA=0 SUBE=0.05`).
+
+### La app que se llena sola (para el cierre de los anuncios)
+
+La Racha de muestra tiene que estar prendida (configuración `racha-muestra`, puerto 3003) y `NODE_PATH` apuntando a una carpeta con `puppeteer-core`.
+
+- `grabar-llenado.cjs`: en el celular, el mes que se llena día por día (`cal-NN.png`, `calendario.mp4`) y la gráfica que se forma.
+- `grabar-llenado-escritorio.cjs`: en el computador, Hoy con las barritas y los chulos, y Progreso. Con `VERTICAL=1` la ventana es de 1024 × 1820 (ya en 9:16) y deja `vhoy-NN.png`.
+- `grabar-ventanas.cjs`: graba cada tarjeta de Progreso por separado (`habitos`, `mejorar`, `fuerza`, `anio`) mientras crece la historia. Para que "Tu año" se llene desde marzo, alarga la historia de la muestra solo dentro de la grabación. Lo ya grabado no se repite: si se corta, se vuelve a correr y sigue.
+- `python ventanas-viaje.py`: arma el recorrido continuo por esas tarjetas (`app-llenado/viaje.mp4`): la fuerza de los hábitos, las barras, la gráfica y, al final, "Tu año". Sus tiempos (`TOTAL` y `TARJETA`) son los `D_VIAJE` y `EN_TARJETA` del molde.
+
+Ojo: con mucha historia la app abre ventanas de premio y otras hojas; el programa las cierra antes de cada foto, pero hay que comprobarlo. Una foto con una ventana encima queda oscura: se mide el brillo del fondo de cada tarjeta (normal 27 de 255; con ventana, 11 a 17), se borran las raras y se corre otra vez.
+
+Sonidos: los de la parte de la app son graves (`relleno` es un tictac filtrado por debajo de 1.300 Hz). Si ElevenLabs entrega un sonido chillón (centro por encima de 4.000 Hz en `sonidos-preparar.py`), se filtra el original antes de prepararlo.

@@ -30,7 +30,11 @@ neon|1.2|Neon sign flickering on, electric buzz with two short crackles and a st
 diapositiva|0.6|Vintage slide projector advancing one slide, single heavy mechanical clunk click, dry, close microphone
 garabato|0.9|Marker pen quickly scribbling a circle twice on paper, two fast loops, dry, close microphone
 latido|1.2|Two deep slow heartbeat thumps, low and close, dark, dry, no music
-brillo|1.8|Soft warm cinematic swell, gentle rising airy shimmer, hopeful, no melody, no voice'
+brillo|1.8|Soft warm cinematic swell, gentle rising airy shimmer, hopeful, no melody, no voice
+mazo|1.3|A heavy steel sledgehammer striking a big granite block once, hard metallic clank on stone with a short ringing tail and small falling debris, close microphone, dry, no music
+piedra|3.2|A huge granite boulder cracking and splitting in two, one sharp loud crack followed by a deep heavy rumble and falling stone debris, cinematic, no music
+periodico|0.8|A thick folded newspaper slapped down hard on a wooden desk, single papery thud, close microphone, dry, no music
+relleno|2.6|Soft low muted mechanical ticking of an old film projector reel running fast, dark and warm, steady rapid dull clicks, no high pitched sounds, no beeps, no music'
 
 echo "$LISTA" | while IFS='|' read -r nombre seg texto; do
   if [ $# -gt 0 ] && ! printf '%s\n' "$@" | grep -qx "$nombre"; then continue; fi

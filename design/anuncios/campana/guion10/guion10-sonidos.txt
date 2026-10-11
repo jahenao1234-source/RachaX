@@ -1,9 +1,14 @@
-  0.08 s  golpe        -6 dB
-  0.41 s  golpe        -6 dB
-  0.75 s  golpe        -6 dB
-  1.08 s  golpe        -6 dB
-  1.53 s  golpe        -4 dB
+  0.08 s  golpe        -10 dB
+  0.10 s  mazo         -2 dB
+  0.41 s  golpe        -10 dB
+  0.43 s  mazo         -2 dB
+  0.75 s  golpe        -10 dB
+  0.77 s  mazo         -2 dB
+  1.08 s  golpe        -10 dB
+  1.10 s  mazo         -2 dB
+  1.53 s  golpe        -10 dB
   1.53 s  boom         -5 dB
+  1.55 s  mazo         0 dB
   2.13 s  diapositiva  -6 dB
   7.52 s  golpe        -8 dB
   8.58 s  subida       -10 dB
@@ -25,25 +30,35 @@
  20.50 s  latido       -5 dB
  21.46 s  diapositiva  -6 dB
  22.63 s  golpe        -9 dB
- 24.87 s  golpe        -7 dB
- 25.92 s  golpe        -7 dB
- 26.56 s  golpe        -7 dB
- 27.92 s  boom         -9 dB
+ 24.87 s  golpe        -9 dB
+ 24.87 s  periodico    0 dB
+ 25.92 s  golpe        -9 dB
+ 25.92 s  periodico    0 dB
+ 26.56 s  golpe        -9 dB
+ 26.56 s  periodico    0 dB
+ 27.92 s  boom         -5 dB
  28.85 s  diapositiva  -6 dB
- 32.00 s  golpe        -4 dB
- 32.00 s  boom         -6 dB
- 32.94 s  golpe        -6 dB
- 33.22 s  golpe        -6 dB
- 33.50 s  golpe        -6 dB
- 33.78 s  golpe        -6 dB
+ 32.00 s  golpe        -6 dB
+ 32.00 s  boom         -4 dB
+ 32.02 s  mazo         2 dB
+ 32.94 s  golpe        -10 dB
+ 32.97 s  mazo         -1 dB
+ 33.22 s  golpe        -10 dB
+ 33.25 s  mazo         -1 dB
+ 33.50 s  golpe        -10 dB
+ 33.53 s  mazo         -1 dB
+ 33.78 s  golpe        -10 dB
+ 33.81 s  mazo         -1 dB
  35.01 s  latido       -3 dB
  35.29 s  latido       -3 dB
  35.38 s  subida       -8 dB
- 35.60 s  golpe        -4 dB
+ 35.60 s  golpe        -6 dB
+ 35.62 s  mazo         2 dB
  36.34 s  brillo       -7 dB
+ 36.39 s  piedra       -3 dB
  36.48 s  diapositiva  -6 dB
  36.70 s  golpe        -9 dB
- 36.76 s  boom         -2 dB
+ 36.76 s  boom         -4 dB
  38.09 s  diapositiva  -6 dB
  39.25 s  tachar       -7 dB
  40.71 s  toque        -11 dB
@@ -80,33 +95,19 @@
  71.47 s  diapositiva  -6 dB
  74.19 s  golpe        -8 dB
  75.20 s  golpe        -8 dB
- 75.93 s  subida       -9 dB
  76.40 s  diapositiva  -6 dB
- 77.30 s  boom         -6 dB
- 77.70 s  toque        -12 dB
- 78.04 s  toque        -12 dB
- 78.38 s  toque        -12 dB
- 78.72 s  toque        -12 dB
- 79.07 s  toque        -12 dB
- 79.53 s  diapositiva  -6 dB
- 81.77 s  diapositiva  -6 dB
- 82.00 s  toque        -12 dB
- 82.17 s  toque        -12 dB
- 82.34 s  toque        -12 dB
- 82.51 s  toque        -12 dB
- 82.68 s  toque        -12 dB
- 82.86 s  toque        -12 dB
- 83.03 s  toque        -12 dB
- 83.43 s  golpe        -9 dB
- 83.65 s  toque        -13 dB
- 83.90 s  toque        -13 dB
- 84.16 s  toque        -13 dB
- 84.41 s  toque        -13 dB
- 84.67 s  toque        -13 dB
- 84.93 s  toque        -13 dB
- 85.18 s  toque        -13 dB
- 85.44 s  toque        -13 dB
- 85.69 s  toque        -13 dB
- 86.48 s  subida       -8 dB
- 86.99 s  brillo       -6 dB
- 87.83 s  boom         -3 dB
+ 77.30 s  boom         -7 dB
+ 77.50 s  relleno      -8 dB
+ 79.59 s  golpe        -12 dB
+ 81.83 s  golpe        -11 dB
+ 81.95 s  relleno      -8 dB
+ 83.25 s  boom         -8 dB
+ 83.30 s  relleno      -9 dB
+ 84.33 s  golpe        -14 dB
+ 84.55 s  relleno      -9 dB
+ 85.83 s  golpe        -14 dB
+ 86.25 s  relleno      -9 dB
+ 87.63 s  golpe        -14 dB
+ 88.05 s  relleno      -9 dB
+ 89.25 s  relleno      -9 dB
+ 90.53 s  boom         -3 dB

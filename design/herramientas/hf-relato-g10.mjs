@@ -97,12 +97,13 @@ for (const s of SEGS) {
 const T = (k) => inicioDe[k];
 const F = (k) => inicioDe[k] + (pal[k].f - pal[k].i);
 // La cola: después de la última frase de Jhonny, la app llenándose sola (el mes en el celular, Progreso en el computador) y la tarjeta
-const D_CAL = 1.6, D_PROG_A = 2.6, D_PROG_B = 2.0, D_TARJETA = 2.4;
-const TOTAL = reloj + D_CAL + D_PROG_A + D_PROG_B + D_TARJETA;
+// D_VIAJE y EN_TARJETA son los de design/herramientas/ventanas-viaje.py (TOTAL y TARJETA)
+const D_CAL = 1.4, D_VIAJE = 9.3, EN_TARJETA = 7.0;
+const TOTAL = reloj + D_CAL + D_VIAJE;
 const tA = SEGS[2].ini;                              // empieza la historia
 // El cierre: Jhonny dice "Yo los cuento en Racha," → la app → vuelve su cara en "Escribe Racha y te la muestro" → la app y RACHA
 const T_APP = AV4.ini + AV4.tiempos[4] - 0.06, T_CARA = AV4.ini + AV4.tiempos[11] - 0.14, T_FIN = AV4.ini + AV4.dura;
-const T_TARJETA = T_FIN + D_CAL + D_PROG_A + D_PROG_B - 0.5;
+const T_TARJETA = T_FIN + D_CAL + EN_TARJETA;
 // Los momentos clave, para acomodar la música (musica-mezcla-g10.py)
 fs.writeFileSync(path.join(BASE_DIR, 'tiempos.json'), JSON.stringify({ total: n(TOTAL), historia: n(tA), golpeA: n(T(W.abria) + 0.03), callar: n(T(W.yEl)), golpeB: n(T(W.todos)), puente: n(AV2.ini), nombre: n(T(W.los)), cierre: n(AV3.ini), app: n(T_APP), fin: n(T_FIN) }, null, 1), 'utf8');
 
@@ -149,7 +150,7 @@ const FOTOS = [...new Set(TOMAS.map((t) => t.foto))];
 const archivoDe = (t) => t.foto.replace(/\.jpg$/, '');
 
 // ---------- los efectos de sonido ----------
-const VOLUMEN = { whoosh: -8, golpe: -6, pop: -9, caida: -6, toque: -9, logro: -9, boom: -2, subida: -7, neon: -8, diapositiva: -6, garabato: -6, latido: -3, brillo: -7, tachar: -8 };
+const VOLUMEN = { whoosh: -8, golpe: -6, pop: -9, caida: -6, toque: -9, logro: -9, boom: -2, subida: -7, neon: -8, diapositiva: -6, garabato: -6, latido: -3, brillo: -7, tachar: -8, mazo: -2, piedra: 0, periodico: -2, relleno: -6 };
 const SON = path.join(C, 'sonidos');
 const MEDIDAS = JSON.parse(fs.readFileSync(path.join(SON, 'sonidos.json'), 'utf8'));
 const sonidos = [];
@@ -204,11 +205,9 @@ if (!SOLO_HTML) {
     // (b) el mes en el celular: los días se llenan uno por uno
     const N3 = cuadros(D_CAL);
     parte(['-framerate', (nCal / (D_CAL - 0.2)).toFixed(3), '-i', path.join(LL, 'cal-%02d.png')], `fps=30,tpad=stop_mode=clone:stop_duration=3,${cam(`1.0+0.14*on/${N3}`, '0.5', '0.37')}`, N3, 'fin1.mp4');
-    // (c) Progreso en el computador: primero los cuadritos del año; después la cámara sube, sin corte, a la gráfica que se forma
-    const N4 = cuadros(D_PROG_A), N5 = cuadros(D_PROG_B + D_TARJETA), S = `(clip(on/40,0,1)*clip(on/40,0,1)*(3-2*clip(on/40,0,1)))`;
-    parte(['-framerate', (nA / D_PROG_A).toFixed(3), '-i', path.join(LL, 'vprog-%03d.png')], `trim=end_frame=${nA},setpts=PTS-STARTPTS,crop=1567:2786:481:380,fps=30,tpad=stop_mode=clone:stop_duration=2,${cam('1.5', `0.62+0.047*on/${N4}`, '0.74')}`, N4, 'fin2.mp4');
-    parte(['-framerate', ((nProg - nA) / D_PROG_B).toFixed(3), '-start_number', String(nA), '-i', path.join(LL, 'vprog-%03d.png')], `crop=1567:2786:481:380,fps=30,tpad=stop_mode=clone:stop_duration=6,${cam(`1.5+0.35*${S}`, `0.667-0.353*${S}`, `0.74-0.232*${S}`)}`, N5, 'fin3.mp4');
-    fs.writeFileSync(path.join(A, 'fin.txt'), [0, 1, 2, 3].map((i) => `file 'fin${i}.mp4'`).join('\n'));
+    // (c) el recorrido por las ventanas de Progreso (ventanas-viaje.py): la fuerza de los hábitos, las barras, la gráfica y, al final, "Tu año"
+    parte(['-i', path.join(LL, 'viaje.mp4')], 'fps=30,tpad=stop_mode=clone:stop_duration=2', cuadros(D_VIAJE), 'fin2.mp4');
+    fs.writeFileSync(path.join(A, 'fin.txt'), [0, 1, 2].map((i) => `file 'fin${i}.mp4'`).join('\n'));
     ff(['-f', 'concat', '-safe', '0', '-i', path.join(A, 'fin.txt'), '-c', 'copy', path.join(A, 'final.mp4')]);
   }
   // Jhonny: los clips (con el filtro de la campaña) o, si no han llegado, su foto
@@ -330,7 +329,7 @@ const fondoClaro = (de, a) => pasos.push(`tl.set("#root", { backgroundColor: "rg
 const NUMS0 = [1, 3, 8, 15, 24, 36, 47, 59, 70, 79, 87, 93, 97, 100], PEGA0 = [0, 3, 6, 9, 13];
 const t0 = (i) => 0.1 + i * (INTRO - 0.75) / (NUMS0.length - 1);
 NUMS0.forEach((_, i) => pasos.push(`tl.set("#c0-${i}", { autoAlpha: 1 }, ${n(i === 0 ? 0 : t0(i) - PELO)});`, `tl.set("#c0-${i}", { autoAlpha: 0 }, ${n((i < NUMS0.length - 1 ? t0(i + 1) : INTRO) - PELO)});`));
-PEGA0.forEach((i, j) => { const t = t0(i); chispa('#t-golpe0 .chispa', t); sacudida(t, j === PEGA0.length - 1 ? 1.1 : 0.6); suena('golpe', t, { db: j === PEGA0.length - 1 ? 2 : 0 }); });
+PEGA0.forEach((i, j) => { const t = t0(i); chispa('#t-golpe0 .chispa', t); sacudida(t, j === PEGA0.length - 1 ? 1.1 : 0.6); suena('mazo', t, { db: j === PEGA0.length - 1 ? 2 : 0 }); suena('golpe', t, { db: -4 }); });
 suena('boom', t0(13), { db: -3 }); destello(t0(13), 0.12);
 pasos.push(`tl.set("#preg", { autoAlpha: 0 }, ${n(INTRO - PELO)});`);
 // (a) "Se llamaba Jacob Riis": el retrato real; en su nombre se despega del fondo y salta hacia la cámara
@@ -360,26 +359,26 @@ suena('boom', T(W.mataron) + 0.12, { db: -5 }); suena('latido', T(W.perro) - 0.0
 rejilla(T(W.unArt) - 0.08, tP0);
 [[W.unArt, -5], [W.otro1, 4], [W.otro2, -2]].forEach(([k, r], i) => {
   pasos.push(`tl.fromTo("#rec${i + 1}", { opacity: 0, scale: 1.5, rotation: ${r + 9}, y: -90 }, { opacity: 1, scale: 1, rotation: ${r}, y: 0, duration: 0.16, ease: "power3.in", immediateRender: false }, ${n(T(k) - 0.12)});`);
-  suena('golpe', T(k) + 0.04, { db: -1 }); sacudida(T(k) + 0.04, 0.4);
+  suena('periodico', T(k) + 0.04, { db: 2 }); suena('golpe', T(k) + 0.04, { db: -3 }); sacudida(T(k) + 0.04, 0.4);
 });
 pasos.push(`tl.to(".rec", { opacity: 0.2, filter: "brightness(0.5)", duration: 0.3 }, ${n(T(W.nada) - 0.05)});`);
-suena('boom', T(W.nada) + 0.05, { db: -7 });
+suena('boom', T(W.nada) + 0.05, { db: -3 });
 seVa('.rec', tP0, 0.08);
 // (f) el picapedrero (video): da el golpe en "piedra"; en "cien golpes" se repite cada vez más cerca y el número corre
 fondoClaro(tP0, tPfin);
 suena('diapositiva', tP0);
 GOLPES_PICA.forEach((g, i) => {
   pasos.push(`tl.set("#chispaV", { left: ${n(g.x - 300)}, top: ${n(g.y - 300)} }, ${n(g.t - 0.02)});`); chispa('#chispaV', g.t);
-  suena('golpe', g.t, { db: i === 0 ? 2 : 0 }); sacudida(g.t, i === 0 ? 1 : 0.5);
+  suena('mazo', g.t, { db: i === 0 ? 4 : 1 }); suena('golpe', g.t, { db: i === 0 ? 0 : -4 }); sacudida(g.t, i === 0 ? 1 : 0.5);
   if (g.numero !== undefined) { const sig = GOLPES_PICA[i + 1]; pasos.push(`tl.set("#c1-${i}", { autoAlpha: 1 }, ${n(g.t - 0.03)});`, `tl.set("#c1-${i}", { autoAlpha: 0 }, ${n((sig ? sig.t - 0.03 : tNi) - PELO)});`); }
 });
-suena('boom', GOLPES_PICA[0].t, { db: -4 }); destello(GOLPES_PICA[0].t, 0.1);
+suena('boom', GOLPES_PICA[0].t, { db: -2 }); destello(GOLPES_PICA[0].t, 0.1);
 // (g) "Al ciento uno, se abría en dos"
 suena('latido', T(W.n101) - 0.55); suena('latido', T(W.n101) - 0.27);
 pasos.push(`tl.fromTo("#n101", { opacity: 0, scale: 2.0, filter: "blur(14px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.16, ease: "power4.in", immediateRender: false }, ${n(T(W.n101) - 0.12)});`);
-suena('golpe', T(W.n101) + 0.03, { db: 2 }); sacudida(T(W.n101) + 0.04, 0.8);
+suena('mazo', T(W.n101) + 0.03, { db: 4 }); suena('golpe', T(W.n101) + 0.03, { db: 0 }); sacudida(T(W.n101) + 0.04, 0.8);
 seVa('#n101', tPfin + 0.02, 0.1);
-suena('subida', T(W.abria), { modo: 'fin', db: -1 }); suena('boom', T(W.abria) + 0.03); sacudida(T(W.abria) + 0.04, 1.3); destello(T(W.abria) + 0.02, 0.2);
+suena('subida', T(W.abria), { modo: 'fin', db: -1 }); suena('piedra', T(W.abria) + 0.03, { db: -3 }); suena('boom', T(W.abria) + 0.03, { db: -2 }); sacudida(T(W.abria) + 0.04, 1.3); destello(T(W.abria) + 0.02, 0.2);
 suena('brillo', T(W.abria) + 0.5, { modo: 'fin', db: 0 });
 // (h) "no había sido ese golpe; habían sido todos los de antes": cien rayitas y la ciento uno
 rejilla(T(W.yEl) - 0.08, T(W.porEso) - 0.08);
@@ -413,22 +412,24 @@ for (let i = 0; i < 4; i++) suena('toque', T(W.cumples) + i * 0.1, { db: -2 });
 pasos.push(`tl.to("#dias .dia", { backgroundColor: "${AMBAR}", borderColor: "${AMBAR}", color: "#1a1408", boxShadow: "0 0 26px rgba(255,181,71,0.75)", duration: 0.1, stagger: 0.05 }, ${n(T(W.cuentan) - 0.08)});`);
 suena('subida', T(W.cuentan), { modo: 'fin', db: -2 }); suena('boom', T(W.cuentan) + 0.05, { db: -2 }); sacudida(T(W.cuentan) + 0.06, 0.8); destello(T(W.cuentan) + 0.05, 0.1);
 for (const s of ['#gnv1', '#gnv2', '#dias']) seVa(s, AV3.ini, 0.08);
-// (l) el cierre: la app de verdad llenándose sola y limpia (sin grano ni viñeta); al final, "escribe RACHA y te la muestro"
+// (l) el cierre: la app de verdad llenándose sola y limpia (sin grano ni viñeta); termina en "Tu año" y ahí entra "escribe RACHA".
+// Los sonidos de esta parte son graves y suaves (Johnatan: "los efectos cuando muestras Racha son muy chillones… desentonan"):
+// nada de toques ni brillos; un llenado grave en cada ventana y golpes sordos cuando la cámara cambia de ventana.
 fondoClaro(T_APP);
 pasos.push(`tl.set("#grano, .vin", { autoAlpha: 0 }, ${n(T_APP - PELO)});`);
-suena('subida', T_APP, { modo: 'fin', db: -2 }); suena('boom', T_APP + 0.02, { db: -4 });
-for (let i = 0; i < 5; i++) suena('toque', T_APP + 0.4 + i * (T_CARA - T_APP - 0.6) / 5, { db: -3 });
-suena('diapositiva', T_CARA); suena('diapositiva', T_FIN);
-for (let i = 0; i < 7; i++) suena('toque', T_FIN + 0.15 + i * (D_CAL - 0.4) / 7, { db: -3 });
-suena('golpe', T_FIN + D_CAL, { db: -3 });
-for (let i = 0; i < 9; i++) suena('toque', T_FIN + D_CAL + 0.2 + i * (D_PROG_A - 0.3) / 9, { db: -4 });
-suena('subida', T_TARJETA + 0.3, { modo: 'fin', db: -1 });
+suena('boom', T_APP + 0.02, { db: -5 }); suena('relleno', T_APP + 0.2, { modo: 'ini', db: -2 });
+suena('golpe', T_CARA, { db: -6 });
+suena('golpe', T_FIN, { db: -5 }); suena('relleno', T_FIN + 0.1, { modo: 'ini', db: -2 });
+const T_VIAJE = T_FIN + D_CAL;
+suena('boom', T_VIAJE + 0.02, { db: -6 });
+[0.05, 1.3, 3.0, 4.8, 6.0].forEach((s) => suena('relleno', T_VIAJE + s, { modo: 'ini', db: -3 }));
+[1.0, 2.5, 4.3].forEach((s) => suena('golpe', T_VIAJE + s + 0.1, { db: -8 }));
 aparece('#sombra', T_TARJETA, { dur: 0.4, escala: 1, borroso: 0 });
 aparece('#esc', T_TARJETA + 0.1, { dur: 0.2 });
 aparece('#marca', T_TARJETA + 0.25, { dur: 0.3, escala: 1.18, borroso: 18 });
 pasos.push(`tl.to("#marca", { scale: 1.05, duration: ${n(TOTAL - T_TARJETA - 0.7)}, ease: "none" }, ${n(T_TARJETA + 0.55)});`);
 aparece('#ytela', T_TARJETA + 0.8, { dur: 0.25 });
-suena('brillo', T_TARJETA + 0.35, { modo: 'fin', db: 1 }); suena('boom', T_TARJETA + 0.3, { db: -1 }); sacudida(T_TARJETA + 0.32, 0.6);
+suena('boom', T_TARJETA + 0.3, { db: -1 }); sacudida(T_TARJETA + 0.32, 0.6);
 // Jhonny: un golpe suave al entrar y en cada corte donde se le quitó una pausa
 suena('diapositiva', AV1.ini); suena('diapositiva', AV2.ini); suena('diapositiva', AV3.ini); suena('diapositiva', AV4.ini);
 for (const av of AVATAR) av.cortes.forEach((c) => { if (!(av === AV4 && av.ini + c > T_APP && av.ini + c < T_CARA + 0.3)) suena('golpe', av.ini + c, { db: -2 }); });
@@ -503,9 +504,9 @@ fs.writeFileSync(path.join(P, 'compositions', 'escena.html'), `<!doctype html>
         #gnv1 { top: 560px; font-size: 156px; } #gnv2 { top: 730px; font-size: 156px; }
         #dias { position: absolute; left: 123px; top: 1040px; display: flex; gap: 20px; }
         .dia { width: 102px; height: 102px; border-radius: 50%; border: 4px solid rgba(244, 231, 195, 0.35); background-color: rgba(0, 0, 0, 0.3); color: rgba(244, 231, 195, 0.45); display: flex; align-items: center; justify-content: center; opacity: 0; }
-        #sombra { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 22% at 50% 57%, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0) 100%); opacity: 0; }
-        #esc { top: 880px; font-size: 72px; } #ytela { top: 1190px; font-size: 58px; }
-        #marca { top: 948px; font-size: 220px; }
+        #sombra { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 20% at 50% 60%, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0) 100%); opacity: 0; }
+        #esc { top: 968px; font-size: 68px; } #ytela { top: 1262px; font-size: 56px; }
+        #marca { top: 1030px; font-size: 215px; }
       </style>
       <div id="root" data-composition-id="escena" data-width="1080" data-height="1920">
         <div id="mundo" data-layout-allow-overflow>
@@ -636,7 +637,7 @@ fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
       .vin2 { position: absolute; inset: 0; z-index: 7; pointer-events: none; background: radial-gradient(ellipse 85% 70% at 50% 45%, transparent 50%, rgba(0, 0, 0, 0.55) 100%); }
 
       #pica, #final { width: 100%; height: 100%; object-fit: cover; }
-      #pastilla { position: absolute; left: 0; right: 0; top: 1276px; z-index: 11; display: flex; justify-content: center; opacity: 0; }
+      #pastilla { position: absolute; left: 0; right: 0; top: 1348px; z-index: 11; display: flex; justify-content: center; opacity: 0; }
       #pastilla span { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 38px; letter-spacing: -0.01em; color: #F4E7C3; background: #0F1113; border: 3px solid #FFB547; border-radius: 999px; padding: 14px 34px 18px; white-space: nowrap; box-shadow: 0 0 34px rgba(255, 181, 71, 0.4); }
     </style>
   </head>
@@ -665,6 +666,7 @@ ${audioAvatar}
 </html>
 `, 'utf8');
 
+fs.writeFileSync(path.join(BASE_DIR, 'audio.json'), JSON.stringify({ total: n(TOTAL), pistas: [...VOCES.map((s, i) => ({ archivo: `voz${i + 1}.wav`, en: n(s.ini + ENTRA_VOZ - 0.06) })), ...AVATAR.filter((av) => av.hay).map((av) => ({ archivo: `${av.id}.wav`, en: n(av.ini) })), { archivo: 'efectos.wav', en: 0 }] }, null, 1), 'utf8');
 for (const f of ['hyperframes.json', 'package.json', 'meta.json']) {
   const de = path.join(C, 'guion1', 'hyperframes', f);
   if (!fs.existsSync(path.join(P, f)) && fs.existsSync(de)) fs.writeFileSync(path.join(P, f), fs.readFileSync(de, 'utf8').split('campana-guion1').join(`campana-${NOMBRE}`), 'utf8');
