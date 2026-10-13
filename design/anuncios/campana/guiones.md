@@ -810,3 +810,307 @@ Johnatan: tema "me gusta el 1, así es"; gancho visual "1 y 3 juntas"; cierre di
 | 10 · Racha | Jhonny | "Yo los cuento en Racha, una app que hicimos para eso. Escribe Racha y te la muestro." |
 
 Voz narrada generada: `guion10/voz/golpe101-v1-juan.mp3` (63,6 s) y `…-sin-pausas.mp3` (53,9 s; 143 palabras, texto exacto; texto con indicaciones en `voz/texto-v1.txt`; el saldo bajó de 7.149 a 6.609 créditos). Ojo al quitar pausas: la transcripción daba por terminado "1896" antes de tiempo y el corte se comía "y seis"; se dejó entera la pausa que sigue (`@95=0.97`). El plan de imágenes está en `guion10-textos-imagenes.md` y los cuatro clips de Jhonny en `guion10-textos-flow.md`.
+
+## Guion 11 · "Un tomate" · versión 1, RECHAZADA (10 oct, noche)
+
+**Johnatan: "el guion está muy flojo, volvieron las frases rebuscadas y poco directas, con palabras muy rebuscadas. No veo el copy aquí, no veo profesionalismo."** La versión 2 está más abajo. De esta versión siguen valiendo el tema, el gancho visual escogido y las fuentes.
+
+Cuarto video del estilo **Dark** con **Jhonny**. **Tema aprobado por Johnatan el 10 oct en el cuadro: "No te concentras"** (entre cuatro: volver te da pena, con Shizo Kanakuri; no te concentras, con Cirillo; no tienes tiempo, con Trollope; se te olvida, con el avión de 1935). Dolor nuevo en la campaña: **te sientas a hacer algo y a los cinco minutos estás en el celular.** Muestra por primera vez en un anuncio el **Modo Foco** (pomodoro). La música lleva el pulso con tictac que le gustó del cierre de "El golpe 101" (texto en la memoria `racha-lista-de-salida-estilo-dark`): aquí el tictac ES el reloj de la historia.
+
+### Ganchos visuales (para escoger; ninguno repite uno ya usado)
+1. **El tomate en lo oscuro:** negro; un reloj de cocina con forma de tomate, lo único encendido (ámbar); una mano le da cuerda, arranca el tictac y un "10:00" enorme empieza a correr hacia atrás; corta a la cara de Jhonny. Primeros dos segundos: la cuerda, el tictac y el número. Una foto (o un clip corto sin voz) y la edición.
+2. **Jhonny con el tomate:** Jhonny, junto al micrófono, tiene el reloj de tomate en la mano, le da cuerda y lo deja en la mesa; el tictac se oye por el micrófono. Lo hace el clip (riesgo: que Flow dañe la mano).
+3. **El celular que gana:** mesa oscura, un libro abierto; el celular boca abajo se enciende en ámbar y vibra; arriba, un contador de cuánto duró la concentración se frena en "0:47". Corta a Jhonny. Una foto y la edición.
+4. **La palabra que no cuadra:** negro; se escribe a máquina "la técnica para concentrarse más usada del mundo se llama…" y, donde iría la palabra, cae un tomate que rebota. Solo edición.
+
+Recomendado: el 1 (el tictac del reloj se vuelve la música del video). **ESCOGIDO por Johnatan el 10 oct, en el cuadro: el 1, "El tomate en lo oscuro".**
+
+### Texto
+
+**Sin aprobar todavía.** Se le preguntó con el guion entero metido en el cuadro y respondió: "así no puedo leer bien… simplemente me muestras y después me haces la pregunta". Se le mostró en un mensaje normal; falta su respuesta.
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny | "Una de las técnicas de concentración más usadas del mundo se llama tomate. La inventó un estudiante que no aguantaba diez minutos estudiando." |
+| 2 · La historia | Voz | "Se llamaba Francesco Cirillo. Italia, 1987. Tenía un examen encima y no avanzaba: abría el libro y se distraía con cualquier cosa." |
+| 3 · La apuesta | Voz | "Un día se hizo una apuesta que le daba hasta pena: ¿soy capaz de estudiar diez minutos seguidos?" |
+| 4 · El tomate | Voz | "Fue a la cocina y cogió un reloj de esos de cocina, con forma de tomate. Le dio cuerda y se sentó." |
+| 5 · El giro | Voz | "No lo logró a la primera. Siguió hasta aguantar los diez, y de ahí fue subiendo hasta veinticinco." |
+| 6 · La prueba | Voz | "Hoy esa manera de trabajar se usa en todo el mundo, y se sigue llamando como ese reloj: pomodoro. Tomate, en italiano." |
+| 7 · El puente | Jhonny | "Yo hacía lo contrario. Decía: hoy sí trabajo toda la tarde. Y a los cinco minutos ya tenía el celular en la mano." |
+| 8 · La idea | Voz | "El problema no eres tú. «Toda la tarde» no tiene final, y lo que no tiene final cuesta empezarlo. Veinticinco minutos sí se acaban." |
+| 9 · El cierre | Jhonny | "Así que no te propongas toda la tarde. Proponte un tomate." |
+| 10 · Racha | Jhonny | "Yo los pongo en Racha, una app: escoges la tarea, corre el tiempo y te avisa. Escribe Racha y te la muestro." |
+
+Unas 200 palabras: cerca de 80 segundos. Cuatro clips de Jhonny (23, 22, 11 y 22 palabras: tres de 10 s y uno de 8 s, unos 57 créditos de Flow; le quedan cerca de 185). Voz narrada de Juan: unas 125 palabras (unos 2.100 créditos de ElevenLabs; quedan 5.191). Si se quiere más corto, se quita la parte 5 o se junta con la 4.
+
+Comparación de repuesto para la parte 8 (si pide una de la vida diaria): "Pasa igual en una fila: se aguanta más cuando ves cuántos te faltan."
+
+### De dónde sale cada cosa
+- **Cirillo, estudiante, no se concentraba:** su página oficial (pomodorotechnique.com) dice que creó la técnica en los años ochenta "con un reloj de cocina con forma de tomate y un problema: no podía concentrarme en mis estudios". Un blog de la Universidad de Queen's cita su relato: "Era estudiante en la universidad en 1987 y tenía el examen de sociología en septiembre. No lograba mantener la mente en el libro. Me distraía todo el tiempo."
+- **El nombre:** Wikipedia: "pomodoro" es tomate en italiano, por el reloj de cocina con esa forma que usaba de estudiante.
+- **Diez minutos y veinticinco:** entrevista en Entrepreneur / NBC News (2013): se retó a "estudiar sin interrupción durante 10 minutos" y "10 minutos terminaron siendo 25". **OJO: su página de ahora dice que la pregunta fue "¿puedo estudiar solo dos minutos sin interrupción?"; él mismo ha contado las dos versiones.** El guion usa diez. **El año tampoco coincide en todas partes** (su relato dice 1987; la entrevista de 2013 dice "comienzos de los noventa"). Antes de generar la voz: leer el libro o su documento original y dejar el número y el año que él escribió; si no se aclara, decir "a finales de los ochenta" y "unos pocos minutos".
+- **"No lo logró a la primera":** Claude lo recuerda del documento original de Cirillo (2006), pero NO lo encontró en las fuentes de hoy. Por comprobar; si no aparece, se quita.
+- **"Yo hacía lo contrario… el celular en la mano":** confirmado por Johnatan en el cuadro el 10 oct ("Sí, me pasaba").
+- **Racha:** el Modo Foco existe (`src/components/screens/FocusModeScreen.tsx`): pomodoro de 15, 25 o 50 minutos sobre una tarea o un paso, suena y avisa al terminar ("Terminó tu pomodoro"), con descanso. No se promete que la persona se va a concentrar.
+- **"Un tomate"** como medida ("proponte un tomate") es un nombre nuestro; "pomodoro" es el nombre que le puso Cirillo. "Pomodoro Technique" es marca registrada de él: el anuncio cuenta la historia y no dice que Racha sea la técnica oficial ni que él la respalde. Sin foto de Cirillo (está vivo).
+
+### Contra la lista de revisión
+| Punto | Cómo queda |
+|---|---|
+| 1. El gancho deja algo sin cerrar | Sí: por qué se llama tomate se responde en las partes 4 y 6 |
+| 2. Promesa, curiosidad y romper el patrón | Cómo concentrarse; "se llama tomate" rompe lo esperado |
+| 3. 5-30-10 | Primeros 5 s: la técnica y el tomate. Medio: una sola idea (poner un final). Final: un paso concreto |
+| 4. Invitación en la mitad | No lleva; Jhonny vuelve en la parte 7 y hace de segundo gancho |
+| 5. Idea con nombre | "Un tomate" |
+| 6. Algo imperfecto | "Una apuesta que le daba hasta pena"; "no lo logró a la primera" |
+| 7. Tensión desde la primera frase | La técnica más usada la inventó uno que no podía concentrarse |
+| 8. Historia de otro, verdadera | Francesco Cirillo; dos detalles por comprobar (año y minutos) |
+| 9. Puente y frase para llevarse | Parte 7 y "No te propongas toda la tarde. Proponte un tomate." |
+| 10. El final vuelve al comienzo | El tomate del gancho es la frase del cierre |
+
+### Guion 11 · versión 2, SIN APROBAR (10 oct, noche)
+
+Qué cambió frente a la 1: el gancho arranca en lo que le pasa al que mira (no en la técnica); frases como se hablan; se dice la creencia que se contradice ("no es que seas distraído") y el culpable ("toda la tarde es demasiado"); el cierre deja algo para hacer hoy ("pon veinticinco minutos y empieza") en vez de "proponte un tomate"; se quitó "no lo logró a la primera" (no estaba comprobado).
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny | "Te sientas a trabajar y a los cinco minutos ya estás en el celular. Un estudiante arregló eso con un reloj de cocina." |
+| 2 · La historia | Voz | "Se llamaba Francesco Cirillo. Italia, 1987. Tenía un examen y no lograba estudiar: abría el libro y se distraía con cualquier cosa." |
+| 3 · La pregunta | Voz | "Un día se preguntó: ¿soy capaz de estudiar diez minutos seguidos? Solo diez." |
+| 4 · El reloj | Voz | "Fue a la cocina y trajo el reloj que usaban para cocinar. Tenía forma de tomate. Lo puso en diez y se sentó." |
+| 5 · Cómo le fue | Voz | "Mientras corría el tiempo, solo estudiaba. Cuando sonaba, descansaba. Así pasó de diez a veinticinco." |
+| 6 · La prueba | Voz | "Hoy gente de todo el mundo trabaja así. Y a esos veinticinco minutos les dicen pomodoro: tomate, en italiano." |
+| 7 · El puente | Jhonny | "Yo hacía lo contrario. Me sentaba sin reloj y decía: hoy trabajo toda la tarde. Y terminaba en el celular." |
+| 8 · La idea | Voz | "No es que seas distraído. «Toda la tarde» es demasiado, y uno ni empieza. Veinticinco minutos sí se pueden: pones el reloj, haces una sola cosa y, cuando suena, descansas." |
+| 9 · El cierre | Jhonny | "Así que hoy no te sientes a trabajar toda la tarde. Pon veinticinco minutos y empieza." |
+| 10 · Racha | Jhonny | "Yo los pongo en Racha, una app que hicimos: escoges la tarea y te avisa al terminar. Escribe Racha y te la muestro." |
+
+Unas 200 palabras, cerca de 80 s. Cuatro clips de Jhonny (22, 20, 15 y 23 palabras). Palabras que se repiten a propósito: "reloj" (es el objeto de la historia), "veinticinco minutos" (es lo que se lleva el que mira) y "toda la tarde" (lo contrario). El gancho visual escogido sigue sirviendo: la voz dice "reloj de cocina" y lo que se ve es el tomate; la palabra "tomate" llega en la parte 4.
+
+Ganchos hablados de repuesto:
+- "No es que seas distraído. Es que nadie te dijo que pusieras un reloj."
+- "Si no logras concentrarte ni diez minutos, mira lo que hizo un estudiante en 1987 con un reloj de cocina."
+
+Por comprobar antes de la voz: el año (1987) y los minutos (diez), que Cirillo ha contado de dos maneras; y que en su relato el descanso viene al sonar el reloj (es así en la técnica).
+
+### Guion 11 · versión 3 · TEXTO APROBADO (10 oct, noche): "sí, así está mejor, genera la voz"
+
+Johnatan vio la versión 2 y marcó de la parte 7 en adelante: **"desde aquí no me gusta, siento que se desconecta del tono, entra forzado y además muy largo"**. De las partes 1 a 6 no dijo nada (se toman como que van bien; falta su sí). Qué cambió: el final ya no explica como en una clase ("pones el reloj, haces una sola cosa y, cuando suena, descansas"); la idea sale de la misma historia (parte 8), como en los finales que aprobó ("El miércoles solo dañó el miércoles", "no había sido ese golpe"); el cierre y Racha van en un solo clip corto. El final bajó de 88 palabras a 47 y de cuatro partes a tres.
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny | "Te sientas a trabajar y a los cinco minutos ya estás en el celular. Un estudiante arregló eso con un reloj de cocina." |
+| 2 · La historia | Voz | "Se llamaba Francesco Cirillo. Italia, 1987. Tenía un examen y no lograba estudiar: abría el libro y se distraía con cualquier cosa." |
+| 3 · La pregunta | Voz | "Un día se preguntó: ¿soy capaz de estudiar diez minutos seguidos? Solo diez." |
+| 4 · El reloj | Voz | "Fue a la cocina y trajo el reloj que usaban para cocinar. Tenía forma de tomate. Lo puso en diez y se sentó." |
+| 5 · Cómo le fue | Voz | "Mientras corría el tiempo, solo estudiaba. Cuando sonaba, descansaba. Así pasó de diez a veinticinco." |
+| 6 · La prueba | Voz | "Hoy gente de todo el mundo trabaja así. Y a esos veinticinco minutos les dicen pomodoro: tomate, en italiano." |
+| 7 · El puente | Jhonny | "Yo hacía lo contrario. Decía: hoy trabajo toda la tarde. Y terminaba en el celular." |
+| 8 · El giro | Voz | "Cirillo no se propuso estudiar toda la tarde. Se propuso diez minutos." |
+| 9 · Cierre y Racha | Jhonny | "Así que pon el reloj: veinticinco minutos. Yo uso el de Racha, una app que hicimos. Escribe Racha y te la muestro." |
+
+Unas 160 palabras, cerca de 65 s. Tres clips de Jhonny (22, 14 y 21 palabras: dos de 10 s y uno de 8 s, unos 42 créditos de Flow). Voz narrada: unas 100 palabras.
+
+**Voz (10 oct, noche).** Pidió: "esta vez la voz intenta darle en las partes más importantes más dramatismo y que suene más profesional, aún suena como a video casero; además que suene así como los videos ASMR". Dos versiones con Juan Restrepo (modelo v3, estabilidad 0,2; 104 palabras, texto exacto en las dos; gastaron unos 900 créditos, quedan 4.291): **A "cerca"** (voz baja y pegada al micrófono, con susurros solo en las frases clave; `guion11/voz/tomate-A-cerca-juan.mp3`, texto en `texto-A-cerca.txt`) y **B "susurro"** (casi toda susurrada, estilo ASMR; `tomate-B-susurro-juan.mp3`, `texto-B-susurro.txt`). De cada una: `…-juan-sin-pausas.mp3` (pausas cortadas, dejando las de suspenso) y `…-para-oir.mp3` (con el tratamiento nuevo de sonido cercano: graves de cerca, aire arriba, compresión y SIN el eco de sala del molde anterior; 54 s y 53 s). Ojo: la transcripción marcaba tarde el comienzo de "1987" y el corte se comía el año entero; se corrige buscando por el sonido dónde empieza (`design/herramientas/voz-arreglar-anio.py`; las pausas de suspenso salen de `voz-pausas-g11.py`). En la A, la transcripción oye "Chirino" en la última frase (en la B, "Chirilo"): que lo oiga él. Año y minutos: su relato ("era estudiante en 1987 y tenía el examen de sociología en septiembre") lo citan HuffPost y un blog de la Universidad de Queen's; los diez minutos salen de su entrevista de 2013 (su página de ahora dice dos). Plan de imágenes en `guion11-textos-imagenes.md` y clips de Jhonny en `guion11-textos-flow.md`.
+
+### Guion 11 · versión 4, SIN APROBAR (11 oct): con las frases que reescribió Johnatan
+
+Rechazó las dos voces ("le falta naturalidad, hablar con más fluidez y menos pausado, frases más concretas y no tan lento; en los momentos importantes su entonación debe subir") y pidió el guion para ajustarlo. Mandó sus frases para las partes 1, 4, 5, 6, 7 y 8 y pidió ayuda con el cierre: "haz ajustes, analiza y dime qué le arreglarías". Se conservan sus palabras; lo que Claude tocó se le explicó cambio por cambio.
+
+Lo que escribió él:
+- 1: "estás trabajando y solo tardas cinco minutos para tomar tu celular. un estudiante arregló eso con un reloj de cocina."
+- 4: "fue a la cocina por un reloj en forma de tomate. puso diez minutos y comenzó de nuevo sus estudios"
+- 5: "cuando transcurría el tiempo estudiaba enfocado y al sonar descansaba un poco. así de diez minutos pasó a veinticinco"
+- 6: "hoy en día gente de todo el mundo usa este sistema"
+- 7: "yo en cambio me decía puedo trabajar toda la tarde sin pausas. pero... terminaba en el celular"
+- 8: "por eso aprendamos de cirillo no hagas tus tareas sin orden y estructura, ponte una meta, diez minutos, 15, veinticinco"
+- 9: "no sé cómo cerrar aquí, ayúdame"
+
+Propuesta de Claude con sus frases:
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny | "Estás trabajando y solo tardas cinco minutos en tomar el celular. Un estudiante arregló eso con un reloj de cocina." |
+| 2 · La historia | Voz | "Se llamaba Francesco Cirillo. Italia, 1987. Tenía un examen y no lograba estudiar: abría el libro y se distraía con cualquier cosa." |
+| 3 · La pregunta | Voz | "Un día se preguntó: ¿soy capaz de estudiar diez minutos seguidos? Solo diez." |
+| 4 · El reloj | Voz | "Fue a la cocina por un reloj con forma de tomate. Le puso diez minutos y volvió al libro." |
+| 5 · Cómo le fue | Voz | "Mientras corría el tiempo, estudiaba enfocado. Al sonar, descansaba un poco. Así, de diez minutos pasó a veinticinco." |
+| 6 · La prueba | Voz | "Hoy en día gente de todo el mundo usa este sistema. Se llama pomodoro: tomate, en italiano." |
+| 7 · El puente | Jhonny | "Yo, en cambio, me decía: puedo trabajar toda la tarde sin pausas. Pero… terminaba en el celular." |
+| 8 · La lección | Voz | "Por eso, aprende de Cirillo: no te sientes a trabajar toda la tarde. Ponte una meta: diez minutos, quince, veinticinco." |
+| 9 · Cierre y Racha | Jhonny | (recomendado) "Y si no tienes un reloj de cocina, yo uso el de Racha, una app que hicimos. Escribe Racha y te la muestro." |
+
+Otros dos cierres: "Yo pongo ese reloj en Racha, una app que hicimos. Escribe Racha y te la muestro." · "Empieza hoy con diez. Yo pongo el reloj en Racha, una app que hicimos. Escribe Racha y te la muestro."
+
+Unas 165 palabras; a ritmo de conversación, cerca de 60 s. Ojo: en la app el pomodoro es de 15, 25 o 50 minutos (no hay de 10); el guion no dice que Racha tenga de 10.
+
+## Guion 11-B · "El reloj" · versión corta y directa del tomate · versión 1, TEMA RECHAZADO (11 oct)
+
+**Johnatan: "sin la historia no me parece un problema por el cual la gente quiera comprar una app; pomodoros hay gratis incluso. Busquemos tocar dolores por los que sí paguen."** No se produce. Sirve como ejemplo del formato.
+
+Formato nuevo (sin nombre; lo pone Johnatan): corto y directo, como cinco de los seis anuncios que pasó el 11 oct (`../referencias/oct11/anuncios-directos-analisis.md`). Lo pidió así: "empieza por la versión corta del tomate". Voz de Juan Restrepo hablando seguido y natural (unas 2,7 palabras por segundo), la app de verdad a pantalla completa llenándose sola, las palabras de la voz en letras grandes, el tictac como música. Sin Jhonny y sin créditos de Flow. Mismo dolor del guion 11: te sientas a trabajar y terminas en el celular.
+
+### Ganchos visuales (para escoger)
+1. **La app desde el primer cuadro (recomendado):** el reloj de Racha a pantalla completa, en 25:00, con la frase escrita encima. Cuando la voz dice "pones un reloj", arranca y corre. El producto se ve desde el segundo 0. Solo la app grabada y la edición.
+2. **Cinco minutos:** negro; un "5:00" enorme baja a toda velocidad hasta 0:00 y, al llegar, se enciende un celular. Corte al reloj de Racha en el segundo 3. Solo edición.
+3. **Pantalla partida:** a la izquierda "sin reloj" (un celular dibujado al que le caen avisos), a la derecha "con reloj" (Racha corriendo). El producto se ve desde el segundo 0. Edición y la app.
+4. **La mano y el celular:** un escritorio oscuro, una mano coge el celular… y en la pantalla está el reloj de Racha. Pide una foto de Flow (gratis).
+
+### Texto
+
+| Parte | Segundo | Dice la voz | Qué se ve |
+|---|---|---|---|
+| 1 · El dolor | 0 a 4 | "Estás trabajando y solo tardas cinco minutos en tomar el celular." | El gancho visual |
+| 2 · Qué es | 4 a 10 | "Prueba esto: Racha es una app donde escoges la tarea y pones un reloj de veinticinco minutos." | En la app: se escoge la tarea, se toca 25 y "Empezar pomodoro" |
+| 3 · Cómo funciona | 10 a 14 | "Mientras corre, haces solo eso. Cuando suena, descansas cinco." | El reloj corre a toda velocidad hasta "Terminó tu pomodoro" y "Descansar 5 min" |
+| 4 · Qué más | 14 a 18 | "Y te lleva la cuenta del tiempo que estuviste enfocado." | El tiempo en Foco sumándose |
+| 5 · Invitación | 18 a 21 | "Escribe Racha y te la muestro." | "escribe RACHA y te la muestro" y la pastilla: $37.900 · un solo pago · 7 días para probarla |
+
+54 palabras, unos 20 segundos. La primera frase es de Johnatan (la escribió para el guion 11). Racha se nombra y se dice que es una app en el segundo 4.
+
+### De dónde sale cada cosa (comprobado en el código el 11 oct)
+- Pomodoro de 15, 25 o 50 minutos sobre una tarea o un paso: `src/utils/focoUtils.ts` (`DURACIONES_POMODORO = [15, 25, 50]`).
+- Al terminar suena y avisa "Terminó tu pomodoro"; ofrece "Descansar 5 min" (10 si el pomodoro fue de 50): `FocusModeScreen.tsx` y `descansoPara`.
+- Lleva el tiempo: en la tarea sale "… en Foco hoy", y el tiempo de la semana en Tu semana.
+- No se promete que la persona se va a concentrar ni cuánto va a rendir.
+
+## Guion 12 · "Tres semanas sin ir" · corto y directo · versión 1, SIN APROBAR (11 oct)
+
+**Tema aprobado por Johnatan el 11 oct: "vamos con el A"** (ya pagaste por cosas que dejaste a medias), entre cuatro dolores "por los que sí paguen". Preguntó si ese dolor "en general es la procrastinación": no del todo; aplazar es no empezar (ese es el dolor C, las tareas aplazadas) y este es abandonar lo que ya se empezó y se pagó. Formato corto y directo (referencias en `../referencias/oct11/anuncios-directos-analisis.md`): voz de Juan hablando seguido, la app de verdad en pantalla, unas 55 palabras, cerca de 20 s. Sin Jhonny.
+
+Nivel 02. Emoción: rabia con uno mismo por la plata botada. Creencia que se contradice: "lo dejé por flojo". Culpable: un día sin ganas, que nadie tenía previsto. Salida: el día difícil con la versión mínima. Se diferencia de los guiones 2 y 5 (volver a cero) en que entra por la plata que ya se está perdiendo.
+
+### Ganchos visuales (para escoger)
+1. **Los tenis y el contador (recomendado, junto con el 3):** unos tenis quietos en un rincón, en oscuro, y un número grande que sube: "21 días sin ir". En el segundo 3 corta a la app. Una foto de Flow (gratis) y la edición.
+2. **El cobro:** negro; cae tres veces un aviso dibujado, sin marca ni valor, "Mensualidad del gimnasio · cobrada" (enero, febrero, marzo). Solo edición.
+3. **La app desde el primer cuadro:** la semana de Racha con "Entrenar" marcado tres días y después todo en gris, con la frase escrita encima. Solo la app y la edición.
+4. **El maletín:** el maletín del gimnasio todavía armado junto a la puerta; la luz se apaga. Una foto de Flow y la edición.
+
+### Texto
+
+| Parte | Segundo | Dice la voz | Qué se ve |
+|---|---|---|---|
+| 1 · El dolor | 0 a 3 | "Pagas el gimnasio y llevas tres semanas sin ir." | El gancho visual |
+| 2 · El culpable | 3 a 6 | "Todo empezó con un día sin ganas." | En la app: la semana con un día en gris, y después todos |
+| 3 · Qué es | 6 a 13 | "Racha es una app para ese momento: en vez de faltar, haces lo mínimo: diez sentadillas en la casa. Y cuenta." | En la app: se toca "¿Día pesado? Haz solo lo mínimo", sale "Mínimo: 10 sentadillas", se marca y aparece "+5 ganados · versión mínima" |
+| 4 · Para qué | 13 a 17 | "Para que un día malo no te haga empezar de cero." | El mes llenándose en ámbar, sin el hueco |
+| 5 · Oferta | 17 a 21 | "Un solo pago, sin mensualidad. Escribe Racha y te la muestro." | "escribe RACHA y te la muestro" y la pastilla: $37.900 · un solo pago · 7 días para probarla |
+
+55 palabras, unos 20 s. Racha se nombra en el segundo 6 y la app se ve desde el 3.
+
+### De dónde sale cada cosa
+- **"¿Día pesado? Haz solo lo mínimo"**, la hoja "Día difícil", "Mínimo: …" y "+5 ganados · versión mínima": están en la app (maqueta aprobada el 30 sep; `dificilUtils.ts`). La mínima cuenta como cumplido. La escribe la persona en cada hábito: el guion no dice que venga puesta.
+- **"Diez sentadillas"**: es la versión mínima de "Entrenar 30 minutos" en la Racha de muestra.
+- **"Para que un día malo no te haga empezar de cero"**: es el subtítulo aprobado del PDF del Método. No se dice "nunca vuelves a cero" (la racha sí se rompe si un día queda sin cumplir y sin comodín).
+- **"Un solo pago, sin mensualidad"**: $37.900, pago único.
+- **"Llevas tres semanas sin ir"**: habla de una conducta, no de plata ni de salud de la persona. Riesgo bajo con la regla de atributos personales de Meta; no se dice cuánto paga ni nada del cuerpo.
+- Sin promesas: no se dice que va a volver al gimnasio ni que va a bajar de peso.
+
+## Guion 12 largo · "Ese martes" · estilo Dark con Jhonny · versión 1, SIN APROBAR (11 oct)
+
+Mismo tema del guion 12 (ya pagaste por cosas que dejaste a medias; aprobado: "vamos con el A"). Johnatan: **"sí, escribe el largo completo, que lo diga Jhonny pero con el estilo Dark, porque es el mejor ahora… pero mencionaste Racha como muy poco, ¿no? Justo dijiste que ese era un error."** Tenía razón: en el esqueleto Racha salía una sola vez, al final. Aquí sale tres veces: prometida en el segundo 9 (con un vistazo de la app), explicada al final durante unos 15 segundos y nombrada en la invitación; además va la etiqueta fija "Racha · app" todo el video.
+
+Esqueleto: el del anuncio de referencia `../referencias/oct11/ad6.mp4` (todo habla del que mira; la prueba dura diez segundos). Todo lo dice una sola voz, la de Jhonny (es la de Juan Restrepo): en cuatro partes se le ve la cara (clips de Flow) y en las demás su voz va sobre las imágenes en blanco y negro y sobre la app. Hablando seguido y natural, a unas 2,7 palabras por segundo.
+
+### Ganchos visuales (para escoger)
+1. **El cobro (recomendado):** negro; cae tres veces un aviso dibujado en ámbar, sin marca ni valor, "Mensualidad del gimnasio · cobrada" (enero, febrero, marzo), con un golpe cada uno; corta a la cara de Jhonny. Solo edición.
+2. **Los tenis y el contador:** unos tenis quietos en un rincón y un número grande que sube, "21 días sin ir"; corta a Jhonny. Una foto de Flow y la edición.
+3. **La puerta del gimnasio:** de noche, la puerta con luz ámbar y nadie entrando; el contador de días encima. Una foto de Flow y la edición.
+4. **El maletín:** el maletín del gimnasio todavía armado junto a la puerta de la casa; la luz se apaga. Una foto de Flow y la edición.
+
+### Texto
+
+| Parte | Quién | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny en cámara | "Si pagas el gimnasio y llevas semanas sin ir, no lo dejaste por flojo. Y te puedo decir cómo pasó." |
+| 2 · Racha, de entrada | Su voz, con un vistazo de la app | "Al final te muestro Racha, la app que hicimos para ese día." |
+| 3 · Lo que pasó | Su voz, sobre imágenes | "Fue un martes cualquiera. Saliste tarde, llegaste cansado y dijiste: mañana voy. Mañana tampoco fuiste. A la semana ya te daba pena volver. Y al mes, el cobro seguía llegando." |
+| 4 · La vuelta | Jhonny en cámara | "Sé que da rabia oírlo. Pero el problema no fue ese martes. Fue no tener nada pensado para un día así." |
+| 5 · La prueba | Su voz, con la tarjeta del estudio | "En Londres siguieron a noventa y seis personas mientras creaban un hábito. A las que faltaron un día no les pasó nada: siguieron igual." |
+| 6 · Lo que no es | Su voz, sobre imágenes | "O sea: no es obligarte a ir sin ganas. No es castigarte. Es saber qué haces el día que no puedes." |
+| 7 · Tu historia y la regla | Jhonny en cámara | "Yo dejé así el ejercicio, cursos y libros. Hasta que me puse una regla: un día malo se vale. Dos seguidos, no." |
+| 8 · Racha | Su voz, sobre la app llenándose | "Eso es Racha. El día que no puedes, haces lo mínimo: diez sentadillas en la casa. Y ese día cuenta. Si faltas varios días, no te regaña: te recibe con un «Volviste». Y la pagas una sola vez, sin mensualidad." |
+| 9 · Invitación | Jhonny en cámara | "Si estás cansado de pagar cosas que dejas a las tres semanas, escribe Racha y te la muestro." |
+
+Unas 205 palabras: cerca de 78 s. Cuatro clips de Jhonny (22, 21, 22 y 18 palabras: tres de 10 s y uno de 8 s, unos 57 créditos de Flow). El resto es voz generada (unas 125 palabras).
+
+### De dónde sale cada cosa
+- **El estudio:** Lally y otros, 2010, University College London, 96 voluntarios; faltar una vez no afectó de forma apreciable la formación del hábito. Ya se usó, comprobado, en los guiones 5 y 9.
+- **"Yo dejé así el ejercicio, cursos y libros":** de la historia de Johnatan (`design/pdf/metodo-texto.md`). "Me puse una regla": por confirmar con él que lo puede decir así.
+- **"Un día malo se vale. Dos seguidos, no.":** la regla aprobada del Método (PDF, página 6).
+- **Racha:** "¿Día pesado? Haz solo lo mínimo" y la versión mínima que cuenta; "Volviste. Hoy cada hábito vale el doble" sale después de tres días o más sin cumplir; pago único de $37.900. No se dice "nunca vuelves a cero". Diez sentadillas es la mínima de "Entrenar 30 minutos" en la muestra.
+- Sin promesas: no dice que va a volver al gimnasio ni nada del cuerpo. "Llevas semanas sin ir" es una conducta, no un atributo personal.
+
+### Contra la lista de revisión
+| Punto | Cómo queda |
+|---|---|
+| El gancho deja algo sin cerrar | "Te puedo decir cómo pasó" se responde en la parte 3; "al final te muestro Racha" se cumple en la 8 |
+| Promesa, curiosidad, romper el patrón | No fue por flojo; cómo pasó; "fue un martes cualquiera" |
+| Una sola idea en el medio | Tener pensado qué hacer el día que no puedes |
+| Invitación en la mitad | Parte 2: Racha prometida en el segundo 9 |
+| Idea con nombre | La regla: "un día malo se vale; dos seguidos, no" |
+| Algo imperfecto | "Sé que da rabia oírlo" |
+| Habla del que mira | Partes 1, 3, 4, 6 y 9; la historia de otro (el estudio) dura unos 9 s |
+| El final vuelve al comienzo | "Pagar cosas que dejas" recoge "pagas el gimnasio" |
+
+### Guion 12 largo · versión 2, SIN APROBAR (11 oct): con las frases que reescribió Johnatan
+
+Lo que escribió él (tal cual):
+- 1: "imaginate pagar el gimnasio y pasar semanas sin volver, eso no es pereza, y te puedo decir como paso esto:"
+- 2: "y al final te muestro como lo solucionamos con una simple herramienta"
+- 3: "fue un martes cualquiera, sales tarde del trabajo, llegas cansado y dices: mañana voy, pero eso no ocurre, pasada una semana dices YA QUE y al mes lo vuelves a pagar y vuelves a fallarte."
+- 4: "se que da rabia oirlo yo e estado en la misma posicion, pero el problema no es faltar al gimnasio es no tener un sistema para los dias que se vuelven dificiles"
+- 5: "en londres ... unas fallaron un dia pero a pesar de eso volvian y con mejores ganas"
+- 6: "entonces no debes ir al gimnasio sin ganas, no te castigues, solo debes aprender como afrontar dias asi."
+- 7: "yo tambien los tuve no solo era ejercicio, si no tambien cursos y libros hasta que .... un dia malo cuenta como parte del proceso, pero dos no"
+- 8: "por eso creamos una herramienta para que esos dias dificiles hagas lo unico, lo esencial lo minimo de ese habito que estas intentando contruir, lo pagas una vez, sin mensualidad, sin anuncios molestos"
+- 9: "asi que si estas cansado de pagar mensualidades para despues dejarlas escribe racha y te la muestro."
+
+Propuesta de Claude, conservando sus frases:
+
+| Parte | Cómo se ve | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny en cámara | "Imagínate pagar el gimnasio y pasar semanas sin volver. Eso no es pereza, y te puedo decir cómo pasa." |
+| 2 · Racha, de entrada | Su voz, con un vistazo de la app | "Y al final te muestro cómo lo solucionamos con una app sencilla." |
+| 3 · Lo que pasa | Su voz, sobre imágenes | "Es un martes cualquiera: sales tarde del trabajo, llegas cansado y dices: mañana voy. Pero no vas. A la semana dices: ya qué. Y al mes lo vuelves a pagar, y vuelves a fallarte." |
+| 4 · La vuelta | Jhonny en cámara | "Sé que da rabia oírlo; yo he estado ahí. Pero el problema no es faltar al gimnasio: es no tener un sistema para los días difíciles." |
+| 5 · La prueba | Su voz, con la tarjeta del estudio | "En Londres siguieron a noventa y seis personas mientras creaban un hábito. Algunas fallaron un día, pero volvieron, y el hábito siguió igual." |
+| 6 · Lo que no es | Su voz, sobre imágenes | "Entonces no tienes que obligarte a ir sin ganas, ni castigarte. Solo debes aprender a afrontar días así." |
+| 7 · Tu historia y la regla | Jhonny en cámara | "No era solo el ejercicio: también cursos y libros. Hasta que entendí algo: un día malo es parte del proceso. Dos seguidos, no." |
+| 8 · Racha | Su voz, sobre la app llenándose | "Por eso creamos Racha, una app para que en esos días difíciles hagas solo lo esencial, lo mínimo de ese hábito que estás construyendo. Y ese día cuenta. La pagas una vez: sin mensualidad y sin anuncios molestos." |
+| 9 · Invitación | Jhonny en cámara | "Así que si estás cansado de pagar mensualidades de cosas que después dejas, escribe Racha y te la muestro." |
+
+Unas 208 palabras, cerca de 78 s. Cambios de fondo que se le explicaron: (a) en sus partes 2 y 8 decía "herramienta" y Racha solo se nombraba en la última frase: se propone "una app sencilla" en la 2 y "Racha, una app" en la 8; (b) el estudio no dice que volvieran "con mejores ganas": dice que faltar un día no afectó el hábito; (c) "no debes ir al gimnasio sin ganas" se entiende como una orden de no ir: "no tienes que obligarte a ir sin ganas"; (d) "dos no" → "dos seguidos, no" (es la regla del Método); (e) se devolvió "Y ese día cuenta", que es lo que Racha hace y lo gratis no. "Sin anuncios molestos" es cierto: la app no trae publicidad (comprobado en el código el 11 oct).
+
+### Guion 12 largo · versión 3, SIN APROBAR (11 oct): se explica cómo se soluciona
+
+Johnatan sobre la versión 2: **"hay un error en el guion: nunca explicamos cómo se soluciona, cosa que debería explicar el estudio, ¿no?"** Tenía razón en lo primero: la parte 6 decía "solo debes aprender a afrontar días así" y no decía cómo; el ejemplo concreto (diez sentadillas) se había perdido. Sobre lo segundo se le aclaró: el estudio no explica la solución; solo prueba que fallar un día no daña el hábito. El cómo es el Método: el día difícil se hace lo mínimo y al otro día se vuelve. Cambian solo las partes 5 y 6:
+
+| Parte | Cómo se ve | Dice |
+|---|---|---|
+| 5 · La prueba | Su voz, con la tarjeta del estudio | "En Londres siguieron a noventa y seis personas mientras creaban un hábito. Algunas fallaron un día, pero volvieron, y el hábito siguió igual. Fallar un día no daña nada; no volver, sí." |
+| 6 · Cómo se soluciona | Su voz, sobre imágenes | "Entonces no tienes que obligarte a ir sin ganas, ni castigarte. El día difícil haces lo mínimo: diez sentadillas en la casa. Y al otro día vuelves." |
+
+Las demás partes quedan como en la versión 2. Unas 225 palabras, cerca de 83 s. "Fallar un día no daña nada; no volver, sí" es conclusión nuestra, dicha después del estudio, no una frase del estudio.
+
+### Guion 12 largo · versión 4 · TEXTO APROBADO (11 oct, en el cuadro: "Sí, aprobado"): sin Racha al comienzo
+
+Johnatan: **"lo de Racha de entrada quitémoslo, no me gusta; parece efectivamente que estamos vendiendo."** Sale la parte 2 ("Y al final te muestro cómo lo solucionamos con una app sencilla") y con ella el vistazo de la app al comienzo. Racha queda en las dos últimas partes. Quedan ocho partes:
+
+| Parte | Cómo se ve | Dice |
+|---|---|---|
+| 1 · Gancho | Jhonny en cámara | "Imagínate pagar el gimnasio y pasar semanas sin volver. Eso no es pereza, y te puedo decir cómo pasa." |
+| 2 · Lo que pasa | Su voz, sobre imágenes | "Es un martes cualquiera: sales tarde del trabajo, llegas cansado y dices: mañana voy. Pero no vas. A la semana dices: ya qué. Y al mes lo vuelves a pagar, y vuelves a fallarte." |
+| 3 · La vuelta | Jhonny en cámara | "Sé que da rabia oírlo; yo he estado ahí. Pero el problema no es faltar al gimnasio: es no tener un sistema para los días difíciles." |
+| 4 · La prueba | Su voz, con la tarjeta del estudio | "En Londres siguieron a noventa y seis personas mientras creaban un hábito. Algunas fallaron un día, pero volvieron, y el hábito siguió igual. Fallar un día no daña nada; no volver, sí." |
+| 5 · Cómo se soluciona | Su voz, sobre imágenes | "Entonces no tienes que obligarte a ir sin ganas, ni castigarte. El día difícil haces lo mínimo: diez sentadillas en la casa. Y al otro día vuelves." |
+| 6 · Tu historia y la regla | Jhonny en cámara | "No era solo el ejercicio: también cursos y libros. Hasta que entendí algo: un día malo es parte del proceso. Dos seguidos, no." |
+| 7 · Racha | Su voz, sobre la app llenándose | "Por eso creamos Racha, una app para que en esos días difíciles hagas solo lo esencial, lo mínimo de ese hábito que estás construyendo. Y ese día cuenta. La pagas una vez: sin mensualidad y sin anuncios molestos." |
+| 8 · Invitación | Jhonny en cámara | "Así que si estás cansado de pagar mensualidades de cosas que después dejas, escribe Racha y te la muestro." |
+
+Unas 213 palabras, cerca de 79 s. Racha se nombra por primera vez hacia el segundo 58 (en la referencia `ad6`, en el 63). Cuatro clips de Jhonny (partes 1, 3, 6 y 8). Por decidir con él: la etiqueta fija "Racha · app" (se quita si también le suena a venta) y si en la parte 7 va "Racha, una app" o su "una herramienta".
+
+**Decisiones del 11 oct (en el cuadro):** texto aprobado; en la parte 7 va "Por eso creamos Racha, una app…"; gancho visual: el micrófono a oscuras del guion 9, sin letras ("sin frase está bien"); sin etiqueta fija.
+
+**Voz (11 oct).** Pidió: "haz la grabación; recuerda que hable más rápido, natural, pero en los momentos importantes ponga el dramatismo". Una sola toma con Juan Restrepo (v3, estabilidad 0,4; texto con pocas indicaciones en `guion12/voz/texto-v1.txt`): `guion12/voz/martes-v1-juan.mp3` (57 s, 129 palabras, texto exacto; la transcripción escribe "vuelves a apagar" por "vuelves a pagar": que lo oiga él). Sin pausas largas (0,18 s; de 0,4 a 0,6 s antes de las frases clave): `martes-v1-juan-sin-pausas.mp3` (46 s, 2,8 palabras por segundo, la velocidad del anuncio de referencia). Para oír, con el tratamiento de sonido cercano: **A `martes-A-normal-para-oir.mp3`** (46 s) y **B `martes-B-mas-rapida-para-oir.mp3`** (la misma toma un 8 % más rápida, 42,5 s; no gastó créditos). OJO: esa toma gastó unos 1.450 créditos (de 4.291 a 2.845): no regenerar por gusto. Plan de imágenes en `guion12-textos-imagenes.md`, clips de Jhonny en `guion12-textos-flow.md`, la app en `guion12/app/dia-dificil.mp4`.

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · campaña · guion12 · Ese martes</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+      @font-face { font-family: "Serifa Racha"; font-weight: 400; src: local("Bodoni MT"), local("Bodoni MT Regular"), local("Georgia"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .clip { position: absolute; inset: 0; }
+      .avcaja { position: absolute; inset: 0; z-index: 3; opacity: 0; visibility: hidden; overflow: hidden; background: #000; }
+      .avcaja .mov { position: absolute; inset: 0; transform-origin: 50% 40%; }
+      .avcaja video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+      .sub { position: absolute; left: 0; right: 0; top: 1118px; text-align: center; opacity: 0; visibility: hidden; }
+      .sub p { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 54px; line-height: 1.14; letter-spacing: -0.025em; color: #fff; white-space: nowrap; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95), 0 0 3px rgba(0, 0, 0, 0.9); }
+      .sub span { display: inline-block; opacity: 0.001; }
+      #velo { position: absolute; inset: 0; z-index: 4; background: #000; opacity: 1; }
+      #mic { position: absolute; inset: 0; z-index: 5; background: url("assets/mic-ambar.jpg") center / cover; -webkit-mask-image: radial-gradient(ellipse 17% 25% at 51% 76%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 17% 25% at 51% 76%, #000 62%, transparent 100%); opacity: 0; filter: drop-shadow(0 0 30px rgba(255, 181, 71, 0.6)); }
+      .vin2 { position: absolute; inset: 0; z-index: 7; pointer-events: none; background: radial-gradient(ellipse 85% 70% at 50% 45%, transparent 50%, rgba(0, 0, 0, 0.55) 100%); }
+      #app, #cal, #cola { width: 100%; height: 100%; object-fit: cover; }
+      #pastilla { position: absolute; left: 0; right: 0; top: 1334px; z-index: 11; display: flex; justify-content: center; opacity: 0; }
+      #pastilla span { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 36px; letter-spacing: -0.01em; color: #F4E7C3; background: #0F1113; border: 3px solid #FFB547; border-radius: 999px; padding: 14px 32px 18px; white-space: nowrap; box-shadow: 0 0 34px rgba(255, 181, 71, 0.4); }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="87.98" data-width="1080" data-height="1920">
+      <div id="escena" class="clip" style="z-index: 1" data-composition-id="escena" data-composition-src="compositions/escena.html" data-start="0" data-duration="87.98" data-track-index="0" data-width="1080" data-height="1920"></div>
+      <div class="avcaja" id="av1-caja" data-layout-allow-overflow>
+        <div class="mov"><video id="av1" class="clip" src="assets/av1.mp4" playsinline muted data-start="0" data-duration="7.75" data-media-start="0" data-track-index="10"></video></div>
+        <div class="sub" id="av1-p0"><p><span id="av1-w0">imagínate</span> <span id="av1-w1">pagar</span> <span id="av1-w2">el</span> <span id="av1-w3">gimnasio</span></p><p><span id="av1-w4">y</span> <span id="av1-w5">pasar</span> <span id="av1-w6">semanas</span> <span id="av1-w7">sin</span> <span id="av1-w8">volver.</span></p></div>
+        <div class="sub" id="av1-p1"><p><span id="av1-w9">eso</span> <span id="av1-w10">no</span> <span id="av1-w11">es</span> <span id="av1-w12">pereza,</span></p><p><span id="av1-w13">y</span> <span id="av1-w14">te</span> <span id="av1-w15">puedo</span> <span id="av1-w16">decir</span> <span id="av1-w17">cómo</span> <span id="av1-w18">pasa.</span></p></div>
+      </div>
+      <div class="avcaja" id="av2-caja" data-layout-allow-overflow>
+        <div class="mov"><video id="av2" class="clip" src="assets/av2.mp4" playsinline muted data-start="19.36" data-duration="7.18" data-media-start="0" data-track-index="11"></video></div>
+        <div class="sub" id="av2-p0"><p><span id="av2-w0">sé</span> <span id="av2-w1">que</span> <span id="av2-w2">da</span> <span id="av2-w3">rabia</span> <span id="av2-w4">oírlo;</span></p><p><span id="av2-w5">yo</span> <span id="av2-w6">he</span> <span id="av2-w7">estado</span> <span id="av2-w8">ahí.</span></p></div>
+        <div class="sub" id="av2-p1"><p><span id="av2-w9">pero</span> <span id="av2-w10">el</span> <span id="av2-w11">problema</span></p><p><span id="av2-w12">no</span> <span id="av2-w13">es</span> <span id="av2-w14">faltar</span> <span id="av2-w15">al</span> <span id="av2-w16">gimnasio:</span></p></div>
+        <div class="sub" id="av2-p2"><p><span id="av2-w17">es</span> <span id="av2-w18">no</span> <span id="av2-w19">tener</span> <span id="av2-w20">un</span> <span id="av2-w21">sistema</span></p><p><span id="av2-w22">para</span> <span id="av2-w23">los</span> <span id="av2-w24">días</span> <span id="av2-w25">difíciles.</span></p></div>
+      </div>
+      <div class="avcaja" id="av3-caja" data-layout-allow-overflow>
+        <div class="mov"><video id="av3" class="clip" src="assets/av3.mp4" playsinline muted data-start="49.31" data-duration="8.03" data-media-start="0" data-track-index="12"></video></div>
+        <div class="sub" id="av3-p0"><p><span id="av3-w0">no</span> <span id="av3-w1">era</span> <span id="av3-w2">solo</span> <span id="av3-w3">el</span> <span id="av3-w4">ejercicio:</span></p><p><span id="av3-w5">también</span> <span id="av3-w6">cursos</span> <span id="av3-w7">y</span> <span id="av3-w8">libros.</span></p></div>
+        <div class="sub" id="av3-p1"><p><span id="av3-w9">hasta</span> <span id="av3-w10">que</span> <span id="av3-w11">entendí</span> <span id="av3-w12">algo:</span></p><p><span id="av3-w13">un</span> <span id="av3-w14">día</span> <span id="av3-w15">malo</span></p></div>
+        <div class="sub" id="av3-p2"><p><span id="av3-w16">es</span> <span id="av3-w17">parte</span> <span id="av3-w18">del</span> <span id="av3-w19">proceso.</span></p><p><span id="av3-w20">dos</span> <span id="av3-w21">seguidos,</span> <span id="av3-w22">no.</span></p></div>
+      </div>
+      <div class="avcaja" id="av4-caja" data-layout-allow-overflow>
+        <div class="mov"><video id="av4" class="clip" src="assets/av4.mp4" playsinline muted data-start="71.15" data-duration="7.53" data-media-start="0" data-track-index="13"></video></div>
+        <div class="sub" id="av4-p0"><p><span id="av4-w0">así</span> <span id="av4-w1">que</span> <span id="av4-w2">si</span> <span id="av4-w3">estás</span> <span id="av4-w4">cansado</span></p><p><span id="av4-w5">de</span> <span id="av4-w6">pagar</span> <span id="av4-w7">mensualidades</span></p></div>
+        <div class="sub" id="av4-p1"><p><span id="av4-w8">de</span> <span id="av4-w9">cosas</span> <span id="av4-w10">que</span> <span id="av4-w11">después</span> <span id="av4-w12">dejas,</span></p><p><span id="av4-w13">escribe</span> <span id="av4-w14">Racha</span></p></div>
+        <div class="sub" id="av4-p2"><p><span id="av4-w15">y</span> <span id="av4-w16">te</span> <span id="av4-w17">la</span> <span id="av4-w18">muestro.</span></p></div>
+      </div>
+      <div id="velo"></div>
+      <div id="mic"></div>
+      <div class="vin2"></div>
+      <video id="app" class="clip" style="z-index: 0" src="assets/app.mp4" playsinline muted data-start="57.34" data-duration="8.14" data-media-start="0" data-track-index="6"></video>
+      <video id="cal" class="clip" style="z-index: 0" src="assets/cal.mp4" playsinline muted data-start="65.48" data-duration="5.67" data-media-start="0" data-track-index="7"></video>
+      <video id="cola" class="clip" style="z-index: 0" src="assets/cola.mp4" playsinline muted data-start="78.68" data-duration="9.3" data-media-start="0" data-track-index="8"></video>
+      <div id="pastilla"><span>Racha · app · $37.900, un solo pago · 7 días para probarla</span></div>
+      <audio id="voz1" src="assets/voz1.wav" data-start="7.83" data-duration="11.45" data-media-start="0" data-track-index="3" data-volume="1"></audio>
+      <audio id="voz2" src="assets/voz2.wav" data-start="26.62" data-duration="22.61" data-media-start="0" data-track-index="4" data-volume="1"></audio>
+      <audio id="voz3" src="assets/voz3.wav" data-start="57.42" data-duration="13.65" data-media-start="0" data-track-index="5" data-volume="1"></audio>
+      <audio id="av1-voz" src="assets/av1.wav" data-start="0" data-duration="7.75" data-media-start="0" data-track-index="20" data-volume="1"></audio>
+      <audio id="av2-voz" src="assets/av2.wav" data-start="19.36" data-duration="7.18" data-media-start="0" data-track-index="21" data-volume="1"></audio>
+      <audio id="av3-voz" src="assets/av3.wav" data-start="49.31" data-duration="8.03" data-media-start="0" data-track-index="22" data-volume="1"></audio>
+      <audio id="av4-voz" src="assets/av4.wav" data-start="71.15" data-duration="7.53" data-media-start="0" data-track-index="23" data-volume="1"></audio>
+      <audio id="efectos" src="assets/efectos.wav" data-start="0" data-duration="87.98" data-media-start="0" data-track-index="9" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#av1-caja", { autoAlpha: 1 }, 0);
+      tl.set("#av1-caja", { autoAlpha: 0 }, 7.746);
+      tl.fromTo("#av1-caja .mov", { scale: 1.0 }, { scale: 1.06, duration: 7.75, ease: "none", immediateRender: false }, 0);
+      tl.fromTo("#av1-w0", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 0.97);
+      tl.fromTo("#av1-w1", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 1.52);
+      tl.fromTo("#av1-w2", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 1.78);
+      tl.fromTo("#av1-w3", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 1.84);
+      tl.fromTo("#av1-w4", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 2.75);
+      tl.fromTo("#av1-w5", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 2.89);
+      tl.fromTo("#av1-w6", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 3.21);
+      tl.fromTo("#av1-w7", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 3.7);
+      tl.fromTo("#av1-w8", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 3.86);
+      tl.fromTo("#av1-w9", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 4.63);
+      tl.fromTo("#av1-w10", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 4.8);
+      tl.fromTo("#av1-w11", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 5.1);
+      tl.fromTo("#av1-w12", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 5.25);
+      tl.fromTo("#av1-w13", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 6.1);
+      tl.fromTo("#av1-w14", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 6.16);
+      tl.fromTo("#av1-w15", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 6.32);
+      tl.fromTo("#av1-w16", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 6.56);
+      tl.fromTo("#av1-w17", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 6.97);
+      tl.fromTo("#av1-w18", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 7.21);
+      tl.set("#av1-p0", { autoAlpha: 1 }, 0.94);
+      tl.set("#av1-p0", { autoAlpha: 0 }, 4.6);
+      tl.set("#av1-p1", { autoAlpha: 1 }, 4.6);
+      tl.set("#av1-p1", { autoAlpha: 0 }, 7.746);
+      tl.set("#av2-caja", { autoAlpha: 1 }, 19.356);
+      tl.set("#av2-caja", { autoAlpha: 0 }, 26.536);
+      tl.fromTo("#av2-caja .mov", { scale: 1.0 }, { scale: 1.06, duration: 7.18, ease: "none", immediateRender: false }, 19.36);
+      tl.fromTo("#av2-w0", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 19.48);
+      tl.fromTo("#av2-w1", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 19.63);
+      tl.fromTo("#av2-w2", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 19.76);
+      tl.fromTo("#av2-w3", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 19.84);
+      tl.fromTo("#av2-w4", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 20.24);
+      tl.fromTo("#av2-w5", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 20.69);
+      tl.fromTo("#av2-w6", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 20.73);
+      tl.fromTo("#av2-w7", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 20.79);
+      tl.fromTo("#av2-w8", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 21.19);
+      tl.fromTo("#av2-w9", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 21.71);
+      tl.fromTo("#av2-w10", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 21.87);
+      tl.fromTo("#av2-w11", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 21.95);
+      tl.fromTo("#av2-w12", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 22.31);
+      tl.fromTo("#av2-w13", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 22.45);
+      tl.fromTo("#av2-w14", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 22.52);
+      tl.fromTo("#av2-w15", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 22.84);
+      tl.fromTo("#av2-w16", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 22.87);
+      tl.fromTo("#av2-w17", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 23.42);
+      tl.fromTo("#av2-w18", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 23.64);
+      tl.fromTo("#av2-w19", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 23.89);
+      tl.fromTo("#av2-w20", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 24.15);
+      tl.fromTo("#av2-w21", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 24.29);
+      tl.fromTo("#av2-w22", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 25.03);
+      tl.fromTo("#av2-w23", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 25.19);
+      tl.fromTo("#av2-w24", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 25.39);
+      tl.fromTo("#av2-w25", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 25.6);
+      tl.set("#av2-p0", { autoAlpha: 1 }, 19.45);
+      tl.set("#av2-p0", { autoAlpha: 0 }, 21.68);
+      tl.set("#av2-p1", { autoAlpha: 1 }, 21.68);
+      tl.set("#av2-p1", { autoAlpha: 0 }, 23.39);
+      tl.set("#av2-p2", { autoAlpha: 1 }, 23.39);
+      tl.set("#av2-p2", { autoAlpha: 0 }, 26.536);
+      tl.set("#av3-caja", { autoAlpha: 1 }, 49.306);
+      tl.set("#av3-caja", { autoAlpha: 0 }, 57.336);
+      tl.fromTo("#av3-caja .mov", { scale: 1.0 }, { scale: 1.06, duration: 8.03, ease: "none", immediateRender: false }, 49.31);
+      tl.fromTo("#av3-w0", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 49.43);
+      tl.fromTo("#av3-w1", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 49.61);
+      tl.fromTo("#av3-w2", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 49.75);
+      tl.fromTo("#av3-w3", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 50.01);
+      tl.fromTo("#av3-w4", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 50.09);
+      tl.fromTo("#av3-w5", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 50.8);
+      tl.fromTo("#av3-w6", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 51.21);
+      tl.fromTo("#av3-w7", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 51.71);
+      tl.fromTo("#av3-w8", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 51.77);
+      tl.fromTo("#av3-w9", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 52.54);
+      tl.fromTo("#av3-w10", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 52.77);
+      tl.fromTo("#av3-w11", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 52.86);
+      tl.fromTo("#av3-w12", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 53.35);
+      tl.fromTo("#av3-w13", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 54.16);
+      tl.fromTo("#av3-w14", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 54.3);
+      tl.fromTo("#av3-w15", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 54.49);
+      tl.fromTo("#av3-w16", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 54.82);
+      tl.fromTo("#av3-w17", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 55.03);
+      tl.fromTo("#av3-w18", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 55.35);
+      tl.fromTo("#av3-w19", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 55.51);
+      tl.fromTo("#av3-w20", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 56.07);
+      tl.fromTo("#av3-w21", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 56.24);
+      tl.fromTo("#av3-w22", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 56.88);
+      tl.set("#av3-p0", { autoAlpha: 1 }, 49.4);
+      tl.set("#av3-p0", { autoAlpha: 0 }, 52.51);
+      tl.set("#av3-p1", { autoAlpha: 1 }, 52.51);
+      tl.set("#av3-p1", { autoAlpha: 0 }, 54.79);
+      tl.set("#av3-p2", { autoAlpha: 1 }, 54.79);
+      tl.set("#av3-p2", { autoAlpha: 0 }, 57.336);
+      tl.set("#av4-caja", { autoAlpha: 1 }, 71.146);
+      tl.set("#av4-caja", { autoAlpha: 0 }, 78.676);
+      tl.fromTo("#av4-caja .mov", { scale: 1.0 }, { scale: 1.06, duration: 7.53, ease: "none", immediateRender: false }, 71.15);
+      tl.fromTo("#av4-w0", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 71.27);
+      tl.fromTo("#av4-w1", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 71.5);
+      tl.fromTo("#av4-w2", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 71.61);
+      tl.fromTo("#av4-w3", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 71.72);
+      tl.fromTo("#av4-w4", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 72.06);
+      tl.fromTo("#av4-w5", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 72.63);
+      tl.fromTo("#av4-w6", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 72.71);
+      tl.fromTo("#av4-w7", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 73.03);
+      tl.fromTo("#av4-w8", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 74.56);
+      tl.fromTo("#av4-w9", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 74.72);
+      tl.fromTo("#av4-w10", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 75.13);
+      tl.fromTo("#av4-w11", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 75.29);
+      tl.fromTo("#av4-w12", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 75.64);
+      tl.fromTo("#av4-w13", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 76.38);
+      tl.fromTo("#av4-w14", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 76.72);
+      tl.fromTo("#av4-w15", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 77.52);
+      tl.fromTo("#av4-w16", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 77.59);
+      tl.fromTo("#av4-w17", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 77.75);
+      tl.fromTo("#av4-w18", { opacity: 0.001, color: "#8a8a8a" }, { opacity: 1, color: "#FFFFFF", duration: 0.12, immediateRender: false }, 77.78);
+      tl.set("#av4-p0", { autoAlpha: 1 }, 71.24);
+      tl.set("#av4-p0", { autoAlpha: 0 }, 74.53);
+      tl.set("#av4-p1", { autoAlpha: 1 }, 74.53);
+      tl.set("#av4-p1", { autoAlpha: 0 }, 77.49);
+      tl.set("#av4-p2", { autoAlpha: 1 }, 77.49);
+      tl.set("#av4-p2", { autoAlpha: 0 }, 78.676);
+      tl.set(".vin2", { autoAlpha: 0 }, 0);
+      tl.set(".vin2", { autoAlpha: 1 }, 0);
+      tl.set(".vin2", { autoAlpha: 0 }, 7.746);
+      tl.set(".vin2", { autoAlpha: 1 }, 19.36);
+      tl.set(".vin2", { autoAlpha: 0 }, 26.536);
+      tl.set(".vin2", { autoAlpha: 1 }, 49.31);
+      tl.set(".vin2", { autoAlpha: 0 }, 57.336);
+      tl.set(".vin2", { autoAlpha: 1 }, 71.15);
+      tl.set(".vin2", { autoAlpha: 0 }, 78.676);
+      tl.to("#velo", { opacity: 0, duration: 0.3, ease: "power2.out" }, 0.86);
+      tl.set("#mic", { opacity: 0.5 }, 0);
+      tl.to("#mic", { opacity: 1, duration: 0.05 }, 0.08);
+      tl.to("#mic", { opacity: 0.2, duration: 0.04 }, 0.17);
+      tl.to("#mic", { opacity: 1, duration: 0.05 }, 0.25);
+      tl.to("#mic", { opacity: 0.35, duration: 0.04 }, 0.34);
+      tl.to("#mic", { opacity: 1, duration: 0.1 }, 0.42);
+      tl.to("#mic", { opacity: 0, duration: 0.6, ease: "power1.in" }, 0.96);
+      tl.fromTo("#pastilla", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, 84.23);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

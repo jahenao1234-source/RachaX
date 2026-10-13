@@ -5,6 +5,8 @@
 //   node design/herramientas/elevenlabs.mjs decir <idVoz> "<texto>" <salida.mp3>
 //     (con MODELO=eleven_v3 cambia el modelo; con AJUSTES='{"stability":0.3,"style":0.45,"speed":1.1}' cambia cómo lo dice)
 //   node design/herramientas/elevenlabs.mjs cambiar <idVoz> <audio de entrada> <salida.mp3>
+//     (con QUITAR_RUIDO=1 le quita el ruido de fondo al audio de entrada; con AJUSTES='{"stability":0.5,"similarity_boost":0.9}' se pega más a la voz)
+//   node design/herramientas/elevenlabs.mjs limpiar <audio de entrada> <salida.mp3>   (deja solo la voz: quita ruido, sala y música)
 //   node design/herramientas/elevenlabs.mjs efecto "<descripción en inglés>" <segundos> <salida.mp3>
 //     (con INFLUENCIA=0.6 el efecto se pega más a la descripción; va de 0 a 1 y por defecto es 0.3)
 //   node design/herramientas/elevenlabs.mjs musica "<descripción en inglés>" <segundos> <salida.mp3>   (unos 15 créditos por segundo)
@@ -45,7 +47,15 @@ try {
     const f = new FormData();
     f.append('audio', new Blob([fs.readFileSync(entrada)]), path.basename(entrada));
     f.append('model_id', process.env.MODELO || 'eleven_multilingual_sts_v2');
+    if (process.env.QUITAR_RUIDO) f.append('remove_background_noise', 'true');
+    if (process.env.AJUSTES) f.append('voice_settings', process.env.AJUSTES);
     const audio = await pedir(`/v1/speech-to-speech/${voz}?output_format=mp3_44100_128`, { method: 'POST', body: f }, true);
+    fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
+  } else if (orden === 'limpiar') {
+    const [entrada, salida] = a;
+    const f = new FormData();
+    f.append('audio', new Blob([fs.readFileSync(entrada)]), path.basename(entrada));
+    const audio = await pedir('/v1/audio-isolation', { method: 'POST', body: f }, true);
     fs.writeFileSync(salida, audio); console.log('guardado', salida, audio.length, 'bytes');
   } else if (orden === 'efecto') {
     const [texto, seg, salida] = a;

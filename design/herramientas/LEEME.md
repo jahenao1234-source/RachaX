@@ -180,3 +180,39 @@ La Racha de muestra tiene que estar prendida (configuración `racha-muestra`, pu
 Ojo: con mucha historia la app abre ventanas de premio y otras hojas; el programa las cierra antes de cada foto, pero hay que comprobarlo. Una foto con una ventana encima queda oscura: se mide el brillo del fondo de cada tarjeta (normal 27 de 255; con ventana, 11 a 17), se borran las raras y se corre otra vez.
 
 Sonidos: los de la parte de la app son graves (`relleno` es un tictac filtrado por debajo de 1.300 Hz). Si ElevenLabs entrega un sonido chillón (centro por encima de 4.000 Hz en `sonidos-preparar.py`), se filtra el original antes de prepararlo.
+
+## El día difícil con cualquier hábito (11 oct)
+
+
+
+`HABITO="Entrenar 30 minutos" PIEZA=guion12 NODE_PATH="<scratchpad con puppeteer-core>/node_modules" node design/herramientas/grabar-dia-dificil.cjs` (con la muestra prendida en el puerto 3003). Sale de `grabar-campana-g3.cjs`: toca "¿Día pesado? Haz solo lo mínimo", activa el día difícil, baja al hábito y lo marca en su versión mínima. Deja `<PIEZA>/app/dia-dificil.mp4` (858 × 1760, 7,6 s) y `dia-dificil.json` con el segundo de cada toque (enlace 1,4 · activar 3,6 · marcar 5,0) y las cajas, para cuadrarlo con la voz en el molde.
+
+## Voz limpia y voz de Jhonny igual a la narración (11 oct)
+
+
+
+- `python design/herramientas/voz-limpiar.py <entrada> <salida> [voz de referencia]`: baja el ruido entre palabras (antes de comprimir), da cuerpo y deja la voz a un nivel fijo. Con referencia, primero iguala la voz de graves a agudos con ella (tres vueltas de ecualizador): se usa para que el audio de un clip de Jhonny ya pasado por el cambiador de voz suene como la narración.
+
+- `python design/herramientas/voz-comparar.py <voz> <referencia>`: mide la diferencia por franjas y el ruido de fondo de cada una. Es como Claude "oye" si dos voces se parecen.
+
+- Orden: voz cruda de ElevenLabs → `voz-limpiar.py` → `voz-sin-pausas.py` (con el `.palabras.json` de la cruda). Para un clip: `elevenlabs.mjs cambiar` → `voz-limpiar.py <clip-juan.mp3> <salida> <narración limpia>`.
+
+- NO usar `loudnorm` ni compresión fuerte sobre la voz: subían el fondo de -51 a -38 dB. `elevenlabs.mjs` tiene además `limpiar <audio> <salida>` (deja solo la voz; gasta créditos) y `QUITAR_RUIDO=1` en `cambiar`.
+
+## Estilo Dark con Jhonny: guion 12 largo "Ese martes" (11 oct)
+
+
+
+1. **La voz:** texto con pocas indicaciones (`guion12/voz/texto-v1.txt`), estabilidad 0,4; las frases clave se generaron aparte con drama (`texto-v2-frases-clave.txt`) y se empalman: `voz-limpiar.py` (las dos tomas; la segunda con la primera como referencia) → `voz-empalmar-g12.py` → `voz-sin-pausas.py martes-v2-compuesta.wav martes-v2-compuesta.palabras.json martes-v2-limpia-sin-pausas.mp3 0.18 @14=0.45 …` → `transcribir-assembly.mjs`.
+
+2. **Jhonny:** cuatro clips en `guion12/clips/` (`1-gancho`, `2-vuelta`, `3-regla`, `4-invitacion`), transcritos; de cada uno: sacar el audio, `elevenlabs.mjs cambiar ucWwAruuGtBeHfnAaKcJ <clip>-flow.mp3 <clip>-juan.mp3` (gasta unos 100 créditos por clip de 10 s) y `voz-limpiar.py <clip>-juan.mp3 <clip>-juan-limpia.wav ../voz/martes-v1-juan-limpia.wav`. Palabras repetidas: `saltar` en el molde. Letras quemadas por Flow: `pre` con `delogo` (medir la caja con los cuadros del clip).
+
+3. **La app (desde la versión 2; es lo que vale):** solo escenas que se llenan solas, sin acercamientos a una grabación de toques. En la parte de "Por eso creamos Racha": Hoy llenándose (`app-llenado/vhoy-NN.png` → `app.mp4`) y el mes en el celular (`cal-NN.png` → `cal.mp4`). En la cola: el recorrido completo por Progreso, 9,3 s, que termina en "Tu año". Para este video el recorrido se arma aparte, con "Tu año" más grande y en la mitad de la pantalla: `ALTO_ANIO=520 Y_ANIO=660 SALIDA=viaje-b.mp4 python design/herramientas/ventanas-viaje.py` (no pisa `viaje.mp4`, que usa el guion 10). La separación entre tarjetas se deja en 380: al agrandarla quedaba una franja vacía mientras la cámara bajaba. `grabar-dia-dificil.cjs` (la versión 1) ya no se usa.
+
+   **El cuadro final:** "escribe RACHA" va ARRIBA de "Tu año" y "y te la muestro" con la pastilla del precio ABAJO; entran apenas llega la cámara (`EN_TARJETA = 4.85`; la frase de abajo a 0,35 s y la pastilla a 0,7 s). `#sombra` es una franja del color del fondo de la app (rgb 15, 17, 19) que tapa el pie de la tarjeta anterior detrás de "escribe RACHA". Antes de exportar, sacar fotos del tramo final (`snapshot --at` cada medio segundo) y mirar que la app nunca quede con franjas vacías alrededor.
+
+4. **El molde:** `node design/herramientas/hf-relato-g12.mjs [--solo-html]` (proyecto en `guion12/hyperframes/`). Gancho: el micrófono a oscuras del guion 9, sin letras. Las letras de la voz llevan fondo cuando van sobre la app (clase `sa`).
+
+5. **La música:** `python design/herramientas/musica-mezcla-g12.py` (los pulsos de "Cold Case Resolution" al 1,19 durante todo el video, los golpes de la mezcla del guion 2 en las frases clave, silencio antes de "ya qué" y final cálido) y `BAJO=10 FASE=0 GOLPE=0.5 COMPASES=44.25 EMPIEZA=0 SUBE=0.05 node design/herramientas/poner-musica.mjs guion12/guion12-ese-martes-v3.mp4 guion12/musica/mezcla-arreglada.wav guion12/guion12-ese-martes-v3-con-musica.mp4` (88 s; la versión 1, de 84 s, iba con `COMPASES=42.25`).
+
+6. **Exportar y comprobar:** `render --low-memory-mode -w 1 -f 30` (unos 9 minutos) → bajar el peso con `crf 21` → la música → sacar cuadros del video final y mirarlos → transcribirlo y comparar las 216 palabras con el guion. El que vale: `guion12/guion12-ese-martes-v3-con-musica.mp4`.

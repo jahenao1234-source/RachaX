@@ -4,6 +4,8 @@
 #   (la gráfica se forma) → Tu año (los cuadritos se llenan desde marzo; la cámara lo recorre y termina ahí).
 # Las tarjetas son fotos de la app de verdad (grabar-ventanas.cjs); aquí solo se acomodan y se mueve la cámara.
 # Uso: python design/herramientas/ventanas-viaje.py   → campana/app-llenado/viaje.mp4 (1080 × 1920, 30 cuadros por segundo)
+#      ALTO_ANIO=520 Y_ANIO=660 SALIDA=viaje-b.mp4 python …   → "Tu año" más grande y en la mitad de la pantalla, para que la
+#      frase "escribe RACHA" vaya arriba y no queden franjas vacías (Johnatan, 11 oct: "esos espacios se ven tan feos")
 import glob, os, subprocess
 import numpy as np
 from PIL import Image
@@ -20,6 +22,8 @@ ALTO_ANIO = int(os.environ.get('ALTO_ANIO', 450))   # alto de la tarjeta "Tu añ
 T_HAB, T_MEJ, T_FUE, T_ANIO = (0.0, 1.1), (1.2, 2.6), (2.9, 4.4), (4.7, 7.1)
 PARADAS = [(0.0, 'habitos'), (1.0, 'habitos'), (1.6, 'mejorar'), (2.5, 'mejorar'), (3.1, 'fuerza'), (4.3, 'fuerza'), (4.9, 'anio0'), (7.1, 'anio1')]
 TARJETA = 7.0                     # aquí entra la tarjeta "escribe RACHA" (la pone el molde)
+Y_ANIO = int(os.environ.get('Y_ANIO', 430))          # a qué altura de la pantalla queda "Tu año" al final
+SALIDA = os.environ.get('SALIDA', 'viaje.mp4')       # otro nombre para no pisar el recorrido de un video ya exportado
 TOTAL = 9.3
 
 def serie(nombre):
@@ -44,12 +48,12 @@ alto = {n: tarjeta(n, len(S[n]) - 1, ANCHO).height for n in ['habitos', 'mejorar
 Y = {'habitos': 200}
 Y['mejorar'] = Y['habitos'] + alto['habitos'] + 70
 Y['fuerza'] = Y['mejorar'] + alto['mejorar'] + 70
-Y['anio'] = Y['fuerza'] + alto['fuerza'] + 380
+Y['anio'] = Y['fuerza'] + alto['fuerza'] + 380   # con Y_ANIO alto, el pie de la tarjeta de antes queda asomado arriba: el molde lo tapa con una franja del color del fondo
 ancho_anio = tarjeta('anio', len(S['anio']) - 1, alto=ALTO_ANIO).width
 X_ANIO = W - 40 - ancho_anio                       # "Tu año" va pegada a la derecha: lo de marzo a hoy queda a la vista
 # la cámara: (x, y) de la esquina de arriba a la izquierda de lo que se ve
 CAM = {'habitos': (0, Y['habitos'] - 330), 'mejorar': (0, Y['mejorar'] - 300), 'fuerza': (0, Y['fuerza'] - 330),
-       'anio0': (-70, Y['anio'] - 430), 'anio1': (0, Y['anio'] - 430)}
+       'anio0': (-70, Y['anio'] - Y_ANIO), 'anio1': (0, Y['anio'] - Y_ANIO)}
 
 def suave(p): p = min(1.0, max(0.0, p)); return p * p * (3 - 2 * p)
 def camara(t):
@@ -64,7 +68,7 @@ def paso(nombre, t, tramo):
     return min(len(S[nombre]) - 1, int(round(p * (len(S[nombre]) - 1))))
 
 ff = subprocess.Popen([FF, '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-',
-                       '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', os.path.join(LL, 'viaje.mp4')], stdin=subprocess.PIPE)
+                       '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', os.path.join(LL, SALIDA)], stdin=subprocess.PIPE)
 for n in range(int(round(TOTAL * FPS))):
     t = n / FPS
     cx, cy = camara(t)
@@ -76,4 +80,4 @@ for n in range(int(round(TOTAL * FPS))):
     if -ALTO_ANIO < y < H: cuadro.paste(tarjeta('anio', paso('anio', t, T_ANIO), alto=ALTO_ANIO), (round(X_ANIO - cx), round(y)))
     ff.stdin.write(cuadro.tobytes())
 ff.stdin.close(); ff.wait()
-print(f'listo viaje.mp4: {TOTAL} s · la tarjeta entra en {TARJETA} s · "Tu año" queda en pantalla de y={Y["anio"] - CAM["anio1"][1]} a y={Y["anio"] - CAM["anio1"][1] + ALTO_ANIO}')
+print(f'listo {SALIDA}: {TOTAL} s · la tarjeta entra en {TARJETA} s · "Tu año" queda en pantalla de y={Y["anio"] - CAM["anio1"][1]} a y={Y["anio"] - CAM["anio1"][1] + ALTO_ANIO}')
