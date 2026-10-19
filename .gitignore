@@ -15,6 +15,7 @@ coverage/
 scratch/
 # Maquetas temporales para verlas en el navegador
 public/zz-*.html
+public/zz-*/
 
 # Modelo de voz a texto para los videos (148 MB)
 design/herramientas/modelos/
