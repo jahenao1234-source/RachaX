@@ -245,7 +245,7 @@ footer a:hover{color:var(--text)}
 .js .aparece{opacity:0;transform:translateY(24px)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .js .aparece{opacity:1;transform:none}
+  .js .aparece{transform:none}
   .pantalla{transform:none!important}
 }
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -636,17 +636,22 @@ footer a:hover{color:var(--text)}
   let seg = 17 * 60 + 32; const aro = document.getElementById('aro'); const tiempo = document.getElementById('tiempo');
   const pintarReloj = () => { tiempo.textContent = Math.floor(seg / 60) + ':' + String(seg % 60).padStart(2, '0'); aro.setAttribute('stroke-dashoffset', String(201 * (1 - seg / 1500))); };
   pintarReloj();
-  if (!quieto) setInterval(() => { seg = seg > 0 ? seg - 1 : 1500; pintarReloj(); }, 1000);
+  // (cambiar un número no es movimiento: corre aunque el celular tenga las animaciones apagadas)
+  setInterval(() => { seg = seg > 0 ? seg - 1 : 1500; pintarReloj(); }, 1000);
 
-  if (quieto || !M) { pintarHasta(dias.length); document.querySelectorAll('#habitos .fila').forEach((f) => f.classList.add('hecha')); return; }
+  // Sin la librería: todo quieto y completo
+  if (!M) { document.querySelectorAll('.aparece').forEach((el) => { el.style.opacity = 1; el.style.transform = 'none'; }); pintarHasta(dias.length); document.querySelectorAll('#habitos .fila').forEach((f) => f.classList.add('hecha')); return; }
+
+  // Con las animaciones del celular apagadas (movimiento reducido) se quita SOLO el movimiento grande:
+  // nada se desliza ni se inclina, pero las cosas aparecen con un fundido y la app sigue llenándose.
 
   const { animate, scroll, inView, stagger } = M;
 
   // Aparecer al bajar
-  inView('.aparece', (e) => { const el = e.target || e; animate(el, { opacity: [0, 1], y: [24, 0] }, { duration: 0.7, ease: [0.22, 1, 0.36, 1] }); }, { margin: '0px 0px -12% 0px' });
+  inView('.aparece', (e) => { const el = e.target || e; animate(el, quieto ? { opacity: [0, 1] } : { opacity: [0, 1], y: [24, 0] }, { duration: quieto ? 0.5 : 0.7, ease: [0.22, 1, 0.36, 1] }); }, { margin: '0px 0px -12% 0px' });
 
   // La pantalla se endereza al bajar (como el "container scroll" de 21st)
-  scroll(animate('#pantalla', { transform: ['rotateX(24deg) scale(.94)', 'rotateX(0deg) scale(1)'] }, { ease: 'linear' }), { target: document.getElementById('escena'), offset: ['start end', 'start 0.25'] });
+  if (!quieto) scroll(animate('#pantalla', { transform: ['rotateX(24deg) scale(.94)', 'rotateX(0deg) scale(1)'] }, { ease: 'linear' }), { target: document.getElementById('escena'), offset: ['start end', 'start 0.25'] });
 
   // Tu año se llena mientras bajas
   scroll((p) => pintarHasta(p * dias.length * 1.05), { target: document.getElementById('anio'), offset: ['start 0.95', 'end 0.55'] });
@@ -661,7 +666,7 @@ footer a:hover{color:var(--text)}
   inView('#agregar', (e) => { const el = e.target || e; setTimeout(() => { el.classList.add('ya'); el.textContent = 'Ya lo agregaste'; }, 1600); }, { amount: 1 });
 
   // La semana de la regla: entra día por día
-  inView('#regla', (e) => { const el = e.target || e; animate(el.querySelectorAll('[data-d]'), { opacity: [0, 1], y: [10, 0] }, { delay: stagger(0.09, { start: 0.2 }), duration: 0.4 }); }, { amount: 0.5 });
+  inView('#regla', (e) => { const el = e.target || e; animate(el.querySelectorAll('[data-d]'), quieto ? { opacity: [0, 1] } : { opacity: [0, 1], y: [10, 0] }, { delay: stagger(0.09, { start: 0.2 }), duration: 0.4 }); }, { amount: 0.5 });
 })();
 </script>
 </body>
