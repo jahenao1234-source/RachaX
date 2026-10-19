@@ -28,6 +28,7 @@ design/anuncios/*/hyperframes/*/node_modules/
 
 # Videos y sonidos de los anuncios: pesan mucho y se quedan solo en el computador
 design/anuncios/**/*.mp4
+design/instagram/**/*.mp4
 design/anuncios/**/*.webm
 design/anuncios/**/*.mov
 design/anuncios/**/*.wav
@@ -46,3 +47,8 @@ design/anuncios/**/hyperframes-*/assets/
 design/anuncios/**/hyperframes-*/snapshots/
 design/anuncios/**/hyperframes-*/renders/
 design/anuncios/**/hyperframes-*/node_modules/
+
+# Fotos sueltas de los POV (cuadro por cuadro, se rehacen con las herramientas) y fotos de prueba de HyperFrames: pesan cientos de MB
+design/anuncios/campana/pov1/
+design/anuncios/campana/pov2/
+**/.hyperframes/

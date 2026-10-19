@@ -1114,3 +1114,75 @@ Unas 213 palabras, cerca de 79 s. Racha se nombra por primera vez hacia el segun
 **Decisiones del 11 oct (en el cuadro):** texto aprobado; en la parte 7 va "Por eso creamos Racha, una app…"; gancho visual: el micrófono a oscuras del guion 9, sin letras ("sin frase está bien"); sin etiqueta fija.
 
 **Voz (11 oct).** Pidió: "haz la grabación; recuerda que hable más rápido, natural, pero en los momentos importantes ponga el dramatismo". Una sola toma con Juan Restrepo (v3, estabilidad 0,4; texto con pocas indicaciones en `guion12/voz/texto-v1.txt`): `guion12/voz/martes-v1-juan.mp3` (57 s, 129 palabras, texto exacto; la transcripción escribe "vuelves a apagar" por "vuelves a pagar": que lo oiga él). Sin pausas largas (0,18 s; de 0,4 a 0,6 s antes de las frases clave): `martes-v1-juan-sin-pausas.mp3` (46 s, 2,8 palabras por segundo, la velocidad del anuncio de referencia). Para oír, con el tratamiento de sonido cercano: **A `martes-A-normal-para-oir.mp3`** (46 s) y **B `martes-B-mas-rapida-para-oir.mp3`** (la misma toma un 8 % más rápida, 42,5 s; no gastó créditos). OJO: esa toma gastó unos 1.450 créditos (de 4.291 a 2.845): no regenerar por gusto. Plan de imágenes en `guion12-textos-imagenes.md`, clips de Jhonny en `guion12-textos-flow.md`, la app en `guion12/app/dia-dificil.mp4`.
+
+---
+
+## Guion 13 · Dolor 1: "Digo que voy a cambiar y no cambio" (13 oct de 2026)
+
+Primer guion con la forma de trabajo nueva: el borrador lo escribió otra IA (lo trajo Johnatan) y aquí se organizó. Estilo Dark con Jhonny, habla del que mira. Dolor 1 de `dolores.md`.
+
+### Versión 2, organizada por Claude · SIN APROBAR · unas 213 palabras, cerca de 85 s
+
+| # | Quién | Texto |
+|---|---|---|
+| 1 | Jhonny | Cada vez que dices «voy a cambiar» y no lo haces, tu cabeza lo anota. Y llega un día en que ya no te cree. |
+| 2 | Voz | En 1972 un psicólogo, Daryl Bem, propuso algo que suena al revés: tú no sabes quién eres mirando hacia adentro. Lo sabes mirando lo que haces, como si miraras a un extraño. |
+| 3 | Voz | Por eso prometerte más no sirve. El domingo en la noche juras que el lunes vas a ser otra persona. Pero a una cabeza que ya no te cree no la convences con promesas. |
+| 4 | Jhonny | La convences con pruebas. |
+| 5 | Voz | Entonces deja de prometer y empieza a anotar. Cada día que cumples, lo marcas. Aunque hayan sido diez minutos. Aunque haya sido lo mínimo. |
+| 6 | Voz | Y cuando ves tres, cuatro, diez días marcados, empiezas a verte distinto: ya no eres el que dice que va a cambiar. Eres el que hace lo que dice. Y eso, tu cabeza también lo anota. |
+| 7 | Jhonny | Te lo cuento porque conozco a alguien a quien le pasó. Se cansó de prometerse cosas y armó un sitio para ver, día por día, cuándo sí cumplía. |
+| 8 | Voz | Se llama Racha. El día que no puedes, haces lo mínimo y cuenta. Y si fallas un día, sigues al otro. |
+| 9 | Jhonny | Escribe Racha y te la muestro. |
+
+**Ganchos visuales propuestos (sin escoger):** (1, recomendado) la libreta: una mano raya una marca ámbar por cada «voy a cambiar», la hoja se llena, y al final esas marcas se vuelven los días marcados de la app; (2) la misma nota repetida en un celular con fechas distintas («Ahora sí», enero, marzo, junio…); (3) Jhonny mueve la boca y no se oye nada un segundo (pide un clip de Flow); (4) un expediente con un sello que cae (riesgo: se siente como acusación).
+
+**Qué se cambió del borrador y por qué:** empieza por lo que le pasa al que mira y no por el estudio (el estudio queda en unos 10 s); «Bem demostró que el cerebro funciona exactamente al revés» pasó a «propuso» (es una teoría de 1972, discutida, y vale sobre todo cuando uno no tiene claro lo que siente; comprobado en Wikipedia y en una lista de referencias, no en el capítulo original); «cerebro» pasó a «cabeza» (no afirmar neurociencia); fuera las frases rebuscadas («tu propia voz pierde todo su peso», «una prueba física que no puedan negar», «el valor de su propia palabra»); fuera «te mientes» (acusa); «te conviertes en alguien que hace lo que dice» pasó a «empiezas a verte distinto» (no promete un resultado); el final «conozco a otro loco… no te voy a decir quién es… acceso a la misma herramienta» era casi el cierre del video del espejo del creador: se dijo con palabras nuestras; se agregaron los beneficios de Racha al final, rápido; y bajó de más de 300 palabras (cerca de dos minutos) a unas 213.
+
+**Por confirmar con Johnatan:** que la parte 7 es verdad de su historia (se cansó de prometerse cosas y por eso hizo Racha), o cambiarla por «Por eso hicimos Racha»; y el gancho visual.
+
+### Versión 1, el borrador de la otra IA (tal como llegó)
+
+En 1972, el psicólogo Daryl Bem propuso algo que sonaba casi ridículo en su época. Se llama la Teoría de la Autopercepción. / Durante décadas creímos que primero tenías que sentirte como alguien disciplinado para después empezar a actuar como uno. Bem demostró que el cerebro humano funciona exactamente al revés. / Tú no sabes quién eres mirando hacia adentro. Tu cerebro descubre quién eres observando lo que haces desde afuera, igual que si estuvieras viendo a un extraño. / Cada vez que dices "voy a cambiar" y no lo haces, tu cerebro toma nota. No te juzga, solo registra el dato: "las palabras de este tipo no significan nada". / Y llega un punto donde te mientes tanto que tu propia voz pierde todo su peso. / Intentas arreglarlo prometiéndote metas gigantes el domingo por la noche, jurando que el lunes vas a ser otra persona. Pero a una mente que ya no te cree, no la convences con promesas. La convences con evidencia. / Por eso la solución no es jurar más fuerte. Es darle a tus ojos una prueba física que no puedan negar. / Si tu cerebro solo cree lo que ve, tienes que obligarlo a ver los días en los que sí cumpliste. Aunque ese día solo hayas hecho diez minutos. Aunque haya sido lo mínimo. / Porque cuando juntas tres, cuatro, diez días marcados frente a ti, pasa algo extraño. Dejas de ser el que siempre dice que va a cambiar, y te conviertes en alguien que simplemente hace lo que dice. / Te cuento esto porque conozco a otro loco que también había perdido el valor de su propia palabra. Que se cansó de jurarse cosas en el espejo y decidió construir un lugar donde pudiera ver, con sus propios ojos, cada día que no se falló. / No te voy a decir quién es. Pero sí te puedo dar acceso a la misma herramienta que él usa para volver a creerse. / Se llama Racha. Escribe RACHA aquí abajo y te la muestro.
+
+### Versión 3 (13 oct): el borrador de la otra IA con tres toques · LA QUE VALE · falta escoger el largo
+
+Johnatan rechazó la versión 2 de Claude ("se aleja mucho de lo que te pasé; el otro sí me gustaba más") y pidió concentrarse en vender la transformación. Se vuelve al borrador, con solo tres toques que él aprobó en el cuadro: "sonaba casi ridículo en su época" → "suena casi ridículo"; "Bem demostró que el cerebro humano funciona" → "Bem dijo que funciona"; "otro loco" → "alguien" (confirmó que el final es verdad de su historia). No lleva los beneficios de Racha.
+
+| # | Texto | Palabras | En la de 90 s |
+|---|---|---|---|
+| 1 | En 1972, el psicólogo Daryl Bem propuso algo que suena casi ridículo. Se llama la Teoría de la Autopercepción. | 19 | Se queda la primera frase |
+| 2 | Durante décadas creímos que primero tenías que sentirte como alguien disciplinado para después empezar a actuar como uno. Bem dijo que funciona exactamente al revés. | 25 | Se queda |
+| 3 | Tú no sabes quién eres mirando hacia adentro. Tu cerebro descubre quién eres observando lo que haces desde afuera, igual que si estuvieras viendo a un extraño. | 27 | Se queda |
+| 4 | Cada vez que dices "voy a cambiar" y no lo haces, tu cerebro toma nota. No te juzga, solo registra el dato: "las palabras de este tipo no significan nada". | 30 | Se queda |
+| 5 | Y llega un punto donde te mientes tanto que tu propia voz pierde todo su peso. | 16 | Se quita |
+| 6 | Intentas arreglarlo prometiéndote metas gigantes el domingo por la noche, jurando que el lunes vas a ser otra persona. Pero a una mente que ya no te cree, no la convences con promesas. La convences con evidencia. | 37 | Se queda |
+| 7 | Por eso la solución no es jurar más fuerte. Es darle a tus ojos una prueba física que no puedan negar. | 21 | Se quita |
+| 8 | Si tu cerebro solo cree lo que ve, tienes que obligarlo a ver los días en los que sí cumpliste. Aunque ese día solo hayas hecho diez minutos. Aunque haya sido lo mínimo. | 33 | Se queda |
+| 9 | Porque cuando juntas tres, cuatro, diez días marcados frente a ti, pasa algo extraño. Dejas de ser el que siempre dice que va a cambiar, y te conviertes en alguien que simplemente hace lo que dice. | 36 | Se queda |
+| 10 | Te cuento esto porque conozco a alguien que también había perdido el valor de su propia palabra. Que se cansó de jurarse cosas en el espejo y decidió construir un lugar donde pudiera ver, con sus propios ojos, cada día que no se falló. | 45 | Se queda |
+| 11 | No te voy a decir quién es. Pero sí te puedo dar acceso a la misma herramienta que él usa para volver a creerse. | 24 | Se quita |
+| 12 | Se llama Racha. Escribe RACHA aquí abajo y te la muestro. | 11 | Se queda |
+
+Completa: 324 palabras, cerca de 1:56. De 90 segundos: 256 palabras, cerca de 1:31 (se quitan las partes 5, 7 y 11 y la frase "Se llama la Teoría de la Autopercepción"; ninguna frase se reescribe). Falta: que escoja el largo y el gancho visual.
+
+### Versión 4 (13 oct): la de 90 segundos con frase de gancho · falta su sí final
+
+Escogió en el cuadro: la de 90 segundos, la frase de gancho 1 y el gancho visual de la libreta (una mano raya una marca ámbar por cada "voy a cambiar"; al final esas marcas se vuelven los días marcados de la app). 272 palabras, cerca de 1:37 de voz.
+
+| # | Quién (propuesta) | Texto |
+|---|---|---|
+| 1 | Jhonny, sobre la libreta | Si llevas años diciendo «voy a cambiar» y sigues igual, no es por falta de ganas. |
+| 2 | Voz | En 1972, el psicólogo Daryl Bem propuso algo que suena casi ridículo. |
+| 3 | Voz | Durante décadas creímos que primero tenías que sentirte como alguien disciplinado para después empezar a actuar como uno. Bem dijo que funciona exactamente al revés. |
+| 4 | Voz | Tú no sabes quién eres mirando hacia adentro. Tu cerebro descubre quién eres observando lo que haces desde afuera, igual que si estuvieras viendo a un extraño. |
+| 5 | Voz | Cada vez que dices "voy a cambiar" y no lo haces, tu cerebro toma nota. No te juzga, solo registra el dato: "las palabras de este tipo no significan nada". |
+| 6 | Voz, y Jhonny desde "Pero…" | Intentas arreglarlo prometiéndote metas gigantes el domingo por la noche, jurando que el lunes vas a ser otra persona. Pero a una mente que ya no te cree, no la convences con promesas. La convences con evidencia. |
+| 7 | Voz | Si tu cerebro solo cree lo que ve, tienes que obligarlo a ver los días en los que sí cumpliste. Aunque ese día solo hayas hecho diez minutos. Aunque haya sido lo mínimo. |
+| 8 | Voz, y Jhonny desde "Dejas…" | Porque cuando juntas tres, cuatro, diez días marcados frente a ti, pasa algo extraño. Dejas de ser el que siempre dice que va a cambiar, y te conviertes en alguien que simplemente hace lo que dice. |
+| 9 | Jhonny la primera frase; voz la segunda | Te cuento esto porque conozco a alguien que también había perdido el valor de su propia palabra. Que se cansó de jurarse cosas en el espejo y decidió construir un lugar donde pudiera ver, con sus propios ojos, cada día que no se falló. |
+| 10 | Jhonny | Se llama Racha. Escribe RACHA aquí abajo y te la muestro. |
+
+Cuentas de Claude (con el gasto de "Ese martes"): cinco clips de Jhonny (unos 75 créditos de Flow) dicen 84 palabras; la narración son 188 palabras, unos 2.100 créditos de ElevenLabs, más unos 500 del cambiador de voz: cerca de 2.600 y quedan 2.177. No alcanza por unos 450.
+
+**Cambio del 13 de octubre (noche), pedido por Johnatan al ver la versión 2 del video:** en la parte 6, "convences" sonaba dos veces. Se cortó el segundo en la edición y queda: "Pero a una mente que ya no te cree, no la convences con promesas. Con evidencia." (270 palabras en total).

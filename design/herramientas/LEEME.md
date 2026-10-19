@@ -216,3 +216,48 @@ Sonidos: los de la parte de la app son graves (`relleno` es un tictac filtrado p
 5. **La música:** `python design/herramientas/musica-mezcla-g12.py` (los pulsos de "Cold Case Resolution" al 1,19 durante todo el video, los golpes de la mezcla del guion 2 en las frases clave, silencio antes de "ya qué" y final cálido) y `BAJO=10 FASE=0 GOLPE=0.5 COMPASES=44.25 EMPIEZA=0 SUBE=0.05 node design/herramientas/poner-musica.mjs guion12/guion12-ese-martes-v3.mp4 guion12/musica/mezcla-arreglada.wav guion12/guion12-ese-martes-v3-con-musica.mp4` (88 s; la versión 1, de 84 s, iba con `COMPASES=42.25`).
 
 6. **Exportar y comprobar:** `render --low-memory-mode -w 1 -f 30` (unos 9 minutos) → bajar el peso con `crf 21` → la música → sacar cuadros del video final y mirarlos → transcribirlo y comparar las 216 palabras con el guion. El que vale: `guion12/guion12-ese-martes-v3-con-musica.mp4`.
+
+## Estilo Dark con Jhonny + efecto de papel: guion 13 "Voy a cambiar" (13 oct)
+
+El guion lo escribió otra IA y Johnatan lo trajo; aquí solo se dejó listo para producir (ver `campana/guiones.md` › Guion 13 y la memoria `racha-vender-la-transformacion`). El estilo es el Dark de siempre **más** tomas con el efecto de papel del creador (`referencias/oct13/analisis.md`; memoria `racha-efecto-papel-con-dark`): "es una combinación, un agregado para que le dé más dinamismo".
+
+1. **La voz:** con el tono de la del guion 2 (`guion13/voz/texto-v2-misterio.txt`, estabilidad 0,2) → `voz-limpiar.py` (sin sala) → `voz-sin-pausas.py … 0.25 @2=0.6 @10=0.5 …` (se dejan las pausas de suspenso) → transcribir. La que vale: `guion13/voz/cambiar-v2-limpia-sin-pausas.mp3` (72 s, 187 palabras). Una toma de este largo gasta unos 700 créditos.
+2. **Jhonny:** cinco clips en `guion13/clips/` (`1-gancho`, `2-evidencia`, `3-cambio`, `4-alguien`, `5-cierre`); de cada uno: sacar el audio (`-flow.mp3`), `elevenlabs.mjs cambiar ucWwAruuGtBeHfnAaKcJ …-flow.mp3 …-juan.mp3` y `voz-limpiar.py …-juan.mp3 …-juan-limpia.wav voz/cambiar-v2-juan-limpia.wav`. En el clip 2 repite "no la convences": `saltar: [9, 10, 11]`.
+3. **Mitad video, mitad foto:** tres videos gratis de Pexels en `guion13/videos/` (`FUENTES.md` trae la licencia y las páginas): la libreta (el gancho, "en video sí o sí"), la máquina de escribir y la caminata de noche. Fotos: la oficina del psicólogo (recreada, de espaldas), la ventana, la lista del domingo y el espejo. La persona de la cama va recortada (`remove-background` sobre un video de medio segundo hecho con la foto → `recortes/cama.png`).
+4. **El efecto de papel:** `python design/herramientas/papel-tomas.py lleno|recorte|fondo …` (lo llama el molde): papel arrugado, trama de puntos sobre todo el cuadro, todo un poco blando y a saltos (6 imágenes por segundo). `prueba-papel.py` es la prueba suelta que él aprobó (`campana/pruebas/efecto-papel-v2.mp4`). Las letras de esas tomas las pone el molde: Arial gruesa y apretada, y la palabra clave en negro sobre una franja ÁMBAR (sobre papel) o en ámbar (sobre video oscuro). Nada de naranja ni de letra a mano.
+5. **El molde:** `node design/herramientas/hf-relato-g13.mjs [--solo-html]` (proyecto en `guion13/hyperframes/`; 109,4 s). Orden: la libreta con rayitas ámbar → Jhonny → 1972 con la máquina (papel) → el psicólogo en su oficina (papel) → la persona en la cama sobre papel, que queda patas arriba en "al revés" → la ventana (Dark) → la libreta otra vez con las rayitas (Dark) → la frase escrita a máquina sobre negro → la lista del domingo (Dark) → Jhonny → el calendario de papel que se marca en ámbar → la caminata con trama → el calendario: 3, 4, 10 → Jhonny dos veces → el espejo (Dark) → el mes de la app llenándose → Jhonny → el recorrido por Progreso y la tarjeta. Los videos van detrás de la escena, que se vuelve transparente en cada ventana (`ventana()`): ahí hay que esconder `#grano`, porque sobre fondo transparente se ve como una niebla gris.
+6. **La música:** `python design/herramientas/musica-mezcla-g13.py` (la misma mezcla del guion 12, con los tiempos de `guion13/tiempos.json`) y `BAJO=10 FASE=0 GOLPE=0.5 COMPASES=54.75 EMPIEZA=0 SUBE=0.05 node design/herramientas/poner-musica.mjs …-v1.mp4 guion13/musica/mezcla-arreglada.wav …-v1-con-musica.mp4`.
+7. **Exportar y comprobar:** igual que el guion 12 (`render --low-memory-mode -w 1 -f 30`, bajar el peso con `crf 21`, la música, cuadros del video final y transcripción contra el guion).
+
+## Guion 2 "El efecto ya qué", versión 3: el gancho nuevo (14 oct)
+
+Después del primer Reel (la mayoría se iba en el segundo 10) se cambió SOLO el comienzo, con la frase que aprobó Johnatan: "Si siempre dices «el lunes empiezo», no es por flojo. Es por algo que se descubrió con malteadas y helado. Y al final te digo cómo salir de eso." Reglas en la skill `guiones-anuncios` › "Los primeros 10 segundos"; análisis en `anuncios/referencias/oct14/analisis.md`.
+
+1. **La voz del gancho:** `MODELO=eleven_v3 AJUSTES='{"stability":0.3}' node design/herramientas/elevenlabs.mjs decir ucWwAruuGtBeHfnAaKcJ "$(cat guion2/voz/texto-v4-gancho.txt)" guion2/voz/ya-que-v4-gancho-juan.mp3` y transcribirla.
+2. **Pegarla:** `python design/herramientas/voz-empalmar-g2-v4.py` → `guion2/voz/ya-que-v4-juan-sin-pausas.mp3` (reemplaza las palabras 0 a 19 de la voz de la versión 2; desde "A un grupo" queda igual; todo se adelanta 1,12 s).
+3. **El molde:** `VERSION=3 node design/herramientas/hf-relato.mjs guion2` (proyecto en `guion2/hyperframes-v3/`, 73,1 s): la voz arranca en 0,12 s, encuadres nuevos en "lunes", "flojo", "malteadas" y "final", "1975" pasa a "A un grupo de personas", y el tema "por qué siempre dices «el lunes empiezo»" va fijo arriba hasta que entra la app.
+4. **Exportar:** `render --low-memory-mode -w 1 -f 30 -o ../guion2-ya-que-v3-maestro.mp4`, bajar el peso con `crf 21` a `guion2-ya-que-v3.mp4`.
+5. **La música:** la misma mezcla de la versión 2 empezando 1,12 s más adelante: `HUECO=55.13:56.08 BAJO=14 FASE=1.12 GOLPE=0.5 COMPASES=36.6 EMPIEZA=0 SUBE=0.05 node design/herramientas/poner-musica.mjs guion2/guion2-ya-que-v3.mp4 guion2/musica/mezcla-v2.wav guion2/guion2-ya-que-v3-con-musica.mp4`.
+
+## Reel "POV" con tus tomas y la app llenándose (pov1, 14 oct de 2026)
+Tus tomas reales del portátil (en Descargas, `VID_20261014_*.mp4`) intercaladas con la app llenándose sola (Hoy y el mes),
+inclinadas como filmadas de cerca, y el recorrido por Progreso hasta "Tu año" con la tarjeta "escribe RACHA". Sin voz;
+cada corte cae en un golpe de los pulsos de "Cold Case Resolution" al 1,19. El plan de tomas está arriba en `hf-pov.mjs` (PLAN).
+1. `node design/herramientas/hf-pov.mjs` (`--solo-html` si solo cambian textos o sonidos; `FRASE="renglón 1|renglón 2"` cambia el texto de arriba)
+2. `python design/herramientas/musica-pov.py`
+3. En `design/anuncios/campana/pov1/hyperframes`: `check`, `snapshot` y `render --low-memory-mode -w 1 -f 30 -o ../pov1-v1-maestro.mp4` (unos 3 minutos)
+4. Bajar el peso con `crf 21` a `pov1-v1.mp4` (la música ya va dentro).
+
+## La app llenándose DENTRO de la pantalla de una toma real (pantalla-reemplazo.py, 14 oct de 2026)
+Mete las fotos de la app llenándose (ehoy-NN.png) dentro de la pantalla del portátil en una toma de Johnatan, con la perspectiva,
+el color, el desenfoque y el grano de su cámara. Su portátil muestra la app a pantalla completa en 1600 × 900.
+1. Fotos de la app con la fecha de hoy y en carpeta aparte: `SALIDA=design/anuncios/campana/pov1/pantalla-app NODE_PATH=… node design/herramientas/grabar-llenado-escritorio.cjs hoy`
+2. Una foto de referencia igual a lo que se ve en la toma (mismos hábitos marcados), a 1600 × 900 y 2x: `pov1/pantalla-app/referencia-hoy-1600x900.png`
+3. `python -X utf8 design/herramientas/pantalla-reemplazo.py <toma.mp4> <inicio> <duración> <referencia.png> <carpeta de fotos> <salida.mp4> [fotos por segundo 8] [arranque 0.3]`
+   (necesita `pip install opencv-python-headless`; el seguimiento se guarda en `<salida>-seguimiento-….npy` y la segunda vez no se recalcula; tarda unos 4 minutos con 3,6 s de toma)
+Sirve en tomas quietas o de movimiento suave. No sirve si algo pasa por delante de la pantalla (quedaría tapado por la app).
+Progreso dentro de la pantalla (lo que más cambia): `grabar-progreso-pantalla.cjs referencias <carpeta>` (fotos bajando la página;
+con `PASO`, `DESDE_Y` y `HASTA_Y` se afina) para saber cuánto estaba bajada la página en la toma (se compara dónde caen los bordes
+de la pantalla), y `MARZO=1 PASOS=50 ANCLA="Tu año" … grabar-progreso-pantalla.cjs llenado <carpeta> 924` para las fotos que se
+llenan desde el 1 de marzo. Después `FOTOS='eprog-*.png' python -X utf8 pantalla-reemplazo.py <toma> 0.3 4.4 <referencia con su
+estado> <carpeta> <salida> 13.5 0.3`. La referencia debe verse igual que lo filmado (sin alargar a marzo).

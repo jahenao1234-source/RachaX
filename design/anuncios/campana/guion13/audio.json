@@ -1,0 +1,41 @@
+{
+ "total": 107.94,
+ "pistas": [
+  {
+   "archivo": "voz1.wav",
+   "en": 5.49
+  },
+  {
+   "archivo": "voz2.wav",
+   "en": 55.24
+  },
+  {
+   "archivo": "voz3.wav",
+   "en": 85.11
+  },
+  {
+   "archivo": "av1.wav",
+   "en": 0
+  },
+  {
+   "archivo": "av2.wav",
+   "en": 50.26
+  },
+  {
+   "archivo": "av3.wav",
+   "en": 72.89
+  },
+  {
+   "archivo": "av4.wav",
+   "en": 78.91
+  },
+  {
+   "archivo": "av5.wav",
+   "en": 94.42
+  },
+  {
+   "archivo": "efectos.wav",
+   "en": 0
+  }
+ ]
+}

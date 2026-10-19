@@ -29,8 +29,18 @@ const ff = (args) => execFileSync(FFMPEG, ['-v', 'error', '-y', ...args], { stdi
 const NOMBRE = process.argv[2];
 if (NOMBRE !== 'guion2') { console.log('Uso: node design/herramientas/hf-relato.mjs guion2 [--solo-html]'); process.exit(1); }
 const BASE_DIR = path.join(C, 'guion2');
-const VOZ = path.join(BASE_DIR, 'voz', 'ya-que-v2-juan-sin-pausas');
-const P = path.join(BASE_DIR, 'hyperframes');
+// VERSION=2 (14 oct): el final de "Ese martes" sin Jhonny: la app llenándose sola (Hoy y el mes), el recorrido por Progreso
+// hasta "Tu año" y la tarjeta "escribe RACHA y te la muestro". La voz termina en "…escribe Racha y te la muestro"
+// (voz-empalmar-g2.py). Sin VERSION se arma la versión 1, igual que antes.
+// VERSION=3 (14 oct): lo mismo de la versión 2 con el gancho nuevo que aprobó Johnatan (voz-empalmar-g2-v4.py):
+// "Si siempre dices «el lunes empiezo», no es por flojo. Es por algo que se descubrió con malteadas y helado. Y al final
+// te digo cómo salir de eso." La voz arranca casi en el cuadro 0, sin el silencio de después de "1975" (el año pasa a la
+// historia), la cámara cambia de encuadre en "lunes", "flojo", "malteadas" y "final", y el tema va escrito y fijo arriba.
+const V3 = process.env.VERSION === '3';
+const V2 = process.env.VERSION === '2' || V3;
+const VER = V3 ? 'v3' : 'v2';
+const VOZ = path.join(BASE_DIR, 'voz', V3 ? 'ya-que-v4-juan-sin-pausas' : V2 ? 'ya-que-v3-juan-sin-pausas' : 'ya-que-v2-juan-sin-pausas');
+const P = path.join(BASE_DIR, V2 ? `hyperframes-${VER}` : 'hyperframes');
 const A = path.join(P, 'assets');
 for (const d of [A, path.join(A, 'fuentes'), path.join(P, 'compositions')]) fs.mkdirSync(d, { recursive: true });
 const n = (x) => Number(x.toFixed(6));
@@ -41,16 +51,23 @@ const palabras = JSON.parse(fs.readFileSync(VOZ + '.palabras.json', 'utf8')).pal
 const limpia = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9ñ]/g, '');
 const NUMEROS = { dos: '2', tres: '3', uno: '1' };
 const igual = (escrita, dicha) => { const a = limpia(escrita), b = limpia(dicha); return a === b || NUMEROS[a] === b || NUMEROS[b] === a; };
-const ENTRA = 0.5;                       // la voz arranca medio segundo después del primer cuadro (mientras se encienden los vasos)
+const ENTRA = V3 ? 0.12 : 0.5;           // la voz arranca medio segundo después del primer cuadro (mientras se encienden los vasos); en la v3, de una
 const T = (k) => ENTRA + palabras[k].i;
 const F = (k) => ENTRA + palabras[k].f;
 // Las palabras en las que se apoya todo: si la transcripción cambia, se para aquí y no más adelante
-const W = { anio: 15, malteadas: 17, yHelado: 18, grupo: 20, una: 27, aOtras: 29, yOtras: 32, nada: 35, despues: 36, para: 40, losNo: 46, yaLlenos: 54, losSi: 57, hicieron: 63, comieronMas: 66, como: 69, pensaron: 75, ya1: 76, que1: 77, eso: 78, enIngles: 81, medio: 84, aqui: 86, elEfecto: 88, ya2: 90, que2: 91, yo: 92, conTodo: 96, fallaba: 98, miercoles: 100, ya3: 103, elLunes: 105, lunes: 106, esComo: 108, llanta: 112, pinchar2: 117, las: 118, otras: 119, tres: 120, el: 121, solo: 123, asi: 127, lasDos: 134, sigues: 137, noEl: 139, manana: 142, yoLlevo: 143, racha: 147, si: 154, te: 159, muestro: 161 };
-const ESPERO = { anio: '1975', malteadas: 'malteadas', nada: 'nada', despues: 'despues', losNo: 'los', losSi: 'los', pensaron: 'pensaron', ya1: 'ya', que1: 'que', eso: 'eso', ya2: 'ya', que2: 'que', yo: 'yo', miercoles: 'miercoles', ya3: 'ya', lunes: 'lunes', llanta: 'llanta', tres: '3', solo: 'solo', asi: 'asi', sigues: 'sigues', manana: 'manana', racha: 'racha', si: 'si', muestro: 'muestro' };
+const W = { anio: 15, malteadas: 17, yHelado: 18, grupo: 20, una: 27, aOtras: 29, yOtras: 32, nada: 35, despues: 36, para: 40, losNo: 46, yaLlenos: 54, losSi: 57, hicieron: 63, comieronMas: 66, como: 69, pensaron: 75, ya1: 76, que1: 77, eso: 78, enIngles: 81, medio: 84, aqui: 86, elEfecto: 88, ya2: 90, que2: 91, yo: 92, conTodo: 96, fallaba: 98, miercoles: 100, ya3: 103, elLunes: 105, lunes: 106, esComo: 108, llanta: 112, pinchar2: 117, las: 118, otras: 119, tres: 120, el: 121, solo: 123, asi: 127, lasDos: 134, sigues: 137, noEl: 139, manana: 142, yoLlevo: 143, racha: 147, si: 154, te: 159, muestro: 161, ...(V2 ? { escribe: 159, te: 162, muestro: 164 } : {}) };
+// v3: el gancho nuevo tiene 29 palabras en vez de 20; desde "A un grupo" todo se corre 9
+if (V3) { for (const k of Object.keys(W)) if (W[k] >= 20) W[k] += 9; Object.assign(W, { lunes0: 4, flojo: 9, final: 22 }); delete W.anio; }
+const ESPERO = { ...(V3 ? { lunes0: 'lunes', flojo: 'flojo', final: 'final' } : { anio: '1975' }), malteadas: 'malteadas', nada: 'nada', despues: 'despues', losNo: 'los', losSi: 'los', pensaron: 'pensaron', ya1: 'ya', que1: 'que', eso: 'eso', ya2: 'ya', que2: 'que', yo: 'yo', miercoles: 'miercoles', ya3: 'ya', lunes: 'lunes', llanta: 'llanta', tres: '3', solo: 'solo', asi: 'asi', sigues: 'sigues', manana: 'manana', racha: 'racha', si: 'si', muestro: 'muestro', ...(V2 ? { escribe: 'escribe', te: 'te' } : {}) };
 for (const [k, v] of Object.entries(ESPERO)) if (limpia(palabras[W[k]].t) !== v) { console.log(`FALLA: la palabra ${W[k]} debía ser "${v}" y la voz dice "${palabras[W[k]].t}". Hay que revisar los números de W.`); process.exit(1); }
 const FIN_VOZ = F(palabras.length - 1);
-const TOTAL = FIN_VOZ + 2.2;
 const C12 = T(W.yoLlevo) - 0.1;          // entra la app
+// Versión 2: Hoy llenándose desde "Yo lo llevo en Racha", el mes desde "Si quieres verla", y al terminar la voz el recorrido
+// completo de "Ese martes" (viaje-b.mp4, 9,3 s) con la tarjeta cuando llega a "Tu año" (los números de ventanas-viaje.py)
+const D_COLA = 9.3, EN_TARJETA = 4.85;
+const T_CAL = T(W.si) - 0.12, T_FIN = FIN_VOZ + 0.35, T_TARJETA = T_FIN + EN_TARJETA;
+const TOTAL = V2 ? T_FIN + D_COLA : FIN_VOZ + 2.2;
+if (V2) fs.writeFileSync(path.join(BASE_DIR, `tiempos-${VER}.json`), JSON.stringify({ total: n(TOTAL), app: n(C12), cal: n(T_CAL), fin: n(T_FIN), tarjeta: n(T_TARJETA), noEl: n(T(W.noEl)) }, null, 1), 'utf8');
 
 // ---------- las fotos: encuadres, lo que brilla y los garabatos ----------
 // Todo va en fracción de la foto (0 a 1). marco: { k: palabra en la que entra (sin k = al comienzo de la toma), z: qué tan cerca
@@ -58,9 +75,11 @@ const C12 = T(W.yoLlevo) - 0.1;          // entra la app
 // ovalos: [cx, cy, rx, ry] de lo que brilla en ámbar. aros: garabatos de luz { k, e: [cx, cy, rx, ry] }. cubre: la foto debe tapar todo el cuadro.
 const TOMAS = [
   { id: 'malteadas', foto: '1-malteadas.jpg', de: null, ovalos: [[0.35, 0.68, 0.13, 0.21], [0.65, 0.68, 0.13, 0.21]], aros: [{ k: W.malteadas, e: [0.5, 0.715, 0.3, 0.195] }],
-    marcos: [{ z: 0.86, fx: 0.5, fy: 0.68, Y: 1130 }, { k: W.anio, z: 1.02, fx: 0.5, fy: 0.68, Y: 1150 }, { k: W.malteadas, z: 0.92, fx: 0.5, fy: 0.68, Y: 1140 }] },
+    marcos: V3
+      ? [{ z: 0.86, fx: 0.5, fy: 0.68, Y: 1130 }, { k: W.lunes0, z: 1.04, fx: 0.5, fy: 0.68, Y: 1150 }, { k: W.flojo, z: 1.3, fx: 0.5, fy: 0.66, Y: 1130 }, { k: W.malteadas, z: 0.92, fx: 0.5, fy: 0.68, Y: 1140 }]
+      : [{ z: 0.86, fx: 0.5, fy: 0.68, Y: 1130 }, { k: W.anio, z: 1.02, fx: 0.5, fy: 0.68, Y: 1150 }, { k: W.malteadas, z: 0.92, fx: 0.5, fy: 0.68, Y: 1140 }] },
   { id: 'helado', foto: '2-helado.jpg', de: W.yHelado, ovalos: [[0.21, 0.6, 0.12, 0.085], [0.5, 0.6, 0.12, 0.085], [0.8, 0.6, 0.12, 0.085]],
-    marcos: [{ z: 0.9, fx: 0.5, fy: 0.64, Y: 1080 }] },
+    marcos: V3 ? [{ z: 0.9, fx: 0.5, fy: 0.64, Y: 1080 }, { k: W.final, z: 1.35, fx: 0.5, fy: 0.6, Y: 1060 }] : [{ z: 0.9, fx: 0.5, fy: 0.64, Y: 1080 }] },
   { id: 'grupo', foto: '8-grupo.jpg', de: W.grupo, cubre: true, ovalos: [[0.126, 0.565, 0.04, 0.05], [0.285, 0.44, 0.032, 0.04], [0.385, 0.39, 0.028, 0.036], [0.72, 0.44, 0.032, 0.04]], aros: [{ k: W.nada, e: [0.86, 0.655, 0.14, 0.05] }],
     marcos: [{ z: 1.0, fx: 0.5, fy: 0.46, Y: 940 }, { k: W.una, z: 2.0, fx: 0.16, fy: 0.55, Y: 1020 }, { k: W.aOtras, z: 1.75, fx: 0.34, fy: 0.42, Y: 1000 }, { k: W.yOtras, z: 1.5, fx: 0.8, fy: 0.62, Y: 1040 }] },
   { id: 'manos', foto: '9-manos-helado.jpg', de: W.despues, cubre: true, ovalos: [[0.5, 0.44, 0.14, 0.08], [0.91, 0.47, 0.12, 0.08], [0.78, 0.645, 0.14, 0.08]],
@@ -91,7 +110,7 @@ TOMAS.forEach((t, i) => {
 });
 
 // ---------- los efectos de sonido ----------
-const VOLUMEN = { whoosh: -8, golpe: -6, pop: -9, caida: -6, toque: -9, logro: -9, boom: -2, subida: -7, neon: -8, diapositiva: -6, garabato: -6, latido: -3, brillo: -7, tachar: -8 };
+const VOLUMEN = { whoosh: -8, golpe: -6, pop: -9, caida: -6, toque: -9, logro: -9, boom: -2, subida: -7, neon: -8, diapositiva: -6, garabato: -6, latido: -3, brillo: -7, tachar: -8, relleno: -6 };
 const SON = path.join(C, 'sonidos');
 const MEDIDAS = JSON.parse(fs.readFileSync(path.join(SON, 'sonidos.json'), 'utf8'));
 const sonidos = [];
@@ -132,7 +151,18 @@ if (!process.argv.includes('--solo-html')) {
     ff(['-i', origen, '-vf', `${CUADRO},hue=s=0,eq=brightness=${t.cubre ? 0.02 : 0.05}:contrast=1.45,colorchannelmixer=rr=1:gg=0.66:bb=0.2`, '-q:v', '3', path.join(A, `${t.id}-ambar.jpg`)]);
   }
   ff(['-f', 'lavfi', '-i', 'nullsrc=s=1480x2320,format=gray,geq=lum=random(1)*255,gblur=sigma=0.7,eq=contrast=1.6', '-frames:v', '1', '-q:v', '4', path.join(A, 'grano.jpg')]);
-  fs.copyFileSync(path.join(APP, 'celular.mp4'), path.join(A, 'celular.mp4'));
+  if (!V2) fs.copyFileSync(path.join(APP, 'celular.mp4'), path.join(A, 'celular.mp4'));
+  else {
+    // la app llenándose sola, hecha igual que en "Ese martes" (hf-relato-g12.mjs): las fotos de campana/app-llenado
+    const LL = path.join(C, 'app-llenado'), cuantas = (re) => fs.readdirSync(LL).filter((f) => re.test(f)).length, cuadros = (seg) => Math.round(seg * 30);
+    const parte = (entrada, vf, N, salida) => ff([...entrada, '-vf', vf + ',setsar=1', '-frames:v', String(N), '-an', '-c:v', 'libx264', '-preset', 'medium', '-crf', '15', '-pix_fmt', 'yuv420p', path.join(A, salida)]);
+    const camara = (z, x, y) => `zoompan=z='${z}':x='(${x})*iw-iw/zoom/2':y='(${y})*ih-ih/zoom/2':d=1:s=1080x1920:fps=30`;
+    const nHoy = cuantas(/^vhoy-\d+\.png$/), N1 = cuadros(T_CAL - C12);
+    parte(['-framerate', (nHoy / ((N1 - 20) / 30)).toFixed(3), '-i', path.join(LL, 'vhoy-%02d.png')], `crop=1567:2786:481:0,fps=30,tpad=stop_mode=clone:stop_duration=8,${camara(`1.5+0.2*on/${N1}`, '0.306', '0.30')}`, N1, 'app.mp4');
+    const nCal = cuantas(/^cal-\d+\.png$/), N3 = cuadros(T_FIN - T_CAL);
+    parte(['-framerate', (nCal / ((N3 - 20) / 30)).toFixed(3), '-i', path.join(LL, 'cal-%02d.png')], `fps=30,tpad=stop_mode=clone:stop_duration=3,${camara(`1.0+0.14*on/${N3}`, '0.5', '0.37')}`, N3, 'cal.mp4');
+    parte(['-i', path.join(LL, 'viaje-b.mp4')], 'fps=30,tpad=stop_mode=clone:stop_duration=2', cuadros(D_COLA), 'cola.mp4');
+  }
 }
 const fuente = (paquete, archivo, destino) => fs.copyFileSync(path.join(RAIZ, 'node_modules', '@fontsource', paquete, 'files', archivo), path.join(A, 'fuentes', destino));
 fuente('barlow', 'barlow-latin-600-normal.woff2', 'barlow-600.woff2');
@@ -196,7 +226,9 @@ const htmlTomas = TOMAS.map((t, i) => `        <div class="toma" id="t-${t.id}"$
 // ---------- 3. las letras pequeñas: las palabras de la voz, de a uno o dos renglones ----------
 // "~palabra": la voz la dice pero aquí no se escribe (va en grande, en otra parte)
 const BLOQUES = [
-  ['no dices «el lunes empiezo»', 'por flojo.'], ['lo dices por algo que', 'se descubrió en ~1975'], ['con malteadas', 'y helado.'],
+  ...(V3
+    ? [['si siempre dices', '«el lunes empiezo»,'], ['no es por flojo.'], ['es por algo que se descubrió', 'con malteadas y helado.'], ['y al final te digo', 'cómo salir de eso.']]
+    : [['no dices «el lunes empiezo»', 'por flojo.'], ['lo dices por algo que', 'se descubrió en ~1975'], ['con malteadas', 'y helado.']]),
   ['a un grupo de personas', 'les dieron una malteada.'], ['a otras, dos.'], ['y a otras, nada.'],
   ['después les pusieron helado,'], ['para que comieran', 'el que quisieran.'],
   ['los que no estaban a dieta', 'comieron menos:'], ['ya estaban llenos.'],
@@ -207,7 +239,7 @@ const BLOQUES = [
   ['es como pinchar una llanta'], ['y, de la rabia,', 'pinchar las otras tres.'],
   ['~el ~miércoles ~solo ~dañó ~el ~miércoles'],
   ['así que si hoy ya te tomaste', 'las dos malteadas,'], ['sigues mañana.'], ['no el lunes: ~mañana'],
-  ['yo lo llevo en Racha,', 'una app que hicimos para eso.'], ['si quieres verla por dentro,', 'te la muestro.'],
+  ['yo lo llevo en Racha,', 'una app que hicimos para eso.'], ['si quieres verla por dentro,', V2 ? 'escribe Racha y te la muestro.' : 'te la muestro.'],
 ];
 let cuenta = 0;
 const bloques = BLOQUES.map((renglones, b) => ({ id: `b${b}`, de: cuenta, renglones: renglones.map((r) => r.split(' ').map((tx) => {
@@ -216,14 +248,16 @@ const bloques = BLOQUES.map((renglones, b) => ({ id: `b${b}`, de: cuenta, renglo
   return { tx: escrita, k, oculta };
 })) }));
 if (cuenta !== palabras.length) { console.log(`FALLA: las letras tienen ${cuenta} palabras y la voz ${palabras.length}.`); process.exit(1); }
-const htmlBloques = bloques.filter((b) => b.renglones.flat().some((w) => !w.oculta)).map((b) => `        <div class="bl" id="${b.id}">
+const sobreApp = (b) => V2 && b.de >= W.yoLlevo;      // en la versión 2 las letras van sobre la app: con fondo, como en "Ese martes"
+const htmlBloques = bloques.filter((b) => b.renglones.flat().some((w) => !w.oculta)).map((b) => `        <div class="bl${sobreApp(b) ? ' sa' : ''}" id="${b.id}">
 ${b.renglones.map((r) => r.filter((w) => !w.oculta)).filter((r) => r.length).map((r) => `          <p class="r">${r.map((w) => `<span class="w" id="w${w.k}">${w.tx}</span>`).join(' ')}</p>`).join('\n')}
         </div>`).join('\n');
 bloques.forEach((b, i) => {
   const visibles = b.renglones.flat().filter((w) => !w.oculta);
+  if (sobreApp(b)) pasos.push(`tl.set("#${b.id}", { opacity: 1 }, ${n(T(b.de) - 0.06)});`);    // el recuadro oscuro no sale vacío antes de la frase
   visibles.forEach((w) => pasos.push(`tl.fromTo("#w${w.k}", { opacity: 0, filter: "blur(9px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power1.out", immediateRender: false }, ${n(Math.max(0, T(w.k) - 0.04))});`));
   const sig = bloques[i + 1];
-  if (visibles.length) pasos.push(`tl.to("#${b.id}", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, ${n((sig ? T(sig.de) : TOTAL) - 0.16)});`);
+  if (visibles.length) pasos.push(`tl.to("#${b.id}", { opacity: 0, filter: "blur(8px)", duration: 0.12, ease: "power1.in" }, ${n((sig ? T(sig.de) : V2 ? T_FIN + 0.16 : TOTAL) - 0.16)});`);
 });
 
 // ---------- 4. lo que va en letra grande y los dibujos ----------
@@ -232,12 +266,21 @@ const seVa = (sel, t, dur = 0.12) => pasos.push(`tl.to("${sel}", { opacity: 0, d
 
 // (a) el gancho: "1975" aparece con los vasos y late cuando la voz lo dice
 suena('neon', 0.06, { modo: 'ini' });
-pasos.push(
-  `tl.fromTo("#anio", { opacity: 0, filter: "blur(16px)", scale: 1.06 }, { opacity: 0.5, filter: "blur(0px)", scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 0.3);`,
-  `tl.to("#anio", { opacity: 1, scale: 1.14, duration: 0.14, ease: "power2.out" }, ${n(T(W.anio) - 0.02)});`,
-  `tl.to("#anio", { scale: 1.04, duration: 0.5, ease: "power2.inOut" }, ${n(T(W.anio) + 0.14)});`);
-suena('subida', T(W.anio) - 0.02, { modo: 'fin' }); suena('boom', T(W.anio)); sacudida(T(W.anio), 0.9); destello(T(W.anio));
-seVa('#anio', T(W.yHelado) - 0.08, 0.1);
+if (!V3) {
+  pasos.push(
+    `tl.fromTo("#anio", { opacity: 0, filter: "blur(16px)", scale: 1.06 }, { opacity: 0.5, filter: "blur(0px)", scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 0.3);`,
+    `tl.to("#anio", { opacity: 1, scale: 1.14, duration: 0.14, ease: "power2.out" }, ${n(T(W.anio) - 0.02)});`,
+    `tl.to("#anio", { scale: 1.04, duration: 0.5, ease: "power2.inOut" }, ${n(T(W.anio) + 0.14)});`);
+  suena('subida', T(W.anio) - 0.02, { modo: 'fin' }); suena('boom', T(W.anio)); sacudida(T(W.anio), 0.9); destello(T(W.anio));
+  seVa('#anio', T(W.yHelado) - 0.08, 0.1);
+} else {
+  // v3: golpes en "lunes", "flojo" y "final" (los encuadres cambian ahí); "1975" pasa al comienzo de la historia
+  suena('golpe', T(W.lunes0) - 0.03, { db: -2 }); sacudida(T(W.lunes0) - 0.03, 0.5);
+  suena('subida', T(W.flojo) - 0.02, { modo: 'fin' }); suena('boom', T(W.flojo)); sacudida(T(W.flojo), 0.9); destello(T(W.flojo));
+  suena('golpe', T(W.final) - 0.03, { db: -2 }); sacudida(T(W.final) - 0.03, 0.5);
+  aparece('#anio', T(W.grupo) + 0.05, { dur: 0.3, escala: 1.06, borroso: 16 }); suena('neon', T(W.grupo), { modo: 'ini', db: -3 });
+  seVa('#anio', T(W.aOtras) - 0.08, 0.1);
+}
 // (b) la historia: golpes secos en las palabras que cambian el encuadre
 for (const k of [W.una, W.aOtras, W.yOtras]) suena('golpe', T(k) - 0.03, { db: -3 });
 suena('golpe', T(W.yaLlenos) - 0.03, { db: -2 });
@@ -289,11 +332,31 @@ aparece('#manana', T(W.manana) - 0.04, { dur: 0.3, escala: 1.12, borroso: 18 });
 suena('brillo', T(W.manana) + 0.1, { modo: 'fin', db: 2 }); suena('boom', T(W.manana), { db: -5 });
 seVa('#manana', C12, 0.12);
 // (i) la app
-pasos.push(`tl.set("#rejilla", { opacity: 1 }, ${n(C12 - PELO)});`);
-suena('whoosh', C12 + 0.05);
-if (ACTIVAR > C12 + 0.2) suena('toque', ACTIVAR);
-suena('logro', MARCA + 0.05);
+if (!V2) {
+  pasos.push(`tl.set("#rejilla", { opacity: 1 }, ${n(C12 - PELO)});`);
+  suena('whoosh', C12 + 0.05);
+  if (ACTIVAR > C12 + 0.2) suena('toque', ACTIVAR);
+  suena('logro', MARCA + 0.05);
+} else {
+  // Versión 2, como "Ese martes": la app de verdad y limpia (sin grano ni viñeta) debajo de la escena; sonidos graves y suaves,
+  // el tictac grave ("relleno") y nada chillón. Al final el recorrido hasta "Tu año" y la tarjeta "escribe RACHA y te la muestro".
+  pasos.push(`tl.set("#root", { backgroundColor: "rgba(0,0,0,0)" }, ${n(C12 - PELO)});`, `tl.set("#grano, .vin", { autoAlpha: 0 }, ${n(C12 - PELO)});`);
+  suena('boom', C12 + 0.02, { db: -5 }); suena('relleno', C12 + 0.2, { modo: 'ini', db: -2 });
+  suena('golpe', T_CAL, { db: -5 }); suena('relleno', T_CAL + 0.1, { modo: 'ini', db: -2 });
+  suena('boom', T(W.escribe + 1) + 0.02, { db: -3 });    // "escribe RACHA"
+  suena('boom', T_FIN + 0.02, { db: -6 });
+  [0.05, 1.3, 3.0, 4.8, 6.0].forEach((s) => suena('relleno', T_FIN + s, { modo: 'ini', db: -3 }));
+  [1.0, 2.5, 4.3].forEach((s) => suena('golpe', T_FIN + s + 0.1, { db: -8 }));
+  aparece('#sombra', T_TARJETA, { dur: 0.4, escala: 1, borroso: 0 });
+  aparece('#esc', T_TARJETA + 0.1, { dur: 0.2 });
+  aparece('#marca', T_TARJETA + 0.25, { dur: 0.3, escala: 1.18, borroso: 18 });
+  pasos.push(`tl.to("#marca", { scale: 1.05, duration: ${n(TOTAL - T_TARJETA - 0.7)}, ease: "none" }, ${n(T_TARJETA + 0.55)});`);
+  aparece('#ytela', T_TARJETA + 0.35, { dur: 0.25 });
+  suena('boom', T_TARJETA + 0.3, { db: -1 }); sacudida(T_TARJETA + 0.32, 0.6);
+}
 
+// v3: el tema escrito y fijo arriba desde el comienzo hasta que entra la app (sobre la app estorba)
+if (V3) { pasos.push(`tl.fromTo("#tema", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, 0.1);`); seVa('#tema', C12, 0.15); }
 // El grano salta de sitio 15 veces por segundo (posiciones fijas, para que el video salga igual cada vez)
 let semilla = 7; const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
 for (let i = 0; i < Math.ceil(TOTAL * 15); i++) pasos.push(`tl.set("#grano", { x: ${-Math.round(azar() * 380)}, y: ${-Math.round(azar() * 380)} }, ${n(i / 15)});`);
@@ -345,7 +408,16 @@ fs.writeFileSync(path.join(P, 'compositions', 'escena.html'), `<!doctype html>
         #tira { top: 520px; } #tira2 { top: 860px; }
         .trazo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
         #veredicto { top: 410px; } #veredicto .ser { font-size: 108px; line-height: 1.12; }
-        #manana { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; font-size: 250px; opacity: 0; }
+        #manana { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; font-size: 250px; opacity: 0; }${V3 ? `
+        #tema { position: absolute; left: 0; right: 0; top: 150px; display: flex; justify-content: center; opacity: 0; }
+        #tema span { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 42px; letter-spacing: -0.015em; color: ${CREMA}; background: rgba(0, 0, 0, 0.6); border: 2px solid rgba(255, 181, 71, 0.55); border-radius: 16px; padding: 8px 26px 12px; white-space: nowrap; }` : ''}${V2 ? `
+        .sa { top: 250px; opacity: 0; } .sa .r { background: rgba(6, 6, 8, 0.92); padding: 6px 28px 12px; margin: 3px 0; border-radius: 18px; }
+        .amarillo { color: ${AMBAR}; text-shadow: 0 0 8px rgba(255, 200, 110, 0.7), 0 0 44px rgba(255, 181, 71, 0.7), 0 3px 14px rgba(0, 0, 0, 0.9); }
+        .centro { position: absolute; left: 0; right: 0; text-align: center; opacity: 0; }
+        .chica { font-family: "Barlow", sans-serif; font-weight: 600; letter-spacing: -0.02em; color: ${CREMA}; margin: 0; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95); }
+        #sombra { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(15, 17, 19) 0, rgb(15, 17, 19) 300px, rgba(15, 17, 19, 0) 352px); opacity: 0; }
+        #esc { top: 286px; font-size: 68px; } #ytela { top: 1232px; font-size: 60px; }
+        #marca { top: 356px; font-size: 215px; }` : ''}
       </style>
       <div id="root" data-composition-id="escena" data-width="1080" data-height="1920">
         <div id="mundo" data-layout-allow-overflow>
@@ -368,9 +440,14 @@ ${tira('tira', 8)}
           </div>
 ${tira('tira2', 7)}
           <p class="ser" id="anio">1975</p>
-          <p class="ser" id="manana">mañana.</p>
+          <p class="ser" id="manana">mañana.</p>${V2 ? `
+          <div id="sombra"></div>
+          <p class="chica centro" id="esc">escribe</p>
+          <p class="ser centro amarillo" id="marca">RACHA</p>
+          <p class="chica centro" id="ytela">y te la muestro</p>` : ''}
         </div>
-${htmlBloques}
+${htmlBloques}${V3 ? `
+        <div id="tema"><span>por qué siempre dices «el lunes empiezo»</span></div>` : ''}
         <div id="destello"></div>
         <div id="grano" data-layout-allow-overflow></div>
       </div>
@@ -398,7 +475,7 @@ ${htmlBloques}
   sal.writeUInt32LE(SR, 24); sal.writeUInt32LE(SR * 4, 28); sal.writeUInt16LE(4, 32); sal.writeUInt16LE(16, 34); sal.write('data', 36); sal.writeUInt32LE(mezcla.length * 2, 40);
   mezcla.forEach((v, i) => sal.writeInt16LE(Math.round(Math.max(-1, Math.min(1, v)) * 32767), 44 + i * 2));
   fs.writeFileSync(path.join(A, 'efectos.wav'), sal);
-  fs.writeFileSync(path.join(BASE_DIR, `${NOMBRE}-sonidos.txt`), [...sonidos].sort((x, y) => x.t - y.t).map((ev) => `${ev.t.toFixed(2).padStart(6)} s  ${ev.s.padEnd(12)} ${ev.db} dB`).join('\n') + '\n', 'utf8');
+  fs.writeFileSync(path.join(BASE_DIR, `${NOMBRE}${V2 ? '-' + VER : ''}-sonidos.txt`), [...sonidos].sort((x, y) => x.t - y.t).map((ev) => `${ev.t.toFixed(2).padStart(6)} s  ${ev.s.padEnd(12)} ${ev.db} dB`).join('\n') + '\n', 'utf8');
 }
 
 // ---------- 6. el archivo principal: la escena, el celular con la app, la pastilla y el sonido ----------
@@ -427,22 +504,25 @@ fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
   <body>
     <div id="main" data-composition-id="main" data-start="0" data-duration="${n(TOTAL)}" data-width="1080" data-height="1920">
       <div id="escena" class="clip" style="z-index: 1" data-composition-id="escena" data-composition-src="compositions/escena.html" data-start="0" data-duration="${n(TOTAL)}" data-track-index="0" data-width="1080" data-height="1920"></div>
-      <div id="halo"></div>
+${V2 ? `      <video id="app" class="clip" style="z-index: 0" src="assets/app.mp4" playsinline muted data-start="${n(C12)}" data-duration="${n(T_CAL - C12)}" data-media-start="0" data-track-index="6"></video>
+      <video id="cal" class="clip" style="z-index: 0" src="assets/cal.mp4" playsinline muted data-start="${n(T_CAL)}" data-duration="${n(T_FIN - T_CAL)}" data-media-start="0" data-track-index="7"></video>
+      <video id="cola" class="clip" style="z-index: 0" src="assets/cola.mp4" playsinline muted data-start="${n(T_FIN)}" data-duration="${n(D_COLA)}" data-media-start="0" data-track-index="8"></video>
+      <div id="pastilla" style="top: 1334px"><span style="font-size: 36px; padding: 14px 32px 18px">Racha · app · $37.900, un solo pago · 7 días para probarla</span></div>` : `      <div id="halo"></div>
       <div id="cel" data-layout-allow-overflow>
         <div id="cel-pantalla">
           <video id="cel-video" class="clip" src="assets/celular.mp4" playsinline muted data-start="${n(C12)}" data-duration="${n(TOTAL - C12)}" data-media-start="${n(MS)}" data-track-index="7"></video>
         </div>
       </div>
-      <div id="pastilla"><span>Racha · app · $37.900, un solo pago</span></div>
+      <div id="pastilla"><span>Racha · app · $37.900, un solo pago</span></div>`}
       <audio id="voz" src="assets/voz.wav" data-start="${ENTRA}" data-duration="${n(FIN_VOZ - ENTRA + 0.4)}" data-media-start="0" data-track-index="3" data-volume="1"></audio>
       <audio id="efectos" src="assets/efectos.wav" data-start="0" data-duration="${n(TOTAL)}" data-media-start="0" data-track-index="5" data-volume="1"></audio>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#cel", { autoAlpha: 0, y: 260, rotation: 5 }, { autoAlpha: 1, y: 0, rotation: -1.5, duration: 0.5, ease: "power3.out", immediateRender: false }, ${n(C12)});
+${V2 ? `      tl.fromTo("#pastilla", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, ${n(T_TARJETA + 0.7)});` : `      tl.fromTo("#cel", { autoAlpha: 0, y: 260, rotation: 5 }, { autoAlpha: 1, y: 0, rotation: -1.5, duration: 0.5, ease: "power3.out", immediateRender: false }, ${n(C12)});
       tl.fromTo("#halo", { opacity: 0 }, { opacity: 1, duration: 0.6, immediateRender: false }, ${n(C12 + 0.1)});
       tl.to("#cel", { rotation: 1, scale: 1.04, duration: ${n(TOTAL - C12 - 0.5)}, ease: "none" }, ${n(C12 + 0.5)});
-      tl.fromTo("#pastilla", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, ${n(T(W.te) - 0.1)});
+      tl.fromTo("#pastilla", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, ${n(T(W.te) - 0.1)});`}
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>
@@ -456,4 +536,5 @@ for (const f of ['hyperframes.json', 'package.json', 'meta.json']) {
 }
 console.log(`Listo ${NOMBRE}: dura ${TOTAL.toFixed(2)} s · ${TOMAS.length} fotos · ${sonidos.length} efectos.`);
 console.log('Cortes: ' + TOMAS.map((t) => `${t.id} ${t.ini.toFixed(1)}`).join(' · '));
-console.log(`"1975" ${T(W.anio).toFixed(2)} · "ya qué" ${T(W.ya1).toFixed(2)} · el nombre ${T(W.ya2).toFixed(2)} · la semana ${T(W.fallaba).toFixed(2)} · veredicto ${T(W.el).toFixed(2)} · "mañana" ${T(W.manana).toFixed(2)} · la app ${C12.toFixed(2)} (grabación desde su segundo ${MS.toFixed(2)}; fila marcada en ${MARCA.toFixed(2)}).`);
+if (V2) console.log(`Versión 2: app ${C12.toFixed(2)} · mes ${T_CAL.toFixed(2)} · recorrido ${T_FIN.toFixed(2)} · tarjeta ${T_TARJETA.toFixed(2)} · total ${TOTAL.toFixed(2)}.`);
+console.log(`"1975" ${T(V3 ? W.grupo : W.anio).toFixed(2)} · "ya qué" ${T(W.ya1).toFixed(2)} · el nombre ${T(W.ya2).toFixed(2)} · la semana ${T(W.fallaba).toFixed(2)} · veredicto ${T(W.el).toFixed(2)} · "mañana" ${T(W.manana).toFixed(2)} · la app ${C12.toFixed(2)} (grabación desde su segundo ${MS.toFixed(2)}; fila marcada en ${MARCA.toFixed(2)}).`);

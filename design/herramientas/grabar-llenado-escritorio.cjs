@@ -13,12 +13,16 @@ const path = require('path');
 const fs = require('fs');
 const { execFileSync } = require('child_process');
 const FFMPEG = 'C:/Users/jahen/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-9.0.2-full_build/bin/ffmpeg.exe';
-const SAL = path.join(__dirname, '..', 'anuncios', 'campana', 'app-llenado');
+// SALIDA=<carpeta> graba en otra carpeta (para no pisar las fotos que ya usan otros videos)
+const SAL = process.env.SALIDA ? path.resolve(process.env.SALIDA) : path.join(__dirname, '..', 'anuncios', 'campana', 'app-llenado');
 fs.mkdirSync(SAL, { recursive: true });
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 const PRUEBA = process.argv.includes('prueba');
 const SOLO = ['hoy', 'progreso'].find((x) => process.argv.includes(x));
 const V = process.env.VERTICAL === '1', PRE = V ? 'v' : 'e';
+// DIAS_HOY=N: en Hoy las barritas crecen desde hace N días (16 por defecto). VACIO=1: sin nada antes de eso, para que
+// arranquen vacías y se llenen poco a poco (15 oct, POV: "haz las barritas más suaves")
+const DIAS_HOY = Number(process.env.DIAS_HOY || 16), VACIO = process.env.VACIO === '1';
 const ANCHO = V ? 1024 : 1600, ALTO = V ? 1820 : 900, ALTO_PROGRESO = V ? 1820 : Number(process.env.ALTO_PROGRESO || 1800);
 
 (async () => {
@@ -42,7 +46,7 @@ const ANCHO = V ? 1024 : 1600, ALTO = V ? 1820 : 900, ALTO_PROGRESO = V ? 1820 :
   const limpio = '::-webkit-scrollbar { display: none; } * { caret-color: transparent !important; }';
   // deja los registros hasta cierto día (y, si se pide, los primeros N hábitos de hoy ya marcados) y recarga
   const poner = async (hasta, hoyHechos = 0) => {
-    const reg = R.filter((r) => r.fecha <= hasta && r.fecha < hace(0));
+    const reg = R.filter((r) => r.fecha <= hasta && r.fecha < hace(0) && (!VACIO || r.fecha > hace(DIAS_HOY + 1)));
     HABITOS.slice(0, hoyHechos).forEach((id) => reg.push({ habitoId: id, fecha: hace(0), completado: true }));
     await page.evaluate((reg) => localStorage.setItem('racha_registros', JSON.stringify(reg)), reg);
     for (let intento = 0; intento < 4; intento++) {
@@ -69,7 +73,7 @@ const ANCHO = V ? 1024 : 1600, ALTO = V ? 1820 : 900, ALTO_PROGRESO = V ? 1820 :
   // 1. Hoy: las barritas de cada hábito se llenan con los últimos días y después se marcan los de hoy, uno por uno
   if (SOLO !== 'progreso') {
     let k = 0;
-    for (let d = 16; d >= 1; d--) { await poner(hace(d), 0); await esperar(300); await page.screenshot({ path: path.join(SAL, PRE + 'hoy-' + p2(k++) + '.png') }); }
+    for (let d = DIAS_HOY; d >= 1; d--) { await poner(hace(d), 0); await esperar(300); await page.screenshot({ path: path.join(SAL, PRE + 'hoy-' + p2(k++) + '.png') }); }
     for (let h = 1; h <= HABITOS.length; h++) { await poner(hace(1), h); await esperar(300); const foto = path.join(SAL, PRE + 'hoy-' + p2(k++) + '.png'); await page.screenshot({ path: foto }); fs.copyFileSync(foto, path.join(SAL, PRE + 'hoy-' + p2(k++) + '.png')); }
     if (!V) video('ehoy', 9, 'escritorio-hoy.mp4', 'scale=1920:1080:flags=lanczos');
     console.log('escritorio-hoy.mp4:', k, 'fotos');
