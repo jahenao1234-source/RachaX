@@ -76,8 +76,10 @@ const TOTAL = Number(process.env.PRUEBA || t0);
 const SON = path.join(C, 'sonidos'), MEDIDAS = JSON.parse(fs.readFileSync(path.join(SON, 'sonidos.json'), 'utf8'));
 if (!SOLO_HTML) {
   TOMAS.filter((s) => s.app).forEach((s) => {
-    ff(['-i', path.join(BASE, 'cortes', `${s.app}.mp4`), '-t', String(n(s.dura + 0.1)), '-an', '-filter_complex',
-      '[0:v]fps=30,split[a][b];[a]scale=-2:1920,crop=1080:1920,boxblur=28:2,eq=brightness=0.04:saturation=1.0:gamma=1.25[bg];[b]scale=1000:1000:flags=lanczos[fg];[bg][fg]overlay=40:440,format=yuv420p',
+    // la app a pantalla completa en vertical, con el mismo color de las tomas de disciplina (el cuadrado con fondo
+    // borroso de la v1 "choca mucho con la primera parte… se ve feo", 20 oct)
+    ff(['-i', path.join(BASE, 'cortes', `${s.app}.mp4`), '-t', String(n(s.dura + 0.1)), '-an', '-vf',
+      `fps=30,scale=1080:1920:flags=lanczos,${COLOR},format=yuv420p`,
       '-c:v', 'libx264', '-crf', '16', '-g', '1', path.join(A, 'tomas', `s${s.k}.mp4`)]);
   });
   const anio = TOMAS.find((s) => s.app === 'anio');

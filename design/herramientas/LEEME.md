@@ -280,3 +280,11 @@ Guion, mapa de golpes y fotos aprobadas en `anuncios/campana/rimu2/guion.md`. Un
 3. Música: `BAJO=16 FASE=0.505 GOLPE=0.545455 COMPASES=30 EMPIEZA=5.956 SUBE=0.05 node design/herramientas/poner-musica.mjs …-maestro.mp4 design/anuncios/campana/guion5/musica/quick-cuts-groove.wav …-vN.mp4`.
 4. Antes de entregar: `python design/herramientas/medir-video.py design/anuncios/referencias/oct19/rimu-ref1.mp4 …-vN.mp4`.
 - El revisor de HyperFrames no lee `{ ...{} }`: las propiedades van sueltas (función `sinLlaves`). Nada se mueve con left/top/width/height: todo con x, y, scale o clipPath (el celular nace del ícono con un recorte que se abre).
+
+## POV 3 "misma edad" (20 oct de 2026): `hf-pov3.mjs` + `pov3-cortes.py` + `grabar-vivo.cjs`
+- **v2 (20 oct):** la app va a pantalla completa en vertical (el cuadrado con fondo borroso de la v1 no le gustó). `pantalla-reemplazo.py` tiene `VERTICAL=1` (recorte 9:16 de una toma horizontal; `ALTO_V` = alto del recorte en la toma, `CENTRO_DX/DY` lo mueven); `pov3-cortes.py` lo usa con `ALTO_V=1728` y un `CENTRO_DX` por ventana; el molde solo le pone el color A. Salida: `pov3-v2.mp4` (`-maestro` el original); los cortes cuadrados de la v1 quedaron en `pov3/cortes-v1/`.
+
+Estructura de los reels de `anuncios/referencias/oct20-pov/` (fiesta → disciplina → la app). Las tomas de fiesta y disciplina son de OTROS creadores: solo para probar en Instagram; antes de pagar pauta se cambian (lista `TOMAS` de `hf-pov3.mjs`).
+1. App en movimiento (muestra prendida, puerto 3003): `FECHA="2026-10-15T17:50:00" MENU=cerrado node design/herramientas/grabar-vivo.cjs hoy <carpeta>`, `… tareas <carpeta>` y `VELOCIDAD=700 DURA=2.2 MENU=cerrado … foco <carpeta>` (Chrome a doble densidad y las animaciones 4 veces más lentas mientras graba, `LENTO`). Radar: `ANCHO=1440 ALTO=900 PASOS=45 DESDE=60 CURVA=2 ANCLA="Fuerza de tus hábitos" FECHA=… grabar-progreso-pantalla.cjs llenado <carpeta> 150`.
+2. `python -X utf8 design/herramientas/pov3-cortes.py` (unos 30 minutos; las 62 tomas están en `campana/pov2/tomas/`): una ventana distinta por toma.
+3. `node design/herramientas/hf-pov3.mjs`, `check`, `snapshot`, `render --low-memory-mode -w 1 -f 30 -o ../pov3-vN-maestro.mp4` (5 minutos) y `crf 23`. La música (subida, corte seco y golpe grave) la arma el molde.

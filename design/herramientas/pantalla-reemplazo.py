@@ -178,6 +178,14 @@ if os.environ.get('CUADRO') == '1':
     cx += float(os.environ.get('CENTRO_DX', 0)); cy += float(os.environ.get('CENTRO_DY', 0))   # mover el recorte desde el centro de la pantalla
     x0 = int(np.clip(cx - lado / 2, 0, W - lado)); y0 = int(np.clip(cy - lado / 2, 0, H - lado))
     rec, cw, ch, sal_w, sal_h = f'crop={lado}:{lado}:{x0}:{y0},scale=1080:1080', lado, lado, 1080, 1080
+elif os.environ.get('VERTICAL') == '1':
+    # (20 oct, POV 3) toma horizontal → vertical a pantalla completa, centrado en lo que se llena: ALTO_V=<px de alto
+    # del recorte en la toma> (más chico = más cerca) y CENTRO_DX/DY lo mueven desde el centro de la pantalla
+    ch = int(os.environ.get('ALTO_V', H)); cw = (ch * 9 // 16) // 2 * 2
+    cx, cy = cv2.perspectiveTransform(np.float32([[[RW / 2, RH / 2]]]), Hs[0]).reshape(2)
+    cx += float(os.environ.get('CENTRO_DX', 0)); cy += float(os.environ.get('CENTRO_DY', 0))
+    x0 = int(np.clip(cx - cw / 2, 0, W - cw)); y0 = int(np.clip(cy - ch / 2, 0, H - ch))
+    rec, sal_w, sal_h = f'crop={cw}:{ch}:{x0}:{y0},scale=1080:1920', 1080, 1920
 else:
     x0, y0 = 0, (H - W * 16 // 9) // 2
     rec, cw, ch, sal_w, sal_h = f'crop={W}:{W * 16 // 9}:0:{y0},scale=1080:1920', W, W * 16 // 9, 1080, 1920

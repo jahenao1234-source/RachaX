@@ -2,7 +2,8 @@
 # ("tomes diferentes planos pero no la misma ventana") y fluida ("que cuando se rellene sea fluido, sin tanto lagg"):
 #   Hoy, Tareas y Foco se grabaron EN MOVIMIENTO con grabar-vivo.cjs (cuadros a 30 por segundo);
 #   la semana (7 fotos), el radar (45) y Tu año (51) van con fundidos entre fotos.
-# Cada corte sale en un cuadrado de 1080 × 1080 (pov3/cortes/<nombre>.mp4) con pantalla-reemplazo.py.
+# Cada corte sale vertical a pantalla completa, 1080 × 1920 (pov3/cortes/<nombre>.mp4), centrado en lo que se llena (VERTICAL=1):
+# el cuadrado con fondo borroso de la v1 "choca mucho con la primera parte… se ve feo" (20 oct).
 # Uso: python design/herramientas/pov3-cortes.py [nombre para rehacer solo ese]
 import os, sys, glob, subprocess
 import numpy as np, cv2
@@ -28,15 +29,15 @@ def foco_sin_final():
 
 # nombre · de dónde salen los cuadros · 'vivo' (ya son cuadros) o fundido entre fotos · toma, desde, golpes y ajustes · referencia
 CORTES = [
-    {'nombre': 'hoy', 'vivo': lambda: vivo('hoy'), 'toma': ('VID_20261015_173731896.mp4', 3.3, 2, {'LADO': 1350}), 'ref': 'ref-cerrado/ref-hoy-0000.png'},
-    {'nombre': 'tareas', 'vivo': lambda: vivo('tareas'), 'toma': ('VID_20261015_180442560.mp4', 2.7, 2, {}), 'ref': 'ref-abierto/ref-tareas-0000.png'},
-    {'nombre': 'foco', 'vivo': foco_sin_final, 'toma': ('VID_20261015_174323446.mp4', 0.8, 2, {}), 'ref': 'ref-cerrado/ref-hoy-0000.png'},
+    {'nombre': 'hoy', 'vivo': lambda: vivo('hoy'), 'toma': ('VID_20261015_173731896.mp4', 3.3, 2, {'CENTRO_DX': 40}), 'ref': 'ref-cerrado/ref-hoy-0000.png'},
+    {'nombre': 'tareas', 'vivo': lambda: vivo('tareas'), 'toma': ('VID_20261015_180442560.mp4', 2.7, 2, {'CENTRO_DX': 330}), 'ref': 'ref-abierto/ref-tareas-0000.png'},
+    {'nombre': 'foco', 'vivo': foco_sin_final, 'toma': ('VID_20261015_174323446.mp4', 0.8, 2, {'CENTRO_DX': -230}), 'ref': 'ref-cerrado/ref-hoy-0000.png'},
     {'nombre': 'semana', 'fotos': lambda: sorted(glob.glob(os.path.join(P2, 'semana-c453', 'semana-*.png'))), 'fundido': 'corto',
-     'toma': ('VID_20261015_173843970.mp4', 12.3, 2, {'LADO': 1350, 'CENTRO_DY': -200}), 'ref': 'ref-cerrado/ref-tu-semana-0453.png'},
+     'toma': ('VID_20261015_173843970.mp4', 12.3, 2, {'CENTRO_DX': 150}), 'ref': 'ref-cerrado/ref-tu-semana-0453.png'},
     {'nombre': 'radar', 'fotos': lambda: sorted(glob.glob(os.path.join(APP, 'radar', 'eprog-*.png')))[:-1], 'fundido': 'suave',
-     'toma': ('VID_20261015_175437452.mp4', 3.8, 3, {}), 'ref': 'ref-abierto/ref-prog-0765.png'},
+     'toma': ('VID_20261015_175437452.mp4', 3.8, 3, {'CENTRO_DX': -60}), 'ref': 'ref-abierto/ref-prog-0765.png'},
     {'nombre': 'anio', 'fotos': lambda: sorted(glob.glob(os.path.join(P2, 'prog-mezcla', 'prog-*.png'))), 'fundido': 'suave',
-     'toma': ('VID_20261015_175451473.mp4', 1.8, 3, {}), 'ref': 'ref-abierto/ref-prog-0765.png'},
+     'toma': ('VID_20261015_175451473.mp4', 1.8, 3, {'CENTRO_DX': 250}), 'ref': 'ref-abierto/ref-prog-0765.png'},
 ]
 
 def cuadros_de(c, n):
@@ -73,7 +74,7 @@ for c in CORTES:
     for i, im in enumerate(cuadros_de(c, n)):
         cv2.imwrite(os.path.join(car, f'f-{i:03d}.jpg'), im, [cv2.IMWRITE_JPEG_QUALITY, 94])
     sal = os.path.join(P3, 'cortes', f"{c['nombre']}.mp4")
-    env = dict(os.environ, HORIZONTAL='1', CUADRO='1', FOTOS='f-*.jpg', COLOR='fijo', LUT_DE=lut, **{k: str(v) for k, v in aj.items()})
+    env = dict(os.environ, HORIZONTAL='1', VERTICAL='1', ALTO_V='1728', FOTOS='f-*.jpg', COLOR='fijo', LUT_DE=lut, **{k: str(v) for k, v in aj.items()})
     r = subprocess.run([sys.executable, '-X', 'utf8', os.path.join(AQUI, 'pantalla-reemplazo.py'), os.path.join(DL, toma), str(desde), f'{dura + 0.1:.3f}',
                         os.path.join(P2, c['ref']), car, sal, str(FPS), '0'], env=env, capture_output=True, text=True)
     resumen = [l for l in r.stdout.splitlines() if any(w in l for w in ('calzan', 'salto', 'error medio', 'recorte', 'listo'))]
