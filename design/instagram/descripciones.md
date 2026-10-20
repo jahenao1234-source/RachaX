@@ -61,3 +61,51 @@ Comenta RACHA y te muestro la app que hicimos para eso. 💬
 ```
 
 Al subirlo: prender la etiqueta de contenido hecho con IA (Luis es un personaje generado).
+
+## "Vitrina" (video de producto estilo rimu, versión 1) · 19 de octubre de 2026
+
+Archivo: `design/anuncios/campana/rimu1/vitrina-v1.mp4` (29,6 s, voz de Fernando Martínez, con música). No subir el `-maestro`. Portada: `design/anuncios/campana/rimu1/portada/portada-vitrina-sentadillas.jpg` (la persona haciendo sentadillas en la sala de noche, en blanco y negro con grano, y solo la lámpara encendida en ámbar; sin letras). Foto base: `guion12/imagenes/6-sentadillas.jpg`, hecha con `portada-dark.py … 470 973 697 1132 0.5`.
+
+Texto: sale de la voz v4 aprobada ("excelente"), pasado por la skill copywriting. Lo nuevo es la línea del precio ($37.900, un solo pago, 7 días para probarla; igual a la pastilla del video).
+
+```
+Te propones entrenar todos los días. Un jueves no lo haces, y ya estás pensando en volver a empezar el lunes. 🏋️
+
+Racha es una app para cumplir tus hábitos, pensada para el día en que no puedes.
+
+Cuando creas un hábito, le pones una versión pequeña. Si el hábito es entrenar 30 minutos, la versión pequeña puede ser hacer 10 sentadillas en la casa. El día pesado haces solo eso, y la app lo cuenta como cumplido. Tu contador de días seguidos pasa de 12 a 13. ✅
+
+Un día malo se vale. Dos seguidos, no.
+
+Es un solo pago de $37.900 y tienes 7 días para probarla.
+
+Comenta RACHA y te muestro la app que hicimos para eso. 🔥
+
+#hábitos #constancia #disciplina #gimnasio #rutina
+```
+
+Al subirlo: la etiqueta de contenido con IA solo si la pide Instagram (el video no trae personas generadas; la portada sí sale de una imagen hecha con IA).
+
+## "Pasa el tiempo y sigo igual" (video de producto 2, versión 1) · 20 de octubre de 2026
+
+Archivo: `design/anuncios/campana/rimu2/tiempo-v1.mp4` (25 s, voz de Fernando, con música; aprobado: "aprendiste, así va"). No subir el `-maestro`. Portada (pidió otra el 20 oct): `design/anuncios/campana/rimu2/portada/portada-tiempo-lista.jpg` (la mano que escribe la lista de promesas de noche, de `guion13/imagenes/5-domingo.jpg`, con la hoja encendida en ámbar; hecha con `POLI="325,1068 862,872 1296,1742 588,2036" python design/herramientas/portada-dark.py … 330 876 1290 2030 0.55 0.8`). La primera fue `portada-tiempo-calendario.jpg` (el calendario de pared del guion 9, en blanco y negro con grano y la hoja encendida en ámbar; sin letras). Hecha con `POLI="360,555 1080,424 1092,2232 500,2124 390,2090" python design/herramientas/portada-dark.py guion9/imagenes/5-calendario.jpg … 380 430 1090 2230 0.5 0.35` (el papel está torcido: la forma va en `POLI`).
+
+Texto: la voz v1 aprobada, pasada por la skill copywriting; lo nuevo es la línea del precio (igual a la pastilla del video).
+
+```
+Cada enero dices: este año sí leo, entreno y ahorro. Y en diciembre sigues igual. 📅
+
+Racha es una app para cumplir tus hábitos, día por día.
+
+Cada día que lees o entrenas, lo marcas y se pinta un cuadrito. Si un día no puedes, haces una versión pequeña, como leer una página, y ese día también cuenta. ✅
+
+Mes a mes se llena tu año, y el próximo diciembre ves todo lo que sí hiciste.
+
+Es un solo pago de $37.900 y tienes 7 días para probarla.
+
+Comenta RACHA y te muestro la app que hicimos para eso. 🔥
+
+#hábitos #propósitos #constancia #disciplina #rutina
+```
+
+Al subirlo: el video no trae personas generadas; la foto de la portada sí es hecha con IA (prender la etiqueta solo si Instagram la pide).

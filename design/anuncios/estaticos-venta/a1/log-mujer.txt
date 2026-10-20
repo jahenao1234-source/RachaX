@@ -1,0 +1,7 @@
+Precio de soul: 0.188 dólares (3.000 créditos)
+Pedido: 91745063-75a2-4753-98cd-b0cb87219162
+  3 s: in_progress
+  8 s: in_progress
+  14 s: in_progress
+  23 s: completed
+Listo: design/anuncios/estaticos-venta/a1/foto-mujer-v1.png (2.3 MB)

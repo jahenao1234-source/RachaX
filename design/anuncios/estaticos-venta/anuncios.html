@@ -1,0 +1,102 @@
+<!doctype html><meta charset="utf-8"><style>
+@font-face{font-family:BC;src:url(../../../public/fuentes/barlow-condensed-latin-700-normal.woff2)}
+@font-face{font-family:B;font-weight:400;src:url(../../../public/fuentes/barlow-latin-400-normal.woff2)}
+@font-face{font-family:B;font-weight:500;src:url(../../../public/fuentes/barlow-latin-500-normal.woff2)}
+@font-face{font-family:B;font-weight:600;src:url(../../../public/fuentes/barlow-latin-600-normal.woff2)}
+@font-face{font-family:B;font-weight:700;src:url(../../../public/fuentes/barlow-latin-700-normal.woff2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#222;display:flex;flex-direction:column;gap:40px;padding:40px}
+.ad{position:relative;width:1080px;height:1350px;overflow:hidden;background:#101113;color:#F3EEE6;font-family:B}
+.ad.claro{background:#FFB547;color:#17130d}
+.abs{position:absolute}
+.arriba{position:absolute;left:68px;right:68px;top:60px}
+.abajo{position:absolute;left:68px;right:68px;bottom:60px}
+.marca{display:flex;align-items:center;gap:14px;font-family:BC;font-size:40px;letter-spacing:.5px;margin-bottom:26px}
+.marca img{width:52px;height:52px;border-radius:12px}
+.marca.oscura{color:#17130d}
+.tit{font-family:BC;font-weight:700;line-height:.98;text-transform:uppercase}
+.tit em{font-style:normal;color:#FFB547}
+.t1{font-size:92px}.t2{font-size:120px}.t3{font-size:96px;white-space:nowrap}.t4{font-size:90px}
+.sub{font-size:34px;line-height:1.3;color:#d6d0c7;margin-top:22px;font-weight:500}
+.sub.oscuro{color:#2a2117;margin:0 0 18px}
+.precio-linea{font-size:32px;color:#d6d0c7;margin-bottom:22px}
+.precio-linea b{color:#FFB547;font-weight:700}
+.precio-linea.oscuro{color:#2a2117}.precio-linea.oscuro b{color:#17130d}
+.boton{display:block;text-align:center;background:#FFB547;color:#17130d;font-family:BC;font-size:50px;text-transform:uppercase;padding:24px 20px;border-radius:18px}
+.boton b{color:#17130d}
+.claro .boton{background:#17130d;color:#FFB547}.claro .boton b{color:#FFB547}
+.debajo{text-align:center;font-size:30px;color:#bdb6ac;margin-top:16px}
+.pantalla{position:absolute;object-fit:cover;object-position:top;box-shadow:0 0 50px rgba(255,181,71,.35)}
+.luz{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(rgba(255,181,71,.25),rgba(255,181,71,0) 62%);mix-blend-mode:screen}
+.velo-a{position:absolute;inset:0 0 auto 0;height:470px;background:linear-gradient(#101113 62%,rgba(16,17,19,0))}
+.velo-b{position:absolute;inset:auto 0 0 0;height:330px;background:linear-gradient(rgba(16,17,19,0),#101113 40%)}
+.nota{position:absolute;width:250px;font-family:BC;font-size:36px;line-height:1.05;color:#FFB547;text-transform:uppercase}
+.etiqueta{display:inline-block;background:#F3EEE6;color:#101113;font-family:BC;font-size:34px;text-transform:uppercase;padding:8px 20px;border-radius:8px;margin-bottom:20px}
+.cols{position:absolute;left:68px;right:68px;top:660px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.col{border-radius:22px;padding:28px 26px;background:#1b1c1f;border:2px solid #2c2d31}
+.col.ambar{border:3px solid #FFB547;box-shadow:0 0 40px rgba(255,181,71,.18)}
+.col-tit{font-family:BC;font-size:34px;text-transform:uppercase;color:#a9a39a}
+.ambar .col-tit{color:#FFB547}
+.col-precio{font-family:BC;font-size:76px;line-height:1;margin-top:6px}
+.gris .col-precio{color:#8d877f}
+.col-sub{font-family:BC;font-size:30px;text-transform:uppercase;margin-top:2px}
+.col ul{list-style:none;margin-top:18px;display:grid;gap:12px}
+.col li{display:flex;gap:10px;font-size:27px;line-height:1.2;align-items:flex-start}
+.col li svg{width:30px;height:30px;flex:none;margin-top:1px}
+.gris li{color:#9a948b}.gris li svg{color:#7a746c}.ambar li svg{color:#FFB547}
+.fila{position:absolute;left:68px;right:68px;display:grid;grid-template-columns:420px 1fr;gap:34px;align-items:center}
+.f1{top:285px}.f2{top:655px}
+.fila img{width:420px;height:320px;object-fit:cover;border:5px solid #17130d;border-radius:14px;box-shadow:8px 8px 0 #17130d}
+.f1 img{filter:grayscale(1) contrast(1.05)}
+.sin,.con{font-family:BC;font-size:48px;text-transform:uppercase}
+.sin{color:#5a4a33}
+.fila p{font-size:36px;line-height:1.25;font-weight:600;margin-top:8px}
+.tarjetas{position:absolute;left:68px;right:68px;top:480px;display:grid;gap:20px}
+.tj{display:flex;gap:24px;align-items:flex-start;background:#1b1c1f;border:2px solid #2c2d31;border-radius:22px;padding:30px 30px}
+.tj i{width:70px;height:70px;border-radius:18px;background:rgba(255,181,71,.14);color:#FFB547;display:grid;place-items:center;flex:none}
+.tj i svg{width:38px;height:38px}
+.tj b{display:block;font-family:BC;font-size:40px;text-transform:uppercase;line-height:1.05}
+.tj span{display:block;font-size:31px;line-height:1.3;color:#bdb6ac;margin-top:6px}
+</style>
+<div class="ad " id="a1-pregunta">
+    <img class="abs" src="../../../design/anuncios/higgsfield/estaticos/c-celular-gris.png" style="width:1720.3200000000002px;left:-150px;top:-850px">
+    <div class="luz" style="left:289.2800000000001px;top:379.44000000000005px"></div>
+    <img class="pantalla" src="../../../public/ventas/cel-1-hoy.jpg" style="left:564.5600000000001px;top:455.9200000000001px;width:349.44000000000005px;height:747.0400000000001px;border-radius:45.427200000000006px">
+    <div class="velo-a"></div><div class="velo-b"></div>
+    <div class="arriba"><div class="marca"><img src="../../../public/ventas/icono.svg">Racha</div>
+      <h1 class="tit t1">¿Fallas un día y lo dejas todo <em>para el lunes?</em></h1>
+      <p class="sub">Racha es una app para sostener lo que empiezas: tus hábitos, tus tareas y tu foco.</p></div>
+    <div class="abajo"><div class="precio-linea"><b>$37.900</b> · un solo pago · 7 días para probarla</div><div class="boton">Escribe <b>RACHA</b> y te la muestro</div></div></div>
+<div class="ad " id="a2-un-pago">
+    <div class="arriba"><div class="marca"><img src="../../../public/ventas/icono.svg">Racha</div>
+      <div class="etiqueta">Muchas apps te cobran cada mes</div>
+      <h1 class="tit t2">Pagas una vez<br>y <em>es tuya.</em></h1>
+      <p class="sub">Racha es una app para sostener lo que empiezas: tus hábitos, tus tareas y tu foco.</p></div>
+    <div class="cols">
+      <div class="col gris"><div class="col-tit">Una suscripción</div><div class="col-precio">Cada mes</div>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Pagas mientras la uses</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>El cobro llega aunque no la uses</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Si dejas de pagar, se acaba el acceso</li></ul></div>
+      <div class="col ambar"><div class="col-tit">Racha</div><div class="col-precio">$37.900</div><div class="col-sub">Una sola vez</div>
+        <ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Acceso vitalicio</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>En tu celular y tu computador</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>7 días para probarla</li></ul></div>
+    </div>
+    <div class="abajo"><div class="boton">La quiero por <b>$37.900</b></div><div class="debajo">Escribe RACHA y te la muestro</div></div></div>
+<div class="ad claro" id="a3-antes-despues">
+    <div class="arriba"><div class="marca oscura"><img src="../../../public/ventas/icono.svg">Racha</div>
+      <h1 class="tit t3">¿Fallaste el miércoles?</h1></div>
+    <div class="fila f1"><img src="../../../design/pdf/imagenes/3-lo-que-dejaste.jpg">
+      <div><div class="sin">Sin Racha</div><p>Vuelves a cero y lo dejas para el lunes.</p></div></div>
+    <div class="fila f2"><img src="../../../design/pdf/imagenes/4-volver.jpg">
+      <div><div class="con">Con Racha</div><p>El miércoles solo daña el miércoles. Al otro día sigues.</p></div></div>
+    <div class="abajo"><p class="sub oscuro">Racha es una app para sostener lo que empiezas: tus hábitos, tus tareas y tu foco.</p><div class="precio-linea oscuro"><b>$37.900</b> · un solo pago · 7 días para probarla</div><div class="boton">Escribe <b>RACHA</b> y te la muestro</div></div></div>
+<div class="ad " id="a4-tres-cosas">
+    <div class="arriba"><div class="marca"><img src="../../../public/ventas/icono.svg">Racha</div>
+      <h1 class="tit t4">Para que un día malo no te haga <em>empezar de cero.</em></h1>
+      <p class="sub">Racha es una app para sostener lo que empiezas: tus hábitos, tus tareas y tu foco.</p></div>
+    <div class="tarjetas">
+      <div class="tj"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.67 19a2 2 0 0 0 1.416-.588l6.154-6.172a6 6 0 0 0-8.49-8.49L5.586 9.914A2 2 0 0 0 5 11.328V18a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/></svg></i><div><b>¿Día pesado? Haz solo lo mínimo</b>
+        <span>Entrenar 30 minutos → mínimo: 10 sentadillas. Ese día cuenta.</span></div></div>
+      <div class="tj"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></i><div><b>Comodines</b>
+        <span>Congela un día que no pudiste, sin romper tu racha.</span></div></div>
+      <div class="tj"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></i><div><b>Tareas partidas en pasos</b>
+        <span>Lo que llevas meses aplazando, en pasos pequeños. Hoy solo haces el que toca.</span></div></div>
+    </div>
+    <div class="abajo"><div class="precio-linea"><b>$37.900</b> · un solo pago · 7 días para probarla</div><div class="boton">Escribe <b>RACHA</b> y te la muestro</div></div></div>

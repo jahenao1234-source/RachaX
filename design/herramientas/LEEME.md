@@ -261,3 +261,22 @@ con `PASO`, `DESDE_Y` y `HASTA_Y` se afina) para saber cuánto estaba bajada la 
 de la pantalla), y `MARZO=1 PASOS=50 ANCLA="Tu año" … grabar-progreso-pantalla.cjs llenado <carpeta> 924` para las fotos que se
 llenan desde el 1 de marzo. Después `FOTOS='eprog-*.png' python -X utf8 pantalla-reemplazo.py <toma> 0.3 4.4 <referencia con su
 estado> <carpeta> <salida> 13.5 0.3`. La referencia debe verse igual que lo filmado (sin alargar a marzo).
+
+## Video de producto estilo rimu (19 oct de 2026): `hf-vitrina.mjs`
+
+Animación de producto sin personas, copiada de la edición de `anuncios/referencias/oct19/rimu-ref1.mp4` (análisis en `rimu-ref1-analisis-completo.md`): pantallas reales de Racha, letras que entran palabra por palabra con la voz, fondo que alterna negro y blanco con círculos que se abren desde el centro, y ningún corte seco. Voz de Fernando Martínez (`campana/rimu1/voz/vitrina-fernando-v2-limpia.mp3`; el cierre "Escribe Racha y te la muestro" se generó aparte porque la toma cortaba "muestro").
+1. `node design/herramientas/hf-vitrina.mjs` (con `PRUEBA=9.55` arma solo el comienzo; `--solo-html` no rehace la voz ni las pantallas). Proyecto en `campana/rimu1/hyperframes/`.
+2. Dentro del proyecto, con `HYPERFRAMES_BROWSER_PATH` puesto: `npx --yes hyperframes@0.8.138 check`, `snapshot --at …` y `render --low-memory-mode -w 1 -f 30 -o ../vitrina-vN-maestro.mp4` (29,6 s, unos 5 minutos).
+3. Música: `BAJO=16 FASE=0.505 GOLPE=0.545455 COMPASES=30 EMPIEZA=5.656 SUBE=0.05 node design/herramientas/poner-musica.mjs …-maestro.mp4 design/anuncios/campana/guion5/musica/quick-cuts-groove.wav …-vN.mp4` (entra con el ícono de Racha, al terminar el gancho).
+- GSAP va guardado en `herramientas/libs/` (con los datos del celular el CDN se cae y `check` no carga).
+- Ojo con los nombres internos (`id`): las pantallas de la explosión son `c0…c37`; los números del contador se llamaban igual y movían la pantalla equivocada (ahora `cn1…cn13`). Antes de agregar elementos, buscar que el `id` no exista.
+- La escena del celular usa la grabación real `guion12/app/dia-dificil.mp4` desde el segundo 1,1: la hoja abre en "no puedes con nada" y se marca "+5 ganados" justo en "cumplido".
+
+## Video de producto 2, "Pasa el tiempo y sigo igual" (20 oct de 2026): `hf-tiempo.mjs`
+
+Guion, mapa de golpes y fotos aprobadas en `anuncios/campana/rimu2/guion.md`. Una sola toma: cada escena sale de un objeto de la anterior (ENERO se vuelve el mes; los íconos se meten en el de Racha; el ícono llena la pantalla de ámbar y vuelve; el ícono se abre en el celular; el chulo salta y es un cuadrito; el chulo grande llena la pantalla y se encoge en el 1 de enero de Tu año).
+1. Material de la app (con la muestra prendida, puerto 3003): `INICIO=360 node design/herramientas/grabar-anio-completo.cjs design/anuncios/campana/rimu2/anio 6` (Tu año de enero a diciembre: la muestra cree que es el 27 de diciembre; el 31 monta "dic" con "ene 2027") y `node design/herramientas/grabar-hoy-leer.cjs design/anuncios/campana/rimu2/hoy` (Hoy antes y después de marcar "Leer 10 páginas"). Los dos con `NODE_PATH` de un puppeteer-core.
+2. `node design/herramientas/hf-tiempo.mjs` (`--solo-html` no rehace la voz, las fotos ni el video del año). Dentro de `campana/rimu2/hyperframes`: `check`, `snapshot --at …` y `render --low-memory-mode -w 1 -f 30 -o ../tiempo-vN-maestro.mp4` (25 s, unos 2 minutos).
+3. Música: `BAJO=16 FASE=0.505 GOLPE=0.545455 COMPASES=30 EMPIEZA=5.956 SUBE=0.05 node design/herramientas/poner-musica.mjs …-maestro.mp4 design/anuncios/campana/guion5/musica/quick-cuts-groove.wav …-vN.mp4`.
+4. Antes de entregar: `python design/herramientas/medir-video.py design/anuncios/referencias/oct19/rimu-ref1.mp4 …-vN.mp4`.
+- El revisor de HyperFrames no lee `{ ...{} }`: las propiedades van sueltas (función `sinLlaves`). Nada se mueve con left/top/width/height: todo con x, y, scale o clipPath (el celular nace del ícono con un recorte que se abre).

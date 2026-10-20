@@ -1,0 +1,43 @@
+<!doctype html><meta charset="utf-8"><style>
+@font-face{font-family:BC;src:url(../../../../public/fuentes/barlow-condensed-latin-700-normal.woff2)}
+@font-face{font-family:B;font-weight:500;src:url(../../../../public/fuentes/barlow-latin-500-normal.woff2)}
+@font-face{font-family:B;font-weight:700;src:url(../../../../public/fuentes/barlow-latin-700-normal.woff2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;display:flex;flex-direction:column;gap:40px;padding:40px}
+.ad{position:relative;width:1080px;height:1350px;overflow:hidden;background:#0b0b0c;color:#F3EEE6}
+.foto{position:absolute}
+.velo-arriba{position:absolute;inset:0 0 auto 0;height:620px;background:linear-gradient(#0b0b0c 0%,rgba(11,11,12,.85) 45%,rgba(11,11,12,0))}
+.velo-arriba.alto{height:760px;background:linear-gradient(#0b0b0c 0%,rgba(11,11,12,.9) 60%,rgba(11,11,12,0))}
+.velo-abajo{position:absolute;inset:auto 0 0 0;height:340px;background:linear-gradient(rgba(11,11,12,0),rgba(11,11,12,.9) 55%,#0b0b0c)}
+.velo-abajo.bajo{height:230px}
+.tit{position:absolute;left:72px;right:72px;top:84px;font-family:BC;font-weight:700;font-size:104px;line-height:.98;letter-spacing:-.5px;text-transform:uppercase}
+.tit em{font-style:normal;color:#FFB547;text-shadow:0 0 28px rgba(255,181,71,.45)}
+.pie{position:absolute;left:72px;right:72px;bottom:64px}
+.pie.arriba{top:330px;bottom:auto}
+.past{display:inline-block;font-family:B;font-weight:500;font-size:27px;color:#d9d3ca;border:2px solid rgba(255,181,71,.55);border-radius:40px;padding:12px 24px;margin-bottom:22px}
+.cta{font-family:BC;font-size:58px;text-transform:uppercase;color:#F3EEE6}
+.cta b{color:#FFB547}
+.cta.suelto{position:absolute;left:72px;bottom:72px}
+.oferta{position:absolute;left:72px;right:72px;top:84px}
+.marca{font-family:B;font-weight:700;font-size:34px;letter-spacing:4px;text-transform:uppercase;color:#d9d3ca}
+.precio{font-family:BC;font-size:250px;line-height:.95;color:#FFB547;text-shadow:0 0 40px rgba(255,181,71,.4);margin-top:8px}
+.sub{font-family:BC;font-size:62px;text-transform:uppercase;line-height:1}
+.pantalla{position:absolute;object-fit:cover;object-position:top;border-radius:37px;box-shadow:0 0 40px rgba(255,181,71,.35)}
+.luz{position:absolute;width:840px;height:840px;border-radius:50%;background:radial-gradient(rgba(255,181,71,.28),rgba(255,181,71,0) 62%);mix-blend-mode:screen}
+</style>
+<div class="ad" id="a-tenis"><img class="foto" src="a-tenis-ambar.png" style="width:1080px;left:0px;top:-150px">
+    <div class="velo-arriba"></div><div class="velo-abajo"></div>
+    <h1 class="tit">Para que un día malo<br>no te haga<br><em>empezar de cero.</em></h1><div class="pie"><div class="past">Racha · app · $37.900, un solo pago · 7 días para probarla</div>
+  <div class="cta">Escribe <b>RACHA</b></div></div></div>
+<div class="ad" id="b-sofa"><img class="foto" src="b-sofa-ambar.png" style="width:1152px;left:-72px;top:-186px">
+    <div class="velo-arriba"></div><div class="velo-abajo bajo"></div>
+    <h1 class="tit">Un día malo se vale.<br><em>Dos seguidos, no.</em></h1><div class="pie arriba"><div class="past">Racha · app · $37.900, un solo pago · 7 días para probarla</div>
+  <div class="cta">Escribe <b>RACHA</b></div></div></div>
+<div class="ad" id="c-celular"><img class="foto" src="c-celular-gris.png" style="width:1382.4px;left:-75px;top:-360px">
+    <div class="luz" style="left:219.60000000000002px;top:569.5500000000002px"></div>
+    <img class="pantalla" src="../../../../public/ventas/cel-1-hoy.jpg"
+      style="left:499.20000000000005px;top:689.4000000000001px;width:280.8px;height:600.3000000000001px;transform:rotate(0.15473688164602104deg)">
+    <div class="velo-arriba alto"></div>
+    <div class="oferta"><div class="marca">Racha · app</div><div class="precio">$37.900</div>
+      <div class="sub">un solo pago · 7 días para probarla</div></div>
+    <div class="cta suelto">Escribe <b>RACHA</b></div></div>

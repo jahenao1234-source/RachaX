@@ -1,0 +1,7 @@
+Precio de soul: 0.188 dólares (3.000 créditos)
+Pedido: 98a71cb7-57f4-4c39-b7b0-7d871786fd9f
+  3 s: in_progress
+  8 s: in_progress
+  14 s: in_progress
+  23 s: completed
+Listo: design/anuncios/estaticos-venta/a1/foto-hombre-v2.png (2.0 MB)

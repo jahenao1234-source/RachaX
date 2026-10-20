@@ -1,0 +1,13 @@
+{
+  "prompt": "Static image ads for Racha, a mobile and desktop web app (installs from the browser, no app store) that helps people keep going with what they start: their habits, their to-dos split into small steps, and their focus, in one place. Core idea: one bad day should not make you start from zero. The app's rule: 'Un día malo se vale. Dos seguidos, no.' On a hard day each habit has a minimum version (for example: train 30 minutes -> minimum 10 squats) and that day still counts. Every day you complete stays marked, so after a month it is proof, not a promise.\n\nOffer (only these facts): $37.900 pesos colombianos, un solo pago, sin mensualidades, acceso vitalicio, 7 días para probarla, works on phone and computer.\n\nMake ONE ad with this selling angle: the pain of always restarting from zero on Monday after failing just one day, and the relief of a rule that lets you keep going.\n\nAll text on the ads must be in Spanish (Colombia), short and plain. Headline, exactly: 'Para que un día malo no te haga empezar de cero.' Small line under it, exactly: '$37.900 · un solo pago · 7 días para probarla'. Small call to action: 'Escribe RACHA'.\n\nVisual style: dark and cinematic. Near-black graphite background, black-and-white moody photography with film grain, and ONE single accent color, amber #FFB547, glowing only on the key object or the key word. Bold condensed sans-serif headlines. No other colors.\n\nThe reference images are real screenshots of the app. If a phone is shown, put these screenshots on the phone screen exactly as they are; do not redraw, translate or invent app screens or app text.\n\nDo NOT include: star ratings, reviews, testimonials, user counts, discounts, crossed-out prices, countdowns or urgency, the words 'app de hábitos', medical or mental-health claims, logos of other brands, app store badges.",
+  "niche": "App de productividad personal: hábitos, tareas por pasos y foco (Colombia)",
+  "language": "es",
+  "target_audience": "Adultos jóvenes en Colombia (20 a 40 años) que empiezan rutinas, el gimnasio o metas con muchas ganas y las dejan a las pocas semanas; cuando fallan un día sienten que perdieron todo y lo dejan para 'el lunes'. Usan el celular todo el día y compran por WhatsApp.",
+  "aspect_ratio": "4:5",
+  "batch_size": 1,
+  "imagenes": [
+    "../../../public/ventas/cel-1-hoy.jpg",
+    "../../../public/ventas/cel-2-tareas.jpg",
+    "../../../public/ventas/cel-4-progreso.jpg"
+  ]
+}
