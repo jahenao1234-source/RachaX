@@ -3,7 +3,7 @@
 // ref5-cuadros-que-se-llenan.mp4: escenas de la persona, la pantalla filmada de cerca que se llena sola y un texto fijo arriba).
 // Sin voz. Cada corte cae en un golpe de los pulsos de "Cold Case Resolution" al 1,19 (el sonido que le gustó en el final de
 // "El golpe 101" y "Ese martes"). Termina con el recorrido por Progreso hasta "Tu año" y la tarjeta "escribe RACHA y te la muestro".
-// Uso: node design/herramientas/hf-pov.mjs [--solo-html]   (las tomas en Descargas: VID_20261014_*.mp4)
+// Uso: node design/herramientas/hf-pov.mjs [--solo-html]   (las tomas en campana/pov1/tomas: VID_20261014_*.mp4)
 //      python design/herramientas/musica-pov.py ; después check, snapshot y render dentro de campana/pov1/hyperframes
 import fs from 'node:fs';
 import path from 'node:path';
@@ -27,7 +27,7 @@ const VER = process.env.VERSION || '1', V2 = ['2', '3', '4', '5', '6', '7', '8',
 // VERSION=8: la 7 + Tu semana armándose en su toma (pidió "falta donde se vea la semana armándose")
 const P = path.join(BASE_DIR, V2 ? `hyperframes-v${VER}` : 'hyperframes'), A = path.join(P, 'assets');
 for (const d of [A, path.join(A, 'fuentes'), path.join(P, 'compositions')]) fs.mkdirSync(d, { recursive: true });
-const TOMAS = process.env.TOMAS || path.join(os.homedir(), 'Downloads');
+const TOMAS = process.env.TOMAS || path.join(BASE_DIR, 'tomas');   // antes en Descargas; desde el 20 oct viven aquí
 const n = (x) => Number(x.toFixed(6));
 const SOLO_HTML = process.argv.includes('--solo-html');
 

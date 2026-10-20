@@ -240,7 +240,7 @@ Después del primer Reel (la mayoría se iba en el segundo 10) se cambió SOLO e
 5. **La música:** la misma mezcla de la versión 2 empezando 1,12 s más adelante: `HUECO=55.13:56.08 BAJO=14 FASE=1.12 GOLPE=0.5 COMPASES=36.6 EMPIEZA=0 SUBE=0.05 node design/herramientas/poner-musica.mjs guion2/guion2-ya-que-v3.mp4 guion2/musica/mezcla-v2.wav guion2/guion2-ya-que-v3-con-musica.mp4`.
 
 ## Reel "POV" con tus tomas y la app llenándose (pov1, 14 oct de 2026)
-Tus tomas reales del portátil (en Descargas, `VID_20261014_*.mp4`) intercaladas con la app llenándose sola (Hoy y el mes),
+Tus tomas reales del portátil (en `campana/pov1/tomas/`, `VID_20261014_*.mp4`; antes en Descargas) intercaladas con la app llenándose sola (Hoy y el mes),
 inclinadas como filmadas de cerca, y el recorrido por Progreso hasta "Tu año" con la tarjeta "escribe RACHA". Sin voz;
 cada corte cae en un golpe de los pulsos de "Cold Case Resolution" al 1,19. El plan de tomas está arriba en `hf-pov.mjs` (PLAN).
 1. `node design/herramientas/hf-pov.mjs` (`--solo-html` si solo cambian textos o sonidos; `FRASE="renglón 1|renglón 2"` cambia el texto de arriba)

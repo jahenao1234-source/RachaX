@@ -8,7 +8,7 @@ import numpy as np, cv2
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 P = os.path.join(AQUI, '..', 'anuncios', 'campana', 'pov2')
-DL = os.path.join(os.path.expanduser('~'), 'Downloads')
+DL = os.path.join(P, 'tomas')        # las 62 tomas; antes en Descargas, desde el 20 oct viven aquí
 GOLPE = 60 / 91                       # "Midnight Minor", 91 golpes por minuto
 FPS = 30
 
