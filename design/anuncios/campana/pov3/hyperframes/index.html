@@ -15,10 +15,16 @@
       .texto { position: absolute; left: 0; right: 0; text-align: center; font-family: "Segoe UI", Arial, sans-serif; font-weight: 600; font-size: 46px; color: #fff; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7); opacity: 0; z-index: 10; }
       #edad { top: 868px; }
       #frase { top: 868px; }
+      #cierre { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+      .fin { position: absolute; left: 0; right: 0; text-align: center; font-family: "Segoe UI", Arial, sans-serif; font-weight: 300; font-size: 64px; color: #F5F5F2; opacity: 0; z-index: 12; }
+      #esc { top: 650px; } #ytela { top: 1010px; }
+      #marca { position: absolute; left: 0; right: 0; top: 740px; text-align: center; font-family: "Segoe UI", Arial, sans-serif; font-weight: 800; font-size: 230px; line-height: 1; letter-spacing: 0.01em; color: #FFB547; opacity: 0; z-index: 12; }
+      #pastilla { position: absolute; left: 0; right: 0; top: 1110px; display: flex; justify-content: center; opacity: 0; z-index: 12; }
+      #pastilla span { font-family: "Segoe UI", Arial, sans-serif; font-weight: 600; font-size: 34px; color: #F5F5F2; background: #15171A; border: 3px solid #FFB547; border-radius: 999px; padding: 14px 30px 18px; white-space: nowrap; }
     </style>
   </head>
   <body>
-    <div id="main" data-composition-id="main" data-start="0" data-duration="12.5267" data-width="1080" data-height="1920">
+    <div id="main" data-composition-id="main" data-start="0" data-duration="24.3941" data-width="1080" data-height="1920">
       <div id="marco">
         <video class="toma" id="v0" src="assets/tomas/s0.mp4" muted playsinline data-start="0" data-duration="0.32965" data-media-start="0" data-track-index="1"></video>
         <video class="toma" id="v1" src="assets/tomas/s1.mp4" muted playsinline data-start="0.32965" data-duration="0.32965" data-media-start="0" data-track-index="2"></video>
@@ -37,11 +43,22 @@
         <video class="toma" id="v14" src="assets/tomas/s14.mp4" muted playsinline data-start="8.5709" data-duration="0.6593" data-media-start="0" data-track-index="1"></video>
         <video class="toma" id="v15" src="assets/tomas/s15.mp4" muted playsinline data-start="9.2302" data-duration="1.3186" data-media-start="0" data-track-index="2"></video>
         <video class="toma" id="v16" src="assets/tomas/s16.mp4" muted playsinline data-start="10.5488" data-duration="1.9779" data-media-start="0" data-track-index="1"></video>
+        <video class="toma" id="v17" src="assets/tomas/s17.mp4" muted playsinline data-start="12.5267" data-duration="1.3186" data-media-start="0" data-track-index="2"></video>
+        <video class="toma" id="v18" src="assets/tomas/s18.mp4" muted playsinline data-start="13.8453" data-duration="1.3186" data-media-start="0" data-track-index="1"></video>
+        <video class="toma" id="v19" src="assets/tomas/s19.mp4" muted playsinline data-start="15.1639" data-duration="1.3186" data-media-start="0" data-track-index="2"></video>
+        <video class="toma" id="v20" src="assets/tomas/s20.mp4" muted playsinline data-start="16.4825" data-duration="1.3186" data-media-start="0" data-track-index="1"></video>
+        <video class="toma" id="v21" src="assets/tomas/s21.mp4" muted playsinline data-start="17.8011" data-duration="1.9779" data-media-start="0" data-track-index="2"></video>
+        <video class="toma" id="v22" src="assets/tomas/s22.mp4" muted playsinline data-start="19.779" data-duration="1.9779" data-media-start="0" data-track-index="1"></video>
+        <img id="cierre" src="assets/cierre.png" />
       </div>
       <div id="destello"></div>
+      <p class="fin" id="esc">escribe</p>
+      <p id="marca">RACHA</p>
+      <p class="fin" id="ytela">y te la muestro</p>
+      <div id="pastilla"><span>Racha · app · $37.900, un solo pago · 7 días para probarla</span></div>
       <p class="texto" id="edad">misma edad:</p>
       <p class="texto" id="frase">las metas se cumplen día a día</p>
-      <audio id="musica" src="assets/musica.wav" data-start="0" data-duration="12.5267" data-media-start="0" data-track-index="7" data-volume="1"></audio>
+      <audio id="musica" src="assets/musica.wav" data-start="0" data-duration="24.3941" data-media-start="0" data-track-index="7" data-volume="1"></audio>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });
@@ -69,6 +86,24 @@
       tl.fromTo("#v14", { scale: 1 }, { scale: 1.06, duration: 0.6593, ease: "none", immediateRender: false }, 8.5709);
       tl.fromTo("#v15", { scale: 1 }, { scale: 1.06, duration: 1.3186, ease: "none", immediateRender: false }, 9.2302);
       tl.fromTo("#v16", { scale: 1 }, { scale: 1.06, duration: 1.9779, ease: "none", immediateRender: false }, 10.5488);
+      tl.fromTo("#v17", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, 12.5267);
+      tl.to("#v17", { scale: 1.035, duration: 0.9686, ease: "none" }, 12.8767);
+      tl.fromTo("#v18", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, 13.8453);
+      tl.to("#v18", { scale: 1.035, duration: 0.9686, ease: "none" }, 14.1953);
+      tl.fromTo("#v19", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, 15.1639);
+      tl.to("#v19", { scale: 1.035, duration: 0.9686, ease: "none" }, 15.5139);
+      tl.fromTo("#v20", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, 16.4825);
+      tl.to("#v20", { scale: 1.035, duration: 0.9686, ease: "none" }, 16.8325);
+      tl.fromTo("#v21", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, 17.8011);
+      tl.to("#v21", { scale: 1.035, duration: 1.6279, ease: "none" }, 18.1511);
+      tl.fromTo("#v22", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, 19.779);
+      tl.to("#v22", { scale: 1.035, duration: 1.6279, ease: "none" }, 20.129);
+      tl.set("#cierre", { opacity: 1 }, 21.7569);
+      tl.fromTo("#cierre", { scale: 1.035, filter: "brightness(1)" }, { scale: 0.96, filter: "brightness(0.32)", duration: 0.6, ease: "power2.out", immediateRender: false }, 21.7569);
+      tl.fromTo("#esc", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 21.9069);
+      tl.fromTo("#marca", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)", immediateRender: false }, 22.1069);
+      tl.fromTo("#ytela", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 22.5069);
+      tl.fromTo("#pastilla", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, 22.8569);
       tl.fromTo("#marco", { x: 0, y: 0 }, { keyframes: { x: [0, -14, 11, -6, 3, 0], y: [0, 8, -6, 4, -2, 0] }, duration: 0.4, ease: "none", immediateRender: false }, 2.6372);
       tl.set("#edad", { opacity: 1 }, 0);
       tl.fromTo("#edad", { scale: 1.08 }, { scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 0);
@@ -81,6 +116,7 @@
       tl.fromTo("#edad", { scale: 1.08 }, { scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, 2.30755);
       tl.set("#edad", { opacity: 0 }, 2.5172);
       tl.fromTo("#frase", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, 10.6988);
+      tl.set("#frase", { opacity: 0 }, 12.5267);
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>

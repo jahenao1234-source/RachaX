@@ -58,6 +58,15 @@ const TOMAS = [
   { ref: 3, de: 12.15, golpes: 1 },    // corriendo de noche entre los postes
   { ref: 1, de: 14.5, golpes: 2 },     // flexiones en el campo
   { ref: 4, de: 2.7, golpes: 3, frase: 'las metas se cumplen día a día' },   // gimnasio vacío
+  // la app en sus tomas del portátil: UNA ventana distinta por toma (pov3-cortes.py), una por cada dos o tres golpes
+  { app: 'hoy', golpes: 2 },
+  { app: 'tareas', golpes: 2 },
+  { app: 'foco', golpes: 2 },
+  { app: 'semana', golpes: 2 },
+  { app: 'radar', golpes: 3 },
+  { app: 'anio', golpes: 3 },
+  // el cierre sale de Tu año lleno: se oscurece y entra "escribe RACHA y te la muestro" con la pastilla
+  { cierre: true, golpes: 4 },
 ];
 let t0 = 0;
 TOMAS.forEach((s, k) => { s.k = k; s.t = t0; s.dura = s.golpes * G; t0 += s.dura; });
@@ -66,7 +75,14 @@ const TOTAL = Number(process.env.PRUEBA || t0);
 // ---------- 1. los archivos ----------
 const SON = path.join(C, 'sonidos'), MEDIDAS = JSON.parse(fs.readFileSync(path.join(SON, 'sonidos.json'), 'utf8'));
 if (!SOLO_HTML) {
-  TOMAS.forEach((s) => {
+  TOMAS.filter((s) => s.app).forEach((s) => {
+    ff(['-i', path.join(BASE, 'cortes', `${s.app}.mp4`), '-t', String(n(s.dura + 0.1)), '-an', '-filter_complex',
+      '[0:v]fps=30,split[a][b];[a]scale=-2:1920,crop=1080:1920,boxblur=28:2,eq=brightness=0.04:saturation=1.0:gamma=1.25[bg];[b]scale=1000:1000:flags=lanczos[fg];[bg][fg]overlay=40:440,format=yuv420p',
+      '-c:v', 'libx264', '-crf', '16', '-g', '1', path.join(A, 'tomas', `s${s.k}.mp4`)]);
+  });
+  const anio = TOMAS.find((s) => s.app === 'anio');
+  ff(['-sseof', '-0.15', '-i', path.join(A, 'tomas', `s${anio.k}.mp4`), '-frames:v', '1', path.join(A, 'cierre.png')]);
+  TOMAS.filter((s) => s.ref).forEach((s) => {
     const vf = [s.tapa ? `delogo=${s.tapa.split(':').map((v, i) => `${['x', 'y', 'w', 'h'][i]}=${v}`).join(':')}` : null,
       'fps=30', 'scale=1080:1920:flags=lanczos', s.fiesta ? COLOR_FIESTA : COLOR, 'format=yuv420p'].filter(Boolean).join(',');
     ff(['-ss', String(s.de), '-i', path.join(REF, `ref${s.ref}.mp4`), '-t', String(n(s.dura + 0.1)), '-an', '-vf', vf, '-c:v', 'libx264', '-crf', '16', '-g', '1', path.join(A, 'tomas', `s${s.k}.mp4`)]);
@@ -74,6 +90,8 @@ if (!SOLO_HTML) {
   // el sonido: la fiesta fuerte → una subida → corte seco → golpe grave y la canción desde su caída → obturador en cada destello
   const efectos = [['subida', CAIDA - SILENCIO, 'fin', -14], ['boom', CAIDA, 'golpe', -4]];
   TOMAS.filter((s) => s.fiesta && s.k > 0).forEach((s) => efectos.push(['obturador', s.t, 'golpe', -20]));
+  TOMAS.filter((s) => s.app).forEach((s) => efectos.push(['whoosh', s.t, 'golpe', -15]));
+  TOMAS.filter((s) => s.cierre).forEach((s) => efectos.push(['boom', s.t, 'golpe', -8]));
   const entradas = ['-ss', String(FIESTA_MUSICA), '-t', String(n(CAIDA - SILENCIO)), '-i', path.join(C, 'pov1', 'musica', 'midnight-minor.wav'),
     '-ss', String(RESTO_MUSICA), '-t', String(n(TOTAL - CAIDA + 0.5)), '-i', path.join(C, 'pov1', 'musica', 'midnight-minor.wav')];
   efectos.forEach(([s]) => entradas.push('-i', path.join(SON, `${s}.wav`)));
@@ -95,6 +113,17 @@ TOMAS.forEach((s) => {
     // golpe de cámara en cada corte (entra grande y se asienta), un poco de giro y un destello
     tl(`tl.fromTo("#v${s.k}", { scale: 1.22, rotation: ${s.k % 2 ? 2 : -2} }, { scale: 1.04, rotation: 0, duration: ${n(s.dura)}, ease: "expo.out", immediateRender: false }, ${n(s.t)});`);
     if (s.k > 0) tl(`tl.fromTo("#destello", { opacity: 0.55 }, { opacity: 0, duration: 0.14, ease: "power2.out", immediateRender: false }, ${n(s.t)});`);
+  } else if (s.app) {
+    // cada ventana entra con un golpe de cámara y sigue acercándose despacio
+    tl(`tl.fromTo("#v${s.k}", { scale: 1.1 }, { scale: 1.0, duration: 0.35, ease: "expo.out", immediateRender: false }, ${n(s.t)});`);
+    tl(`tl.to("#v${s.k}", { scale: 1.035, duration: ${n(s.dura - 0.35)}, ease: "none" }, ${n(s.t + 0.35)});`);
+  } else if (s.cierre) {
+    tl(`tl.set("#cierre", { opacity: 1 }, ${n(s.t)});`);
+    tl(`tl.fromTo("#cierre", { scale: 1.035, filter: "brightness(1)" }, { scale: 0.96, filter: "brightness(0.32)", duration: 0.6, ease: "power2.out", immediateRender: false }, ${n(s.t)});`);
+    tl(`tl.fromTo("#esc", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, ${n(s.t + 0.15)});`);
+    tl(`tl.fromTo("#marca", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)", immediateRender: false }, ${n(s.t + 0.35)});`);
+    tl(`tl.fromTo("#ytela", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, ${n(s.t + 0.75)});`);
+    tl(`tl.fromTo("#pastilla", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, ${n(s.t + 1.1)});`);
   } else {
     const caida = Math.abs(s.t - CAIDA) < 0.01;
     tl(`tl.fromTo("#v${s.k}", { scale: ${caida ? 1.14 : 1.0} }, { scale: ${caida ? 1.03 : 1.06}, duration: ${n(s.dura)}, ease: "${caida ? 'expo.out' : 'none'}", immediateRender: false }, ${n(s.t)});`);
@@ -106,11 +135,12 @@ tl(`tl.fromTo("#marco", { x: 0, y: 0 }, { keyframes: { x: [0, -14, 11, -6, 3, 0]
 tl(`tl.set("#edad", { opacity: 1 }, 0);`);
 TOMAS.filter((s) => s.fiesta).forEach((s) => tl(`tl.fromTo("#edad", { scale: 1.08 }, { scale: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, ${n(s.t)});`));
 tl(`tl.set("#edad", { opacity: 0 }, ${n(CAIDA - SILENCIO)});`);
-const ult = TOMAS.at(-1);
-tl(`tl.fromTo("#frase", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, ${n(ult.t + 0.15)});`);
+const gim = TOMAS.find((s) => s.frase);
+tl(`tl.fromTo("#frase", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, ${n(gim.t + 0.15)});`);
+tl(`tl.set("#frase", { opacity: 0 }, ${n(gim.t + gim.dura)});`);
 
 // ---------- 3. la página ----------
-const videos = TOMAS.map((s) => `        <video class="toma" id="v${s.k}" src="assets/tomas/s${s.k}.mp4" muted playsinline data-start="${n(s.t)}" data-duration="${n(s.dura)}" data-media-start="0" data-track-index="${s.k % 2 ? 2 : 1}"></video>`).join('\n');
+const videos = TOMAS.filter((s) => !s.cierre).map((s) => `        <video class="toma" id="v${s.k}" src="assets/tomas/s${s.k}.mp4" muted playsinline data-start="${n(s.t)}" data-duration="${n(s.dura)}" data-media-start="0" data-track-index="${s.k % 2 ? 2 : 1}"></video>`).join('\n');
 fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
 <html lang="es">
   <head>
@@ -128,14 +158,25 @@ fs.writeFileSync(path.join(P, 'index.html'), `<!doctype html>
       .texto { position: absolute; left: 0; right: 0; text-align: center; font-family: "Segoe UI", Arial, sans-serif; font-weight: 600; font-size: 46px; color: #fff; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7); opacity: 0; z-index: 10; }
       #edad { top: 868px; }
       #frase { top: 868px; }
+      #cierre { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+      .fin { position: absolute; left: 0; right: 0; text-align: center; font-family: "Segoe UI", Arial, sans-serif; font-weight: 300; font-size: 64px; color: #F5F5F2; opacity: 0; z-index: 12; }
+      #esc { top: 650px; } #ytela { top: 1010px; }
+      #marca { position: absolute; left: 0; right: 0; top: 740px; text-align: center; font-family: "Segoe UI", Arial, sans-serif; font-weight: 800; font-size: 230px; line-height: 1; letter-spacing: 0.01em; color: #FFB547; opacity: 0; z-index: 12; }
+      #pastilla { position: absolute; left: 0; right: 0; top: 1110px; display: flex; justify-content: center; opacity: 0; z-index: 12; }
+      #pastilla span { font-family: "Segoe UI", Arial, sans-serif; font-weight: 600; font-size: 34px; color: #F5F5F2; background: #15171A; border: 3px solid #FFB547; border-radius: 999px; padding: 14px 30px 18px; white-space: nowrap; }
     </style>
   </head>
   <body>
     <div id="main" data-composition-id="main" data-start="0" data-duration="${n(TOTAL)}" data-width="1080" data-height="1920">
       <div id="marco">
 ${videos}
+        <img id="cierre" src="assets/cierre.png" />
       </div>
       <div id="destello"></div>
+      <p class="fin" id="esc">escribe</p>
+      <p id="marca">RACHA</p>
+      <p class="fin" id="ytela">y te la muestro</p>
+      <div id="pastilla"><span>Racha · app · $37.900, un solo pago · 7 días para probarla</span></div>
       <p class="texto" id="edad">misma edad:</p>
       <p class="texto" id="frase">las metas se cumplen día a día</p>
       <audio id="musica" src="assets/musica.wav" data-start="0" data-duration="${n(TOTAL)}" data-media-start="0" data-track-index="7" data-volume="1"></audio>

@@ -78,16 +78,21 @@ const CADA = Number(process.env.CADA || 0.22) * 1000 * LENTO;
       if (listo) break; await esperar(350);
     }
     await esperar(500);
-    const casillas = await page.evaluate(() => [...document.querySelectorAll('button, [role="checkbox"]')].filter((b) => b.getBoundingClientRect().left > 400 && /^Marcar /.test(b.getAttribute('aria-label') || '') && b.offsetParent).map((b) => b.getAttribute('aria-label')));
+    // las casillas de los pasos son <span role="checkbox" aria-label="<paso>">; se marcan solo los pasos de adentro (los grandes se cierran solos)
+    const casillas = await page.evaluate(() => [...document.querySelectorAll('[role="checkbox"]')].filter((b) => b.getBoundingClientRect().left > 730 && b.offsetParent).map((b) => b.getAttribute('aria-label')));
     console.log('pasos para marcar:', casillas.length);
     await empezar();
-    for (const et of casillas) { await page.evaluate((et) => { const b = [...document.querySelectorAll('button, [role="checkbox"]')].find((x) => x.getAttribute('aria-label') === et && x.getBoundingClientRect().left > 400); if (b) b.click(); }, et); await esperar(CADA); }
+    for (const et of casillas) { await page.evaluate((et) => { const b = [...document.querySelectorAll('[role="checkbox"]')].find((x) => x.getAttribute('aria-label') === et && x.getBoundingClientRect().left > 400); if (b) b.click(); }, et); await esperar(CADA); }
     await terminar();
   } else if (modo === 'foco') {
     // el pomodoro de 25 minutos en el primer paso de "Tareas de hoy" (el ▶ de la fila); el reloj corre VELOCIDAD veces más rápido
-    const play = await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => /pomodoro|Foco|Empezar/i.test(x.getAttribute('aria-label') || '') && x.closest('section, div') && x.offsetParent); if (b) { const et = b.getAttribute('aria-label'); b.click(); return et; } return null; });
+    // desde Tareas › TAREA › "Empezar en Foco"
+    await tocar('Tareas'); await esperar(700);
+    await page.evaluate((n) => { const hoja = [...document.querySelectorAll('*')].find((x) => x.children.length === 0 && x.textContent.trim() === n && x.offsetParent); if (hoja) (hoja.closest('button, [role="button"], li, [tabindex]') || hoja).click(); }, TAREA);
+    await esperar(700);
+    const play = await tocar('Empezar en Foco');
     console.log('abrí:', play); await esperar(900);
-    await tocar('Empezar'); await esperar(300);
+    await tocar('Empezar pomodoro'); await esperar(500);
     await empezar();
     await page.evaluate((v) => window.__acelerar(v), Number(process.env.VELOCIDAD || 500) / LENTO);
     await esperar(Number(process.env.DURA || 3) * 1000 * LENTO);
