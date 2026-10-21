@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Racha · un sistema (v2)</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Barlow"; font-weight: 300; src: url("assets/fuentes/barlow-300.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlowc-700.woff2") format("woff2"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #0A0A0B; }
+      #main { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      #fondo { position: absolute; inset: 0; background: #0A0A0B; }
+      #mundo { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 900px; }
+      .capa { position: absolute; inset: 0; }
+      #golpe, #lente { transform-origin: 540px 900px; }
+      .grande { position: absolute; left: 0; right: 0; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; line-height: 1; color: #F5F5F2; opacity: 0; }
+      #meta { top: 560px; font-size: 330px; color: #FFB547; }
+      #barra { position: absolute; left: 160px; top: 980px; width: 760px; height: 46px; border-radius: 23px; background: #23262B; overflow: hidden; opacity: 0; }
+      #barf { width: 100%; height: 100%; background: #FFB547; transform-origin: 0 50%; border-radius: 23px; }
+      .cont { position: absolute; left: 0; right: 0; opacity: 0; }
+      .cont span { position: absolute; left: 0; right: 0; text-align: center; opacity: 0; }
+      .dias { top: 1080px; height: 90px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 72px; color: #F5F5F2; }
+      #ban { position: absolute; left: 430px; top: 230px; width: 220px; height: 220px; color: #5B6068; opacity: 0; }
+      #ban svg, .tl svg, #escudo svg, #racll svg, #duda svg, #obj svg, #avic svg { width: 100%; height: 100%; }
+      #banaro { position: absolute; left: 400px; top: 200px; width: 280px; height: 280px; border-radius: 50%; border: 6px solid #FFB547; opacity: 0; }
+      #camino, #red { position: absolute; inset: 0; opacity: 0; }
+      #escalera { position: absolute; inset: 0; }
+      .esc { position: absolute; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 24px; border: 6px solid #3A3F47; background: #15171A; opacity: 0; }
+      #rejilla, #packs { position: absolute; inset: 0; transform-origin: 540px 860px; transform-style: preserve-3d; perspective: 1400px; }
+      .tile { position: absolute; width: 200px; height: 240px; opacity: 0; text-align: center; }
+      .tile .tl { width: 200px; height: 200px; border-radius: 52px; background: #E4E4DF; color: #141518; padding: 50px; box-shadow: 0 18px 40px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.8); }
+      .tile p { margin-top: 14px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 34px; color: #4A4D53; }
+      .tile.centro { width: 200px; height: 200px; }
+      .tile.centro .tl { background: #FFB547; color: #141518; }
+      .tile.osc .tl { background: #1B1D21; color: #F5F5F2; box-shadow: 0 18px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08); }
+      .tile.osc p { color: #A8AFB8; }
+      #gic { position: absolute; left: 0; top: 0; width: 200px; height: 200px; border-radius: 52px; opacity: 0; }
+      #siste { position: absolute; left: 0; right: 0; top: 1480px; text-align: center; font-family: "Barlow", sans-serif; font-size: 96px; color: #141518; opacity: 0; }
+      #siste span, .fino { font-weight: 300; } #siste b { font-weight: 600; }
+      #nomr { position: absolute; left: 0; right: 0; top: 1460px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 130px; color: #141518; opacity: 0; }
+      #lhab { position: absolute; left: 130px; top: 680px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 40px; color: #7D858F; opacity: 0; }
+      .fila { position: absolute; left: 130px; display: flex; align-items: center; gap: 28px; height: 90px; opacity: 0; font-family: "Barlow", sans-serif; font-size: 58px; color: #F5F5F2; }
+      .fila b { font-weight: 300; }
+      .fila.fant { color: #6B7079; }
+      .circ { width: 62px; height: 62px; border-radius: 50%; border: 5px solid #5B6068; color: transparent; display: grid; place-items: center; flex: none; }
+      .circ svg { width: 38px; height: 38px; }
+      .fic { width: 62px; height: 62px; color: #A8AFB8; flex: none; }
+      #tres { right: 150px; left: auto; top: 380px; font-size: 360px; color: #FFB547; }
+      #ancla { position: absolute; inset: 0; transform-origin: 540px 900px; }
+      .bloque { position: absolute; top: 700px; width: 280px; height: 280px; border-radius: 70px; padding: 70px; opacity: 0; }
+      .bloque svg { width: 100%; height: 100%; }
+      #tA { left: 110px; background: #1B1D21; color: #F5F5F2; }
+      #tB { left: 690px; background: #FFB547; color: #141518; }
+      #cadena { position: absolute; inset: 0; opacity: 0; }
+      #nudo { position: absolute; left: 480px; top: 780px; width: 120px; height: 120px; border-radius: 50%; background: #0A0A0B; border: 6px solid #FFB547; color: #FFB547; padding: 24px; opacity: 0; }
+      #nudo svg { width: 100%; height: 100%; }
+      #frec { position: absolute; left: 70px; top: 1040px; width: 360px; display: flex; justify-content: center; gap: 14px; }
+      #frec i { width: 36px; height: 36px; border-radius: 10px; background: #2A2D32; display: block; }
+      .lab { position: absolute; top: 1040px; width: 520px; text-align: center; font-family: "Barlow", sans-serif; font-size: 56px; line-height: 1.15; opacity: 0; }
+      #txA { left: -10px; color: #F5F5F2; } #txA b, #txB b { font-weight: 600; } #txA span, #txB span { font-weight: 300; }
+      #txB { left: 570px; color: #FFB547; }
+      #anillo { position: absolute; left: 190px; top: 560px; width: 700px; height: 700px; opacity: 0; }
+      #anillo svg { position: absolute; inset: 0; }
+      #anillo .num { position: absolute; left: 0; right: 0; top: 220px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 220px; line-height: 1; color: #141518; }
+      #anillo .min { position: absolute; left: 0; right: 0; top: 440px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 300; font-size: 60px; color: #4A4D53; }
+      #flechita { position: absolute; inset: 0; opacity: 0; }
+      #mini { position: absolute; left: 290px; top: 760px; width: 500px; height: 170px; border-radius: 46px; background: #141518; color: #F5F5F2; display: flex; align-items: center; justify-content: center; gap: 26px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 60px; opacity: 0; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
+      #mini svg { width: 74px; height: 74px; color: #FFB547; }
+      #casilla { position: absolute; left: 430px; top: 1060px; width: 220px; height: 220px; border-radius: 56px; border: 12px solid #141518; opacity: 0; }
+      #casilla svg { width: 100%; height: 100%; }
+      #cuenta { top: 1340px; font-size: 170px; color: #141518; }
+      #tira { position: absolute; left: 0; right: 0; top: 820px; display: flex; justify-content: center; gap: 14px; opacity: 0; }
+      .dia { position: relative; width: 110px; height: 170px; border-radius: 26px; border: 5px solid #3A3F47; background: #15171A; color: #F5F5F2; display: flex; flex-direction: column; align-items: center; padding-top: 22px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 42px; }
+      .dia .ok, .dia .x, .dia .sh { position: absolute; left: 23px; top: 78px; width: 64px; height: 64px; opacity: 0; color: #0A0A0B; }
+      .dia .x { color: #E5534B; }
+      .dia svg { width: 100%; height: 100%; }
+      #escudo { position: absolute; left: 708px; top: 840px; width: 130px; height: 130px; color: #8E9BFF; opacity: 0; }
+      #rac { position: absolute; left: 0; right: 0; top: 420px; display: flex; justify-content: center; align-items: center; gap: 30px; opacity: 0; }
+      #racll { width: 230px; height: 230px; color: #FFB547; }
+      #racn { position: relative; width: 300px; height: 250px; overflow: hidden; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 250px; line-height: 250px; color: #F5F5F2; }
+      #racn span { position: absolute; left: 0; top: 0; opacity: 0; }
+      #segu { top: 720px; font-family: "Barlow", sans-serif; font-weight: 300; font-size: 70px; }
+      #heat { position: absolute; left: 198px; top: 610px; width: 700px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; opacity: 0; }
+      #heat i { display: block; width: 84px; height: 84px; border-radius: 20px; }
+      #heat .am { background: #FFB547; } #heat .vio { background: #8E9BFF; } #heat .vac { background: #23262B; }
+      #tareasg { position: absolute; inset: 0; }
+      #tarjeta { position: absolute; left: 100px; top: 480px; width: 880px; height: 200px; border-radius: 44px; background: #FFFFFF; box-shadow: 0 24px 60px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 34px; padding: 0 46px; opacity: 0; font-family: "Barlow", sans-serif; }
+      #tarjeta .tic { width: 110px; height: 110px; border-radius: 30px; background: #141518; color: #FFB547; padding: 24px; flex: none; }
+      #tarjeta .tic svg { width: 100%; height: 100%; }
+      #tarjeta b { display: block; font-weight: 600; font-size: 54px; color: #141518; }
+      #tbar { margin-top: 18px; width: 560px; height: 16px; border-radius: 8px; background: #E4E4DF; overflow: hidden; }
+      #tbarf { width: 100%; height: 100%; background: #FFB547; transform-origin: 0 50%; }
+      #hilo { position: absolute; left: 196px; top: 690px; width: 6px; height: 640px; background: #CFCFCA; transform-origin: 50% 0; }
+      .paso { position: absolute; left: 165px; display: flex; align-items: center; gap: 30px; font-family: "Barlow", sans-serif; font-weight: 300; font-size: 54px; color: #141518; opacity: 0; }
+      .paso .circ { border-color: #9A9C97; background: #F2F2EE; }
+      #obj { position: absolute; left: 150px; top: 1290px; width: 100px; height: 100px; color: #FFB547; opacity: 0; }
+      #objaro { position: absolute; left: 130px; top: 1270px; width: 140px; height: 140px; border-radius: 50%; border: 6px solid #FFB547; opacity: 0; }
+      #objtx { position: absolute; left: 290px; top: 1310px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 54px; color: #141518; }
+      #duda { position: absolute; left: 400px; top: 820px; width: 280px; height: 280px; color: #6B7079; opacity: 0; }
+      .grande30 { top: 760px; height: 330px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 330px; line-height: 330px; color: #FFB547; }
+      #dias30 { top: 1110px; font-family: "Barlow", sans-serif; font-weight: 300; font-size: 90px; }
+      #armado { position: absolute; left: 760px; top: 760px; width: 120px; height: 120px; border-radius: 50%; background: #FFB547; color: #0A0A0B; padding: 26px; opacity: 0; }
+      #armado svg { width: 100%; height: 100%; }
+      #semana { position: absolute; inset: 0; opacity: 0; }
+      .colw { position: absolute; top: 700px; width: 112px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 44px; color: #4A4D53; }
+      .col { margin-top: 18px; width: 112px; height: 520px; border-radius: 30px; background: #E4E4DF; transform-origin: 50% 0; }
+      .chip { position: absolute; width: 92px; height: 92px; border-radius: 24px; background: #141518; opacity: 0; }
+      .chip::after { content: ""; position: absolute; left: 22px; right: 22px; top: 40px; height: 12px; border-radius: 6px; background: #5B6068; }
+      #cita { position: absolute; left: 338px; top: 1150px; width: 236px; height: 92px; border-radius: 24px; background: #FFB547; color: #141518; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 40px; opacity: 0; box-shadow: 0 14px 30px rgba(0,0,0,0.18); }
+      #cita svg { width: 40px; height: 40px; }
+      #foco { position: absolute; left: 140px; top: 560px; width: 800px; height: 800px; opacity: 0; }
+      #foco svg { position: absolute; inset: 0; }
+      .reloj { top: 300px; height: 200px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 200px; line-height: 200px; color: #F5F5F2; }
+      #aviso { position: absolute; left: 50px; right: 50px; top: 760px; padding: 40px 44px; border-radius: 50px; background: rgba(44, 47, 52, 0.97); box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; gap: 34px; align-items: center; opacity: 0; font-family: "Barlow", sans-serif; }
+      #avic { width: 120px; height: 120px; border-radius: 30px; background: #FFB547; color: #0A0A0B; padding: 26px; flex: none; transform-origin: 50% 10%; }
+      #aviso .ap { font-size: 34px; color: #A8AFB8; font-weight: 300; }
+      #aviso .ti { font-size: 48px; color: #F5F5F2; font-weight: 600; margin-top: 4px; }
+      #radar { position: absolute; inset: 0; opacity: 0; transform-origin: 540px 1000px; }
+      .vert { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 6px solid #FFB547; opacity: 0; }
+      .rlab { position: absolute; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 48px; color: #F5F5F2; }
+      .n91 { top: 380px; height: 220px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 220px; line-height: 220px; color: #F5F5F2; }
+      #cel { position: absolute; left: 330px; top: 520px; width: 420px; height: 880px; border-radius: 64px; border: 14px solid #141518; overflow: hidden; background: #0F1113; opacity: 0; box-shadow: 0 30px 70px rgba(0,0,0,0.3); z-index: 3; }
+      #cel img { width: 100%; display: block; }
+      #lap { position: absolute; left: 150px; top: 520px; width: 880px; opacity: 0; z-index: 2; }
+      #lap .pant { width: 880px; height: 556px; border-radius: 26px 26px 0 0; border: 16px solid #141518; border-bottom-width: 22px; overflow: hidden; background: #0F1113; }
+      #lap .pant img { width: 100%; display: block; }
+      #lap .base { width: 1000px; height: 30px; margin-left: -60px; border-radius: 0 0 30px 30px; background: #2A2D32; }
+      #pago { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; opacity: 0; z-index: 5; }
+      #pago span { display: inline-block; padding: 22px 50px 28px; border-radius: 999px; background: #FFB547; color: #0A0A0B; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 66px; box-shadow: 0 16px 50px rgba(0,0,0,0.25); }
+      #fin { position: absolute; left: 410px; top: 420px; width: 260px; height: 260px; border-radius: 62px; opacity: 0; }
+      .anillo { position: absolute; border: 6px solid #FFB547; opacity: 0; }
+      .chica { position: absolute; left: 0; right: 0; text-align: center; font-family: "Barlow", sans-serif; font-weight: 300; font-size: 64px; color: #F5F5F2; opacity: 0; }
+      #esc { top: 712px; } #ytela { top: 1090px; }
+      #marca { position: absolute; left: 0; right: 0; top: 824px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 250px; line-height: 1; color: #FFB547; opacity: 0; }
+      #pastilla { position: absolute; left: 0; right: 0; top: 1190px; display: flex; justify-content: center; opacity: 0; }
+      #pastilla span { font-family: "Barlow", sans-serif; font-weight: 600; font-size: 34px; color: #F5F5F2; background: #15171A; border: 3px solid #FFB547; border-radius: 999px; padding: 14px 30px 18px; white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div id="main" data-composition-id="main" data-start="0" data-duration="59.2" data-width="1080" data-height="1920">
+      <div id="fondo"></div>
+      <div id="mundo"><div id="lente" class="capa"><div id="golpe" class="capa">
+        <p class="grande" id="meta">META</p>
+        <div id="barra"><div id="barf"></div></div>
+        <div class="cont dias" id="dias"><span id="dias_0">día 1</span><span id="dias_1">día 2</span><span id="dias_2">día 3</span><span id="dias_3">día 4</span><span id="dias_4">día 5</span><span id="dias_5">día 6</span><span id="dias_6">día 7</span><span id="dias_7">día 8</span><span id="dias_8">día 9</span><span id="dias_9">día 10</span><span id="dias_10">día 11</span><span id="dias_11">día 12</span><span id="dias_12">día 13</span><span id="dias_13">día 14</span></div>
+        <svg id="camino" viewBox="0 0 1080 1920"><path id="caminop" d="M540 1500 C 380 1380, 700 1230, 520 1100 S 380 820, 560 700 S 560 520, 540 470" fill="none" stroke="#3A3F47" stroke-width="10" stroke-linecap="round" stroke-dasharray="1400"/></svg>
+        <div id="escalera"><div class="esc" id="e0" style="left:420px;top:1390px"></div><div class="esc" id="e1" style="left:560px;top:1250px"></div><div class="esc" id="e2" style="left:430px;top:1110px"></div><div class="esc" id="e3" style="left:570px;top:970px"></div><div class="esc" id="e4" style="left:440px;top:830px"></div><div class="esc" id="e5" style="left:580px;top:690px"></div><div class="esc" id="e6" style="left:460px;top:550px"></div></div>
+        <div id="banaro"></div>
+        <div id="ban"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/></svg></div>
+        <div id="rejilla">
+          <svg id="red" viewBox="0 0 1080 1920"><line id="l0" x1="540" y1="500" x2="794.558441" y2="605.441559" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l1" x1="540" y1="860" x2="540" y2="500" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l2" x1="794.558441" y1="605.441559" x2="900" y2="860" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l3" x1="540" y1="860" x2="794.558441" y2="605.441559" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l4" x1="900" y1="860" x2="794.558441" y2="1114.558441" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l5" x1="540" y1="860" x2="900" y2="860" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l6" x1="794.558441" y1="1114.558441" x2="540" y2="1220" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l7" x1="540" y1="860" x2="794.558441" y2="1114.558441" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l8" x1="540" y1="1220" x2="285.441559" y2="1114.558441" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l9" x1="540" y1="860" x2="540" y2="1220" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l10" x1="285.441559" y1="1114.558441" x2="180" y2="860" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l11" x1="540" y1="860" x2="285.441559" y2="1114.558441" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l12" x1="180" y1="860" x2="285.441559" y2="605.441559" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l13" x1="540" y1="860" x2="180" y2="860" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/><line id="l14" x1="285.441559" y1="605.441559" x2="540" y2="500" stroke="#141518" stroke-width="4" stroke-dasharray="275.532071" stroke-dashoffset="275.532071"/><line id="l15" x1="540" y1="860" x2="285.441559" y2="605.441559" stroke="#141518" stroke-width="4" stroke-dasharray="360" stroke-dashoffset="360"/></svg>
+          <div class="tile" id="g0" style="left:150px;top:460px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div><p>Hábitos</p></div>
+          <div class="tile" id="g1" style="left:440px;top:460px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></div><p>Tareas</p></div>
+          <div class="tile" id="g2" style="left:730px;top:460px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div><p>Semana</p></div>
+          <div class="tile" id="g3" style="left:150px;top:760px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></div><p>Foco</p></div>
+          <div class="tile" id="g4" style="left:730px;top:760px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div><p>Comodines</p></div>
+          <div class="tile" id="g5" style="left:150px;top:1060px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></div><p>Avisos</p></div>
+          <div class="tile" id="g6" style="left:440px;top:1060px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><p>Progreso</p></div>
+          <div class="tile" id="g7" style="left:730px;top:1060px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg></div><p>Biblioteca</p></div>
+          <div class="tile centro" id="gc" style="left:440px;top:760px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/></svg></div><img id="gic" src="assets/icono.svg" /></div>
+        </div>
+        <p id="siste"><span>un</span> <b>sistema</b></p>
+        <p id="nomr">Racha</p>
+        <p id="lhab">Hábitos</p>
+        <div class="fila " id="f0" style="top:760px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="fic"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg><b>Tender la cama</b></div>
+        <div class="fila " id="f1" style="top:880px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="fic"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg><b>Estudiar 25 minutos</b></div>
+        <div class="fila " id="f2" style="top:1000px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="fic"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg><b>Anotar cada gasto</b></div>
+        <div class="fila fant" id="f3" style="top:1120px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="fic"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><b>Meditar 20 minutos</b></div>
+        <div class="fila fant" id="f4" style="top:1240px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="fic"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><b>Correr 5 km</b></div>
+        <p class="grande" id="tres">3</p>
+        <div id="ancla">
+          <svg id="cadena" viewBox="0 0 1080 1920"><path id="cadenap" d="M390 840 L 690 840" fill="none" stroke="#5B6068" stroke-width="10" stroke-linecap="round" stroke-dasharray="300"/></svg>
+          <div class="bloque" id="tA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></div>
+          <div class="bloque" id="tB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></div>
+          <div id="nudo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <div id="frec"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p class="lab" id="txA"><span>Después de</span><br/><b>almorzar</b></p>
+          <p class="lab" id="txB"><span>estudias</span><br/><b>25 minutos</b></p>
+        </div>
+        <div id="anillo"><svg viewBox="0 0 700 700"><circle cx="350" cy="350" r="260" fill="none" stroke="#E4E4DF" stroke-width="34"/><circle id="arco" cx="350" cy="350" r="260" fill="none" stroke="#141518" stroke-width="34" stroke-linecap="round" stroke-dasharray="1633" transform="rotate(-90 350 350)"/></svg><p class="num">25</p><p class="min">minutos</p></div>
+        <svg id="flechita" viewBox="0 0 1080 1920"><path id="flechitap" d="M540 700 L 540 752 M 510 722 L 540 752 L 570 722" fill="none" stroke="#141518" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="200"/></svg>
+        <div id="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>un párrafo</div>
+        <div id="casilla"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path id="casp" d="M20 6 9 17l-5-5" stroke-dasharray="30" stroke-dashoffset="30"/></svg></div>
+        <p class="grande" id="cuenta">cuenta</p>
+        <div id="tira"><div class="dia" id="t0"><b>L</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="dia" id="t1"><b>M</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="dia" id="t2"><b>M</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="dia" id="t3"><b>J</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="dia" id="t4"><b>V</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span></div><div class="dia" id="t5"><b>S</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span><span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span><span class="sh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span></div><div class="dia" id="t6"><b>D</b><i></i><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span></div></div>
+        <div id="escudo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div id="rac"><div id="racll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div><div id="racn"><span id="n18">18</span><span id="n19">19</span></div></div>
+        <p class="grande" id="segu">días seguidos</p>
+        <div id="heat"><i class="am"></i><i class="am"></i><i class="am"></i><i class="vio"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="vac"></i><i class="am"></i><i class="am"></i><i class="vio"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="vio"></i><i class="am"></i><i class="am"></i><i class="vac"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="vio"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i><i class="am"></i></div>
+        <div id="tareasg">
+          <div id="hilo"></div>
+          <div id="tarjeta"><div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></div><div><b>Preparar un examen</b><div id="tbar"><div id="tbarf"></div></div></div></div>
+          <div class="paso" id="p0" style="top:730px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span>Saber qué entra</div>
+          <div class="paso" id="p1" style="top:870px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span>Repasar por temas</div>
+          <div class="paso" id="p2" style="top:1010px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span>Practicar</div>
+          <div class="paso" id="p3" style="top:1150px"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></span>El día antes</div>
+          <div id="objaro"></div>
+          <div id="obj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/></svg></div>
+        </div>
+        <div id="duda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>
+        <div id="packs"><div class="tile osc" id="b0" style="left:150px;top:500px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg></div><p>Mañana</p></div>
+          <div class="tile osc" id="b1" style="left:440px;top:500px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></div><p>Estudio</p></div>
+          <div class="tile osc" id="b2" style="left:730px;top:500px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></div><p>Celular</p></div>
+          <div class="tile osc" id="b3" style="left:150px;top:800px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div><p>Leer más</p></div>
+          <div class="tile osc" id="b4" style="left:440px;top:800px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></div><p>Tu plata</p></div>
+          <div class="tile osc" id="b5" style="left:730px;top:800px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><p>Casa</p></div>
+          <div class="tile osc" id="b6" style="left:150px;top:1100px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></div><p>Dormir</p></div>
+          <div class="tile osc" id="b7" style="left:440px;top:1100px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></div><p>Trámites</p></div>
+          <div class="tile osc" id="b8" style="left:730px;top:1100px"><div class="tl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><p>Examen</p></div></div>
+        <div class="cont grande30" id="n30"><span id="n30_0">1</span><span id="n30_1">2</span><span id="n30_2">3</span><span id="n30_3">4</span><span id="n30_4">5</span><span id="n30_5">6</span><span id="n30_6">7</span><span id="n30_7">8</span><span id="n30_8">9</span><span id="n30_9">10</span><span id="n30_10">11</span><span id="n30_11">12</span><span id="n30_12">13</span><span id="n30_13">14</span><span id="n30_14">15</span><span id="n30_15">16</span><span id="n30_16">17</span><span id="n30_17">18</span><span id="n30_18">19</span><span id="n30_19">20</span><span id="n30_20">21</span><span id="n30_21">22</span><span id="n30_22">23</span><span id="n30_23">24</span><span id="n30_24">25</span><span id="n30_25">26</span><span id="n30_26">27</span><span id="n30_27">28</span><span id="n30_28">29</span><span id="n30_29">30</span></div>
+        <p class="grande" id="dias30">días</p>
+        <div id="armado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" ><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div id="semana"><div class="colw" style="left:96px"><b>L</b><div class="col"></div></div><div class="colw" style="left:224px"><b>M</b><div class="col"></div></div><div class="colw" style="left:352px"><b>M</b><div class="col"></div></div><div class="colw" style="left:480px"><b>J</b><div class="col"></div></div><div class="colw" style="left:608px"><b>V</b><div class="col"></div></div><div class="colw" style="left:736px"><b>S</b><div class="col"></div></div><div class="colw" style="left:864px"><b>D</b><div class="col"></div></div><div class="chip" id="c0" style="left:106px;top:830px"></div><div class="chip" id="c1" style="left:234px;top:950px"></div><div class="chip" id="c2" style="left:362px;top:830px"></div><div class="chip" id="c3" style="left:362px;top:1070px"></div><div class="chip" id="c4" style="left:490px;top:950px"></div><div class="chip" id="c5" style="left:618px;top:830px"></div><div class="chip" id="c6" style="left:746px;top:950px"></div><div id="cita"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" ><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>5:30</div></div>
+        <div id="foco"><svg viewBox="0 0 800 800"><circle cx="400" cy="400" r="320" fill="none" stroke="#23262B" stroke-width="44"/><circle id="farco" cx="400" cy="400" r="320" fill="none" stroke="#FFB547" stroke-width="44" stroke-linecap="round" stroke-dasharray="2011" transform="rotate(-90 400 400)"/></svg><div class="cont reloj" id="reloj"><span id="reloj_0">25:00</span><span id="reloj_1">24:53</span><span id="reloj_2">24:46</span><span id="reloj_3">24:39</span><span id="reloj_4">24:32</span><span id="reloj_5">24:25</span><span id="reloj_6">24:18</span><span id="reloj_7">24:11</span><span id="reloj_8">24:04</span><span id="reloj_9">23:57</span><span id="reloj_10">23:50</span><span id="reloj_11">23:43</span><span id="reloj_12">23:36</span><span id="reloj_13">23:29</span><span id="reloj_14">23:22</span><span id="reloj_15">23:15</span><span id="reloj_16">23:08</span><span id="reloj_17">23:01</span><span id="reloj_18">22:54</span><span id="reloj_19">22:47</span><span id="reloj_20">22:40</span><span id="reloj_21">22:33</span><span id="reloj_22">22:26</span><span id="reloj_23">22:19</span><span id="reloj_24">22:12</span><span id="reloj_25">22:05</span><span id="reloj_26">21:58</span><span id="reloj_27">21:51</span><span id="reloj_28">21:44</span><span id="reloj_29">21:37</span><span id="reloj_30">21:30</span><span id="reloj_31">21:23</span><span id="reloj_32">21:16</span><span id="reloj_33">21:09</span><span id="reloj_34">21:02</span><span id="reloj_35">20:55</span></div></div>
+        <div id="aviso"><div id="avic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></div><div><p class="ap">Racha · ahora</p><p class="ti">Después de almorzar: Estudiar 25 minutos</p></div></div>
+        <div id="radar">
+          <svg viewBox="0 0 1080 1920" style="position:absolute;inset:0">
+            <polygon points="540,700 280,1150 800,1150" fill="none" stroke="#2E3136" stroke-width="4"/><polygon points="540,802 368.4,1099 711.6,1099" fill="none" stroke="#2E3136" stroke-width="4"/><polygon points="540,901 454.2,1049.5 625.8,1049.5" fill="none" stroke="#2E3136" stroke-width="4"/>
+            <line x1="540" y1="1000" x2="540" y2="700" stroke="#2E3136" stroke-width="4"/><line x1="540" y1="1000" x2="280" y2="1150" stroke="#2E3136" stroke-width="4"/><line x1="540" y1="1000" x2="800" y2="1150" stroke="#2E3136" stroke-width="4"/>
+            <polygon id="poli" points="540,735 395,1083 745,1118" fill="rgba(255,181,71,0.22)" stroke="#FFB547" stroke-width="8" stroke-linejoin="round"/>
+          </svg>
+          <div class="vert" id="vtop" style="left:540px;top:735px"></div>
+          <div class="vert" id="vizq" style="left:395px;top:1083px;border-color:#E5534B"></div>
+          <p class="rlab" id="lCama" style="left:470px;top:630px">Cama</p>
+          <p class="rlab" id="lGasto" style="left:180px;top:1190px">Gasto</p>
+          <p class="rlab" style="left:720px;top:1190px">Estudiar</p>
+        </div>
+        <div class="cont n91" id="n91"><span id="n91_0">70</span><span id="n91_1">71</span><span id="n91_2">72</span><span id="n91_3">73</span><span id="n91_4">74</span><span id="n91_5">75</span><span id="n91_6">76</span><span id="n91_7">77</span><span id="n91_8">78</span><span id="n91_9">79</span><span id="n91_10">80</span><span id="n91_11">81</span><span id="n91_12">82</span><span id="n91_13">83</span><span id="n91_14">84</span><span id="n91_15">85</span><span id="n91_16">86</span><span id="n91_17">87</span><span id="n91_18">88</span><span id="n91_19">89</span><span id="n91_20">90</span><span id="n91_21">91</span></div>
+        <div id="lap"><div class="pant"><img src="assets/app/esc.jpg" /></div><div class="base"></div></div>
+        <div id="cel"><img src="assets/app/cel.jpg" /></div>
+        <div id="pago"><span>$37.900 · un solo pago</span></div>
+        <div class="anillo" id="anillo2" style="left:410px;top:420px;width:260px;height:260px;border-radius:62px"></div>
+        <img id="fin" src="assets/icono.svg" />
+        <p class="chica" id="esc">escribe</p>
+        <p id="marca">RACHA</p>
+        <p class="chica" id="ytela">y te la muestro</p>
+        <div id="pastilla"><span>Racha · app · $37.900, un solo pago · 7 días para probarla</span></div>
+      </div></div></div>
+      <audio id="voz" src="assets/voz.wav" data-start="0" data-duration="57.71" data-media-start="0" data-track-index="7" data-volume="1"></audio>
+      <audio id="efectos" src="assets/efectos.wav" data-start="0" data-duration="59.2" data-media-start="0" data-track-index="9" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#barf", { scaleX: 0 }, 0);
+      tl.set("#tbarf", { scaleX: 0.05 }, 0);
+      tl.set("#hilo", { scaleY: 0 }, 0);
+      tl.set("#frec", { opacity: 0 }, 0);
+      tl.set("#poli", { svgOrigin: "540 1000" }, 0);
+      tl.fromTo("#meta", { opacity: 0, scale: 1.6, filter: "blur(18px)" }, { opacity: 1, scale: 1.12, filter: "blur(0px)", duration: 0.4, ease: "expo.out", immediateRender: false }, 0);
+      tl.to("#meta", { scale: 1, duration: 0.7499999999999999, ease: "none" }, 0.4);
+      tl.fromTo("#barra", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.45, ease: "expo.out", immediateRender: false }, 0.18);
+      tl.to("#barf", { scaleX: 0.55, duration: 0.35, ease: "expo.out" }, 1.11);
+      tl.fromTo("#meta", { scale: 1 }, { keyframes: { scale: [1, 1.12, 0.964, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 1.11);
+      tl.to("#barf", { scaleX: 0.92, duration: 0.3, ease: "expo.out" }, 2.3);
+      tl.to("#meta", { scale: 1.16, textShadow: "0 0 60px rgba(255,181,71,0.75)", duration: 0.3, ease: "back.out(2)" }, 2.3);
+      tl.set("#dias_0", { opacity: 1 }, 2.87);
+      tl.set("#dias_1", { opacity: 1 }, 2.925);
+      tl.set("#dias_0", { opacity: 0 }, 2.925);
+      tl.set("#dias_2", { opacity: 1 }, 2.98);
+      tl.set("#dias_1", { opacity: 0 }, 2.98);
+      tl.set("#dias_3", { opacity: 1 }, 3.035);
+      tl.set("#dias_2", { opacity: 0 }, 3.035);
+      tl.set("#dias_4", { opacity: 1 }, 3.09);
+      tl.set("#dias_3", { opacity: 0 }, 3.09);
+      tl.set("#dias_5", { opacity: 1 }, 3.145);
+      tl.set("#dias_4", { opacity: 0 }, 3.145);
+      tl.set("#dias_6", { opacity: 1 }, 3.2);
+      tl.set("#dias_5", { opacity: 0 }, 3.2);
+      tl.set("#dias_7", { opacity: 1 }, 3.255);
+      tl.set("#dias_6", { opacity: 0 }, 3.255);
+      tl.set("#dias_8", { opacity: 1 }, 3.31);
+      tl.set("#dias_7", { opacity: 0 }, 3.31);
+      tl.set("#dias_9", { opacity: 1 }, 3.365);
+      tl.set("#dias_8", { opacity: 0 }, 3.365);
+      tl.set("#dias_10", { opacity: 1 }, 3.42);
+      tl.set("#dias_9", { opacity: 0 }, 3.42);
+      tl.set("#dias_11", { opacity: 1 }, 3.475);
+      tl.set("#dias_10", { opacity: 0 }, 3.475);
+      tl.set("#dias_12", { opacity: 1 }, 3.53);
+      tl.set("#dias_11", { opacity: 0 }, 3.53);
+      tl.set("#dias_13", { opacity: 1 }, 3.585);
+      tl.set("#dias_12", { opacity: 0 }, 3.585);
+      tl.fromTo("#dias", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.2, ease: "expo.out", immediateRender: false }, 2.85);
+      tl.to("#barf", { scaleX: 0.12, backgroundColor: "#8A8F97", duration: 0.78, ease: "power2.in" }, 2.92);
+      tl.to("#meta", { scale: 1, color: "#8A8F97", textShadow: "0 0 0px rgba(255,181,71,0)", duration: 0.7, ease: "power2.out" }, 2.97);
+      tl.to("#meta", { y: 150, rotation: 7, color: "#5B6068", duration: 0.35, ease: "back.in(1.4)" }, 3.86);
+      tl.to("#barf", { scaleX: 0, duration: 0.25, ease: "power2.in" }, 3.86);
+      tl.fromTo(["#barra","#dias"], { x: 0 }, { keyframes: { x: [0, -22, 17.6, -11, 5.5, 0] }, duration: 0.4, ease: "none", immediateRender: false }, 3.96);
+      tl.to("#meta", { y: -470, scale: 0.3, opacity: 0, filter: "blur(6px)", duration: 0.38, ease: "power3.inOut" }, 4.55);
+      tl.to(["#barra","#dias"], { y: 420, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power3.in" }, 4.55);
+      tl.fromTo("#ban", { opacity: 0, scale: 0.2, y: 120 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, 4.73);
+      tl.set("#camino", { opacity: 1 }, 5.07);
+      tl.fromTo("#caminop", { strokeDashoffset: 1400 }, { strokeDashoffset: 0, duration: 1.09, ease: "power1.inOut", immediateRender: false }, 5.07);
+      tl.to("#ban", { y: -12, rotation: -4, duration: 0.7600000000000005, ease: "sine.inOut" }, 5.19);
+      tl.to("#ban", { color: "#FFB547", rotation: 0, y: 0, duration: 0.2, ease: "power2.out" }, 6.09);
+      tl.fromTo("#ban", { scale: 1 }, { keyframes: { scale: [1, 1.18, 0.946, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 6.09);
+      tl.fromTo("#banaro", { opacity: 0.9, scale: 1 }, { opacity: 0, scale: 2.4, duration: 0.7, ease: "power2.out", immediateRender: false }, 6.09);
+      tl.fromTo("#e0", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 6.71);
+      tl.fromTo("#e1", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 6.81);
+      tl.fromTo("#e2", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 6.91);
+      tl.fromTo("#e3", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 7.01);
+      tl.fromTo("#e4", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 7.11);
+      tl.fromTo("#e5", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 7.21);
+      tl.fromTo("#e6", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.4)", immediateRender: false }, 7.31);
+      tl.to(".esc", { backgroundColor: "#FFB547", borderColor: "#FFB547", duration: 0.1, stagger: 0.06 }, 7.56);
+      tl.to(["#ban","#camino","#escalera","#banaro"], { scale: 2.2, opacity: 0, filter: "blur(16px)", duration: 0.18, ease: "power3.in" }, 7.97);
+      tl.set("#fondo", { backgroundColor: "#F2F2EE" }, 8.15);
+      tl.fromTo("#g0", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: -40 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.325);
+      tl.fromTo("#g1", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: 0 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.235);
+      tl.fromTo("#g2", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: 40 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.37);
+      tl.fromTo("#g3", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: -40 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.19);
+      tl.fromTo("#g4", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: 40 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.46);
+      tl.fromTo("#g5", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: -40 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.28);
+      tl.fromTo("#g6", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: 0 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.415);
+      tl.fromTo("#g7", { opacity: 0, scale: 2.8, filter: "blur(24px)", transformPerspective: 900, rotationY: 40 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationY: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 8.505);
+      tl.fromTo("#gc", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, 8.27);
+      tl.fromTo("#siste", { opacity: 0, y: 40, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "expo.out", immediateRender: false }, 8.31);
+      tl.fromTo("#rejilla", { transformPerspective: 1400, rotationX: 18, rotationY: -14, scale: 1.08 }, { rotationX: 0, rotationY: 0, scale: 1, duration: 1.2, ease: "expo.out", immediateRender: false }, 8.15);
+      tl.set("#gc .tl", { opacity: 0 }, 9.016);
+      tl.fromTo("#gic", { opacity: 0, scale: 0.4, rotation: -25 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(1.7)", immediateRender: false }, 9.016);
+      tl.fromTo("#gc", { scale: 1 }, { keyframes: { scale: [1, 1.12, 0.964, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 9.016);
+      tl.to("#siste", { opacity: 0, y: -30, duration: 0.15, ease: "power2.out" }, 8.916);
+      tl.fromTo("#nomr", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out", immediateRender: false }, 9.216);
+      tl.to("#g0", { x: 290, y: -60, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.6);
+      tl.to("#g0 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.8);
+      tl.to("#g1", { x: 254.558441, y: 45.441559, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.63);
+      tl.to("#g1 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.83);
+      tl.to("#g2", { x: 70, y: 300, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.66);
+      tl.to("#g2 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.86);
+      tl.to("#g3", { x: 544.558441, y: 254.558441, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.69);
+      tl.to("#g3 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.89);
+      tl.to("#g4", { x: -290, y: 360, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.72);
+      tl.to("#g4 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.92);
+      tl.to("#g5", { x: 35.441559, y: -45.441559, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.75);
+      tl.to("#g5 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.95);
+      tl.to("#g6", { x: -360, y: -300, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.78);
+      tl.to("#g6 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 9.98);
+      tl.to("#g7", { x: -544.558441, y: -554.558441, scale: 0.62, duration: 0.55, ease: "expo.inOut" }, 9.81);
+      tl.to("#g7 .tl", { backgroundColor: "#141518", color: "#F2F2EE", duration: 0.25, ease: "power2.out" }, 10.01);
+      tl.set("#red", { opacity: 1 }, 10.03);
+      tl.to("#l0", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.05);
+      tl.to("#l1", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.085);
+      tl.to("#l2", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.12);
+      tl.to("#l3", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.155);
+      tl.to("#l4", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.19);
+      tl.to("#l5", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.225);
+      tl.to("#l6", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.26);
+      tl.to("#l7", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.295);
+      tl.to("#l8", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.33);
+      tl.to("#l9", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.365);
+      tl.to("#l10", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.4);
+      tl.to("#l11", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.435);
+      tl.to("#l12", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.47);
+      tl.to("#l13", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.505);
+      tl.to("#l14", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.54);
+      tl.to("#l15", { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 10.575);
+      tl.to("#rejilla", { rotation: 12, duration: 1.04, ease: "sine.inOut" }, 10.13);
+      tl.fromTo("#gc", { scale: 1 }, { keyframes: { scale: [1, 1.1, 0.97, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 10.7);
+      tl.to(["#rejilla","#red","#nomr"], { scale: 0.3, opacity: 0, filter: "blur(14px)", duration: 0.2, ease: "power3.in" }, 10.91);
+      tl.set("#fondo", { backgroundColor: "#0A0A0B" }, 11.11);
+      tl.fromTo("#lhab", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.25, ease: "expo.out", immediateRender: false }, 11.13);
+      tl.fromTo("#f0", { opacity: 0, x: -80, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out", immediateRender: false }, 11.64);
+      tl.fromTo("#f1", { opacity: 0, x: -80, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out", immediateRender: false }, 11.78);
+      tl.fromTo("#f2", { opacity: 0, x: -80, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out", immediateRender: false }, 11.92);
+      tl.fromTo("#f3", { opacity: 0, x: -80 }, { opacity: 0.45, x: 0, duration: 0.3, ease: "expo.out", immediateRender: false }, 12.26);
+      tl.fromTo("#f4", { opacity: 0, x: -80 }, { opacity: 0.45, x: 0, duration: 0.3, ease: "expo.out", immediateRender: false }, 12.38);
+      tl.to("#f3", { x: 700, opacity: 0, rotation: 6, duration: 0.32, ease: "power3.in" }, 12.8);
+      tl.to("#f4", { x: 700, opacity: 0, rotation: 6, duration: 0.32, ease: "power3.in" }, 12.86);
+      tl.fromTo("#tres", { opacity: 0, scale: 2.4, filter: "blur(16px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, 12.8);
+      tl.to("#f0 .circ", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.12 }, 13.1);
+      tl.to("#f1 .circ", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.12 }, 13.2);
+      tl.to("#f2 .circ", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.12 }, 13.3);
+      tl.to("#tres", { scale: 1.08, rotation: -4, duration: 0.38999999999999985, ease: "sine.inOut" }, 13.15);
+      tl.to(["#f0","#f1","#f2","#lhab","#tres"], { y: -200, opacity: 0, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 13.36);
+      tl.fromTo("#tA", { opacity: 0, scale: 0.3, x: -200 }, { opacity: 1, scale: 1, x: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, 13.6);
+      tl.fromTo("#tB", { opacity: 0, scale: 0.3, x: 200 }, { opacity: 1, scale: 1, x: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, 13.68);
+      tl.set("#cadena", { opacity: 1 }, 13.88);
+      tl.fromTo("#cadenap", { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 13.88);
+      tl.fromTo("#nudo", { opacity: 0, scale: 0, rotation: -90 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.2)", immediateRender: false }, 14.13);
+      tl.set("#frec", { opacity: 1 }, 14.94);
+      tl.fromTo("#frec i", { scale: 0 }, { scale: 1, duration: 0.2, ease: "back.out(2.5)", stagger: 0.05, immediateRender: false }, 14.94);
+      tl.to("#frec i", { backgroundColor: "#F2F2EE", duration: 0.08, stagger: 0.07 }, 15.4);
+      tl.to("#frec", { opacity: 0, y: 30, duration: 0.2, ease: "power2.out" }, 16.41);
+      tl.fromTo("#txA", { opacity: 0, y: 30, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "expo.out", immediateRender: false }, 16.58);
+      tl.fromTo("#tA", { scale: 1 }, { keyframes: { scale: [1, 1.12, 0.964, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 16.96);
+      tl.fromTo("#txB", { opacity: 0, y: 30, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "expo.out", immediateRender: false }, 17.56);
+      tl.fromTo("#tB", { scale: 1 }, { keyframes: { scale: [1, 1.14, 0.958, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 17.98);
+      tl.fromTo("#cadenap", { stroke: "#5B6068" }, { keyframes: { stroke: ["#5B6068", "#FFB547", "#FFB547"] }, duration: 0.5, ease: "none", immediateRender: false }, 17.59);
+      tl.to("#ancla", { scale: 1.05, rotation: -2, duration: 4.9700000000000015, ease: "sine.inOut" }, 14.18);
+      tl.to(["#ancla"], { scale: 0.4, opacity: 0, filter: "blur(12px)", duration: 0.2, ease: "power3.in" }, 19.09);
+      tl.set("#fondo", { backgroundColor: "#F2F2EE" }, 19.29);
+      tl.fromTo("#anillo", { opacity: 0, scale: 0.4, rotation: -90 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 19.31);
+      tl.fromTo("#arco", { strokeDashoffset: 1633 }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, 19.34);
+      tl.fromTo("#anillo", { x: 0 }, { keyframes: { x: [0, -20, 16, -10, 5, 0] }, duration: 0.4, ease: "none", immediateRender: false }, 20.1);
+      tl.to("#arco", { stroke: "#B9BBB5", duration: 0.3, ease: "power2.out" }, 20.52);
+      tl.fromTo("#anillo", { x: 0 }, { keyframes: { x: [0, -14, 11.200000000000001, -7, 3.5, 0] }, duration: 0.4, ease: "none", immediateRender: false }, 20.54);
+      tl.to("#anillo", { scale: 0.42, y: -340, duration: 1.2899999999999991, ease: "expo.inOut" }, 21.13);
+      tl.fromTo("#mini", { opacity: 0, scale: 0.2, y: 80 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, 22.96);
+      tl.set("#flechita", { opacity: 1 }, 22.78);
+      tl.fromTo("#flechitap", { strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 22.78);
+      tl.fromTo("#casilla", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, 23.96);
+      tl.to("#casilla", { backgroundColor: "#FFB547", borderColor: "#FFB547", duration: 0.12, ease: "power2.out" }, 24.19);
+      tl.fromTo("#casp", { strokeDashoffset: 30 }, { strokeDashoffset: 0, duration: 0.28, ease: "power2.out", immediateRender: false }, 24.23);
+      tl.fromTo("#cuenta", { opacity: 0, scale: 1.5, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.3, ease: "back.out(1.8)", immediateRender: false }, 24.5);
+      tl.to(["#anillo","#mini","#flechita","#casilla","#cuenta"], { y: 300, opacity: 0, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 24.82);
+      tl.set("#fondo", { backgroundColor: "#0A0A0B" }, 25.04);
+      tl.fromTo("#tira", { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "expo.out", immediateRender: false }, 25.04);
+      tl.fromTo("#tira .dia", { scale: 0, y: 60 }, { scale: 1, y: 0, duration: 0.3, ease: "back.out(2.2)", stagger: 0.05, immediateRender: false }, 25.06);
+      tl.to("#t0", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.1 }, 25.26);
+      tl.set("#t0 .ok", { opacity: 1 }, 25.26);
+      tl.to("#t1", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.1 }, 25.38);
+      tl.set("#t1 .ok", { opacity: 1 }, 25.38);
+      tl.to("#t2", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.1 }, 25.5);
+      tl.set("#t2 .ok", { opacity: 1 }, 25.5);
+      tl.to("#t3", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.1 }, 25.62);
+      tl.set("#t3 .ok", { opacity: 1 }, 25.62);
+      tl.fromTo("#t4", { borderColor: "#3A3F47" }, { keyframes: { borderColor: ["#3A3F47", "#FFB547", "#3A3F47", "#FFB547"] }, duration: 0.8, ease: "none", immediateRender: false }, 26.08);
+      tl.to("#t4", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.12, ease: "power2.out" }, 27);
+      tl.set("#t4 .ok", { opacity: 1 }, 27);
+      tl.fromTo("#t4", { scale: 1 }, { keyframes: { scale: [1, 1.25, 0.925, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 27);
+      tl.to("#tira", { scale: 1.06, duration: 1.4599999999999973, ease: "sine.inOut" }, 25.54);
+      tl.to("#t5", { borderColor: "#E5534B", duration: 0.12, ease: "power2.out" }, 28.43);
+      tl.set("#t5 .x", { opacity: 1 }, 28.43);
+      tl.fromTo("#t5", { x: 0 }, { keyframes: { x: [0, -14, 11.200000000000001, -7, 3.5, 0] }, duration: 0.4, ease: "none", immediateRender: false }, 28.43);
+      tl.fromTo("#escudo", { opacity: 0, y: -700, scale: 2.4, rotation: -30 }, { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.42, ease: "power3.in", immediateRender: false }, 29.02);
+      tl.set("#t5 .x", { opacity: 0 }, 29.44);
+      tl.to("#t5", { backgroundColor: "#8E9BFF", borderColor: "#8E9BFF", color: "#0A0A0B", duration: 0.1, ease: "power2.out" }, 29.44);
+      tl.set("#escudo", { opacity: 0 }, 29.44);
+      tl.set("#t5 .sh", { opacity: 1 }, 29.44);
+      tl.fromTo("#tira", { scale: 1.06 }, { keyframes: { scale: [1.06, 1.1236, 1.04092, 1.06] }, duration: 0.38, ease: "none", immediateRender: false }, 29.44);
+      tl.to("#tira", { y: 300, scale: 0.92, duration: 0.45, ease: "expo.inOut" }, 30.18);
+      tl.fromTo("#rac", { opacity: 0, scale: 0.3, y: 120 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, 30.23);
+      tl.set("#n18", { opacity: 1 }, 30.18);
+      tl.to("#n18", { y: -200, opacity: 0, filter: "blur(10px)", duration: 0.22, ease: "power2.in" }, 30.64);
+      tl.fromTo("#n19", { y: 200, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "back.out(2)", immediateRender: false }, 30.67);
+      tl.fromTo("#segu", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.25, ease: "expo.out", immediateRender: false }, 31.04);
+      tl.fromTo("#racll", { scale: 1 }, { keyframes: { scale: [1, 1.15, 0.955, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 31.07);
+      tl.to(["#tira","#rac","#segu"], { scale: 0.5, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 31.17);
+      tl.fromTo("#heat", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 31.32);
+      tl.fromTo("#heat i", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.18, ease: "back.out(2)", stagger: { each: 0.012, from: "random" }, immediateRender: false }, 31.32);
+      tl.to(["#heat"], { scale: 2, opacity: 0, filter: "blur(16px)", duration: 0.18, ease: "power3.in" }, 31.84);
+      tl.set("#fondo", { backgroundColor: "#F2F2EE" }, 32.02);
+      tl.fromTo("#tarjeta", { opacity: 0, y: -260, rotation: -6 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)", immediateRender: false }, 32.06);
+      tl.fromTo("#tarjeta", { scale: 1 }, { keyframes: { scale: [1, 1.06, 0.982, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 33.65);
+      tl.fromTo("#p0", { opacity: 0, y: -90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "expo.out", immediateRender: false }, 34.42);
+      tl.fromTo("#p1", { opacity: 0, y: -90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "expo.out", immediateRender: false }, 34.56);
+      tl.fromTo("#p2", { opacity: 0, y: -90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "expo.out", immediateRender: false }, 34.7);
+      tl.fromTo("#p3", { opacity: 0, y: -90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "expo.out", immediateRender: false }, 34.84);
+      tl.fromTo("#hilo", { scaleY: 0 }, { scaleY: 1, duration: 0.7, ease: "power2.out", immediateRender: false }, 34.42);
+      tl.to("#p0 .circ", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.12 }, 35.44);
+      tl.to("#p1 .circ", { backgroundColor: "#FFB547", borderColor: "#FFB547", color: "#0A0A0B", duration: 0.12 }, 35.6);
+      tl.to("#tbarf", { scaleX: 0.5, duration: 0.45, ease: "expo.out" }, 35.44);
+      tl.fromTo("#obj", { opacity: 0, scale: 0.2, y: 60 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(2)", immediateRender: false }, 36.44);
+      tl.fromTo("#objaro", { opacity: 0.9, scale: 1 }, { opacity: 0, scale: 2.3, duration: 0.7, ease: "power2.out", immediateRender: false }, 36.58);
+      tl.to("#tareasg", { y: -40, duration: 4.420000000000002, ease: "sine.inOut" }, 32.52);
+      tl.to(["#tareasg","#obj","#objaro"], { y: -300, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 37.03);
+      tl.set("#fondo", { backgroundColor: "#0A0A0B" }, 37.23);
+      tl.fromTo("#duda", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, 37.27);
+      tl.to("#duda", { keyframes: { rotation: [0, -10, 9, -6, 0] }, duration: 0.9, ease: "none" }, 37.93);
+      tl.to(["#duda"], { scale: 0, opacity: 0, duration: 0.15, ease: "power3.in" }, 38.77);
+      tl.fromTo("#b0", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: 35 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39.08);
+      tl.fromTo("#b1", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: 35 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 38.96);
+      tl.fromTo("#b2", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: 35 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39.16);
+      tl.fromTo("#b3", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: 0 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39);
+      tl.fromTo("#b4", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: 0 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 38.92);
+      tl.fromTo("#b5", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: 0 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39.2);
+      tl.fromTo("#b6", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: -35 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39.04);
+      tl.fromTo("#b7", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: -35 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39.24);
+      tl.fromTo("#b8", { opacity: 0, scale: 3, filter: "blur(26px)", transformPerspective: 900, rotationX: -35 }, { opacity: 1, scale: 1, filter: "blur(0px)", rotationX: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 39.12);
+      tl.set("#packs", { transformPerspective: 1400 }, 0);
+      tl.to("#packs", { rotationY: 14, rotationX: -8, duration: 0.93, ease: "sine.inOut" }, 38.92);
+      tl.to("#packs", { y: -520, scale: 0.55, opacity: 0.25, filter: "blur(4px)", duration: 0.45, ease: "expo.inOut" }, 39.8);
+      tl.set("#n30_0", { opacity: 1 }, 39.95);
+      tl.set("#n30_1", { opacity: 1 }, 39.976);
+      tl.set("#n30_0", { opacity: 0 }, 39.976);
+      tl.set("#n30_2", { opacity: 1 }, 40.002);
+      tl.set("#n30_1", { opacity: 0 }, 40.002);
+      tl.set("#n30_3", { opacity: 1 }, 40.028);
+      tl.set("#n30_2", { opacity: 0 }, 40.028);
+      tl.set("#n30_4", { opacity: 1 }, 40.054);
+      tl.set("#n30_3", { opacity: 0 }, 40.054);
+      tl.set("#n30_5", { opacity: 1 }, 40.08);
+      tl.set("#n30_4", { opacity: 0 }, 40.08);
+      tl.set("#n30_6", { opacity: 1 }, 40.106);
+      tl.set("#n30_5", { opacity: 0 }, 40.106);
+      tl.set("#n30_7", { opacity: 1 }, 40.132);
+      tl.set("#n30_6", { opacity: 0 }, 40.132);
+      tl.set("#n30_8", { opacity: 1 }, 40.158);
+      tl.set("#n30_7", { opacity: 0 }, 40.158);
+      tl.set("#n30_9", { opacity: 1 }, 40.184);
+      tl.set("#n30_8", { opacity: 0 }, 40.184);
+      tl.set("#n30_10", { opacity: 1 }, 40.21);
+      tl.set("#n30_9", { opacity: 0 }, 40.21);
+      tl.set("#n30_11", { opacity: 1 }, 40.236);
+      tl.set("#n30_10", { opacity: 0 }, 40.236);
+      tl.set("#n30_12", { opacity: 1 }, 40.262);
+      tl.set("#n30_11", { opacity: 0 }, 40.262);
+      tl.set("#n30_13", { opacity: 1 }, 40.288);
+      tl.set("#n30_12", { opacity: 0 }, 40.288);
+      tl.set("#n30_14", { opacity: 1 }, 40.314);
+      tl.set("#n30_13", { opacity: 0 }, 40.314);
+      tl.set("#n30_15", { opacity: 1 }, 40.34);
+      tl.set("#n30_14", { opacity: 0 }, 40.34);
+      tl.set("#n30_16", { opacity: 1 }, 40.366);
+      tl.set("#n30_15", { opacity: 0 }, 40.366);
+      tl.set("#n30_17", { opacity: 1 }, 40.392);
+      tl.set("#n30_16", { opacity: 0 }, 40.392);
+      tl.set("#n30_18", { opacity: 1 }, 40.418);
+      tl.set("#n30_17", { opacity: 0 }, 40.418);
+      tl.set("#n30_19", { opacity: 1 }, 40.444);
+      tl.set("#n30_18", { opacity: 0 }, 40.444);
+      tl.set("#n30_20", { opacity: 1 }, 40.47);
+      tl.set("#n30_19", { opacity: 0 }, 40.47);
+      tl.set("#n30_21", { opacity: 1 }, 40.496);
+      tl.set("#n30_20", { opacity: 0 }, 40.496);
+      tl.set("#n30_22", { opacity: 1 }, 40.522);
+      tl.set("#n30_21", { opacity: 0 }, 40.522);
+      tl.set("#n30_23", { opacity: 1 }, 40.548);
+      tl.set("#n30_22", { opacity: 0 }, 40.548);
+      tl.set("#n30_24", { opacity: 1 }, 40.574);
+      tl.set("#n30_23", { opacity: 0 }, 40.574);
+      tl.set("#n30_25", { opacity: 1 }, 40.6);
+      tl.set("#n30_24", { opacity: 0 }, 40.6);
+      tl.set("#n30_26", { opacity: 1 }, 40.626);
+      tl.set("#n30_25", { opacity: 0 }, 40.626);
+      tl.set("#n30_27", { opacity: 1 }, 40.652);
+      tl.set("#n30_26", { opacity: 0 }, 40.652);
+      tl.set("#n30_28", { opacity: 1 }, 40.678);
+      tl.set("#n30_27", { opacity: 0 }, 40.678);
+      tl.set("#n30_29", { opacity: 1 }, 40.704);
+      tl.set("#n30_28", { opacity: 0 }, 40.704);
+      tl.fromTo("#n30", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)", immediateRender: false }, 39.9);
+      tl.fromTo("#dias30", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.25, ease: "expo.out", immediateRender: false }, 40.54);
+      tl.fromTo("#n30", { scale: 1 }, { keyframes: { scale: [1, 1.08, 0.976, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 40.57);
+      tl.fromTo("#armado", { opacity: 0, scale: 0, rotation: -40 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.35, ease: "back.out(2.4)", immediateRender: false }, 41.04);
+      tl.to(["#packs","#n30","#dias30","#armado"], { scale: 0.4, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 41.51);
+      tl.set("#fondo", { backgroundColor: "#F2F2EE" }, 41.71);
+      tl.fromTo(".col", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "expo.out", stagger: 0.04, immediateRender: false }, 41.73);
+      tl.fromTo("#semana", { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "expo.out", immediateRender: false }, 41.71);
+      tl.fromTo("#c0", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 42.99);
+      tl.fromTo("#c1", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 43.09);
+      tl.fromTo("#c2", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 43.19);
+      tl.fromTo("#c3", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 43.29);
+      tl.fromTo("#c4", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 43.39);
+      tl.fromTo("#c5", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 43.49);
+      tl.fromTo("#c6", { opacity: 0, y: -900, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.3)", immediateRender: false }, 43.59);
+      tl.fromTo("#cita", { opacity: 0, y: -900, scale: 1.4 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.5)", immediateRender: false }, 44.46);
+      tl.fromTo("#semana", { scale: 1 }, { keyframes: { scale: [1, 1.04, 0.988, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 44.91);
+      tl.to(["#semana"], { scale: 0.5, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 44.98);
+      tl.set("#fondo", { backgroundColor: "#0A0A0B" }, 45.18);
+      tl.fromTo("#foco", { opacity: 0, scale: 0.4, rotation: 60 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 45.2);
+      tl.set("#reloj_0", { opacity: 1 }, 45.43);
+      tl.set("#reloj_1", { opacity: 1 }, 45.505);
+      tl.set("#reloj_0", { opacity: 0 }, 45.505);
+      tl.set("#reloj_2", { opacity: 1 }, 45.58);
+      tl.set("#reloj_1", { opacity: 0 }, 45.58);
+      tl.set("#reloj_3", { opacity: 1 }, 45.655);
+      tl.set("#reloj_2", { opacity: 0 }, 45.655);
+      tl.set("#reloj_4", { opacity: 1 }, 45.73);
+      tl.set("#reloj_3", { opacity: 0 }, 45.73);
+      tl.set("#reloj_5", { opacity: 1 }, 45.805);
+      tl.set("#reloj_4", { opacity: 0 }, 45.805);
+      tl.set("#reloj_6", { opacity: 1 }, 45.88);
+      tl.set("#reloj_5", { opacity: 0 }, 45.88);
+      tl.set("#reloj_7", { opacity: 1 }, 45.955);
+      tl.set("#reloj_6", { opacity: 0 }, 45.955);
+      tl.set("#reloj_8", { opacity: 1 }, 46.03);
+      tl.set("#reloj_7", { opacity: 0 }, 46.03);
+      tl.set("#reloj_9", { opacity: 1 }, 46.105);
+      tl.set("#reloj_8", { opacity: 0 }, 46.105);
+      tl.set("#reloj_10", { opacity: 1 }, 46.18);
+      tl.set("#reloj_9", { opacity: 0 }, 46.18);
+      tl.set("#reloj_11", { opacity: 1 }, 46.255);
+      tl.set("#reloj_10", { opacity: 0 }, 46.255);
+      tl.set("#reloj_12", { opacity: 1 }, 46.33);
+      tl.set("#reloj_11", { opacity: 0 }, 46.33);
+      tl.set("#reloj_13", { opacity: 1 }, 46.405);
+      tl.set("#reloj_12", { opacity: 0 }, 46.405);
+      tl.set("#reloj_14", { opacity: 1 }, 46.48);
+      tl.set("#reloj_13", { opacity: 0 }, 46.48);
+      tl.set("#reloj_15", { opacity: 1 }, 46.555);
+      tl.set("#reloj_14", { opacity: 0 }, 46.555);
+      tl.set("#reloj_16", { opacity: 1 }, 46.63);
+      tl.set("#reloj_15", { opacity: 0 }, 46.63);
+      tl.set("#reloj_17", { opacity: 1 }, 46.705);
+      tl.set("#reloj_16", { opacity: 0 }, 46.705);
+      tl.set("#reloj_18", { opacity: 1 }, 46.78);
+      tl.set("#reloj_17", { opacity: 0 }, 46.78);
+      tl.set("#reloj_19", { opacity: 1 }, 46.855);
+      tl.set("#reloj_18", { opacity: 0 }, 46.855);
+      tl.set("#reloj_20", { opacity: 1 }, 46.93);
+      tl.set("#reloj_19", { opacity: 0 }, 46.93);
+      tl.set("#reloj_21", { opacity: 1 }, 47.005);
+      tl.set("#reloj_20", { opacity: 0 }, 47.005);
+      tl.set("#reloj_22", { opacity: 1 }, 47.08);
+      tl.set("#reloj_21", { opacity: 0 }, 47.08);
+      tl.set("#reloj_23", { opacity: 1 }, 47.155);
+      tl.set("#reloj_22", { opacity: 0 }, 47.155);
+      tl.set("#reloj_24", { opacity: 1 }, 47.23);
+      tl.set("#reloj_23", { opacity: 0 }, 47.23);
+      tl.set("#reloj_25", { opacity: 1 }, 47.305);
+      tl.set("#reloj_24", { opacity: 0 }, 47.305);
+      tl.set("#reloj_26", { opacity: 1 }, 47.38);
+      tl.set("#reloj_25", { opacity: 0 }, 47.38);
+      tl.set("#reloj_27", { opacity: 1 }, 47.455);
+      tl.set("#reloj_26", { opacity: 0 }, 47.455);
+      tl.set("#reloj_28", { opacity: 1 }, 47.53);
+      tl.set("#reloj_27", { opacity: 0 }, 47.53);
+      tl.set("#reloj_29", { opacity: 1 }, 47.605);
+      tl.set("#reloj_28", { opacity: 0 }, 47.605);
+      tl.set("#reloj_30", { opacity: 1 }, 47.68);
+      tl.set("#reloj_29", { opacity: 0 }, 47.68);
+      tl.set("#reloj_31", { opacity: 1 }, 47.755);
+      tl.set("#reloj_30", { opacity: 0 }, 47.755);
+      tl.set("#reloj_32", { opacity: 1 }, 47.83);
+      tl.set("#reloj_31", { opacity: 0 }, 47.83);
+      tl.set("#reloj_33", { opacity: 1 }, 47.905);
+      tl.set("#reloj_32", { opacity: 0 }, 47.905);
+      tl.set("#reloj_34", { opacity: 1 }, 47.98);
+      tl.set("#reloj_33", { opacity: 0 }, 47.98);
+      tl.set("#reloj_35", { opacity: 1 }, 48.055);
+      tl.set("#reloj_34", { opacity: 0 }, 48.055);
+      tl.set("#reloj", { opacity: 1 }, 45.18);
+      tl.fromTo("#farco", { strokeDashoffset: 0 }, { strokeDashoffset: 300, duration: 2.7, ease: "none", immediateRender: false }, 45.43);
+      tl.fromTo("#foco", { scale: 1 }, { keyframes: { scale: [1, 1.07, 0.979, 1] }, duration: 0.38, ease: "none", immediateRender: false }, 47.28);
+      tl.to(["#foco"], { scale: 0.3, opacity: 0, y: 300, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 47.98);
+      tl.fromTo("#aviso", { y: -900, opacity: 1 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out", immediateRender: false }, 48.18);
+      tl.to("#avic", { keyframes: { rotation: [0, -18, 16, -12, 8, 0] }, duration: 0.6, ease: "none" }, 48.6);
+      tl.to("#aviso", { y: -1300, opacity: 0, duration: 0.25, ease: "power3.in" }, 49.37);
+      tl.fromTo("#radar", { opacity: 0, scale: 0.5, rotation: -30 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, 49.57);
+      tl.fromTo("#poli", { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(1.5)", immediateRender: false }, 50.22);
+      tl.set("#n91_0", { opacity: 1 }, 50.27);
+      tl.set("#n91_1", { opacity: 1 }, 50.3);
+      tl.set("#n91_0", { opacity: 0 }, 50.3);
+      tl.set("#n91_2", { opacity: 1 }, 50.33);
+      tl.set("#n91_1", { opacity: 0 }, 50.33);
+      tl.set("#n91_3", { opacity: 1 }, 50.36);
+      tl.set("#n91_2", { opacity: 0 }, 50.36);
+      tl.set("#n91_4", { opacity: 1 }, 50.39);
+      tl.set("#n91_3", { opacity: 0 }, 50.39);
+      tl.set("#n91_5", { opacity: 1 }, 50.42);
+      tl.set("#n91_4", { opacity: 0 }, 50.42);
+      tl.set("#n91_6", { opacity: 1 }, 50.45);
+      tl.set("#n91_5", { opacity: 0 }, 50.45);
+      tl.set("#n91_7", { opacity: 1 }, 50.48);
+      tl.set("#n91_6", { opacity: 0 }, 50.48);
+      tl.set("#n91_8", { opacity: 1 }, 50.51);
+      tl.set("#n91_7", { opacity: 0 }, 50.51);
+      tl.set("#n91_9", { opacity: 1 }, 50.54);
+      tl.set("#n91_8", { opacity: 0 }, 50.54);
+      tl.set("#n91_10", { opacity: 1 }, 50.57);
+      tl.set("#n91_9", { opacity: 0 }, 50.57);
+      tl.set("#n91_11", { opacity: 1 }, 50.6);
+      tl.set("#n91_10", { opacity: 0 }, 50.6);
+      tl.set("#n91_12", { opacity: 1 }, 50.63);
+      tl.set("#n91_11", { opacity: 0 }, 50.63);
+      tl.set("#n91_13", { opacity: 1 }, 50.66);
+      tl.set("#n91_12", { opacity: 0 }, 50.66);
+      tl.set("#n91_14", { opacity: 1 }, 50.69);
+      tl.set("#n91_13", { opacity: 0 }, 50.69);
+      tl.set("#n91_15", { opacity: 1 }, 50.72);
+      tl.set("#n91_14", { opacity: 0 }, 50.72);
+      tl.set("#n91_16", { opacity: 1 }, 50.75);
+      tl.set("#n91_15", { opacity: 0 }, 50.75);
+      tl.set("#n91_17", { opacity: 1 }, 50.78);
+      tl.set("#n91_16", { opacity: 0 }, 50.78);
+      tl.set("#n91_18", { opacity: 1 }, 50.81);
+      tl.set("#n91_17", { opacity: 0 }, 50.81);
+      tl.set("#n91_19", { opacity: 1 }, 50.84);
+      tl.set("#n91_18", { opacity: 0 }, 50.84);
+      tl.set("#n91_20", { opacity: 1 }, 50.87);
+      tl.set("#n91_19", { opacity: 0 }, 50.87);
+      tl.set("#n91_21", { opacity: 1 }, 50.9);
+      tl.set("#n91_20", { opacity: 0 }, 50.9);
+      tl.fromTo("#n91", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.25, ease: "expo.out", immediateRender: false }, 50.22);
+      tl.fromTo("#vtop", { scale: 1, opacity: 0 }, { keyframes: { scale: [1, 2.6], opacity: [1, 0] }, duration: 0.7, ease: "power2.out", repeat: 1, immediateRender: false }, 51.12);
+      tl.to("#lCama", { color: "#FFB547", scale: 1.2, duration: 0.2, ease: "power2.out" }, 51.12);
+      tl.fromTo("#vizq", { scale: 1, opacity: 0 }, { keyframes: { scale: [1, 2.6], opacity: [1, 0] }, duration: 0.7, ease: "power2.out", repeat: 1, immediateRender: false }, 52.09);
+      tl.to("#lGasto", { color: "#E5534B", scale: 1.2, duration: 0.2, ease: "power2.out" }, 52.09);
+      tl.fromTo("#lGasto", { x: 0 }, { keyframes: { x: [0, -10, 8, -5, 2.5, 0] }, duration: 0.4, ease: "none", immediateRender: false }, 52.61);
+      tl.to(["#radar","#n91"], { scale: 0.4, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 52.91);
+      tl.set("#fondo", { backgroundColor: "#F2F2EE" }, 53.11);
+      tl.fromTo("#cel", { opacity: 0, y: 700, rotation: 10 }, { opacity: 1, y: 0, rotation: -4, duration: 0.5, ease: "expo.out", immediateRender: false }, 53.15);
+      tl.fromTo("#lap", { opacity: 0, x: 900, scale: 0.8 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "expo.out", immediateRender: false }, 53.96);
+      tl.to("#cel", { x: -170, y: 230, scale: 0.78, rotation: -8, duration: 0.5, ease: "expo.inOut" }, 53.96);
+      tl.fromTo("#pago", { opacity: 0, scale: 0.3, y: 80 }, { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "back.out(2)", immediateRender: false }, 54.89);
+      tl.to(["#cel","#lap","#pago"], { scale: 0.1, opacity: 0, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 55.38);
+      tl.set("#fondo", { backgroundColor: "#0A0A0B" }, 55.6);
+      tl.fromTo("#fin", { opacity: 0, scale: 0.2, rotation: -20 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(1.7)", immediateRender: false }, 55.6);
+      tl.fromTo("#esc", { opacity: 0, y: 20, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.25, ease: "expo.out", immediateRender: false }, 55.63);
+      tl.fromTo("#marca", { opacity: 0, scale: 1.25, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: "expo.out", immediateRender: false }, 56.17);
+      tl.to("#marca", { scale: 1.04, duration: 2.6, ease: "none" }, 56.53);
+      tl.fromTo("#ytela", { opacity: 0, y: 20, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.25, ease: "expo.out", immediateRender: false }, 56.45);
+      tl.fromTo("#pastilla", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.6)", immediateRender: false }, 57.01);
+      tl.to("#fin", { scale: 1.08, rotation: 3, duration: 3.1000000000000085, ease: "sine.inOut" }, 56.05);
+      tl.fromTo("#anillo2", { opacity: 0.85, scale: 1 }, { opacity: 0, scale: 2.4, duration: 0.8, ease: "power2.out", immediateRender: false }, 57.46);
+      tl.fromTo("#anillo2", { opacity: 0.85, scale: 1 }, { opacity: 0, scale: 2.4, duration: 0.8, ease: "power2.out", immediateRender: false }, 58.26);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 2.38);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 6.13);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 8.15);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 9.036);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 10.7);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 12.84);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 14.18);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 18.02);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 19.29);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 20.13);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 24.56);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 25.04);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 28.46);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 29.44);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 32.02);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 36.61);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 37.23);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 40.59);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 41.71);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 44.91);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 47.33);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 51.15);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 52.12);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 53.11);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 54.93);
+      tl.fromTo("#golpe", { scale: 1.07 }, { scale: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, 55.6);
+      tl.set("#lente", { scale: 1, x: 0, y: 0 }, 0);
+      tl.to("#lente", { scale: 1.14, duration: 4.5, ease: "sine.inOut" }, 0);
+      tl.set("#lente", { scale: 1.18, x: 0, y: -260 }, 4.55);
+      tl.to("#lente", { y: 230, duration: 1.490000000000001, ease: "sine.inOut" }, 4.6);
+      tl.to("#lente", { scale: 1, y: 0, duration: 0.6, ease: "expo.inOut" }, 6.19);
+      tl.to("#lente", { scale: 1.08, duration: 1.259999999999999, ease: "sine.inOut" }, 6.84);
+      tl.set("#lente", { scale: 1.3, x: 0, y: 0 }, 8.15);
+      tl.to("#lente", { scale: 1, duration: 0.7, ease: "expo.out" }, 8.15);
+      tl.to("#lente", { scale: 1.05, duration: 0.11599999999999966, ease: "sine.inOut" }, 8.87);
+      tl.to("#lente", { scale: 1.18, y: 40, duration: 0.45, ease: "expo.out" }, 9.016);
+      tl.to("#lente", { scale: 0.94, y: 0, duration: 0.8, ease: "expo.inOut" }, 9.6);
+      tl.to("#lente", { scale: 1.02, duration: 0.6099999999999994, ease: "sine.inOut" }, 10.45);
+      tl.set("#lente", { scale: 1.12, x: 70, y: 0 }, 11.11);
+      tl.to("#lente", { scale: 1.05, x: 0, duration: 1.5899999999999999, ease: "sine.inOut" }, 11.16);
+      tl.to("#lente", { scale: 1.14, x: -30, y: 180, duration: 0.4, ease: "expo.out" }, 12.8);
+      tl.to("#lente", { scale: 1, x: 0, y: 0, duration: 0.27999999999999936, ease: "sine.inOut" }, 13.25);
+      tl.set("#lente", { scale: 1.18, x: 210, y: 0 }, 13.58);
+      tl.to("#lente", { x: 170, duration: 3.8100000000000005, ease: "sine.inOut" }, 13.63);
+      tl.to("#lente", { x: -210, duration: 0.5, ease: "expo.inOut" }, 17.49);
+      tl.to("#lente", { scale: 1, x: 0, duration: 0.55, ease: "expo.inOut" }, 18.71);
+      tl.set("#lente", { scale: 1.2, x: 0, y: 0 }, 19.29);
+      tl.to("#lente", { scale: 1.32, duration: 1.649999999999995, ease: "sine.inOut" }, 19.34);
+      tl.to("#lente", { scale: 1, y: 0, duration: 0.5, ease: "expo.inOut" }, 21.13);
+      tl.to("#lente", { scale: 1.15, y: -200, duration: 0.5, ease: "expo.inOut" }, 23.89);
+      tl.set("#lente", { scale: 1.2, x: 150, y: 0 }, 25.04);
+      tl.to("#lente", { x: 30, duration: 1.8599999999999959, ease: "sine.inOut" }, 25.09);
+      tl.to("#lente", { x: -110, duration: 0.45, ease: "expo.inOut" }, 28.08);
+      tl.to("#lente", { scale: 1, x: 0, duration: 0.5, ease: "expo.inOut" }, 30.13);
+      tl.to("#lente", { scale: 1.08, duration: 0.5899999999999999, ease: "sine.inOut" }, 30.68);
+      tl.set("#lente", { scale: 1.45, x: 0, y: 0 }, 31.32);
+      tl.to("#lente", { scale: 1, duration: 0.6499999999999957, ease: "expo.out" }, 31.32);
+      tl.set("#lente", { scale: 1.2, x: 50, y: 330 }, 32.02);
+      tl.to("#lente", { y: -60, duration: 2.219999999999999, ease: "sine.inOut" }, 34.42);
+      tl.to("#lente", { scale: 1, x: 0, y: 0, duration: 0.43999999999999917, ease: "expo.inOut" }, 36.74);
+      tl.set("#lente", { scale: 1.2, x: 0, y: 0 }, 37.23);
+      tl.to("#lente", { scale: 1.3, duration: 1.5900000000000105, ease: "sine.inOut" }, 37.28);
+      tl.set("#lente", { scale: 1.35 }, 38.92);
+      tl.to("#lente", { scale: 0.95, duration: 0.9, ease: "expo.out" }, 38.92);
+      tl.to("#lente", { scale: 1.2, duration: 0.5, ease: "expo.inOut" }, 39.9);
+      tl.set("#lente", { scale: 1.3, x: 200, y: 50 }, 41.71);
+      tl.to("#lente", { x: -200, duration: 2.6000000000000014, ease: "sine.inOut" }, 41.81);
+      tl.to("#lente", { scale: 1.5, x: 126, y: -384, duration: 0.5, ease: "expo.inOut" }, 44.56);
+      tl.set("#lente", { scale: 1.35, x: 0, y: 0 }, 45.18);
+      tl.to("#lente", { scale: 1.05, duration: 0.9, ease: "expo.out" }, 45.2);
+      tl.to("#lente", { scale: 1.2, duration: 2, ease: "sine.inOut" }, 46.13);
+      tl.set("#lente", { scale: 1.15, x: 0, y: 0 }, 48.18);
+      tl.to("#lente", { scale: 1.05, duration: 1.1400000000000006, ease: "sine.inOut" }, 48.18);
+      tl.set("#lente", { scale: 1.4 }, 49.57);
+      tl.to("#lente", { scale: 1, duration: 0.8, ease: "expo.out" }, 49.57);
+      tl.to("#lente", { scale: 1.35, x: 0, y: 283, duration: 0.45, ease: "expo.inOut" }, 51);
+      tl.to("#lente", { x: 283, y: -210, duration: 0.45, ease: "expo.inOut" }, 51.97);
+      tl.to("#lente", { scale: 1, x: 0, y: 0, duration: 0.35, ease: "expo.inOut" }, 52.71);
+      tl.set("#lente", { scale: 1.25, x: 0, y: 0 }, 53.11);
+      tl.to("#lente", { scale: 1, duration: 0.8, ease: "expo.out" }, 53.11);
+      tl.to("#lente", { scale: 1.1, y: -120, duration: 0.5, ease: "expo.inOut" }, 54.84);
+      tl.set("#lente", { scale: 1.2, x: 0, y: 0 }, 55.6);
+      tl.to("#lente", { scale: 1, duration: 0.8, ease: "expo.out" }, 55.6);
+      tl.to("#lente", { scale: 1.06, duration: 2.70000000000001, ease: "sine.inOut" }, 56.45);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
