@@ -109,3 +109,29 @@ Comenta RACHA y te muestro la app que hicimos para eso. 🔥
 ```
 
 Al subirlo: el video no trae personas generadas; la foto de la portada sí es hecha con IA (prender la etiqueta solo si Instagram la pide).
+
+## "Un sistema" (video de producto 3, versión 3) · 21 de octubre de 2026
+
+Archivo: `design/anuncios/campana/rimu3/sistema-v3.mp4` (59 s, voz de Fernando, con música; terminado y aprobado el 21 oct). No subir el `-maestro`. Portada: `design/anuncios/campana/rimu3/portada/portada-sistema-despertador.jpg` (el despertador en la mesa de noche de `guion8/imagenes/1-despertador.png`, con la cara del reloj encendida en ámbar y las manecillas oscuras). La foto es oscura: primero se le subió el contraste (autocontraste 1 % y gamma 0,75), después `POLI="<círculo de centro 328,1133 y radio 136>" python design/herramientas/portada-dark.py <foto aclarada> … 192 1001 464 1265 0.7 0.15`, y al final se oscurecieron las manecillas dentro del círculo (donde la foto aclarada está por debajo de 0,2).
+
+Texto: la voz v4 aprobada, recortada y pasada por la skill copywriting; se conservan sus frases (meta, sistema, anclar, versión pequeña, comodín, tareas en pasos).
+
+```
+Te pones una meta, arrancas con todas las ganas y a las dos semanas ya la soltaste. 🎯
+
+La meta te dice a dónde quieres llegar. Para cumplirla necesitas un sistema, y Racha es una app para armarlo:
+
+✅ Empiezas con máximo tres hábitos, cada uno amarrado a algo que ya haces: después de almorzar, estudias 25 minutos.
+✅ El día que no tienes tiempo o ganas, haces una versión pequeña, como leer un párrafo, y ese día cuenta.
+✅ Si fallas un día, usas un comodín y tu racha sigue.
+✅ Tus tareas van divididas en pasos, y cada paso tiene su día en tu semana, junto a tus citas.
+✅ Trae planes de 30 días ya armados, un temporizador para concentrarte y avisos a tu hora.
+
+Funciona en tu celular y en tu computador. Es un solo pago de $37.900 y tienes 7 días para probarla.
+
+Comenta RACHA y te muestro la app que hicimos para eso. 🔥
+
+#hábitos #metas #constancia #disciplina #productividad
+```
+
+Al subirlo: el video no trae personas generadas; la foto de la portada sí es hecha con IA (prender la etiqueta solo si Instagram la pide).

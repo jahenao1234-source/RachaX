@@ -100,6 +100,9 @@ const PIEZAS = {
   },
 };
 
+// Versión dinámica del guion 5 (22 oct): aquí solo se arman Lina y la voz en otra carpeta; el resto lo hace hf-viral-dinamico.mjs
+PIEZAS['guion5-dinamico'] = { ...PIEZAS.guion5, proyecto: 'hyperframes-dinamico', titulo: 'guion 5 · versión dinámica', apps: [], tarjetas: [], grandes: [], pausa: 0.22, antes: 0.05, despues: 0.08 };
+
 // Guion 6 "No es pereza" (campana/guion6-textos-flow.md). El gancho: Lina tira una bola de papel a la cámara.
 // El primer pedazo no es hablado: va por segundos del clip ({ de, a }). El golpe y el tambaleo los pone la edición
 // (Flow hizo volar la bola pero no movió la cámara).
@@ -248,6 +251,9 @@ pz.hablados.forEach(([archivo, desde, hasta, op = {}], h) => {
 });
 const COLA = pz.cola ?? 0.3;
 const TOTAL = cursor + COLA;
+// Los tiempos de la voz ya armada (los usa hf-viral-dinamico.mjs para la versión dinámica sobre la misma Lina)
+fs.mkdirSync(P, { recursive: true });
+fs.writeFileSync(path.join(P, 'tiempos.json'), JSON.stringify({ total: n(TOTAL), pedazos: pedazos.map((p) => ({ archivo: p.archivo, h: p.h, en: n(p.en), cuadros: p.cuadros })), palabras: palabras.map((w) => ({ t: w.t, h: w.h, k: w.k, i: n(w.i), f: n(w.f) })) }), 'utf8');
 const pal = ([h, k]) => { const w = palabras.find((x) => x.h === h && x.k === k); if (!w) throw new Error(`No hay palabra ${k} en el pedazo ${h}`); return w; };
 const cuadro = (t) => Math.round(t * 30) / 30;
 // OJO: un cambio escrito justo en el segundo de un cuadro (5.266667) entra un cuadro tarde, porque el cuadro 158 es

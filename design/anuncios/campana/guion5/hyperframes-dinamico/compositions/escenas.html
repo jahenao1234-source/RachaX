@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("assets/fuentes/barlow-condensed-700.woff2") format("woff2"); }
+        @font-face { font-family: "Barlow"; font-weight: 600; src: url("assets/fuentes/barlow-600.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .esc { position: absolute; inset: 0; opacity: 0; visibility: hidden; overflow: hidden; }
+        .cam { position: absolute; inset: 0; transform-origin: 540px 860px; }
+        #tres { background: #F4EFE6; }
+        #tres .titulo { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 250px; line-height: 1; color: #0F1113; }
+        #tres .tile { position: absolute; top: 720px; width: 290px; height: 290px; }
+        #tres .cara { position: absolute; inset: 0; background: #fff; border: 7px solid #0F1113; border-radius: 40px; box-shadow: 12px 12px 0 #0F1113; display: flex; align-items: center; justify-content: center; }
+        #tres .cara svg { width: 160px; height: 160px; }
+        #tres .raya { position: absolute; left: 10px; right: 10px; top: 50%; height: 16px; margin-top: -8px; background: #D5320F; border-radius: 8px; transform: rotate(-38deg) scaleX(0); }
+        #tres .nom { position: absolute; left: -40px; right: -40px; top: 324px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 54px; color: #0F1113; }
+        #tres .mitad1 { clip-path: inset(0 50% 0 0); } #tres .mitad2 { clip-path: inset(0 0 0 50%); }
+        #cero { background: #0F1113; }
+        #cero .fl { position: absolute; left: 430px; top: 300px; width: 220px; height: 220px; }
+        #cero .fl svg { width: 100%; height: 100%; }
+        #cero .num { position: absolute; left: 0; right: 0; top: 520px; height: 430px; }
+        #cero .num b { position: absolute; left: 0; right: 0; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 430px; line-height: 430px; color: #FFB547; opacity: 0; }
+        #cero .rot { position: absolute; left: 0; right: 0; top: 980px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 64px; color: #A89F92; }
+        #cero .dias { position: absolute; left: 89px; top: 1130px; display: flex; gap: 22px; }
+        #cero .d { width: 110px; height: 110px; border-radius: 26px; background: #FFB547; }
+        #cero .d.vacio { background: transparent; border: 6px dashed #8C857A; }
+        #estudio { background: #F4EFE6; }
+        #estudio .rot { position: absolute; left: 0; right: 0; top: 230px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 84px; letter-spacing: 0.04em; color: #9A5B00; }
+        #estudio .g { position: absolute; top: 380px; left: 107px; width: 866px; display: grid; grid-template-columns: repeat(12, 52px); gap: 22px; }
+        #estudio .p { width: 52px; height: 52px; border-radius: 50%; background: #FFB547; border: 0 solid #B9B2A6; }
+        #estudio .txt { position: absolute; left: 70px; right: 70px; top: 1020px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 76px; line-height: 1.08; color: #0F1113; }
+        #estudio .fte { position: absolute; left: 0; right: 0; top: 1230px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 36px; color: #6E675C; }
+        #racha { background: #0F1113; }
+        #racha .pre { position: absolute; left: 0; right: 0; top: 820px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 96px; color: #F4EFE6; }
+        #racha .ola { position: absolute; left: 540px; top: 900px; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; border-radius: 50%; background: #FFB547; transform: scale(0); }
+        #racha .gran { position: absolute; left: 290px; top: 620px; width: 500px; height: 500px; }
+        #racha .gran svg, #racha .ic svg { width: 100%; height: 100%; }
+        #racha .marca { position: absolute; left: 0; right: 0; top: 250px; display: flex; align-items: center; justify-content: center; gap: 30px; }
+        #racha .ic { width: 190px; height: 190px; border-radius: 44px; background: #FFB547; padding: 32px; }
+        #racha .mt { display: flex; flex-direction: column; }
+        #racha .mt b { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 190px; line-height: 0.92; color: #F4EFE6; }
+        #racha .mt i { font-style: normal; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 56px; color: #A89F92; }
+        #racha .cont { position: absolute; left: 0; right: 0; top: 620px; height: 300px; }
+        #racha .cont b { position: absolute; left: 0; right: 0; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 300px; line-height: 300px; color: #FFB547; opacity: 0; }
+        #racha .dias { position: absolute; left: 89px; top: 1010px; display: flex; gap: 22px; }
+        #racha .d { width: 110px; height: 110px; border-radius: 26px; background: #2A2722; display: flex; align-items: center; justify-content: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 58px; color: #6E675C; }
+        #racha .d.si { background: #FFB547; color: #0F1113; }
+        #pequena { background: #0F1113; }
+        #pequena .hab { position: absolute; left: 70px; width: 940px; top: 690px; height: 250px; border-radius: 44px; background: #F4EFE6; border: 7px solid #0F1113; box-shadow: 12px 12px 0 #FFB547; display: flex; align-items: center; gap: 36px; padding: 0 44px; }
+        #pequena .ic { width: 150px; height: 150px; border-radius: 34px; background: #FFB547; display: flex; align-items: center; justify-content: center; flex: none; }
+        #pequena .ic svg { width: 96px; height: 96px; }
+        #pequena .tx { position: relative; flex: 1; height: 100px; }
+        #pequena .tx b { position: absolute; left: 0; top: 0; white-space: nowrap; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 84px; line-height: 100px; color: #0F1113; }
+        #pequena .min { position: absolute; left: 0; right: 0; top: 1010px; display: flex; justify-content: center; }
+        #pequena .min span { height: 110px; padding: 0 50px; border-radius: 55px; background: #FFB547; color: #0F1113; display: flex; align-items: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 58px; }
+        #final .rt { position: absolute; left: 0; right: 0; top: 230px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 170px; line-height: 1; color: #FFB547; text-shadow: 0 6px 30px rgba(0,0,0,0.85), 0 0 8px rgba(0,0,0,0.9); opacity: 0; }
+        #cierre { background: #0F1113; }
+        #cierre .ic { position: absolute; left: 440px; top: 430px; width: 200px; height: 200px; border-radius: 46px; background: #FFB547; padding: 34px; }
+        #cierre .ic svg { width: 100%; height: 100%; }
+        #cierre .es { position: absolute; left: 0; right: 0; top: 670px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 72px; color: #F4EFE6; }
+        #cierre .rc { position: absolute; left: 0; right: 0; top: 770px; text-align: center; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 300px; line-height: 0.86; color: #FFB547; }
+        #cierre .mu { position: absolute; left: 0; right: 0; top: 1100px; text-align: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 66px; color: #F4EFE6; }
+        #cierre .pas { position: absolute; left: 0; right: 0; top: 1250px; display: flex; justify-content: center; }
+        #cierre .pas span { height: 112px; padding: 0 44px; border-radius: 56px; background: #F4EFE6; color: #0F1113; display: flex; align-items: center; font-family: "Barlow", sans-serif; font-weight: 600; font-size: 46px; white-space: nowrap; }
+        #cierre .pas b { font-weight: 600; color: #9A5B00; margin: 0 0 0 12px; }
+      </style>
+      <div id="root" data-composition-id="escenas" data-width="1080" data-height="1920">
+        <div class="esc" id="tres"><div class="cam"><p class="titulo" id="tres-t">DEJÉ</p><div class="tile" id="tres-0" style="left: 65px"><div class="cara"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" /><path d="m2.5 21.5 1.4-1.4" /><path d="m20.1 3.9 1.4-1.4" /><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z" /><path d="m9.6 14.4 4.8-4.8" /></svg></div><span class="raya" id="tres-0-r"></span><p class="nom">gimnasio</p></div><div class="tile" id="tres-1" style="left: 395px"><div class="cara"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /><path d="M22 10v6" /><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" /></svg></div><span class="raya" id="tres-1-r"></span><p class="nom">cursos</p></div><div class="tile" id="tres-2" style="left: 725px"><div class="cara mitad1" id="tres-m1"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></svg></div><div class="cara mitad2" id="tres-m2"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></svg></div><p class="nom">libros</p></div></div></div>
+        <div class="esc" id="cero"><div class="cam"><div class="fl" id="cero-fl"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFB547" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></div><div class="num"><b id="cero-n0">23</b><b id="cero-n1">17</b><b id="cero-n2">9</b><b id="cero-n3">3</b><b id="cero-n4">0</b></div><p class="rot">días seguidos</p><div class="dias"><span class="d" id="cero-d0"></span><span class="d" id="cero-d1"></span><span class="d" id="cero-d2"></span><span class="d" id="cero-d3"></span><span class="d" id="cero-d4"></span><span class="d" id="cero-d5"></span><span class="d vacio" id="cero-d6"></span></div></div></div>
+        <div class="esc" id="estudio"><div class="cam"><p class="rot" id="est-rot">ESTUDIO CON 96 PERSONAS</p><div class="g"><span class="p" id="est-p0"></span><span class="p" id="est-p1"></span><span class="p" id="est-p2"></span><span class="p" id="est-p3"></span><span class="p" id="est-p4"></span><span class="p" id="est-p5"></span><span class="p" id="est-p6"></span><span class="p" id="est-p7"></span><span class="p" id="est-p8"></span><span class="p" id="est-p9"></span><span class="p" id="est-p10"></span><span class="p" id="est-p11"></span><span class="p" id="est-p12"></span><span class="p" id="est-p13"></span><span class="p" id="est-p14"></span><span class="p" id="est-p15"></span><span class="p" id="est-p16"></span><span class="p" id="est-p17"></span><span class="p" id="est-p18"></span><span class="p" id="est-p19"></span><span class="p" id="est-p20"></span><span class="p" id="est-p21"></span><span class="p" id="est-p22"></span><span class="p" id="est-p23"></span><span class="p" id="est-p24"></span><span class="p" id="est-p25"></span><span class="p" id="est-p26"></span><span class="p" id="est-p27"></span><span class="p" id="est-p28"></span><span class="p" id="est-p29"></span><span class="p" id="est-p30"></span><span class="p" id="est-p31"></span><span class="p" id="est-p32"></span><span class="p" id="est-p33"></span><span class="p" id="est-p34"></span><span class="p" id="est-p35"></span><span class="p" id="est-p36"></span><span class="p" id="est-p37"></span><span class="p" id="est-p38"></span><span class="p" id="est-p39"></span><span class="p" id="est-p40"></span><span class="p" id="est-p41"></span><span class="p" id="est-p42"></span><span class="p" id="est-p43"></span><span class="p" id="est-p44"></span><span class="p" id="est-p45"></span><span class="p" id="est-p46"></span><span class="p" id="est-p47"></span><span class="p" id="est-p48"></span><span class="p" id="est-p49"></span><span class="p" id="est-p50"></span><span class="p" id="est-p51"></span><span class="p" id="est-p52"></span><span class="p" id="est-p53"></span><span class="p" id="est-p54"></span><span class="p" id="est-p55"></span><span class="p" id="est-p56"></span><span class="p" id="est-p57"></span><span class="p" id="est-p58"></span><span class="p" id="est-p59"></span><span class="p" id="est-p60"></span><span class="p" id="est-p61"></span><span class="p" id="est-p62"></span><span class="p" id="est-p63"></span><span class="p" id="est-p64"></span><span class="p" id="est-p65"></span><span class="p" id="est-p66"></span><span class="p" id="est-p67"></span><span class="p" id="est-p68"></span><span class="p" id="est-p69"></span><span class="p" id="est-p70"></span><span class="p" id="est-p71"></span><span class="p" id="est-p72"></span><span class="p" id="est-p73"></span><span class="p" id="est-p74"></span><span class="p" id="est-p75"></span><span class="p" id="est-p76"></span><span class="p" id="est-p77"></span><span class="p" id="est-p78"></span><span class="p" id="est-p79"></span><span class="p" id="est-p80"></span><span class="p" id="est-p81"></span><span class="p" id="est-p82"></span><span class="p" id="est-p83"></span><span class="p" id="est-p84"></span><span class="p" id="est-p85"></span><span class="p" id="est-p86"></span><span class="p" id="est-p87"></span><span class="p" id="est-p88"></span><span class="p" id="est-p89"></span><span class="p" id="est-p90"></span><span class="p" id="est-p91"></span><span class="p" id="est-p92"></span><span class="p" id="est-p93"></span><span class="p" id="est-p94"></span><span class="p" id="est-p95"></span></div><p class="txt" id="est-txt">Faltar un día no afectó<br>el hábito</p><p class="fte" id="est-fte">Lally y otros, 2010 · University College London</p></div></div>
+        <div class="esc" id="racha"><div class="cam"><p class="pre" id="r-pre">por eso hicimos</p><div class="ola" id="r-ola"></div><div class="gran" id="r-gran"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F1113" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></div>
+          <div class="marca" id="r-marca"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F1113" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></span><span class="mt"><b>Racha</b><i>es una app</i></span></div>
+          <div class="cont"><b id="r-n0">9</b><b id="r-n1">10</b><b id="r-n2">11</b><b id="r-n3">12</b><b id="r-n4">13</b><b id="r-n5">14</b><b id="r-n6">15</b></div>
+          <div class="dias"><span class="d" id="r-d0">L</span><span class="d" id="r-d1">M</span><span class="d" id="r-d2">M</span><span class="d" id="r-d3">J</span><span class="d" id="r-d4">V</span><span class="d" id="r-d5">S</span><span class="d" id="r-d6">D</span></div></div></div>
+        <div class="esc" id="pequena"><div class="cam"><div class="hab" id="pq-hab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0F1113" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></svg></span><span class="tx"><b id="pq-a">Leer 10 páginas</b><b id="pq-b" style="opacity: 0">Leer 1 página</b></span></div><div class="min"><span id="pq-min">versión mínima</span></div></div></div>
+        <div class="esc" id="final" style="background: transparent"><p class="rt" id="rt-hoy">Hoy</p><p class="rt" id="rt-tareas">Tareas</p><p class="rt" id="rt-foco">Foco</p><p class="rt" id="rt-semana">Tu semana</p><p class="rt" id="rt-radar">Progreso</p><p class="rt" id="rt-anio">Tu año</p></div>
+        <div class="esc" id="cierre"><div class="cam"><span class="ic" id="ci-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0F1113" d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg></span><p class="es" id="ci-es">escribe</p><p class="rc" id="ci-rc">RACHA</p><p class="mu" id="ci-mu">y te la muestro</p><div class="pas" id="ci-pas"><span>Racha · app · <b>$37.900</b>, un solo pago</span></div></div></div>
+      </div>
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+          tl.set("#tres", { autoAlpha: 1 }, 8.296);
+          tl.set("#tres", { autoAlpha: 0 }, 11.2293);
+          tl.fromTo("#tres", { scale: 1 }, { scale: 1.06, duration: 2.9333, ease: "none", immediateRender: false }, 8.296);
+          tl.fromTo("#tres-t", { autoAlpha: 0, scale: 1.8 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 8.296);
+          tl.fromTo("#tres-0", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 8.2933);
+          tl.fromTo("#tres .cam", { scale: 1.04 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 8.4533);
+          tl.fromTo("#tres-1", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 9.3133);
+          tl.fromTo("#tres .cam", { scale: 1.04 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 9.4733);
+          tl.fromTo("#tres-2", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 10.15);
+          tl.fromTo("#tres .cam", { scale: 1.04 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 10.31);
+          tl.to("#tres-0-r", { scaleX: 1, duration: 0.18, ease: "power2.out" }, 8.8533);
+          tl.to("#tres-0 .cara", { backgroundColor: "#D9D2C6", duration: 0.12 }, 8.8533);
+          tl.to("#tres-1-r", { scaleX: 1, duration: 0.18, ease: "power2.out" }, 9.8733);
+          tl.to("#tres-1 .cara", { backgroundColor: "#D9D2C6", duration: 0.12 }, 9.8733);
+          tl.to("#tres-m1", { x: -26, y: 90, rotation: -14, duration: 0.32, ease: "power3.out" }, 10.74);
+          tl.to("#tres-m2", { x: 26, y: 90, rotation: 14, duration: 0.32, ease: "power3.out" }, 10.74);
+          tl.fromTo("#tres .cam", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 10.74);
+          tl.set("#cero", { autoAlpha: 1 }, 16.696);
+          tl.set("#cero", { autoAlpha: 0 }, 19.196);
+          tl.fromTo("#cero", { scale: 1 }, { scale: 1.06, duration: 2.5, ease: "none", immediateRender: false }, 16.696);
+          tl.set("#cero-n0", { opacity: 1 }, 16.696);
+          tl.fromTo("#cero-n0", { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 16.696);
+          tl.fromTo("#cero-fl", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 16.736);
+          tl.fromTo("#cero-d0", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", immediateRender: false }, 16.796);
+          tl.fromTo("#cero-d1", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", immediateRender: false }, 16.846);
+          tl.fromTo("#cero-d2", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", immediateRender: false }, 16.896);
+          tl.fromTo("#cero-d3", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", immediateRender: false }, 16.946);
+          tl.fromTo("#cero-d4", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", immediateRender: false }, 16.996);
+          tl.fromTo("#cero-d5", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", immediateRender: false }, 17.046);
+          tl.fromTo("#cero-d6", { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.24, ease: "back.out(3)", immediateRender: false }, 16.9);
+          tl.to("#cero-d6", { scale: 1.12, duration: 0.18, yoyo: true, repeat: 3, ease: "sine.inOut" }, 17.16);
+          tl.fromTo("#cero .cam", { scale: 1.05 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 18.43);
+          tl.set("#cero-n0", { opacity: 0 }, 18.52);
+          tl.set("#cero-n1", { opacity: 1 }, 18.52);
+          tl.set("#cero-n1", { opacity: 0 }, 18.61);
+          tl.set("#cero-n2", { opacity: 1 }, 18.61);
+          tl.set("#cero-n2", { opacity: 0 }, 18.7);
+          tl.set("#cero-n3", { opacity: 1 }, 18.7);
+          tl.set("#cero-n3", { opacity: 0 }, 18.79);
+          tl.set("#cero-n4", { opacity: 1 }, 18.79);
+          tl.to("#cero-n4", { color: "#6E675C", duration: 0.1 }, 18.79);
+          tl.to("#cero-fl path", { fill: "#3A3631", duration: 0.2 }, 18.79);
+          tl.to("#cero .d", { backgroundColor: "#2A2722", duration: 0.2 }, 18.79);
+          tl.to("#cero .cam", { x: -16, duration: 0.05, repeat: 5, yoyo: true, ease: "power1.inOut" }, 18.81);
+          tl.set("#estudio", { autoAlpha: 1 }, 23.596);
+          tl.set("#estudio", { autoAlpha: 0 }, 26.1293);
+          tl.fromTo("#estudio", { scale: 1 }, { scale: 1.06, duration: 2.5333, ease: "none", immediateRender: false }, 23.596);
+          tl.fromTo("#est-rot", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 23.596);
+          tl.fromTo("#estudio .p", { scale: 0 }, { scale: 1, duration: 0.16, ease: "back.out(3)", stagger: { each: 0.005, from: "random" }, immediateRender: false }, 23.676);
+          tl.to("#est-p5, #est-p14, #est-p22, #est-p31, #est-p40, #est-p47, #est-p53, #est-p61, #est-p66, #est-p74, #est-p79, #est-p88, #est-p93, #est-p9", { backgroundColor: "#F4EFE6", borderWidth: 7, duration: 0.14, stagger: 0.02 }, 24.29);
+          tl.fromTo("#estudio .cam", { scale: 1.04 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 24.29);
+          tl.to("#est-p5, #est-p14, #est-p22, #est-p31, #est-p40, #est-p47, #est-p53, #est-p61, #est-p66, #est-p74, #est-p79, #est-p88, #est-p93, #est-p9", { backgroundColor: "#FFB547", borderWidth: 0, duration: 0.14, stagger: 0.02 }, 25.26);
+          tl.fromTo("#est-txt", { autoAlpha: 0, y: 50, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 24.95);
+          tl.fromTo("#est-fte", { autoAlpha: 0, y: 20, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 25.15);
+          tl.fromTo("#estudio .cam", { scale: 1.04 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 25.26);
+          tl.set("#racha", { autoAlpha: 1 }, 30.8293);
+          tl.set("#racha", { autoAlpha: 0 }, 34.496);
+          tl.fromTo("#racha", { scale: 1 }, { scale: 1.06, duration: 3.6667, ease: "none", immediateRender: false }, 30.8293);
+          tl.set("#r-marca, #racha .cont, #racha .dias, #r-gran", { autoAlpha: 0 }, 30.8293);
+          tl.fromTo("#r-pre", { autoAlpha: 0, y: 30, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 30.8493);
+          tl.set("#r-pre", { autoAlpha: 0 }, 31.3833);
+          tl.fromTo("#r-gran", { autoAlpha: 0, scale: 0.2 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)", immediateRender: false }, 31.4233);
+          tl.fromTo("#r-ola", { scale: 0 }, { scale: 1, duration: 0.3, ease: "power3.out", immediateRender: false }, 31.3433);
+          tl.to("#r-ola", { scale: 0, duration: 0.3, ease: "power3.in" }, 31.7833);
+          tl.to("#r-gran", { scale: 0.38, x: -184, y: -560, autoAlpha: 0, duration: 0.3, ease: "power3.inOut" }, 31.7833);
+          tl.set("#r-marca", { autoAlpha: 1 }, 32.0233);
+          tl.fromTo("#r-marca", { scale: 1.15 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.0233);
+          tl.set("#racha .cont, #racha .dias", { autoAlpha: 1 }, 32.2533);
+          tl.set("#r-n0", { opacity: 1 }, 32.2533);
+          tl.fromTo("#racha .d", { scale: 0 }, { scale: 1, duration: 0.14, ease: "back.out(3)", stagger: 0.03, immediateRender: false }, 32.2533);
+          tl.set("#r-d0", { backgroundColor: "#FFB547", color: "#0F1113" }, 32.4733);
+          tl.fromTo("#r-d0", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.4733);
+          tl.set("#r-n0", { opacity: 0 }, 32.4733);
+          tl.set("#r-n1", { opacity: 1 }, 32.4733);
+          tl.fromTo("#r-n1", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.4733);
+          tl.set("#r-d1", { backgroundColor: "#FFB547", color: "#0F1113" }, 32.6033);
+          tl.fromTo("#r-d1", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.6033);
+          tl.set("#r-n1", { opacity: 0 }, 32.6033);
+          tl.set("#r-n2", { opacity: 1 }, 32.6033);
+          tl.fromTo("#r-n2", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.6033);
+          tl.set("#r-d2", { backgroundColor: "#FFB547", color: "#0F1113" }, 32.7333);
+          tl.fromTo("#r-d2", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.7333);
+          tl.set("#r-n2", { opacity: 0 }, 32.7333);
+          tl.set("#r-n3", { opacity: 1 }, 32.7333);
+          tl.fromTo("#r-n3", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 32.7333);
+          tl.to("#r-d3", { scale: 1.15, duration: 0.12, yoyo: true, repeat: 1 }, 32.9033);
+          tl.set("#r-d4", { backgroundColor: "#FFB547", color: "#0F1113" }, 33.3333);
+          tl.fromTo("#r-d4", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 33.3333);
+          tl.set("#r-n3", { opacity: 0 }, 33.3333);
+          tl.set("#r-n4", { opacity: 1 }, 33.3333);
+          tl.fromTo("#r-n4", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 33.3333);
+          tl.set("#r-d5", { backgroundColor: "#FFB547", color: "#0F1113" }, 33.5033);
+          tl.fromTo("#r-d5", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 33.5033);
+          tl.set("#r-n4", { opacity: 0 }, 33.5033);
+          tl.set("#r-n5", { opacity: 1 }, 33.5033);
+          tl.fromTo("#r-n5", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 33.5033);
+          tl.set("#r-d6", { backgroundColor: "#FFB547", color: "#0F1113" }, 33.6733);
+          tl.fromTo("#r-d6", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 33.6733);
+          tl.set("#r-n5", { opacity: 0 }, 33.6733);
+          tl.set("#r-n6", { opacity: 1 }, 33.6733);
+          tl.fromTo("#r-n6", { scale: 1.08 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 33.6733);
+          tl.fromTo("#racha .cam", { scale: 1.05 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 34.1933);
+          tl.set("#pequena", { autoAlpha: 1 }, 35.796);
+          tl.set("#pequena", { autoAlpha: 0 }, 38.996);
+          tl.fromTo("#pequena", { scale: 1 }, { scale: 1.06, duration: 3.2, ease: "none", immediateRender: false }, 35.796);
+          tl.fromTo("#pq-hab", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 35.796);
+          tl.to("#pq-hab", { scale: 0.72, duration: 0.34, ease: "back.inOut(1.6)" }, 37.6233);
+          tl.set("#pq-a", { opacity: 0 }, 37.7933);
+          tl.set("#pq-b", { opacity: 1 }, 37.7933);
+          tl.set("#pq-min", { autoAlpha: 0 }, 35.796);
+          tl.fromTo("#pq-min", { autoAlpha: 0, y: 50, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 38.3833);
+          tl.fromTo("#pequena .cam", { scale: 1.05 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 38.4833);
+          tl.set("#final", { autoAlpha: 1 }, 44.658);
+          tl.set("#final", { autoAlpha: 0 }, 49.2731);
+          tl.fromTo("#rt-hoy", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, 44.658);
+          tl.set("#rt-hoy", { opacity: 0 }, 45.3173);
+          tl.fromTo("#rt-tareas", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, 45.3173);
+          tl.set("#rt-tareas", { opacity: 0 }, 45.9766);
+          tl.fromTo("#rt-foco", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, 45.9766);
+          tl.set("#rt-foco", { opacity: 0 }, 46.6359);
+          tl.fromTo("#rt-semana", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, 46.6359);
+          tl.set("#rt-semana", { opacity: 0 }, 47.2952);
+          tl.fromTo("#rt-radar", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, 47.2952);
+          tl.set("#rt-radar", { opacity: 0 }, 47.9545);
+          tl.fromTo("#rt-anio", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, 47.9545);
+          tl.set("#rt-anio", { opacity: 0 }, 49.2731);
+          tl.set("#cierre", { autoAlpha: 1 }, 49.2731);
+          tl.fromTo("#cierre", { scale: 1 }, { scale: 1.05, duration: 3.6, ease: "none", immediateRender: false }, 49.2731);
+          tl.fromTo("#ci-ic", { autoAlpha: 0, scale: 1.8 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 49.2731);
+          tl.fromTo("#ci-es", { autoAlpha: 0, y: 30, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 49.3931);
+          tl.fromTo("#ci-rc", { autoAlpha: 0, scale: 1.8 }, { autoAlpha: 1, scale: 1, duration: 0.16, ease: "power4.in", immediateRender: false }, 49.6028);
+          tl.fromTo("#ci-mu", { autoAlpha: 0, y: 30, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 49.9324);
+          tl.fromTo("#ci-pas", { autoAlpha: 0, y: 50, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.24, ease: "back.out(2)", immediateRender: false }, 50.2621);
+          window.__timelines["escenas"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
