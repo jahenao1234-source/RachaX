@@ -3,257 +3,338 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Racha · Para que un día malo no te haga empezar de cero</title>
-<meta name="description" content="Racha es una app para sostener lo que empiezas: hábitos, tareas y foco en un solo lugar. Un solo pago, acceso vitalicio y 7 días para probarla.">
-<meta name="theme-color" content="#08090A">
+<title>Racha · Fallar un día no borra lo que llevas</title>
+<meta name="description" content="Racha es la app de hábitos, tareas y foco hecha para el día que fallas. Un solo pago de $37.900, acceso vitalicio y 7 días para probarla.">
+<meta name="theme-color" content="#0E0B08">
 <link rel="icon" href="assets/icono.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* MAQUETA de la página de ventas de Racha (19 oct 2026). Inspirada en rimuapp.com y en piezas de 21st.dev:
-   portada con la app en una pantalla que se endereza al bajar (container scroll), Tu año en cuadritos (activity heatmap),
-   cuadros de funciones (bento) y precio. Siempre oscura: es una pieza de venta, no la app. */
+/* MAQUETA v3 de la página de ventas (22 oct 2026): rediseño visual completo.
+   Idea: los días son el diseño. Brasa + ámbar, letra condensada grande, un bloque ámbar para la regla
+   y el precio en un recibo de papel. Siempre oscura: es una pieza de venta, no la app. */
 :root{
-  --bg:#08090A; --surface:#111316; --surface-2:#171A1E; --line:#22262C; --line-2:#2E333A;
-  --text:#F1F3F5; --muted:#98A0AA; --dim:#858D97;
-  --ambar:#FFB547; --ambar-tint:#2B2419; --lila:#8E9BFF; --lila-tint:#1F2233; --comodin:#C9CFFF;
-  --vacio:#1C1F24; --medio:#7A5A2A;
-  --r:18px; --ancho:1120px;
+  --brasa:#0E0B08; --carbon:#17120D; --carbon-2:#211A13; --linea:#2E251B; --linea-2:#43372A;
+  --hueso:#F6EFE4; --ceniza:#B3A898; --ceniza-2:#958A7C;
+  --ambar:#FFB547; --fuego:#FF8A2A; --ambar-tint:#2C2114; --lila:#8E9BFF; --lila-claro:#C9CFFF; --lila-tint:#1D1E2E;
+  --vacio:#241C14; --ancho:1180px;
+  --display:'Barlow Condensed','Arial Narrow',sans-serif;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:17px;line-height:1.55;overflow-x:hidden}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--brasa);color:var(--hueso);font-family:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:17px;line-height:1.55;overflow-x:hidden}
+/* grano cálido encima de todo, muy suave */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 img,video{display:block;max-width:100%}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--lila);outline-offset:3px;border-radius:8px}
+:focus-visible{outline:2px solid var(--ambar);outline-offset:3px;border-radius:6px}
 .env{max-width:var(--ancho);margin:0 auto;padding:0 16px}
-@media (min-width:768px){.env{padding:0 32px}}
+@media (min-width:768px){.env{padding:0 40px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* Títulos al estilo rimu: letra delgada y la palabra clave gruesa */
-.t1,.t2{font-weight:300;letter-spacing:-.025em;line-height:1.04;margin:0;text-wrap:balance}
-.t1 b,.t2 b{font-weight:600;color:#fff}
-.t1{font-size:clamp(40px,8.4vw,76px)}
-.t2{font-size:clamp(32px,5.6vw,54px)}
-.cejilla{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 14px}
-.bajada{color:var(--muted);font-size:18px;max-width:600px;margin:18px 0 0;text-wrap:pretty}
-.centro{text-align:center}
-.centro .bajada{margin-left:auto;margin-right:auto}
-.seccion{padding:96px 0}
-@media (min-width:1024px){.seccion{padding:140px 0}}
+/* Letra grande condensada: la voz de la página */
+.grande{font-family:var(--display);font-weight:700;text-transform:uppercase;line-height:.88;letter-spacing:-.005em;margin:0;text-wrap:balance}
+.g1{font-size:clamp(58px,11.5vw,148px)}
+.g2{font-size:clamp(44px,8vw,104px)}
+.g3{font-size:clamp(34px,5.4vw,64px)}
+.ambar{color:var(--ambar)}
+.texto{color:var(--ceniza);font-size:18px;line-height:1.55;max-width:56ch;margin:20px 0 0;text-wrap:pretty}
+.seccion{padding:104px 0}
+@media (min-width:1024px){.seccion{padding:150px 0}}
 
-/* Botones */
-.boton{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 26px;border-radius:999px;background:var(--ambar);color:#0F1113;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer;transition:transform .2s ease,background .2s ease}
+/* Botón */
+.boton{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 30px;border-radius:999px;background:var(--ambar);color:#120D08;font-weight:700;font-size:18px;text-decoration:none;border:0;cursor:pointer;transition:background .2s,transform .15s;box-shadow:0 10px 40px -12px rgba(255,138,42,.7)}
 .boton:hover{background:#FFC46B}
 .boton:active{transform:scale(.97)}
-.boton.chico{min-height:44px;padding:0 18px;font-size:15px}
-.boton.fantasma{background:transparent;color:var(--text);border:1px solid var(--line-2)}
-.boton.fantasma:hover{background:var(--surface-2)}
+.boton.chico{min-height:44px;padding:0 18px;font-size:15px;box-shadow:none}
+.boton svg{flex:none}
 
 /* Barra de arriba */
-.barra{position:sticky;top:0;z-index:20;background:rgba(8,9,10,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
-.barra.con-borde{border-bottom-color:var(--line)}
+.barra{position:sticky;top:0;z-index:40;background:rgba(14,11,8,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
+.barra.con-borde{border-bottom-color:var(--linea)}
 .barra .env{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
-.marca{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;min-height:44px}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-weight:700;font-size:26px;min-height:44px}
 .marca img{width:32px;height:32px;border-radius:9px}
 .barra nav{display:flex;align-items:center;gap:6px}
-.barra .entrar{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;color:var(--muted);text-decoration:none;font-weight:600;font-size:15px;border-radius:999px}
-.barra .entrar:hover{color:var(--text)}
+.entrar{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;color:var(--ceniza);text-decoration:none;font-weight:600;font-size:15px}
+.entrar:hover{color:var(--hueso)}
 
-/* Portada */
-.portada{position:relative;padding:72px 0 0;text-align:center;overflow:hidden}
-.portada::before{content:"";position:absolute;inset:-20% -10% auto;height:680px;background:radial-gradient(50% 50% at 50% 0%,rgba(255,181,71,.10),transparent 70%);pointer-events:none}
-.portada .t1{position:relative}
-.portada .bajada{position:relative;margin:22px auto 0;font-size:19px}
-.sellos{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin:26px auto 0;padding:0;list-style:none;color:var(--muted);font-size:15px}
-.sellos li{display:flex;align-items:center;gap:7px}
-.sellos svg{color:var(--ambar);flex:none}
-.portada .acciones{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:32px}
-.raya{width:1px;height:56px;margin:48px auto 0;background:linear-gradient(var(--line-2),transparent)}
-.mira{margin:18px 0 0;font-size:20px;font-weight:500;line-height:1.3}
+/* ===== 1. PORTADA ===== */
+.portada{position:relative;padding:48px 0 88px;overflow:hidden}
+.portada::before{content:"";position:absolute;right:-20%;top:-10%;width:900px;height:900px;background:radial-gradient(closest-side,rgba(255,138,42,.16),rgba(255,181,71,.05) 55%,transparent);pointer-events:none}
+.portada .env{position:relative;display:grid;gap:48px;align-items:center}
+@media (min-width:1024px){.portada{padding:64px 0 110px}.portada .env{grid-template-columns:1.15fr .85fr;gap:56px}}
+.portada .g1{font-size:clamp(56px,8.2vw,112px)}
+.portada .texto{font-size:19px;color:#CFC5B6}
+.acciones{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:32px}
+.precio-corto{color:var(--ceniza);font-size:15px;line-height:1.35}
+.precio-corto b{display:block;color:var(--hueso);font-family:var(--display);font-size:26px;line-height:1}
 
-/* La pantalla que se endereza al bajar */
-.escena{perspective:1400px;margin:36px auto 0;max-width:1040px;padding:0 4px}
-.pantalla{transform-origin:50% 0;transform:rotateX(24deg) scale(.94);border-radius:22px;padding:10px;background:linear-gradient(#2A2E34,#16191D);border:1px solid #3A4048;box-shadow:0 40px 120px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.03) inset;will-change:transform}
+/* La racha que sobrevive a un día malo */
+.escenario{position:relative;max-width:460px;width:100%;justify-self:center}
+@media (min-width:1200px){.escenario{margin-top:70px}}
+.cel-atras{position:absolute;right:-70px;top:-110px;width:190px;transform:rotate(10deg);opacity:.85;display:none;z-index:0}
+@media (min-width:1200px){.escenario .cel-atras{display:block;position:absolute}}
+.racha{position:relative;z-index:1;background:linear-gradient(180deg,#1C160F,#130F0B);border:1px solid var(--linea-2);border-radius:28px;padding:22px 20px 20px;box-shadow:0 50px 120px -40px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.02) inset}
+@media (min-width:768px){.racha{padding:28px 28px 24px}}
+.racha-cab{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.racha-cab p{margin:0;color:var(--ceniza);font-size:14px;font-weight:600}
+.racha-num{font-family:var(--display);font-weight:700;font-size:76px;line-height:.8;color:var(--ambar);font-variant-numeric:tabular-nums;display:flex;align-items:flex-end;gap:10px}
+.racha-num small{font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;color:var(--ceniza);line-height:1.2;padding-bottom:6px}
+.racha-llama{width:44px;height:44px;border-radius:12px;flex:none}
+.sem-dias{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:18px 0 8px;color:var(--ceniza-2);font-size:12px;font-weight:600;text-align:center}
+.cuadros{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.d{aspect-ratio:1;border-radius:10px;background:var(--vacio);transition:background .25s,box-shadow .25s,transform .25s}
+.d.si{background:var(--ambar);box-shadow:0 0 22px -6px rgba(255,138,42,.65)}
+.d.malo{background:#3A3027;transform:scale(.88)}
+.d.comodin{background:var(--lila-tint);box-shadow:inset 0 0 0 2px var(--lila)}
+.d.hoy{background:transparent;box-shadow:inset 0 0 0 2px var(--linea-2);outline:1px dashed var(--ceniza-2);outline-offset:-6px}
+.racha-pie{display:flex;align-items:center;gap:10px;min-height:52px;margin-top:16px;padding:12px 14px;border-radius:14px;background:var(--carbon-2);font-size:15px;font-weight:500}
+.racha-pie i{width:12px;height:12px;border-radius:4px;flex:none;background:var(--ambar)}
+.racha-pie.malo i{background:#3A3027}
+.racha-pie.comodin{background:var(--lila-tint);color:var(--lila-claro)}
+.racha-pie.comodin i{background:transparent;box-shadow:inset 0 0 0 2px var(--lila)}
+
+/* ===== 2. ¿TE SUENA? ===== */
+.suena .lista{list-style:none;margin:48px 0 0;padding:0;border-top:1px solid var(--linea)}
+.suena li{display:grid;gap:8px;padding:28px 0;border-bottom:1px solid var(--linea)}
+@media (min-width:900px){.suena li{grid-template-columns:1.2fr 1fr;gap:48px;align-items:baseline;padding:34px 0}}
+.suena li b{font-family:var(--display);font-weight:700;font-size:clamp(30px,4.4vw,52px);line-height:.95;text-transform:uppercase}
+.suena li span{color:var(--ceniza);font-size:17px}
+.suena .remate{margin:56px 0 0;font-size:clamp(22px,2.6vw,30px);line-height:1.3;font-weight:500;max-width:30ch}
+.suena .remate b{color:var(--ambar);font-weight:600}
+
+/* ===== 3. POR DENTRO ===== */
+.dentro{padding-top:0}
+.dentro .cab{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 40px}
+.escena{perspective:1500px;margin:44px auto 0;max-width:1100px}
+.pantalla{transform-origin:50% 0;transform:rotateX(22deg) scale(.95);border-radius:22px;padding:10px;background:linear-gradient(#2E2620,#18130E);border:1px solid #4A3E31;box-shadow:0 60px 140px -40px rgba(0,0,0,.95),0 0 120px -50px rgba(255,138,42,.5);will-change:transform}
 .pantalla .cristal{border-radius:14px;overflow:hidden;background:#0F1113;aspect-ratio:16/9}
-.pantalla video,.pantalla img{width:100%;height:100%;object-fit:cover}
-.base{height:16px;margin:0 auto;width:min(110%,1120px);transform:translateY(-2px);border-radius:0 0 20px 20px;background:linear-gradient(#2A2E34,#121417);display:none}
-@media (min-width:768px){.base{display:block}}
-.nota-pie{color:var(--dim);font-size:13px;margin:14px 0 0}
+.pantalla video{width:100%;height:100%;object-fit:cover}
 
-/* Tu año */
-.anio-caja{margin:48px auto 0;max-width:980px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px 18px}
-@media (min-width:768px){.anio-caja{padding:28px 30px 24px}}
-.anio-cab{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.anio-cab h3{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1}
-.anio-cab p{margin:4px 0 0;color:var(--muted);font-size:14px}
-.cuenta{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:44px;line-height:1;color:var(--ambar);font-variant-numeric:tabular-nums;text-align:right}
-.cuenta small{display:block;font-family:'Barlow',sans-serif;font-weight:500;font-size:13px;color:var(--muted);margin-top:4px}
-.anio-rejilla{margin-top:20px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+/* ===== 4. TU AÑO ===== */
+.anio .cab{display:grid;gap:24px;align-items:end}
+@media (min-width:1024px){.anio .cab{grid-template-columns:1fr auto}}
+.cifra{font-family:var(--display);font-weight:700;font-size:clamp(96px,16vw,200px);line-height:.8;color:var(--ambar);font-variant-numeric:tabular-nums}
+.cifra small{display:block;font-family:'Barlow',sans-serif;font-size:16px;font-weight:600;color:var(--ceniza);line-height:1.3;margin-top:12px}
+.anio-caja{margin-top:44px;background:var(--carbon);border:1px solid var(--linea);border-radius:24px;padding:22px 18px 18px}
+@media (min-width:768px){.anio-caja{padding:30px}}
+.anio-caja h3{margin:0;font-family:var(--display);font-size:26px;line-height:1}
+.anio-caja .nota{margin:4px 0 0;color:var(--ceniza-2);font-size:14px}
+.anio-rejilla{margin-top:20px;overflow-x:auto;scrollbar-width:none;--gap:2px}
 .anio-rejilla::-webkit-scrollbar{display:none}
-.meses{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:var(--gap);margin-bottom:8px;color:var(--dim);font-size:12px;white-space:nowrap}
-.cuadritos{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:var(--gap)}
-.c{aspect-ratio:1}
-.anio-rejilla{--gap:2px}
 @media (min-width:768px){.anio-rejilla{--gap:5px}}
+.meses{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:var(--gap);margin-bottom:8px;color:var(--ceniza-2);font-size:12px;white-space:nowrap}
+.cuadritos{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:var(--gap)}
+.c{aspect-ratio:1;border-radius:4px;background:var(--vacio);transition:background .25s}
 @media (max-width:767px){.c{border-radius:2px}}
-@media (max-width:420px){.bento .barritas{display:none}}
-.c{border-radius:4px;background:var(--vacio);transition:background .25s ease,transform .25s ease}
 .c.si{background:var(--ambar)}
 .c.medio{background:linear-gradient(135deg,var(--ambar) 0 50%,var(--vacio) 50% 100%)}
 .c.comodin{background:transparent;box-shadow:inset 0 0 0 1.5px var(--lila)}
-.c.encender{transform:scale(1.18)}
-.leyenda{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;color:var(--muted);font-size:13px;list-style:none;padding:0}
+.leyenda{display:flex;flex-wrap:wrap;gap:6px 16px;margin:16px 0 0;padding:0;list-style:none;color:var(--ceniza);font-size:13px}
 .leyenda li{display:flex;align-items:center;gap:6px}
 .leyenda i{width:12px;height:12px;border-radius:3px;display:inline-block}
 
-/* Cuadros de funciones (bento) */
-.bento{display:grid;gap:14px;margin-top:48px}
-@media (min-width:768px){.bento{grid-template-columns:repeat(2,1fr)}}
-@media (min-width:768px){.bento .ancho{grid-column:span 2}}
-@media (min-width:1024px){.bento{grid-template-columns:repeat(3,1fr)}.bento .ancho-lg{grid-column:span 2}}
-.cuadro{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:16px;overflow:hidden;transition:border-color .3s}
-.cuadro:hover{border-color:var(--line-2)}
-.cuadro h3{margin:0;font-size:20px;font-weight:600;line-height:1.2}
-.cuadro p{margin:6px 0 0;color:var(--muted);font-size:15px;line-height:1.5}
-.mini{margin-top:auto;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:14px}
-/* filas de hábitos, como en Hoy */
-.fila{display:flex;align-items:center;gap:10px;min-height:44px}
-.fila+.fila{border-top:1px solid var(--line)}
-.ico{width:32px;height:32px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ambar)}
+/* ===== 5. FUNCIONES con el celular fijo ===== */
+.funciones{padding-top:0}
+.fun-grid{display:grid;gap:0;margin-top:56px}
+@media (min-width:1024px){.fun-grid{grid-template-columns:380px 1fr;gap:80px}}
+.fijo{display:none}
+.fun-grid>div{min-width:0}
+@media (min-width:1024px){.fijo{display:block;position:sticky;top:96px;height:calc(100vh - 128px);max-height:760px}}
+.marco{position:relative;border-radius:40px;padding:8px;background:linear-gradient(#2E2620,#16110C);border:1px solid #4A3E31;box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 90px -40px rgba(255,138,42,.45)}
+.marco .vidrio{position:relative;border-radius:32px;overflow:hidden;aspect-ratio:390/844;background:#0F1113}
+.marco .vidrio img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .45s ease}
+.marco .vidrio img.on{opacity:1}
+.fijo .marco{height:100%;aspect-ratio:auto;max-width:360px;margin:0 auto}
+.fijo .vidrio{height:100%;aspect-ratio:auto}
+.fun{padding:44px 0;border-top:1px solid var(--linea)}
+.fun:first-child{border-top:0;padding-top:0}
+@media (min-width:1024px){.fun{padding:64px 0;min-height:56vh;display:flex;flex-direction:column;justify-content:center}}
+.fun h3{margin:0;font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(32px,4vw,50px);line-height:.92;max-width:16ch}
+.fun p{margin:14px 0 0;color:var(--ceniza);max-width:46ch}
+.mini{margin-top:24px;max-width:460px;background:var(--carbon);border:1px solid var(--linea);border-radius:18px;padding:14px 16px;font-size:14px}
+.fila{display:flex;align-items:center;gap:10px;min-height:48px}
+.fila+.fila{border-top:1px solid var(--linea)}
+.ico{width:32px;height:32px;border-radius:9px;background:var(--carbon-2);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ambar)}
 .fila .nombre{flex:1;min-width:0}
 .fila .nombre b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fila .nombre span{display:block;color:var(--ambar);font-size:12px;font-weight:600}
-.fila.hecha .nombre b{text-decoration:line-through;text-decoration-color:var(--dim);color:var(--muted)}
-.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--line-2);flex:none;display:flex;align-items:center;justify-content:center;color:#0F1113;transition:background .3s,border-color .3s}
+.fila.hecha .nombre b{text-decoration:line-through;text-decoration-color:var(--ceniza-2);color:var(--ceniza)}
+.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--linea-2);flex:none;display:flex;align-items:center;justify-content:center;color:#120D08;transition:background .3s,border-color .3s}
 .fila.hecha .check{background:var(--ambar);border-color:var(--ambar)}
 .barritas{display:flex;gap:3px}
-.barritas i{width:10px;height:5px;border-radius:3px;background:var(--line-2)}
+.barritas i{width:10px;height:5px;border-radius:3px;background:var(--linea-2)}
 .barritas i.si{background:var(--ambar)}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);font-weight:600;font-size:13px}
-.chip.lila{color:var(--comodin);background:var(--lila-tint);border-color:#2C3254}
+@media (max-width:420px){.mini .barritas{display:none}}
+.minimo{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--ambar-tint);color:var(--ambar);font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-weight:600;font-size:13px;color:var(--lila-claro);background:var(--lila-tint);border:1px solid #2C3254}
 .semana{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
-.dia{border-radius:10px;padding:6px 0;text-align:center;background:var(--ambar);color:#0F1113;font-weight:700;font-size:12px;line-height:1.15}
-.dia b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px}
-.dia.gris{background:var(--surface-2);color:var(--dim)}
-.dia.congelado{background:var(--lila-tint);color:var(--comodin);box-shadow:inset 0 0 0 1.5px var(--lila)}
-.dia.hoy{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line-2);border:1px dashed var(--muted)}
+.dia{border-radius:10px;padding:6px 0;text-align:center;background:var(--ambar);color:#120D08;font-weight:700;font-size:12px;line-height:1.15}
+.dia b{display:block;font-family:var(--display);font-size:18px}
+.dia.gris{background:var(--carbon-2);color:var(--ceniza-2)}
+.dia.congelado{background:var(--lila-tint);color:var(--lila-claro);box-shadow:inset 0 0 0 1.5px var(--lila)}
+.dia.hoy{background:transparent;color:var(--hueso);border:1px dashed var(--ceniza-2)}
 .pasos{list-style:none;margin:10px 0 0;padding:0}
-.pasos li{display:flex;align-items:center;gap:10px;min-height:36px;color:var(--muted)}
-.pasos li .caja{width:18px;height:18px;border-radius:5px;border:2px solid var(--line-2);flex:none}
-.pasos li.listo{color:var(--dim);text-decoration:line-through}
+.pasos li{display:flex;align-items:center;gap:10px;min-height:36px;color:var(--ceniza)}
+.pasos .caja{width:18px;height:18px;border-radius:5px;border:2px solid var(--linea-2);flex:none}
+.pasos li.listo{color:var(--ceniza-2);text-decoration:line-through}
 .pasos li.listo .caja{background:var(--ambar);border-color:var(--ambar)}
-.pasos li.ahora{color:var(--text);font-weight:600}
+.pasos li.ahora{color:var(--hueso);font-weight:600}
 .reloj{display:flex;align-items:center;gap:16px}
-.reloj svg{flex:none}
-.reloj .tiempo{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
-.reloj small{display:block;color:var(--muted);font-size:13px}
-.aviso{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.reloj .tiempo{font-family:var(--display);font-weight:700;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.reloj small{display:block;color:var(--ceniza);font-size:13px}
+.extras{display:grid;gap:14px;margin-top:24px}
+@media (min-width:768px){.extras{grid-template-columns:1fr 1fr}}
+.extra{background:var(--carbon);border:1px solid var(--linea);border-radius:22px;padding:24px}
+.extra h3{margin:0;font-family:var(--display);text-transform:uppercase;font-size:32px;line-height:.95}
+.extra p{margin:10px 0 0;color:var(--ceniza);font-size:16px}
+.extra .mini{background:var(--brasa)}
+.aviso{display:flex;gap:10px;align-items:flex-start;background:var(--carbon-2);border:1px solid var(--linea);border-radius:12px;padding:10px 12px}
 .aviso+.aviso{margin-top:8px}
 .aviso img{width:28px;height:28px;border-radius:7px;flex:none}
 .aviso b{display:block;font-size:14px}
-.aviso span{display:block;color:var(--muted);font-size:13px;line-height:1.4}
-.aviso em{font-style:normal;color:var(--dim);font-size:12px;margin-left:auto;padding-left:8px;white-space:nowrap}
-.pestanas{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface-2);font-weight:600;font-size:13px;color:var(--muted)}
+.aviso span{display:block;color:var(--ceniza);font-size:13px;line-height:1.4}
+.aviso em{font-style:normal;color:var(--ceniza-2);font-size:12px;margin-left:auto;padding-left:8px;white-space:nowrap}
+.pestanas{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--carbon-2);font-weight:600;font-size:13px;color:var(--ceniza)}
 .pestanas span{flex:1;text-align:center;padding:7px 0;border-radius:9px}
-.pestanas .on{background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-2)}
+.pestanas .on{background:var(--carbon);color:var(--hueso);box-shadow:inset 0 0 0 1px var(--linea-2)}
 .pack{display:flex;align-items:center;gap:10px;margin-top:12px}
-.pack .nombre{flex:1;min-width:0}
 .pack .nombre b{display:block;font-weight:600}
-.pack .nombre span{display:block;color:var(--muted);font-size:13px}
-.agregar{display:flex;align-items:center;justify-content:center;min-height:40px;margin-top:12px;border-radius:12px;background:var(--ambar);color:#0F1113;font-weight:700;font-size:14px;transition:background .3s,color .3s}
-.agregar.ya{background:var(--surface-2);color:var(--muted)}
-.minimo{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--ambar-tint);color:var(--ambar);font-weight:600;font-size:14px}
+.pack .nombre span{display:block;color:var(--ceniza);font-size:13px}
+.agregar{display:flex;align-items:center;justify-content:center;min-height:40px;margin-top:12px;border-radius:12px;background:var(--ambar);color:#120D08;font-weight:700;font-size:14px;transition:background .3s,color .3s}
+.agregar.ya{background:var(--carbon-2);color:var(--ceniza)}
 
-/* La regla */
-.partido{display:grid;gap:40px;align-items:center}
-@media (min-width:1024px){.partido{grid-template-columns:1fr 1fr;gap:72px}}
-.tarjeta-regla{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
-.tarjeta-regla .semana{gap:8px}
-.tarjeta-regla .dia{padding:10px 0;font-size:13px}
-.tarjeta-regla .dia b{font-size:22px}
-.pie-regla{display:flex;justify-content:space-between;gap:10px;margin-top:12px;color:var(--muted);font-size:14px}
-.pie-regla b{color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:17px}
-
-/* Pantallas reales */
-.carrusel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 16px 24px;margin:48px -16px 0;scrollbar-width:none}
+/* Pantallas en el celular (solo celular y tableta) */
+.carrusel{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 16px 24px;margin:48px -16px 0;scrollbar-width:none}
 .carrusel::-webkit-scrollbar{display:none}
-@media (min-width:1024px){.carrusel{justify-content:center;overflow:visible;margin:56px 0 0;padding:0}}
-.cel{flex:none;width:236px;scroll-snap-align:center}
-@media (min-width:1024px){.cel{width:200px}.cel:nth-child(2),.cel:nth-child(4){transform:translateY(36px)}}
-.marco{border-radius:34px;padding:7px;background:linear-gradient(#2A2E34,#15181B);border:1px solid #3A4048;box-shadow:0 30px 70px -20px rgba(0,0,0,.85)}
-.marco img{border-radius:28px;aspect-ratio:390/844;object-fit:cover;object-position:top}
-.cel h3{margin:16px 0 0;font-size:17px;font-weight:600}
-.cel p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
-.dos-mundos{display:grid;gap:12px;margin:72px auto 0;max-width:820px}
-@media (min-width:768px){.dos-mundos{grid-template-columns:1fr 1fr}}
-.mundo{border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;background:var(--surface)}
-.mundo b{display:block;font-size:18px;font-weight:600}
-.mundo span{display:block;color:var(--muted);font-size:15px;margin-top:4px}
+.carrusel figure{flex:none;width:224px;margin:0;scroll-snap-align:center}
+.carrusel .marco{border-radius:34px;padding:7px}
+.carrusel .vidrio{border-radius:28px}
+.carrusel .vidrio img{opacity:1}
+.carrusel figcaption{margin-top:14px;font-weight:600}
+.carrusel figcaption span{display:block;color:var(--ceniza);font-weight:400;font-size:14px}
+@media (min-width:1024px){.carrusel{display:none}}
 
-/* Oferta */
-.oferta{display:grid;gap:28px;margin-top:48px;align-items:start}
-@media (min-width:1024px){.oferta{grid-template-columns:1.25fr 1fr;gap:40px}}
-.lista-regalos{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-.regalo{display:flex;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
-.regalo .num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--ambar);background:var(--ambar-tint);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
-.regalo.app .num{background:var(--ambar);color:#0F1113}
-.regalo b{display:block;font-size:17px;font-weight:600;line-height:1.3}
-.regalo span{display:block;color:var(--muted);font-size:15px;margin-top:4px;line-height:1.45}
-.regalo .donde{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.precio{position:relative;background:linear-gradient(180deg,#15181C,#0F1113);border:1px solid var(--line-2);border-radius:24px;padding:28px 24px;text-align:center;overflow:hidden}
-@media (min-width:1024px){.precio{position:sticky;top:96px}}
-.precio::before{content:"";position:absolute;inset:-40% -20% auto;height:300px;background:radial-gradient(50% 50% at 50% 0,rgba(255,181,71,.14),transparent 70%);pointer-events:none}
-.precio .cejilla{position:relative}
-.valor{position:relative;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:84px;line-height:.9;letter-spacing:-.01em;margin:6px 0 0}
-.valor sup{font-size:.42em;vertical-align:.95em;margin-right:4px;color:var(--muted)}
-.precio .unico{position:relative;margin:10px 0 0;color:var(--muted)}
-.incluye{position:relative;list-style:none;margin:22px 0 0;padding:18px 0 0;border-top:1px solid var(--line);display:grid;gap:10px;text-align:left}
-.incluye li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
-.incluye svg{color:var(--ambar);flex:none;margin-top:3px}
-.precio .boton{position:relative;width:100%;margin-top:24px}
-.precio .garantia{position:relative;margin:14px 0 0;color:var(--dim);font-size:13px}
+/* ===== 6. LA REGLA: bloque ámbar ===== */
+.regla{background:var(--ambar);color:#140E08;position:relative;overflow:hidden}
+.regla::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 100% 0,rgba(255,138,42,.55),transparent 70%);pointer-events:none}
+.regla .env{position:relative;z-index:1;display:grid;gap:44px;align-items:center}
+@media (min-width:1024px){.regla .env{grid-template-columns:1.25fr 1fr;gap:64px}}
+.regla .grande{color:#140E08}
+.g-regla{font-size:clamp(52px,7.6vw,112px)}
+.regla .texto{color:#3B2B16;font-size:19px;font-weight:500}
+.regla-tarjeta{background:#140E08;color:var(--hueso);border-radius:26px;padding:24px;box-shadow:0 40px 80px -30px rgba(80,40,0,.6)}
+.regla-tarjeta .semana{gap:8px;margin-top:0}
+.regla-tarjeta .dia{padding:10px 0;font-size:13px}
+.regla-tarjeta .dia b{font-size:24px}
+.pie-regla{display:flex;justify-content:space-between;gap:10px;margin-top:14px;color:var(--ceniza);font-size:14px}
+.pie-regla b{color:var(--hueso);font-family:var(--display);font-size:18px}
+.regla-tarjeta .aviso{margin-top:16px}
 
-/* Cómo recibes tu acceso */
-.pasos-acceso{list-style:none;margin:48px auto 0;padding:0;display:grid;gap:12px;max-width:760px}
-.pasos-acceso li{display:flex;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px}
-.pasos-acceso .n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;line-height:1;color:var(--dim);width:36px;flex:none}
-.pasos-acceso b{display:block;font-size:17px;font-weight:600}
-.pasos-acceso span{display:block;color:var(--muted);font-size:15px;margin-top:4px}
+/* ===== 7. ¿Y AHORA? ===== */
+.compara{display:grid;gap:14px;margin-top:52px}
+@media (min-width:900px){.compara{grid-template-columns:1fr 1fr;gap:18px}}
+.col{border-radius:24px;padding:26px 24px 12px;border:1px solid var(--linea);background:var(--carbon)}
+.col.con{background:linear-gradient(180deg,#2A1E10,#17120D 70%);border-color:#6B4C22;box-shadow:0 0 80px -40px rgba(255,138,42,.6)}
+.col h3{display:flex;align-items:center;gap:10px;margin:0 0 6px;font-family:var(--display);font-size:30px;line-height:1;text-transform:uppercase;color:var(--ceniza)}
+.col.con h3{color:var(--ambar)}
+.col h3 img{width:30px;height:30px;border-radius:8px}
+.col ul{list-style:none;margin:0;padding:0}
+.col li{display:flex;gap:12px;align-items:flex-start;padding:15px 0;font-size:16px;line-height:1.45;color:var(--ceniza)}
+.col li+li{border-top:1px solid var(--linea)}
+.col.con li{color:var(--hueso)}
+.col li svg{flex:none;margin-top:3px}
+.col.sin li svg{color:var(--ceniza-2)}
+.col.con li svg{color:var(--ambar)}
 
-/* Preguntas */
-.preguntas{max-width:760px;margin:40px auto 0;border-top:1px solid var(--line)}
-.preguntas details{border-bottom:1px solid var(--line)}
-.preguntas summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;cursor:pointer;font-weight:600;font-size:17px}
+/* ===== 8. LA OFERTA ===== */
+.oferta-grid{display:grid;gap:40px;margin-top:56px;align-items:start}
+@media (min-width:1024px){.oferta-grid{grid-template-columns:1fr 1fr;gap:64px}}
+.caja-precio{position:relative}
+@media (min-width:1024px){.caja-precio{position:sticky;top:96px}}
+.valor{font-family:var(--display);font-weight:700;font-size:clamp(104px,17vw,184px);line-height:.8;letter-spacing:-.01em;margin:0}
+.valor sup{font-size:.38em;vertical-align:1.1em;margin-right:6px;color:var(--ceniza)}
+.una-vez{margin:16px 0 0;font-size:20px;font-weight:600}
+.una-vez span{display:block;color:var(--ceniza);font-weight:400;font-size:16px;margin-top:4px}
+/* el recibo de papel */
+.recibo{position:relative;margin:30px 0 0;max-width:440px;background:var(--hueso);color:#20170E;padding:26px 24px 22px;
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 20px) no-repeat,radial-gradient(circle 9px at 50% 100%,transparent 8px,#000 9px) bottom/20px 20px repeat-x;
+          mask:linear-gradient(#000 0 0) top/100% calc(100% - 20px) no-repeat,radial-gradient(circle 9px at 50% 100%,transparent 8px,#000 9px) bottom/20px 20px repeat-x;
+  padding-bottom:42px;transform:rotate(-1.2deg);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+.recibo h3{margin:0 0 4px;display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:26px;text-transform:uppercase;line-height:1}
+.recibo h3 img{width:28px;height:28px;border-radius:7px}
+.recibo .fecha{margin:0 0 12px;color:#6B5B48;font-size:13px}
+.recibo ul{list-style:none;margin:0;padding:12px 0;border-top:2px dashed #C9BBA6;border-bottom:2px dashed #C9BBA6}
+.recibo li{display:flex;align-items:baseline;gap:8px;padding:6px 0;font-size:15px;font-weight:500}
+.recibo li i{flex:1;border-bottom:2px dotted #C9BBA6;transform:translateY(-4px);min-width:14px}
+.recibo li b{font-family:var(--display);font-size:22px;line-height:1;font-variant-numeric:tabular-nums}
+.recibo .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;font-weight:700}
+.recibo .total b{font-family:var(--display);font-size:34px;line-height:1}
+.recibo .sello{position:absolute;right:18px;top:20px;padding:6px 10px;border:2px solid #C24F0E;color:#C24F0E;border-radius:8px;font-family:var(--display);font-size:16px;line-height:1;text-transform:uppercase;transform:rotate(8deg)}
+.comprar{margin-top:30px;max-width:440px}
+.comprar .boton{width:100%}
+.pagas{margin:12px 0 0;color:var(--ceniza);font-size:14px;line-height:1.45}
+.pagas b{color:var(--hueso)}
+.garantia{display:flex;gap:12px;align-items:flex-start;margin:18px 0 0;padding:16px;border-radius:16px;background:var(--lila-tint);border:1px solid #2C3254}
+.garantia svg{flex:none;color:var(--lila-claro);margin-top:2px}
+.garantia b{display:block;color:var(--lila-claro)}
+.garantia span{display:block;color:var(--ceniza);font-size:14px;line-height:1.45;margin-top:2px}
+.regalos{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--linea)}
+.regalo{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:22px 0;border-bottom:1px solid var(--linea)}
+.regalo .num{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:20px;color:var(--ambar);background:var(--ambar-tint)}
+.regalo.app .num{background:var(--ambar);color:#120D08}
+.regalo b{display:block;font-size:19px;font-weight:600;line-height:1.25}
+.regalo span{display:block;color:var(--ceniza);font-size:15px;margin-top:4px}
+.regalo em{display:inline-block;margin-top:8px;font-style:normal;font-size:13px;font-weight:600;color:var(--ceniza-2)}
+
+/* ===== 9. CÓMO RECIBES ===== */
+.pasos-acceso{list-style:none;margin:52px 0 0;padding:0;display:grid;gap:14px;counter-reset:p}
+@media (min-width:900px){.pasos-acceso{grid-template-columns:repeat(3,1fr)}}
+.pasos-acceso li{background:var(--carbon);border:1px solid var(--linea);border-radius:22px;padding:24px}
+.pasos-acceso .n{display:block;font-family:var(--display);font-size:64px;line-height:.8;color:var(--ambar)}
+.pasos-acceso b{display:block;margin-top:18px;font-size:19px;font-weight:600;line-height:1.25}
+.pasos-acceso span{display:block;color:var(--ceniza);font-size:15px;margin-top:6px}
+
+/* ===== 10. PREGUNTAS ===== */
+.preguntas{max-width:820px;margin:44px 0 0;border-top:1px solid var(--linea)}
+.preguntas details{border-bottom:1px solid var(--linea)}
+.preguntas summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px;cursor:pointer;font-weight:600;font-size:18px}
 .preguntas summary::-webkit-details-marker{display:none}
-.preguntas summary svg{flex:none;color:var(--muted);transition:transform .25s}
+.preguntas summary svg{flex:none;color:var(--ambar);transition:transform .25s}
 .preguntas details[open] summary svg{transform:rotate(45deg)}
-.preguntas details p{margin:0 0 20px;color:var(--muted);max-width:640px}
+.preguntas details p{margin:0 0 22px;color:var(--ceniza);max-width:62ch}
 
-/* Cierre */
-.cierre{text-align:center;padding:120px 0 96px;position:relative;overflow:hidden}
-.cierre::before{content:"";position:absolute;inset:auto -10% -40%;height:520px;background:radial-gradient(50% 50% at 50% 100%,rgba(255,181,71,.10),transparent 70%);pointer-events:none}
-.cierre .llama{width:56px;height:56px;border-radius:16px;margin:0 auto 26px}
-.cierre .boton{margin-top:32px;position:relative}
-footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--dim);font-size:14px}
+/* ===== 11. CIERRE ===== */
+.cierre{position:relative;overflow:hidden;padding:120px 0 110px;text-align:center}
+.cierre-fondo{position:absolute;inset:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:8px;padding:8px;opacity:.5;-webkit-mask:radial-gradient(60% 70% at 50% 50%,#000,transparent);mask:radial-gradient(60% 70% at 50% 50%,#000,transparent);pointer-events:none}
+.cierre-fondo i{aspect-ratio:1;border-radius:8px;background:var(--vacio);transition:background .4s}
+.cierre-fondo i.si{background:rgba(255,181,71,.5)}
+.cierre .env{position:relative}
+.cierre .acciones{justify-content:center}
+footer{border-top:1px solid var(--linea);padding:28px 0 40px;color:var(--ceniza-2);font-size:14px}
 footer .env{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center}
 footer nav{display:flex;flex-wrap:wrap;gap:4px 8px}
-footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;color:var(--muted);text-decoration:none}
-footer a:hover{color:var(--text)}
+footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;color:var(--ceniza);text-decoration:none}
+footer a:hover{color:var(--hueso)}
 
-/* Aparecer al bajar (lo hace el JavaScript; sin él, todo se ve) */
-.js .aparece{opacity:0;transform:translateY(24px)}
+/* Barra de compra fija (solo celular) */
+.compra-fija{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(23,18,13,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--linea-2);transform:translateY(110%);visibility:hidden;transition:transform .35s cubic-bezier(.22,1,.36,1),visibility 0s linear .35s}
+.compra-fija.ver{transform:none;visibility:visible;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.compra-fija b{display:block;font-family:var(--display);font-size:26px;line-height:1}
+.compra-fija span{display:block;color:var(--ceniza);font-size:12px;margin-top:3px}
+@media (min-width:768px){.compra-fija{display:none}}
+@media (max-width:767px){footer{padding-bottom:112px}}
+
+/* Movimiento */
+.js .aparece{opacity:0}
 @media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  .js .aparece{transform:none}
   .pantalla{transform:none!important}
+  .compra-fija,.compra-fija.ver{transform:none;opacity:0;transition:opacity .25s,visibility 0s linear .25s}
+  .compra-fija.ver{opacity:1;transition:opacity .25s}
+  .recibo{transform:none}
 }
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-
-/* Marcas de maqueta: textos nuevos sin aprobar */
-.nuevo{outline:1px dashed rgba(142,155,255,.55);outline-offset:4px;border-radius:4px}
-.sin-marcas .nuevo{outline:0}
-.interruptor{position:fixed;left:12px;bottom:12px;z-index:50;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;background:#1F2233;border:1px solid #2C3254;color:var(--comodin);font:600 13px 'Barlow',sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
@@ -270,53 +351,81 @@ footer a:hover{color:var(--text)}
 </header>
 
 <main id="arriba">
-  <!-- 1. PORTADA -->
+
+  <!-- 1. PORTADA: la racha que sobrevive a un día malo -->
   <section class="portada">
     <div class="env">
-      <h1 class="t1 aparece">Para que un día malo no te haga <b>empezar de cero.</b></h1>
-      <p class="bajada aparece nuevo">Racha es una app para sostener lo que empiezas: tus hábitos, tus tareas y tu foco, en un solo lugar.</p>
-      <ul class="sellos aparece" aria-label="Lo básico">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Celular y computador</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sin mensualidades</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Acceso vitalicio</li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>7 días para probarla</li>
-      </ul>
-      <div class="acciones aparece">
-        <a class="boton" href="#oferta">Quiero Racha</a>
-      </div>
-      <div class="raya" aria-hidden="true"></div>
-      <p class="mira aparece">Así se ve<br>por dentro.</p>
-    </div>
-    <div class="escena" id="escena">
-      <div class="pantalla" id="pantalla">
-        <div class="cristal">
-          <video src="assets/app-escritorio.mp4" poster="assets/app-escritorio-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="La app Racha llenándose sola: los hábitos de Hoy y después Progreso con Tu año"></video>
+      <div>
+        <h1 class="grande g1">Fallar un día no borra <span class="ambar">lo que llevas.</span></h1>
+        <p class="texto">Racha es la app de hábitos, tareas y foco hecha para el día que fallas: haces lo mínimo o usas un comodín, y al otro día sigues.</p>
+        <div class="acciones">
+          <a class="boton" href="#oferta">Quiero Racha</a>
+          <p class="precio-corto"><b>$37.900</b>una sola vez · 7 días para probarla</p>
         </div>
       </div>
-      <div class="base" aria-hidden="true"></div>
+
+      <div class="escenario" aria-label="Ejemplo: una racha de 34 días con un día que no se pudo, salvado con un comodín">
+        <div class="cel-atras marco" aria-hidden="true"><div class="vidrio"><img class="on" src="assets/cel-1-hoy.jpg" alt=""></div></div>
+        <div class="racha" id="racha">
+          <div class="racha-cab">
+            <div class="racha-num"><span id="racha-n">34</span><small>días<br>seguidos</small></div>
+            <img class="racha-llama" src="assets/icono.svg" alt="">
+          </div>
+          <div class="sem-dias" aria-hidden="true"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          <div class="cuadros" id="cuadros" aria-hidden="true"></div>
+          <p class="racha-pie comodin" id="racha-pie" aria-live="polite"><i></i><span id="racha-txt">Usaste un comodín. Tu racha sigue.</span></p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 2. POR QUÉ LLEVAR LA CUENTA: Tu año -->
-  <section class="seccion" id="por-que">
-    <div class="env centro">
-      <p class="cejilla aparece nuevo">Por qué llevar la cuenta</p>
-      <h2 class="t2 aparece">No la convences con promesas. <b>Con evidencia.</b></h2>
-      <p class="bajada aparece nuevo">Tu cabeza ya no cree en el "voy a cambiar". Lo que sí cree es lo que ve: cada día que cumples queda marcado, y al mes ya no es una promesa. Es una prueba.</p>
+  <!-- 2. ¿TE SUENA? -->
+  <section class="seccion suena" style="padding-top:40px">
+    <div class="env">
+      <h2 class="grande g2">¿Te suena?</h2>
+      <ul class="lista">
+        <li><b>El lunes empiezas con todo.</b><span>Y el jueves ya lo soltaste.</span></li>
+        <li><b>Fallas un día y botas la semana.</b><span>Sientes que perdiste todo lo que llevabas y lo dejas para el lunes.</span></li>
+        <li><b>Pagas el gimnasio y no vas.</b><span>Llevas un mes pagando algo que dejaste a las tres semanas.</span></li>
+        <li><b>Algo lleva meses aplazado.</b><span>Es tan grande que no sabes por dónde arrancar.</span></li>
+      </ul>
+      <p class="remate">Racha está hecha para ese momento: <b>el día en que normalmente lo sueltas.</b></p>
+    </div>
+  </section>
+
+  <!-- 3. POR DENTRO -->
+  <section class="seccion dentro">
+    <div class="env">
+      <div class="cab">
+        <h2 class="grande g2">Así se ve <span class="ambar">por dentro.</span></h2>
+        <p class="texto" style="margin:0;max-width:34ch">En el celular marcas tu día en segundos. En el computador planeas tu semana. Todo queda sincronizado.</p>
+      </div>
     </div>
     <div class="env">
-      <div class="anio-caja aparece" id="anio">
-        <div class="anio-cab">
-          <div>
-            <h3>Tu año</h3>
-            <p class="nuevo">Así se ve en la app · datos de ejemplo</p>
+      <div class="escena" id="escena">
+        <div class="pantalla" id="pantalla">
+          <div class="cristal">
+            <video src="assets/app-escritorio.mp4" poster="assets/app-escritorio-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="La app Racha llenándose sola: los hábitos de Hoy y después Progreso con Tu año"></video>
           </div>
-          <div class="cuenta" aria-live="off"><span id="cuenta">0</span><small>días completos</small></div>
         </div>
-        <div class="anio-rejilla" aria-hidden="true">
-          <div class="meses" id="meses"></div>
-          <div class="cuadritos" id="cuadritos"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. TU AÑO -->
+  <section class="seccion anio" style="padding-top:0">
+    <div class="env">
+      <div class="cab">
+        <div>
+          <h2 class="grande g2">Tu cabeza ya no te cree. <span class="ambar">Muéstrale los días.</span></h2>
+          <p class="texto">Cada día que cumples queda marcado. En un mes ya no tienes una promesa: tienes la prueba.</p>
         </div>
+        <div class="cifra" aria-live="off"><span id="cuenta">0</span><small>días completos en Tu año</small></div>
+      </div>
+      <div class="anio-caja" id="anio">
+        <h3>Tu año</h3>
+        <p class="nota">Así se ve en la app, con datos de ejemplo</p>
+        <div class="anio-rejilla" aria-hidden="true"><div class="meses" id="meses"></div><div class="cuadritos" id="cuadritos"></div></div>
         <ul class="leyenda">
           <li><i style="background:var(--vacio)"></i>Nada</li>
           <li><i style="background:linear-gradient(135deg,var(--ambar) 0 50%,var(--vacio) 50%)"></i>Una parte</li>
@@ -327,123 +436,122 @@ footer a:hover{color:var(--text)}
     </div>
   </section>
 
-  <!-- 3. TODO EN UNA APP: cuadros -->
-  <section class="seccion" style="padding-top:0">
+  <!-- 5. FUNCIONES: el celular fijo cambia de pantalla mientras bajas -->
+  <section class="seccion funciones">
     <div class="env">
-      <div class="centro">
-        <p class="cejilla aparece nuevo">Todo en una app</p>
-        <h2 class="t2 aparece nuevo">Todo lo que necesitas para <b>no abandonar.</b></h2>
-        <p class="bajada aparece nuevo">Pensada para el día que no puedes con nada, no solo para los días buenos.</p>
+      <h2 class="grande g2">Todo lo que necesitas para <span class="ambar">no soltarlo.</span></h2>
+      <div class="fun-grid">
+        <div class="fijo" aria-hidden="true">
+          <div class="marco"><div class="vidrio" id="vidrio">
+            <img data-p="hoy" class="on" src="assets/cel-1-hoy.jpg" alt="">
+            <img data-p="tareas" src="assets/cel-2-tareas.jpg" alt="">
+            <img data-p="semana" src="assets/cel-3-semana.jpg" alt="">
+            <img data-p="progreso" src="assets/cel-4-progreso.jpg" alt="">
+          </div></div>
+        </div>
+
+        <div>
+          <article class="fun" data-p="hoy">
+            <h3>Marca tu día en segundos.</h3>
+            <p>Tus hábitos por mañana, tarde y noche. Lo que cumples se queda a la vista, y la semana se va llenando.</p>
+            <div class="mini" id="habitos">
+              <div class="fila"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2.7c3.5 4 6 7.3 6 10.3a6 6 0 0 1-12 0c0-3 2.5-6.3 6-10.3z"/></svg></span><span class="nombre"><b>Tomar un vaso de agua</b><span>+10 ganados</span></span><span class="barritas"><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i></i></span><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+              <div class="fila"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span><span class="nombre"><b>Escribir las 3 cosas importantes del día</b><span>+10 ganados</span></span><span class="barritas"><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i></i><i></i></span><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+              <div class="fila"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="nombre"><b>Estudiar inglés 1 hora</b><span>+10 ganados</span></span><span class="barritas"><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i></i><i></i><i></i></span><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+            </div>
+          </article>
+
+          <article class="fun" data-p="hoy">
+            <h3>¿Día pesado? Haz solo lo mínimo.</h3>
+            <p>Cada hábito tiene su versión pequeña. Una hora de inglés se vuelve repasar 10 minutos, y ese día cuenta como cumplido.</p>
+            <div class="mini">
+              <div class="fila"><span class="nombre"><b>Estudiar inglés 1 hora</b><span style="color:var(--ceniza);font-weight:500">Mínimo: repasar 10 minutos</span></span></div>
+              <div class="minimo"><span>+5 ganados · versión mínima</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
+            </div>
+          </article>
+
+          <article class="fun" data-p="hoy">
+            <h3>Un día que no pudiste no rompe tu racha.</h3>
+            <p>Lo congelas con un comodín y sigues contando. Si quieres, Racha lo usa sola cuando hace falta.</p>
+            <div class="mini">
+              <span class="chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>2 comodines</span>
+              <div class="semana">
+                <div class="dia"><span>Ma</span><b>13</b></div><div class="dia"><span>Mi</span><b>14</b></div><div class="dia congelado"><span>Ju</span><b>15</b></div><div class="dia"><span>Vi</span><b>16</b></div><div class="dia"><span>Sá</span><b>17</b></div><div class="dia"><span>Do</span><b>18</b></div><div class="dia hoy"><span>Lu</span><b>19</b></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="fun" data-p="tareas">
+            <h3>Lo que llevas meses aplazando, en pasos.</h3>
+            <p>Partes la tarea en pasos pequeños y hoy haces solo el que toca. Trae 18 ya partidas, como sacar el pasaporte o declarar renta.</p>
+            <div class="mini">
+              <b style="font-weight:600">Sacar o renovar el pasaporte</b>
+              <ul class="pasos">
+                <li class="listo"><span class="caja"></span>Revisar los requisitos</li>
+                <li class="ahora"><span class="caja"></span>Elegir la oficina más cercana</li>
+                <li><span class="caja"></span>Pedir la cita</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="fun" data-p="tareas">
+            <h3>25 minutos en un solo paso.</h3>
+            <p>Pones el pomodoro en el paso que toca. Cuando suena, descansas.</p>
+            <div class="mini reloj">
+              <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="32" fill="none" stroke="#2E251B" stroke-width="6"/><circle id="aro" cx="38" cy="38" r="32" fill="none" stroke="#8E9BFF" stroke-width="6" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="60" transform="rotate(-90 38 38)"/></svg>
+              <div><span class="tiempo" id="tiempo">17:32</span><small>Elegir la oficina más cercana</small></div>
+            </div>
+          </article>
+
+          <article class="fun" data-p="semana">
+            <h3>Tu semana, sin abrumarte.</h3>
+            <p>Le das un día a cada paso y ves la semana completa: mañana, tarde y noche.</p>
+          </article>
+
+          <article class="fun" data-p="progreso">
+            <h3>Ves dónde estás fallando.</h3>
+            <p>La fuerza de cada hábito, los días y momentos que más te cuestan, y qué hacer ahora.</p>
+          </article>
+        </div>
       </div>
 
-      <div class="bento">
-        <!-- Hábitos -->
-        <article class="cuadro ancho aparece">
-          <div>
-            <h3 class="nuevo">Tus hábitos del día</h3>
-            <p class="nuevo">Por momentos: mañana, tarde y noche. Marca cada uno al cumplirlo; lo cumplido se queda a la vista.</p>
-          </div>
-          <div class="mini" id="habitos">
-            <div class="fila"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2.7c3.5 4 6 7.3 6 10.3a6 6 0 0 1-12 0c0-3 2.5-6.3 6-10.3z"/></svg></span><span class="nombre"><b>Tomar un vaso de agua</b><span>+10 ganados</span></span><span class="barritas"><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i></i></span><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
-            <div class="fila"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span><span class="nombre"><b>Escribir las 3 cosas importantes del día</b><span>+10 ganados</span></span><span class="barritas"><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i></i><i></i></span><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
-            <div class="fila"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="nombre"><b>Leer 10 páginas</b><span>+10 ganados</span></span><span class="barritas"><i class="si"></i><i class="si"></i><i class="si"></i><i class="si"></i><i></i><i></i><i></i></span><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></div>
-          </div>
-        </article>
-
-        <!-- Día difícil -->
-        <article class="cuadro aparece">
-          <div>
-            <h3>¿Día pesado? Haz solo lo mínimo</h3>
-            <p class="nuevo">Cada hábito tiene su versión pequeña. El día malo haces esa, y ese día cuenta.</p>
-          </div>
+      <div class="extras">
+        <article class="extra">
+          <h3>Avisos a tiempo</h3>
+          <p>A la hora de tus hábitos. Y en la noche te recuerda que basta con lo mínimo.</p>
           <div class="mini">
-            <div class="fila hecha" style="min-height:40px"><span class="nombre"><b style="text-decoration:none;color:var(--text)">Entrenar 30 minutos</b><span style="color:var(--muted);font-weight:500">Mínimo: 10 sentadillas</span></span></div>
-            <div class="minimo"><span>+5 ganados · versión mínima</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></div>
-          </div>
-        </article>
-
-        <!-- Comodines -->
-        <article class="cuadro aparece">
-          <div>
-            <h3 class="nuevo">Comodines</h3>
-            <p class="nuevo">Congela un día que no pudiste, sin romper tu racha.</p>
-          </div>
-          <div class="mini">
-            <span class="chip lila"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>2 comodines</span>
-            <div class="semana">
-              <div class="dia"><span>Ma</span><b>13</b></div><div class="dia"><span>Mi</span><b>14</b></div><div class="dia congelado"><span>Ju</span><b>15</b></div><div class="dia"><span>Vi</span><b>16</b></div><div class="dia"><span>Sá</span><b>17</b></div><div class="dia"><span>Do</span><b>18</b></div><div class="dia hoy"><span>Lu</span><b>19</b></div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Tareas -->
-        <article class="cuadro aparece">
-          <div>
-            <h3 class="nuevo">Tareas partidas en pasos</h3>
-            <p class="nuevo">Lo que llevas meses aplazando, en pasos pequeños. Hoy solo haces el que toca.</p>
-          </div>
-          <div class="mini">
-            <b style="font-weight:600">Sacar o renovar el pasaporte</b>
-            <ul class="pasos">
-              <li class="listo"><span class="caja"></span>Revisar los requisitos</li>
-              <li class="ahora"><span class="caja"></span>Elegir la oficina más cercana</li>
-              <li><span class="caja"></span>Pedir la cita</li>
-            </ul>
-          </div>
-        </article>
-
-        <!-- Foco -->
-        <article class="cuadro aparece">
-          <div>
-            <h3>Modo Foco</h3>
-            <p class="nuevo">Un pomodoro en el paso que toca. Cuando suena, descansas.</p>
-          </div>
-          <div class="mini reloj">
-            <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="32" fill="none" stroke="#22262C" stroke-width="6"/><circle id="aro" cx="38" cy="38" r="32" fill="none" stroke="#8E9BFF" stroke-width="6" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="60" transform="rotate(-90 38 38)"/></svg>
-            <div><span class="tiempo" id="tiempo">17:32</span><small>Elegir la oficina más cercana</small></div>
-          </div>
-        </article>
-
-        <!-- Avisos -->
-        <article class="cuadro ancho-lg aparece">
-          <div>
-            <h3 class="nuevo">Avisos con intención</h3>
-            <p class="nuevo">A la hora de tus hábitos, y en la noche te recuerda que basta con lo mínimo.</p>
-          </div>
-          <div class="mini">
-            <div class="aviso"><img src="assets/icono.svg" alt=""><div><b>Hoy basta con lo mínimo</b><span>Entrenar 30 minutos, mínimo: “10 sentadillas”. Cuenta como cumplido.</span></div><em>8:00 p. m.</em></div>
+            <div class="aviso"><img src="assets/icono.svg" alt=""><div><b>Hoy basta con lo mínimo</b><span>Estudiar inglés 1 hora, mínimo: “repasar 10 minutos”. Cuenta como cumplido.</span></div><em>8:00 p. m.</em></div>
             <div class="aviso"><img src="assets/icono.svg" alt=""><div><b>Terminó tu pomodoro</b><span>Te toca un descanso de 5 min.</span></div><em>ahora</em></div>
           </div>
         </article>
-
-        <!-- Biblioteca -->
-        <article class="cuadro aparece">
-          <div>
-            <h3>Biblioteca</h3>
-            <p class="nuevo">Rutinas, tareas y planes ya armados. Escoges uno y entra a tu Racha con un toque.</p>
-          </div>
+        <article class="extra">
+          <h3>Biblioteca lista</h3>
+          <p>Rutinas, tareas y planes ya armados. Escoges uno y entra a tu Racha con un toque.</p>
           <div class="mini">
             <div class="pestanas" aria-hidden="true"><span class="on">Hábitos</span><span>Tareas</span><span>Planes</span></div>
-            <div class="pack">
-              <span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2v8M4.9 10.1l1.4 1.4M2 18h2M20 18h2M17.7 11.5l1.4-1.4M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/></svg></span>
-              <span class="nombre"><b>Mañana productiva</b><span>3 hábitos para empezar el día</span></span>
-            </div>
+            <div class="pack"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2v8M4.9 10.1l1.4 1.4M2 18h2M20 18h2M17.7 11.5l1.4-1.4M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/></svg></span><span class="nombre"><b>Mañana productiva</b><span>3 hábitos para empezar el día</span></span></div>
             <span class="agregar" id="agregar">Agregar 3 hábitos</span>
           </div>
         </article>
       </div>
+
+      <div class="carrusel" tabindex="0" aria-label="Pantallas de la app en el celular">
+        <figure><div class="marco"><div class="vidrio"><img src="assets/cel-1-hoy.jpg" alt="Pantalla Hoy de Racha" loading="lazy"></div></div><figcaption>Hoy<span>Lo que te toca ahora.</span></figcaption></figure>
+        <figure><div class="marco"><div class="vidrio"><img src="assets/cel-2-tareas.jpg" alt="Pantalla Tareas de Racha" loading="lazy"></div></div><figcaption>Tareas<span>Cada tarea con sus pasos.</span></figcaption></figure>
+        <figure><div class="marco"><div class="vidrio"><img src="assets/cel-3-semana.jpg" alt="Pantalla Tu semana de Racha" loading="lazy"></div></div><figcaption>Tu semana<span>Un día para cada paso.</span></figcaption></figure>
+        <figure><div class="marco"><div class="vidrio"><img src="assets/cel-4-progreso.jpg" alt="Pantalla Progreso de Racha" loading="lazy"></div></div><figcaption>Progreso<span>La fuerza de tus hábitos.</span></figcaption></figure>
+      </div>
     </div>
   </section>
 
-  <!-- 4. LA REGLA -->
-  <section class="seccion" style="padding-top:0">
-    <div class="env partido">
+  <!-- 6. LA REGLA: bloque ámbar -->
+  <section class="seccion regla">
+    <div class="env">
       <div>
-        <p class="cejilla aparece">El Método Anti-Abandono</p>
-        <h2 class="t2 aparece">Un día malo se vale. <b>Dos seguidos, no.</b></h2>
-        <p class="bajada aparece nuevo">Esa es la regla. Cuando fallas un día, Racha no te devuelve a cero: te ayuda a volver al otro día, con lo mínimo, en vez de esperar al lunes.</p>
+        <h2 class="grande g-regla">Un día malo se vale. Dos seguidos, no.</h2>
+        <p class="texto">Es la regla del Método Anti-Abandono, y Racha está construida alrededor de ella. Si fallas hoy, mañana vuelves con lo mínimo. No esperas al lunes.</p>
       </div>
-      <div class="tarjeta-regla aparece" id="regla">
+      <div class="regla-tarjeta" id="regla">
         <div class="semana">
           <div class="dia" data-d><span>L</span><b>13</b></div>
           <div class="dia" data-d><span>M</span><b>14</b></div>
@@ -453,104 +561,123 @@ footer a:hover{color:var(--text)}
           <div class="dia" data-d><span>S</span><b>18</b></div>
           <div class="dia" data-d><span>D</span><b>19</b></div>
         </div>
-        <div class="pie-regla"><span>Un día sin cumplir no borra los demás.</span><b>6 de 7</b></div>
-        <div class="aviso" style="margin-top:16px"><img src="assets/icono.svg" alt=""><div><b>Aquí sigue todo lo que llevas</b><span>Unos días sin cumplir no borran los demás. Hoy cada hábito vale el doble.</span></div></div>
+        <div class="pie-regla"><span>El miércoles no pudiste. El jueves volviste.</span><b>6 de 7</b></div>
+        <div class="aviso"><img src="assets/icono.svg" alt=""><div><b>Aquí sigue todo lo que llevas</b><span>Unos días sin cumplir no borran los demás. Hoy cada hábito vale el doble.</span></div></div>
       </div>
     </div>
   </section>
 
-  <!-- 5. PANTALLAS REALES -->
-  <section class="seccion" style="padding-top:0">
-    <div class="env centro">
-      <p class="cejilla aparece nuevo">Las pantallas de verdad</p>
-      <h2 class="t2 aparece nuevo">Así se ve <b>en tu celular.</b></h2>
-    </div>
+  <!-- 7. ¿Y AHORA? -->
+  <section class="seccion">
     <div class="env">
-      <div class="carrusel aparece" tabindex="0" aria-label="Pantallas de la app">
-        <figure class="cel" style="margin:0"><div class="marco"><img src="assets/cel-1-hoy.jpg" alt="Pantalla Hoy de Racha" loading="lazy"></div><h3>Hoy</h3><p class="nuevo">Lo que te toca ahora, por momentos del día.</p></figure>
-        <figure class="cel" style="margin:0"><div class="marco"><img src="assets/cel-2-tareas.jpg" alt="Pantalla Tareas de Racha" loading="lazy"></div><h3>Tareas</h3><p class="nuevo">Cada tarea con sus pasos y el día de cada uno.</p></figure>
-        <figure class="cel" style="margin:0"><div class="marco"><img src="assets/cel-3-semana.jpg" alt="Pantalla Tu semana de Racha" loading="lazy"></div><h3>Tu semana</h3><p class="nuevo">Planea la semana sin abrumarte.</p></figure>
-        <figure class="cel" style="margin:0"><div class="marco"><img src="assets/cel-4-progreso.jpg" alt="Pantalla Progreso de Racha" loading="lazy"></div><h3>Progreso</h3><p class="nuevo">La fuerza de tus hábitos y qué hacer ahora.</p></figure>
-        <figure class="cel" style="margin:0"><div class="marco"><img src="assets/cel-5-progreso-abajo.jpg" alt="Tus hábitos y dónde puedes mejorar, en Progreso" loading="lazy"></div><h3>Dónde puedes mejorar</h3><p class="nuevo">Los días y momentos que más te cuestan.</p></figure>
-      </div>
-      <div class="dos-mundos">
-        <div class="mundo aparece"><b class="nuevo">En el celular, registras.</b><span class="nuevo">Marcas tus hábitos en segundos, donde estés. Se instala como una app.</span></div>
-        <div class="mundo aparece"><b class="nuevo">En el computador, planeas.</b><span class="nuevo">Tu semana, tus tareas y tu progreso, con más espacio. Todo sincronizado.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. LA OFERTA -->
-  <section class="seccion" id="oferta" style="padding-top:0">
-    <div class="env">
-      <div class="centro">
-        <p class="cejilla aparece nuevo">Lo que te llevas</p>
-        <h2 class="t2 aparece nuevo">La app y <b>cinco regalos.</b></h2>
-      </div>
-      <div class="oferta">
-        <ol class="lista-regalos">
-          <li class="regalo app aparece"><span class="num" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="#0F1113" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><div><b>La app Racha, con acceso vitalicio</b><span>Pagas una vez y es tuya.</span></div></li>
-          <li class="regalo aparece"><span class="num">1</span><div><b>El Método Anti-Abandono</b><span>La guía para que un día malo no te tumbe todo lo que llevas. Se lee en 10 minutos.</span><em class="donde">Para leer</em></div></li>
-          <li class="regalo aparece"><span class="num">2</span><div><b>El Protocolo de Rescate</b><span>Qué hacer exactamente el día después de fallar, en 5 minutos.</span><em class="donde">Para leer</em></div></li>
-          <li class="regalo aparece"><span class="num">3</span><div><b>"Arranca en 5 minutos"</b><span>6 rutinas de hábitos ya armadas, para que no tengas que pensar por dónde empezar.</span><em class="donde">Dentro de la app</em></div></li>
-          <li class="regalo aparece"><span class="num">4</span><div><b>"Lo que llevas meses aplazando"</b><span>18 tareas ya partidas paso a paso, como declarar renta o sacar el pasaporte.</span><em class="donde">Dentro de la app</em></div></li>
-          <li class="regalo aparece"><span class="num">5</span><div><b>5 planes de 30 días</b><span>Ordenar tu plata, volver a estudiar, poner la casa en orden, moverte más y dormir mejor.</span><em class="donde">Dentro de la app</em></div></li>
-        </ol>
-
-        <div class="precio aparece">
-          <p class="cejilla">Todo por</p>
-          <p class="valor"><sup>$</sup>37.900</p>
-          <p class="unico">Un solo pago, sin mensualidades.</p>
-          <ul class="incluye">
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Acceso vitalicio: no se vence ni hay que renovarlo</li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="nuevo">En tu celular y en tu computador</span></li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>La app y los cinco regalos</li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>7 días para probarla</li>
+      <h2 class="grande g2">Fallaste un día. <span class="ambar">¿Y ahora?</span></h2>
+      <div class="compara">
+        <div class="col sin">
+          <h3>Sin Racha</h3>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14"/></svg>Sientes que perdiste todo y lo dejas para el lunes.</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14"/></svg>Sin ganas no haces nada: o es completo o no cuenta.</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14"/></svg>Lo aplazado sigue en un renglón que nunca empiezas.</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14"/></svg>Después de varios días, te da pena volver.</li>
           </ul>
-          <a class="boton" href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20quiero%20Racha" data-falta="numero">Quiero Racha</a>
-          <p class="garantia">Si no te convence en 7 días, te devolvemos todo el dinero.</p>
+        </div>
+        <div class="col con">
+          <h3><img src="assets/icono.svg" alt="">Con Racha</h3>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Usas un comodín o haces lo mínimo, y tu racha sigue.</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Haces la versión pequeña y el día cuenta.</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Lo partes en pasos y hoy haces solo uno.</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Vuelves, y ese día cada hábito vale el doble.</li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 7. CÓMO RECIBES TU ACCESO -->
-  <section class="seccion" style="padding-top:0">
-    <div class="env centro">
-      <p class="cejilla aparece nuevo">Tu acceso</p>
-      <h2 class="t2 aparece nuevo">Cómo recibes <b>tu Racha.</b></h2>
-    </div>
+  <!-- 8. LA OFERTA -->
+  <section class="seccion" id="oferta" style="padding-top:0">
     <div class="env">
-      <ol class="pasos-acceso">
-        <li class="aparece"><span class="n">01</span><div><b class="nuevo">Me escribes y pagas por Bre-B</b><span class="nuevo">Te muestro la app por dentro, te paso la llave y me mandas el comprobante con tu correo. Desde Nequi, Daviplata o tu banco.</span></div></li>
-        <li class="aparece"><span class="n">02</span><div><b class="nuevo">Te llega un código a tu correo</b><span class="nuevo">Entras en tengoracha.com con ese correo y el código de 6 números. Sin contraseñas.</span></div></li>
-        <li class="aparece"><span class="n">03</span><div><b class="nuevo">La instalas en tu celular</b><span class="nuevo">Queda en tu pantalla de inicio como una app más. En el computador la usas desde el navegador.</span></div></li>
-      </ol>
-    </div>
-  </section>
+      <h2 class="grande g2">Todo esto, <span class="ambar">un solo pago.</span></h2>
+      <div class="oferta-grid">
+        <div class="caja-precio">
+          <p class="valor"><sup>$</sup>37.900</p>
+          <p class="una-vez">Pagas una vez. Sin mensualidades.<span>Son menos de $105 al día el primer año, y después no pagas nada más.</span></p>
 
-  <!-- 8. PREGUNTAS -->
-  <section class="seccion" style="padding-top:0">
-    <div class="env centro">
-      <h2 class="t2 aparece">Preguntas <b>frecuentes</b></h2>
-    </div>
-    <div class="env">
-      <div class="preguntas">
-        <details><summary><span class="nuevo">¿Es un solo pago de verdad?</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p class="nuevo">Sí. Pagas $37.900 una vez y es tuya. No hay mensualidades ni cobros después.</p></details>
-        <details><summary><span class="nuevo">¿Qué quiere decir "acceso vitalicio"?</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Que no se vence ni hay que renovarlo: dura mientras Racha exista. Te garantizamos al menos 12 meses desde tu compra. Todo está explicado en los <a href="https://www.tengoracha.com/terminos">términos</a>.</p></details>
-        <details><summary><span class="nuevo">¿Y si no me convence?</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Tienes 7 días, contados desde el día de tu compra, para probar Racha. Si no te convence, te devolvemos todo. No tienes que dar explicaciones y vale aunque ya la hayas usado.</p></details>
-        <details><summary><span class="nuevo">¿Tengo que bajarla de una tienda de apps?</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p class="nuevo">No. Se instala desde el navegador del celular, en Android y en iPhone, y queda en tu pantalla de inicio como cualquier app.</p></details>
-        <details><summary><span class="nuevo">¿Mis datos quedan guardados si cambio de celular?</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p class="nuevo">Sí. Tu Racha se guarda en tu cuenta. Entras con tu correo en cualquier celular o computador y ahí está todo lo que llevas.</p></details>
+          <div class="recibo" aria-label="Lo que te llevas">
+            <span class="sello" aria-hidden="true">Vitalicio</span>
+            <h3><img src="assets/icono.svg" alt="">Racha</h3>
+            <p class="fecha">Lo que te llevas</p>
+            <ul>
+              <li>La app, acceso vitalicio<i></i><b>1</b></li>
+              <li>Guías para leer<i></i><b>2</b></li>
+              <li>Rutinas ya armadas<i></i><b>6</b></li>
+              <li>Tareas partidas en pasos<i></i><b>18</b></li>
+              <li>Planes de 30 días<i></i><b>5</b></li>
+            </ul>
+            <div class="total"><span>Total</span><b>$37.900</b></div>
+          </div>
+
+          <div class="comprar">
+            <a class="boton" href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20quiero%20Racha" data-falta="numero">Quiero Racha</a>
+            <!-- Mientras el botón lleve a Instagram. Con WhatsApp: "Se abre el chat de WhatsApp…" -->
+            <p class="pagas">Se abre el chat de Instagram. Ahí te mostramos la app por dentro y te pasamos cómo pagar.</p>
+            <p class="pagas">Pagas por <b>Bre-B</b> desde Nequi, Daviplata o tu banco. No necesitas tarjeta.</p>
+            <div class="garantia">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              <div><b>Pruébala 7 días</b><span>Si no te convence, te devolvemos todo el dinero, y no tienes que dar explicaciones.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <ol class="regalos">
+          <li class="regalo app"><span class="num" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="#120D08" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><div><b>La app Racha, con acceso vitalicio</b><span>En tu celular y en tu computador. No se vence ni hay que renovarla.</span></div></li>
+          <li class="regalo"><span class="num">1</span><div><b>El Método Anti-Abandono</b><span>La guía para que un día malo no te tumbe todo lo que llevas. Se lee en 10 minutos.</span><em>Para leer</em></div></li>
+          <li class="regalo"><span class="num">2</span><div><b>El Protocolo de Rescate</b><span>Qué hacer exactamente el día después de fallar, en 5 minutos.</span><em>Para leer</em></div></li>
+          <li class="regalo"><span class="num">3</span><div><b>"Arranca en 5 minutos"</b><span>6 rutinas de hábitos ya armadas, para que no tengas que pensar por dónde empezar.</span><em>Dentro de la app</em></div></li>
+          <li class="regalo"><span class="num">4</span><div><b>"Lo que llevas meses aplazando"</b><span>18 tareas ya partidas paso a paso, como declarar renta o sacar el pasaporte.</span><em>Dentro de la app</em></div></li>
+          <li class="regalo"><span class="num">5</span><div><b>5 planes de 30 días</b><span>Ordenar tu plata, volver a estudiar, poner la casa en orden, moverte más y dormir mejor.</span><em>Dentro de la app</em></div></li>
+        </ol>
       </div>
     </div>
   </section>
 
-  <!-- 9. CIERRE -->
-  <section class="cierre">
+  <!-- 9. CÓMO RECIBES TU ACCESO -->
+  <section class="seccion" style="padding-top:0">
     <div class="env">
-      <img class="llama aparece" src="assets/icono.svg" alt="">
-      <h2 class="t2 aparece nuevo">Empieza hoy. <b>No el lunes.</b></h2>
-      <a class="boton aparece" href="#oferta">Quiero Racha</a>
+      <h2 class="grande g3">Así recibes tu Racha</h2>
+      <ol class="pasos-acceso">
+        <li><span class="n">1</span><b>Escribes y pagas por Bre-B</b><span>Te mostramos la app por dentro, te pasamos la llave y nos mandas el comprobante con tu correo.</span></li>
+        <li><span class="n">2</span><b>Te llega un código al correo</b><span>Entras en tengoracha.com con tu correo y el código de 6 números. Sin contraseñas.</span></li>
+        <li><span class="n">3</span><b>La instalas en tu celular</b><span>Queda en tu pantalla de inicio como una app más. En el computador la usas desde el navegador.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 10. PREGUNTAS -->
+  <section class="seccion" style="padding-top:0">
+    <div class="env">
+      <h2 class="grande g3">Preguntas que te puedes estar haciendo</h2>
+      <div class="preguntas">
+        <details><summary>¿Es un solo pago de verdad?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Sí. Pagas $37.900 una vez y es tuya. No hay mensualidades ni cobros después.</p></details>
+        <details><summary>¿Por qué pagar si hay apps de hábitos gratis?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Porque Racha está hecha para el día que fallas: cada hábito tiene su versión mínima, tienes comodines, las tareas se parten en pasos y viene con el Método Anti-Abandono. Además no tiene anuncios y la pagas una sola vez.</p></details>
+        <details><summary>¿Necesito tarjeta para pagar?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>No. Pagas por Bre-B desde Nequi, Daviplata o la app de tu banco, como cualquier transferencia.</p></details>
+        <details><summary>¿Y si no me convence?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Tienes 7 días, contados desde el día de tu compra, para probar Racha. Si no te convence, te devolvemos todo. No tienes que dar explicaciones y vale aunque ya la hayas usado.</p></details>
+        <details><summary>¿Qué quiere decir "acceso vitalicio"?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Que no se vence ni hay que renovarlo: dura mientras Racha exista. Te garantizamos al menos 12 meses desde tu compra. Todo está explicado en los <a href="https://www.tengoracha.com/terminos">términos</a>.</p></details>
+        <details><summary>¿Tengo que bajarla de una tienda de apps?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>No. Se instala desde el navegador del celular, en Android y en iPhone, y queda en tu pantalla de inicio como cualquier app.</p></details>
+        <details><summary>¿Mis datos quedan guardados si cambio de celular?<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Sí. Tu Racha se guarda en tu cuenta. Entras con tu correo en cualquier celular o computador y ahí está todo lo que llevas.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CIERRE -->
+  <section class="cierre">
+    <div class="cierre-fondo" id="cierre-fondo" aria-hidden="true"></div>
+    <div class="env">
+      <h2 class="grande g1">Empieza hoy. <span class="ambar">No el lunes.</span></h2>
+      <div class="acciones">
+        <a class="boton" href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20quiero%20Racha" data-falta="numero">Quiero Racha</a>
+        <p class="precio-corto" style="text-align:left"><b>$37.900</b>una sola vez · 7 días para probarla</p>
+      </div>
     </div>
   </section>
 </main>
@@ -566,7 +693,10 @@ footer a:hover{color:var(--text)}
   </div>
 </footer>
 
-<button class="interruptor" id="interruptor" type="button" aria-pressed="true">Marcas de textos nuevos: sí</button>
+<div class="compra-fija" id="compra-fija" aria-hidden="true">
+  <div><b>$37.900</b><span>Un solo pago · 7 días para probarla</span></div>
+  <a class="boton chico" href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20quiero%20Racha" data-falta="numero" tabindex="-1">Quiero Racha</a>
+</div>
 
 <script src="assets/motion-11.11.13.js"></script>
 <script>
@@ -578,95 +708,121 @@ footer a:hover{color:var(--text)}
   const barra = document.getElementById('barra');
   addEventListener('scroll', () => barra.classList.toggle('con-borde', scrollY > 8), { passive: true });
 
-  // Marcas de textos nuevos (solo para la maqueta)
-  const sw = document.getElementById('interruptor');
-  sw.addEventListener('click', () => {
-    const on = document.body.classList.toggle('sin-marcas');
-    sw.setAttribute('aria-pressed', String(!on));
-    sw.textContent = 'Marcas de textos nuevos: ' + (on ? 'no' : 'sí');
-  });
+  // ---- 1. La racha de la portada: se llena, llega un día malo, entra el comodín y la cuenta sigue ----
+  // 35 cuadros (5 semanas). El 17 (un miércoles) es el día que no pudo. El último es hoy.
+  const cuadros = document.getElementById('cuadros');
+  const MALO = 16, TOTAL = 35;
+  const celdas = [];
+  for (let i = 0; i < TOTAL; i++) { const d = document.createElement('i'); d.className = 'd'; cuadros.appendChild(d); celdas.push(d); }
+  const num = document.getElementById('racha-n'), pie = document.getElementById('racha-pie'), txt = document.getElementById('racha-txt');
+  const estadoFinal = () => {
+    celdas.forEach((d, i) => { d.className = 'd ' + (i === TOTAL - 1 ? 'hoy' : i === MALO ? 'comodin' : 'si'); });
+    num.textContent = TOTAL - 1; pie.className = 'racha-pie comodin'; txt.textContent = 'Usaste un comodín. Tu racha sigue.';
+  };
+  estadoFinal();
+  function animarRacha() {
+    // (son cambios de color y un número: corre aunque el celular tenga las animaciones apagadas)
+    celdas.forEach((d) => { d.className = 'd'; });
+    num.textContent = '0'; pie.className = 'racha-pie'; txt.textContent = 'Cada día que cumples, se marca.';
+    let i = 0, n = 0;
+    const paso = () => {
+      if (i === TOTAL - 1) { celdas[i].className = 'd hoy'; return; }
+      if (i === MALO) {
+        celdas[i].className = 'd malo'; pie.className = 'racha-pie malo'; txt.textContent = 'Miércoles: no pudiste.';
+        setTimeout(() => {
+          celdas[MALO].className = 'd comodin'; n++; num.textContent = n;
+          pie.className = 'racha-pie comodin'; txt.textContent = 'Usaste un comodín. Tu racha sigue.';
+          i++; setTimeout(paso, 700);
+        }, 1300);
+        return;
+      }
+      celdas[i].className = 'd si'; n++; num.textContent = n; i++;
+      setTimeout(paso, 75);
+    };
+    setTimeout(paso, 500);
+  }
+  animarRacha();
 
-  // ---- Tu año: del 1 de marzo al 19 de octubre, como en la app (datos de ejemplo) ----
-  const inicio = new Date(2026, 2, 1), fin = new Date(2026, 9, 19);
-  // empezar la rejilla en lunes
+  // ---- Barra de compra fija: sale al pasar el botón de la portada; se esconde junto al precio y al final ----
+  const fija = document.getElementById('compra-fija'), fijaBoton = fija.querySelector('a');
+  const acciones = document.querySelector('.portada .acciones');
+  const tapan = [document.querySelector('.comprar'), document.querySelector('.cierre')];
+  const seVe = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+  let fijaAntes = null;
+  const decidir = () => {
+    const ver = acciones.getBoundingClientRect().bottom < 0 && !tapan.some(seVe);
+    if (ver === fijaAntes) return; fijaAntes = ver;
+    fija.classList.toggle('ver', ver); fija.setAttribute('aria-hidden', String(!ver)); fijaBoton.tabIndex = ver ? 0 : -1;
+  };
+  addEventListener('scroll', decidir, { passive: true }); addEventListener('resize', decidir); decidir();
+
+  // ---- El celular fijo cambia de pantalla según la función que estés leyendo ----
+  const funs = [...document.querySelectorAll('.fun')], fotos = [...document.querySelectorAll('#vidrio img')];
+  let pAntes = 'hoy';
+  const cambiarPantalla = () => {
+    let p = pAntes;
+    for (const f of funs) { const r = f.getBoundingClientRect(); if (r.top < innerHeight * 0.55) p = f.dataset.p; }
+    if (p === pAntes) return; pAntes = p;
+    fotos.forEach((im) => im.classList.toggle('on', im.dataset.p === p));
+  };
+  addEventListener('scroll', cambiarPantalla, { passive: true });
+
+  // ---- Tu año: del 1 de marzo al 22 de octubre (datos de ejemplo) ----
+  const inicio = new Date(2026, 2, 1), fin = new Date(2026, 9, 22);
   const desde = new Date(inicio); desde.setDate(desde.getDate() - ((desde.getDay() + 6) % 7));
   const dias = [];
   let semilla = 7; const azar = () => (semilla = (semilla * 9301 + 49297) % 233280) / 233280;
   for (let d = new Date(desde); d <= fin; d.setDate(d.getDate() + 1)) {
-    const fuera = d < inicio;
-    const prog = (d - inicio) / (fin - inicio); // al comienzo cuesta más, después se afirma
-    const r = azar();
+    const fuera = d < inicio, prog = (d - inicio) / (fin - inicio), r = azar();
     let e = 'nada';
-    if (!fuera) {
-      if (r < 0.42 + prog * 0.5) e = 'si';
-      else if (r < 0.62 + prog * 0.33) e = 'medio';
-      else if (r < 0.66 + prog * 0.3) e = 'comodin';
-    }
+    if (!fuera) { if (r < 0.42 + prog * 0.5) e = 'si'; else if (r < 0.62 + prog * 0.33) e = 'medio'; else if (r < 0.66 + prog * 0.3) e = 'comodin'; }
     dias.push({ fecha: new Date(d), e, fuera });
   }
   const cuad = document.getElementById('cuadritos');
-  const celdas = dias.map((x) => { const c = document.createElement('i'); c.className = 'c'; if (x.fuera) c.style.visibility = 'hidden'; cuad.appendChild(c); return c; });
-  const nombresMes = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  const meses = document.getElementById('meses');
-  const semanas = Math.ceil(dias.length / 7);
-  let ultimo = -1;
-  for (let s = 0; s < semanas; s++) {
-    const d = dias[s * 7].fecha; const m = d.getMonth();
-    const span = document.createElement('span');
-    if (m !== ultimo && d.getDate() <= 7) { span.textContent = nombresMes[m]; ultimo = m; }
-    meses.appendChild(span);
-  }
-  const totalSi = dias.filter((x) => x.e === 'si').length;
+  const cs = dias.map((x) => { const c = document.createElement('i'); c.className = 'c'; if (x.fuera) c.style.visibility = 'hidden'; cuad.appendChild(c); return c; });
+  const nm = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'], meses = document.getElementById('meses');
+  let ult = -1;
+  for (let s = 0; s < Math.ceil(dias.length / 7); s++) { const d = dias[s * 7].fecha, m = d.getMonth(); const sp = document.createElement('span'); if (m !== ult && d.getDate() <= 7) { sp.textContent = nm[m]; ult = m; } meses.appendChild(sp); }
   const cuenta = document.getElementById('cuenta');
-  let pintados = 0;
+  let pintados = -1;
   function pintarHasta(n) {
-    n = Math.max(0, Math.min(dias.length, Math.round(n)));
-    if (n === pintados) return;
-    for (let i = 0; i < dias.length; i++) {
-      const c = celdas[i]; const on = i < n;
-      c.classList.toggle('si', on && dias[i].e === 'si');
-      c.classList.toggle('medio', on && dias[i].e === 'medio');
-      c.classList.toggle('comodin', on && dias[i].e === 'comodin');
-    }
-    pintados = n;
-    cuenta.textContent = dias.slice(0, n).filter((x) => x.e === 'si').length;
+    n = Math.max(0, Math.min(dias.length, Math.round(n))); if (n === pintados) return;
+    for (let i = 0; i < dias.length; i++) { const on = i < n; cs[i].classList.toggle('si', on && dias[i].e === 'si'); cs[i].classList.toggle('medio', on && dias[i].e === 'medio'); cs[i].classList.toggle('comodin', on && dias[i].e === 'comodin'); }
+    pintados = n; cuenta.textContent = dias.slice(0, n).filter((x) => x.e === 'si').length;
   }
+
+  // ---- El fondo del cierre: cuadros que se encienden ----
+  const fondo = document.getElementById('cierre-fondo');
+  const fc = []; for (let i = 0; i < 240; i++) { const c = document.createElement('i'); fondo.appendChild(c); fc.push(c); }
+  let s2 = 3; const az2 = () => (s2 = (s2 * 9301 + 49297) % 233280) / 233280;
+  const encenderFondo = () => fc.forEach((c, i) => setTimeout(() => { if (az2() < 0.62) c.classList.add('si'); }, i * 8));
 
   // ---- El reloj del Modo Foco corre de verdad ----
-  let seg = 17 * 60 + 32; const aro = document.getElementById('aro'); const tiempo = document.getElementById('tiempo');
+  let seg = 17 * 60 + 32; const aro = document.getElementById('aro'), tiempo = document.getElementById('tiempo');
   const pintarReloj = () => { tiempo.textContent = Math.floor(seg / 60) + ':' + String(seg % 60).padStart(2, '0'); aro.setAttribute('stroke-dashoffset', String(201 * (1 - seg / 1500))); };
-  pintarReloj();
-  // (cambiar un número no es movimiento: corre aunque el celular tenga las animaciones apagadas)
-  setInterval(() => { seg = seg > 0 ? seg - 1 : 1500; pintarReloj(); }, 1000);
+  pintarReloj(); setInterval(() => { seg = seg > 0 ? seg - 1 : 1500; pintarReloj(); }, 1000);
 
   // Sin la librería: todo quieto y completo
-  if (!M) { document.querySelectorAll('.aparece').forEach((el) => { el.style.opacity = 1; el.style.transform = 'none'; }); pintarHasta(dias.length); document.querySelectorAll('#habitos .fila').forEach((f) => f.classList.add('hecha')); return; }
-
-  // Con las animaciones del celular apagadas (movimiento reducido) se quita SOLO el movimiento grande:
-  // nada se desliza ni se inclina, pero las cosas aparecen con un fundido y la app sigue llenándose.
-
+  if (!M) { pintarHasta(dias.length); encenderFondo(); document.querySelectorAll('#habitos .fila').forEach((f) => f.classList.add('hecha')); return; }
   const { animate, scroll, inView, stagger } = M;
 
-  // Aparecer al bajar
-  inView('.aparece', (e) => { const el = e.target || e; animate(el, quieto ? { opacity: [0, 1] } : { opacity: [0, 1], y: [24, 0] }, { duration: quieto ? 0.5 : 0.7, ease: [0.22, 1, 0.36, 1] }); }, { margin: '0px 0px -12% 0px' });
-
-  // La pantalla se endereza al bajar (como el "container scroll" de 21st)
-  if (!quieto) scroll(animate('#pantalla', { transform: ['rotateX(24deg) scale(.94)', 'rotateX(0deg) scale(1)'] }, { ease: 'linear' }), { target: document.getElementById('escena'), offset: ['start end', 'start 0.25'] });
+  // La pantalla del computador se endereza al bajar (como el "container scroll" de 21st)
+  if (!quieto) scroll(animate('#pantalla', { transform: ['rotateX(22deg) scale(.95)', 'rotateX(0deg) scale(1)'] }, { ease: 'linear' }), { target: document.getElementById('escena'), offset: ['start end', 'start 0.2'] });
 
   // Tu año se llena mientras bajas
-  scroll((p) => pintarHasta(p * dias.length * 1.05), { target: document.getElementById('anio'), offset: ['start 0.95', 'end 0.55'] });
+  scroll((p) => pintarHasta(p * dias.length * 1.05), { target: document.getElementById('anio'), offset: ['start 0.95', 'end 0.6'] });
 
-  // Hábitos que se marcan solos, uno por uno
-  inView('#habitos', (e) => { const el = e.target || e;
-    const filas = el.querySelectorAll('.fila');
-    filas.forEach((f, i) => setTimeout(() => f.classList.add('hecha'), 500 + i * 650));
-  }, { amount: 0.6 });
+  // Hábitos que se marcan solos
+  inView('#habitos', (e) => { const el = e.target || e; el.querySelectorAll('.fila').forEach((f, i) => setTimeout(() => f.classList.add('hecha'), 500 + i * 650)); }, { amount: 0.6 });
 
-  // Biblioteca: el botón pasa solo a "Ya lo agregaste"
+  // Biblioteca: el botón pasa a "Ya lo agregaste"
   inView('#agregar', (e) => { const el = e.target || e; setTimeout(() => { el.classList.add('ya'); el.textContent = 'Ya lo agregaste'; }, 1600); }, { amount: 1 });
 
-  // La semana de la regla: entra día por día
-  inView('#regla', (e) => { const el = e.target || e; animate(el.querySelectorAll('[data-d]'), quieto ? { opacity: [0, 1] } : { opacity: [0, 1], y: [10, 0] }, { delay: stagger(0.09, { start: 0.2 }), duration: 0.4 }); }, { amount: 0.5 });
+  // La semana de la regla, día por día
+  inView('#regla', (e) => { const el = e.target || e; animate(el.querySelectorAll('[data-d]'), quieto ? { opacity: [0, 1] } : { opacity: [0, 1], y: [12, 0] }, { delay: stagger(0.09, { start: 0.2 }), duration: 0.4 }); }, { amount: 0.5 });
+
+  // El cierre se enciende al llegar
+  inView('.cierre', () => { encenderFondo(); }, { amount: 0.3 });
 })();
 </script>
 </body>
